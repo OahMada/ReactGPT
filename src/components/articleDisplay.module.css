@@ -1,0 +1,19 @@
+.article {
+	letter-spacing: 2px;
+	font-size: 1.6rem;
+}
+
+.insert {
+	background-color: lightgreen;
+}
+
+.replacement {
+	background-color: lightblue;
+}
+
+.deletion {
+	background-color: lightcoral;
+}
+
+.btn-container {
+}
