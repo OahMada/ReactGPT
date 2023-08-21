@@ -36,7 +36,7 @@ export var findGrammarMistakes = createAsyncThunk('article/findGrammarMistakes',
 					{ role: 'user', content: rawArticle },
 				],
 			},
-			{ headers: { 'content-type': 'application/json', Authorization: 'Bearer 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' } }
+			{ headers: { 'content-type': 'application/json', Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}` } }
 		);
 		return response.data;
 	} catch (error: unknown | AxiosError) {
