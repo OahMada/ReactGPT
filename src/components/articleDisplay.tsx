@@ -33,39 +33,45 @@ export var ArticleDisplay = () => {
 		return (
 			<>
 				<p className={styles.article}>
-					{...article.adjustmentObjectArr.map<React.ReactNode>((item, index) => {
+					{...article.adjustmentObjectArr.reduce<React.ReactNode[]>((acc, item, index) => {
 						if (item.value) {
-							return item.value;
+							acc.push(item.value);
 						} else if (item.removed || item.added) {
 							if (item.added && !item.removed) {
-								return article.status === 'modifying' ? (
-									<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
-										<ins className={styles.insert}>{item.addedValue}</ins>
-									</span>
-								) : (
-									<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
-										<del className={styles.deletion}>{item.addedValue}</del>
-									</span>
-								);
+								let element =
+									article.status === 'modifying' ? (
+										<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
+											<ins className={styles.insert}>{item.addedValue}</ins>
+										</span>
+									) : (
+										<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
+											<del className={styles.deletion}>{item.addedValue}</del>
+										</span>
+									);
+								acc.push(element);
 							} else if (item.added && item.removed) {
-								return (
+								let element = (
 									<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
 										<del className={styles.replacement}>{item.removedValue}</del>
 									</span>
 								);
+								acc.push(element);
 							} else if (!item.added && item.removed) {
-								return article.status === 'modifying' ? (
-									<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
-										<del className={styles.deletion}>{item.removedValue}</del>
-									</span>
-								) : (
-									<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
-										<ins className={styles.insert}>{item.removedValue}</ins>
-									</span>
-								);
+								let element =
+									article.status === 'modifying' ? (
+										<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
+											<del className={styles.deletion}>{item.removedValue}</del>
+										</span>
+									) : (
+										<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
+											<ins className={styles.insert}>{item.removedValue}</ins>
+										</span>
+									);
+								acc.push(element);
 							}
 						}
-					})}
+						return acc;
+					}, [])}
 				</p>
 				{modal.showModal && <Modal {...modal} />}
 				{article.status === 'modifying' && (
@@ -87,20 +93,27 @@ export var ArticleDisplay = () => {
 			</>
 		);
 	}
-	if (article.status === 'doneModification') {
+	if (article.status === 'doneModification' || article.status === 'intermediate') {
 		return (
 			<>
 				<p className={styles.article}>{article.grammarFixedArticle}</p>
 				<div className={styles['btn-container']}>
 					<>
-						<button onClick={() => dispatch(checkEditHistory())}>Show Edit History</button>
-						<button
-							onClick={() => {
-								dispatch(revertToBeginning());
-							}}
-						>
-							Revert All Changes
-						</button>
+						{article.status === 'doneModification' && (
+							<>
+								<button onClick={() => dispatch(checkEditHistory())} disabled={article.appliedAdjustments === 0}>
+									Show Edit History
+								</button>
+								<button
+									onClick={() => {
+										dispatch(revertToBeginning());
+									}}
+									disabled={article.appliedAdjustments === 0}
+								>
+									Revert All Changes
+								</button>
+							</>
+						)}
 						<button>Find Grammar Mistakes</button>
 					</>
 				</div>

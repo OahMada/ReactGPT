@@ -36,7 +36,6 @@ function App() {
 export default App;
 
 /**
- * revert to beginning button
  * when adjustments evaluation done, click the paragraph enter edit mode
  * when edited, redo the findGrammarMistakes action
  * multi paragraph handle: check grammar mistakes per paragraph

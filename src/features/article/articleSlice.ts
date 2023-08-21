@@ -9,7 +9,8 @@ export interface Article {
 	status: articleStatus;
 	adjustmentObjectArr: refactoredChange[];
 	fixGrammarLoading: 'loading' | 'done';
-	adjustmentCount: number;
+	allAdjustmentsCount: number;
+	appliedAdjustments: number;
 }
 
 let initialState: Article = {
@@ -18,10 +19,12 @@ let initialState: Article = {
 	status: 'editing',
 	adjustmentObjectArr: [],
 	fixGrammarLoading: 'loading',
-	adjustmentCount: 0,
+	allAdjustmentsCount: 0,
+	appliedAdjustments: 0,
 };
 
 export var findGrammarMistakes = createAsyncThunk('article/findGrammarMistakes', async (rawArticle: string, thunkAPI) => {
+	console.log(import.meta.env.VITE_OPENAI_API_KEY);
 	try {
 		let response = await axios.post(
 			'https://api.openai.com/v1/chat/completions',
@@ -38,6 +41,7 @@ export var findGrammarMistakes = createAsyncThunk('article/findGrammarMistakes',
 			},
 			{ headers: { 'content-type': 'application/json', Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}` } }
 		);
+
 		return response.data;
 	} catch (error: unknown | AxiosError) {
 		if (axios.isAxiosError(error)) {
@@ -56,6 +60,7 @@ let articleSlice = createSlice({
 			state.status = 'modifying';
 			state.initialArticle = sanitizeUserInput(action.payload);
 		},
+		// also be used when revert one adjustment
 		acceptSingleAdjustment: (state, action: PayloadAction<number>) => {
 			let targetObj = state.adjustmentObjectArr[action.payload];
 			if (targetObj.added) {
@@ -63,9 +68,14 @@ let articleSlice = createSlice({
 			} else {
 				state.adjustmentObjectArr.splice(action.payload, 1);
 			}
-			state.adjustmentCount -= 1;
-			if (state.adjustmentCount === 0) {
-				state.status = 'doneModification';
+			state.appliedAdjustments += 1;
+			if (state.allAdjustmentsCount === state.appliedAdjustments) {
+				if (state.status === 'reviving') {
+					state.status = 'intermediate';
+				}
+				if (state.status === 'modifying') {
+					state.status = 'doneModification';
+				}
 			}
 			state.grammarFixedArticle = updateGrammarFixedArticle(state.adjustmentObjectArr);
 		},
@@ -76,8 +86,8 @@ let articleSlice = createSlice({
 			} else {
 				state.adjustmentObjectArr.splice(action.payload, 1);
 			}
-			state.adjustmentCount -= 1;
-			if (state.adjustmentCount === 0) {
+			state.allAdjustmentsCount -= 1;
+			if (state.allAdjustmentsCount === 0) {
 				state.status = 'doneModification';
 			}
 			state.grammarFixedArticle = updateGrammarFixedArticle(state.adjustmentObjectArr);
@@ -93,6 +103,7 @@ let articleSlice = createSlice({
 				}
 				return acc;
 			}, []);
+			state.appliedAdjustments = state.allAdjustmentsCount;
 			state.status = 'doneModification';
 			state.grammarFixedArticle = updateGrammarFixedArticle(state.adjustmentObjectArr);
 		},
@@ -114,9 +125,18 @@ let articleSlice = createSlice({
 			console.log(result);
 			state.adjustmentObjectArr = result;
 			state.status = 'reviving';
+			state.appliedAdjustments = 0;
+			// for logic to work where when none available adjustments are left, change article.status
+			state.allAdjustmentsCount = result.reduce<number>((acc, cur) => {
+				if (!cur.value) {
+					acc += 1;
+				}
+				return acc;
+			}, 0);
 		},
 		revertToBeginning: (state) => {
 			state.grammarFixedArticle = state.initialArticle;
+			state.status = 'intermediate';
 		},
 	},
 	extraReducers(builder) {
@@ -133,7 +153,7 @@ let articleSlice = createSlice({
 
 				state.adjustmentObjectArr = result;
 				state.fixGrammarLoading = 'done';
-				state.adjustmentCount = result.reduce<number>((acc, cur) => {
+				state.allAdjustmentsCount = result.reduce<number>((acc, cur) => {
 					if (!cur.value) {
 						acc += 1;
 					}
