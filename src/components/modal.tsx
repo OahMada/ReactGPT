@@ -1,5 +1,3 @@
-import { RootState } from '../app/store';
-
 import styles from './modal.module.css';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 

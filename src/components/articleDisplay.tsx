@@ -8,6 +8,7 @@ import {
 	revertToBeginning,
 	selectArticle,
 	reFetchGrammarMistakes,
+	updateUserInput,
 } from '../features/article/articleSlice';
 import styles from './articleDisplay.module.css';
 import { updateModalContent, showModal, hideModal } from '../features/modal/modalSlice';
@@ -112,7 +113,9 @@ export var ArticleDisplay = () => {
 	if (article.status === 'doneModification') {
 		return (
 			<>
-				<p className={styles.article}>{article.grammarFixedArticle}</p>
+				<p className={styles.article} onClick={() => dispatch(updateUserInput())}>
+					{article.grammarFixedArticle}{' '}
+				</p>
 				<div className={styles['btn-container']}>
 					<>
 						<button onClick={() => dispatch(checkEditHistory())} disabled={article.grammarFixedArticle === article.initialArticle}>

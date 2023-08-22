@@ -1,6 +1,7 @@
 .article {
 	letter-spacing: 2px;
 	font-size: 1.6rem;
+	border: 1px solid #ccc;
 }
 
 .insert {

@@ -47,7 +47,7 @@ export var findGrammarMistakes = createAsyncThunk('article/findGrammarMistakes',
 		if (axios.isAxiosError(error)) {
 			return thunkAPI.rejectWithValue(error.response?.data.msg);
 		} else {
-			console.log(error);
+			throw error;
 		}
 	}
 });
@@ -58,7 +58,12 @@ let articleSlice = createSlice({
 	reducers: {
 		saveInput: (state, action: PayloadAction<string>) => {
 			state.status = 'modifying';
-			state.initialArticle = sanitizeUserInput(action.payload);
+			let input = sanitizeUserInput(action.payload);
+			state.initialArticle = input;
+			let cachedUserInput = sessionStorage.getItem('initialUserInput');
+			if (cachedUserInput === null) {
+				sessionStorage.setItem('initialUserInput', input);
+			}
 		},
 		// also be used when revert one adjustment
 		acceptSingleAdjustment: (state, action: PayloadAction<number>) => {
@@ -142,9 +147,12 @@ let articleSlice = createSlice({
 				state.status = 'modifying';
 			}
 		},
-		prepareForReFetchingGrammarMistakes: (state) => {
+		updateInitialArticleContent: (state) => {
 			state.initialArticle = state.grammarFixedArticle;
 			state.grammarFixedArticle = '';
+		},
+		prepareForUserInputUpdate: (state) => {
+			state.status = 'editing';
 		},
 	},
 	extraReducers(builder) {
@@ -169,8 +177,14 @@ let articleSlice = createSlice({
 				let localData = JSON.stringify({ adjustmentObjectArr: state.adjustmentObjectArr, allAdjustmentsCount: state.allAdjustmentsCount });
 				sessionStorage.setItem('grammarFixes', localData);
 			})
-			.addCase(findGrammarMistakes.rejected, (state) => {
+			.addCase(findGrammarMistakes.rejected, (state, action) => {
 				state.fixGrammarLoading = 'done';
+				// if (action.payload) {
+				// Being that we passed in ValidationErrors to rejectType in `createAsyncThunk`, the payload will be available here.
+				// 	state.error = action.payload.errorMessage;
+				// } else {
+				// 	state.error = action.error.message;
+				// }
 			});
 	},
 });
@@ -183,9 +197,16 @@ export var reFetchGrammarMistakes = (): AppThunk => {
 		if (article.grammarFixedArticle === article.initialArticle) {
 			dispatch(loadDataFromSessionStorage());
 		} else {
-			dispatch(prepareForReFetchingGrammarMistakes());
+			dispatch(updateInitialArticleContent());
 			dispatch(findGrammarMistakes(article.grammarFixedArticle));
 		}
+	};
+};
+
+export var updateUserInput = (): AppThunk => {
+	return (dispatch) => {
+		dispatch(prepareForUserInputUpdate());
+		dispatch(updateInitialArticleContent());
 	};
 };
 
@@ -198,7 +219,8 @@ export var {
 	doneWithCurrentArticleState,
 	revertToBeginning,
 	loadDataFromSessionStorage,
-	prepareForReFetchingGrammarMistakes,
+	updateInitialArticleContent,
+	prepareForUserInputUpdate,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;
