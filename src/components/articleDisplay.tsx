@@ -1,14 +1,21 @@
 import { RootState } from '../app/store';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import Modal from './modal';
-import { acceptAllAdjustments, checkEditHistory, doneWithCurrentArticleState, revertToBeginning } from '../features/article/articleSlice';
+import {
+	acceptAllAdjustments,
+	checkEditHistory,
+	doneWithCurrentArticleState,
+	revertToBeginning,
+	selectArticle,
+	reFetchGrammarMistakes,
+} from '../features/article/articleSlice';
 import styles from './articleDisplay.module.css';
 import { updateModalContent, showModal, hideModal } from '../features/modal/modalSlice';
 import { refactoredChange } from '../types';
 
 export var ArticleDisplay = () => {
 	// state values
-	let article = useAppSelector((state: RootState) => state.article);
+	let article = useAppSelector(selectArticle);
 	let modal = useAppSelector((state: RootState) => state.modal);
 
 	// dispatch
@@ -83,6 +90,15 @@ export var ArticleDisplay = () => {
 						Accept All
 					</button>
 				)}
+				{article.status === 'reviving' && (
+					<button
+						onClick={() => {
+							dispatch(acceptAllAdjustments());
+						}}
+					>
+						Revert All
+					</button>
+				)}
 				<button
 					onClick={() => {
 						dispatch(doneWithCurrentArticleState());
@@ -93,28 +109,31 @@ export var ArticleDisplay = () => {
 			</>
 		);
 	}
-	if (article.status === 'doneModification' || article.status === 'intermediate') {
+	if (article.status === 'doneModification') {
 		return (
 			<>
 				<p className={styles.article}>{article.grammarFixedArticle}</p>
 				<div className={styles['btn-container']}>
 					<>
-						{article.status === 'doneModification' && (
-							<>
-								<button onClick={() => dispatch(checkEditHistory())} disabled={article.appliedAdjustments === 0}>
-									Show Edit History
-								</button>
-								<button
-									onClick={() => {
-										dispatch(revertToBeginning());
-									}}
-									disabled={article.appliedAdjustments === 0}
-								>
-									Revert All Changes
-								</button>
-							</>
-						)}
-						<button>Find Grammar Mistakes</button>
+						<button onClick={() => dispatch(checkEditHistory())} disabled={article.grammarFixedArticle === article.initialArticle}>
+							Show Edit History
+						</button>
+						<button
+							onClick={() => {
+								dispatch(revertToBeginning());
+							}}
+							disabled={article.grammarFixedArticle === article.initialArticle}
+						>
+							Revert All Changes
+						</button>
+						<button
+							onClick={() => {
+								dispatch(reFetchGrammarMistakes());
+							}}
+							disabled={article.fixGrammarLoading !== 'done'}
+						>
+							Find Grammar Mistakes
+						</button>
 					</>
 				</div>
 			</>

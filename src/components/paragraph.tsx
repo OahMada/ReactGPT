@@ -1,11 +1,11 @@
-import { RootState } from '../app/store';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { refactoredChange } from '../types';
 import { updateModalContent, showModal, hideModal } from '../features/modal/modalSlice';
 import styles from './articleDisplay.module.css';
+import { selectArticle } from '../features/article/articleSlice';
 
 const Paragraph = () => {
-	let article = useAppSelector((state: RootState) => state.article);
+	let article = useAppSelector(selectArticle);
 	let dispatch = useAppDispatch();
 
 	// handlers

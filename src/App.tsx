@@ -39,4 +39,5 @@ export default App;
  * when adjustments evaluation done, click the paragraph enter edit mode
  * when edited, redo the findGrammarMistakes action
  * multi paragraph handle: check grammar mistakes per paragraph
+ * put adjustments object in local session, load when needed, when article not changed and need to re-fetch adjustments
  */

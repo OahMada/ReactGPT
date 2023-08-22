@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArticle } from '../../utils';
 import { refactoredChange, articleStatus } from '../../types';
 import axios, { AxiosError } from 'axios';
+import { RootState, AppThunk } from '../../app/store';
 
 export interface Article {
 	initialArticle: string;
@@ -24,7 +25,6 @@ let initialState: Article = {
 };
 
 export var findGrammarMistakes = createAsyncThunk('article/findGrammarMistakes', async (rawArticle: string, thunkAPI) => {
-	console.log(import.meta.env.VITE_OPENAI_API_KEY);
 	try {
 		let response = await axios.post(
 			'https://api.openai.com/v1/chat/completions',
@@ -70,12 +70,7 @@ let articleSlice = createSlice({
 			}
 			state.appliedAdjustments += 1;
 			if (state.allAdjustmentsCount === state.appliedAdjustments) {
-				if (state.status === 'reviving') {
-					state.status = 'intermediate';
-				}
-				if (state.status === 'modifying') {
-					state.status = 'doneModification';
-				}
+				state.status = 'doneModification';
 			}
 			state.grammarFixedArticle = updateGrammarFixedArticle(state.adjustmentObjectArr);
 		},
@@ -122,10 +117,9 @@ let articleSlice = createSlice({
 		},
 		checkEditHistory: (state) => {
 			let result = findTheDiffsBetweenTwoStrings(state.grammarFixedArticle, state.initialArticle);
-			console.log(result);
 			state.adjustmentObjectArr = result;
 			state.status = 'reviving';
-			state.appliedAdjustments = 0;
+			state.appliedAdjustments = 0; // reset
 			// for logic to work where when none available adjustments are left, change article.status
 			state.allAdjustmentsCount = result.reduce<number>((acc, cur) => {
 				if (!cur.value) {
@@ -136,7 +130,21 @@ let articleSlice = createSlice({
 		},
 		revertToBeginning: (state) => {
 			state.grammarFixedArticle = state.initialArticle;
-			state.status = 'intermediate';
+			state.status = 'doneModification';
+		},
+		loadDataFromSessionStorage: (state) => {
+			let data = sessionStorage.getItem('grammarFixes');
+			if (data !== null) {
+				let { adjustmentObjectArr, allAdjustmentsCount } = JSON.parse(data);
+				state.adjustmentObjectArr = adjustmentObjectArr;
+				state.allAdjustmentsCount = allAdjustmentsCount;
+				state.appliedAdjustments = 0;
+				state.status = 'modifying';
+			}
+		},
+		prepareForReFetchingGrammarMistakes: (state) => {
+			state.initialArticle = state.grammarFixedArticle;
+			state.grammarFixedArticle = '';
 		},
 	},
 	extraReducers(builder) {
@@ -145,26 +153,41 @@ let articleSlice = createSlice({
 				state.fixGrammarLoading = 'loading';
 			})
 			.addCase(findGrammarMistakes.fulfilled, (state, action) => {
-				console.log(state.initialArticle);
-				console.log(action.payload['choices'][0]['message']['content']);
-
 				let result = findTheDiffsBetweenTwoStrings(state.initialArticle, action.payload['choices'][0]['message']['content']);
-				console.log(result);
 
 				state.adjustmentObjectArr = result;
 				state.fixGrammarLoading = 'done';
+				state.status = 'modifying';
+				state.appliedAdjustments = 0;
 				state.allAdjustmentsCount = result.reduce<number>((acc, cur) => {
 					if (!cur.value) {
 						acc += 1;
 					}
 					return acc;
 				}, 0);
+
+				let localData = JSON.stringify({ adjustmentObjectArr: state.adjustmentObjectArr, allAdjustmentsCount: state.allAdjustmentsCount });
+				sessionStorage.setItem('grammarFixes', localData);
 			})
 			.addCase(findGrammarMistakes.rejected, (state) => {
 				state.fixGrammarLoading = 'done';
 			});
 	},
 });
+
+export var selectArticle = (state: RootState) => state.article;
+
+export var reFetchGrammarMistakes = (): AppThunk => {
+	return (dispatch, getState) => {
+		let article = selectArticle(getState());
+		if (article.grammarFixedArticle === article.initialArticle) {
+			dispatch(loadDataFromSessionStorage());
+		} else {
+			dispatch(prepareForReFetchingGrammarMistakes());
+			dispatch(findGrammarMistakes(article.grammarFixedArticle));
+		}
+	};
+};
 
 export var {
 	saveInput,
@@ -174,6 +197,8 @@ export var {
 	checkEditHistory,
 	doneWithCurrentArticleState,
 	revertToBeginning,
+	loadDataFromSessionStorage,
+	prepareForReFetchingGrammarMistakes,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;

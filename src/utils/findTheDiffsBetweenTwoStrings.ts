@@ -3,9 +3,6 @@ import { refactoredChange } from '../types';
 
 export var findTheDiffsBetweenTwoStrings = (strA: string, strB: string) => {
 	let result = diffWords(strA, strB);
-
-	console.log(result);
-
 	let refactoredResult = result
 		// combine white spaces between the additions
 		// .reduce<Change[]>((acc, cur) => {
