@@ -139,7 +139,6 @@ export var ArticleDisplay = () => {
 						</button>
 						<button
 							onClick={() => {
-								// TODO bug here
 								dispatch(reFetchGrammarMistakes());
 							}}
 							disabled={article.fixGrammarLoading !== 'done'}
@@ -152,5 +151,3 @@ export var ArticleDisplay = () => {
 		);
 	}
 };
-
-// TODO bug accept one fix, then accept all

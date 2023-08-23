@@ -29,7 +29,7 @@ let initialState: ModalType = {
 	dimension: { left: 0, top: 0 },
 	color: '',
 	showModal: false,
-	indexInArticle: 0,
+	indexInArticle: 0, // used to find the right element in adjustmentObjectArr to update its content
 };
 
 let modalSlice = createSlice({

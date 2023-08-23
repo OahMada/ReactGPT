@@ -57,7 +57,6 @@ let articleSlice = createSlice({
 	initialState,
 	reducers: {
 		saveInput: (state, action: PayloadAction<string>) => {
-			state.status = 'modifying';
 			let input = sanitizeUserInput(action.payload);
 			state.initialArticle = input;
 
@@ -108,8 +107,7 @@ let articleSlice = createSlice({
 			state.adjustmentObjectArr = state.adjustmentObjectArr.reduce<refactoredChange[]>((acc, cur) => {
 				if (cur.value) {
 					acc.push(cur);
-				}
-				if (cur.added) {
+				} else if (cur.added) {
 					cur.value = cur.addedValue; // user accepted version of article is calculated by the value property of adjustmentObjectArr
 					acc.push(cur);
 				}
@@ -196,6 +194,7 @@ let articleSlice = createSlice({
 
 				state.adjustmentObjectArr = result;
 				state.fixGrammarLoading = 'done';
+				state.status = 'modifying';
 				state.allAdjustmentsCount = result.reduce<number>((acc, cur) => {
 					if (!cur.value) {
 						acc += 1;
@@ -226,11 +225,12 @@ export var selectArticle = (state: RootState) => state.article;
 // useful when user tries to re-send api call with the same paragraph of article with edits
 export var reFetchGrammarMistakes = (): AppThunk => {
 	return (dispatch, getState) => {
+		dispatch(updateInitialArticleContent());
 		let article = selectArticle(getState());
-		if (article.grammarFixedArticle === article.initialArticle) {
+		let cachedUserInput = sessionStorage.getItem('initialUserInput');
+		if (cachedUserInput === article.initialArticle) {
 			dispatch(loadDataFromSessionStorage());
 		} else {
-			dispatch(updateInitialArticleContent());
 			dispatch(findGrammarMistakes(article.initialArticle));
 		}
 	};

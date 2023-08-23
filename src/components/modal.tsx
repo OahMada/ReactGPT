@@ -11,6 +11,7 @@ var Modal = ({ title, content, dimension, color, indexInArticle }: ModalType) =>
 
 	let dispatch = useAppDispatch();
 
+	// 0.8 & 6.5 here is fixed
 	return (
 		<div
 			className={styles.container}
