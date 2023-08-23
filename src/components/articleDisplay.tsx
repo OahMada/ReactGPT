@@ -1,6 +1,7 @@
+import { refactoredChange } from '../types';
 import { RootState } from '../app/store';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import Modal from './modal';
+
 import {
 	acceptAllAdjustments,
 	checkEditHistory,
@@ -10,9 +11,12 @@ import {
 	reFetchGrammarMistakes,
 	updateUserInput,
 } from '../features/article/articleSlice';
-import styles from './articleDisplay.module.css';
 import { updateModalContent, showModal, hideModal } from '../features/modal/modalSlice';
-import { refactoredChange } from '../types';
+
+import styles from './articleDisplay.module.css';
+
+import Modal from './modal';
+import UserInput from './userInput';
 
 export var ArticleDisplay = () => {
 	// state values
@@ -33,6 +37,10 @@ export var ArticleDisplay = () => {
 	let mouseLeaveHandler = () => {
 		dispatch(hideModal());
 	};
+
+	if (article.status === 'editing') {
+		return <UserInput />;
+	}
 
 	if (article.initialArticle && article.fixGrammarLoading === 'loading') {
 		return <p className={styles.article}>{article.initialArticle}</p>;
@@ -131,6 +139,7 @@ export var ArticleDisplay = () => {
 						</button>
 						<button
 							onClick={() => {
+								// TODO bug here
 								dispatch(reFetchGrammarMistakes());
 							}}
 							disabled={article.fixGrammarLoading !== 'done'}
@@ -143,3 +152,5 @@ export var ArticleDisplay = () => {
 		);
 	}
 };
+
+// TODO bug accept one fix, then accept all

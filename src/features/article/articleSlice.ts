@@ -60,6 +60,7 @@ let articleSlice = createSlice({
 			state.status = 'modifying';
 			let input = sanitizeUserInput(action.payload);
 			state.initialArticle = input;
+
 			let cachedUserInput = sessionStorage.getItem('initialUserInput');
 			if (cachedUserInput === null) {
 				sessionStorage.setItem('initialUserInput', input);
@@ -76,8 +77,13 @@ let articleSlice = createSlice({
 			state.appliedAdjustments += 1;
 			if (state.allAdjustmentsCount === state.appliedAdjustments) {
 				state.status = 'doneModification';
+				state.grammarFixedArticle = updateGrammarFixedArticle(state.adjustmentObjectArr); // required when manually accept all adjustments
+
+				// reset state properties that is staled
+				state.adjustmentObjectArr = [];
+				state.appliedAdjustments = 0;
+				state.allAdjustmentsCount = 0;
 			}
-			state.grammarFixedArticle = updateGrammarFixedArticle(state.adjustmentObjectArr);
 		},
 		ignoreSingleAdjustment: (state, action: PayloadAction<number>) => {
 			let targetObj = state.adjustmentObjectArr[action.payload];
@@ -89,24 +95,35 @@ let articleSlice = createSlice({
 			state.allAdjustmentsCount -= 1;
 			if (state.allAdjustmentsCount === 0) {
 				state.status = 'doneModification';
+				state.grammarFixedArticle = updateGrammarFixedArticle(state.adjustmentObjectArr); // required when manually ignore all adjustments
+
+				// reset state properties that is staled
+				state.adjustmentObjectArr = [];
+				state.appliedAdjustments = 0;
+				state.allAdjustmentsCount = 0;
 			}
-			state.grammarFixedArticle = updateGrammarFixedArticle(state.adjustmentObjectArr);
 		},
+		// also used for revert changes made when reviewing the applied edits
 		acceptAllAdjustments: (state) => {
 			state.adjustmentObjectArr = state.adjustmentObjectArr.reduce<refactoredChange[]>((acc, cur) => {
 				if (cur.value) {
 					acc.push(cur);
 				}
 				if (cur.added) {
-					cur.value = cur.addedValue;
+					cur.value = cur.addedValue; // user accepted version of article is calculated by the value property of adjustmentObjectArr
 					acc.push(cur);
 				}
 				return acc;
 			}, []);
-			state.appliedAdjustments = state.allAdjustmentsCount;
 			state.status = 'doneModification';
 			state.grammarFixedArticle = updateGrammarFixedArticle(state.adjustmentObjectArr);
+
+			// reset state properties that is staled
+			state.adjustmentObjectArr = [];
+			state.appliedAdjustments = 0;
+			state.allAdjustmentsCount = 0;
 		},
+		// also used for finish reviewing edit history
 		doneWithCurrentArticleState: (state) => {
 			state.adjustmentObjectArr = state.adjustmentObjectArr.reduce<refactoredChange[]>((acc, cur) => {
 				if (cur.value) {
@@ -119,12 +136,16 @@ let articleSlice = createSlice({
 			}, []);
 			state.status = 'doneModification';
 			state.grammarFixedArticle = updateGrammarFixedArticle(state.adjustmentObjectArr);
+
+			// reset state properties that is staled
+			state.adjustmentObjectArr = [];
+			state.appliedAdjustments = 0;
+			state.allAdjustmentsCount = 0;
 		},
 		checkEditHistory: (state) => {
 			let result = findTheDiffsBetweenTwoStrings(state.grammarFixedArticle, state.initialArticle);
 			state.adjustmentObjectArr = result;
 			state.status = 'reviving';
-			state.appliedAdjustments = 0; // reset
 			// for logic to work where when none available adjustments are left, change article.status
 			state.allAdjustmentsCount = result.reduce<number>((acc, cur) => {
 				if (!cur.value) {
@@ -135,7 +156,12 @@ let articleSlice = createSlice({
 		},
 		revertToBeginning: (state) => {
 			state.grammarFixedArticle = state.initialArticle;
-			state.status = 'doneModification';
+			state.status = 'doneModification'; // when in reviewing phase it's needed
+
+			// reset state properties that is staled
+			state.adjustmentObjectArr = [];
+			state.appliedAdjustments = 0;
+			state.allAdjustmentsCount = 0;
 		},
 		loadDataFromSessionStorage: (state) => {
 			let data = sessionStorage.getItem('grammarFixes');
@@ -143,13 +169,18 @@ let articleSlice = createSlice({
 				let { adjustmentObjectArr, allAdjustmentsCount } = JSON.parse(data);
 				state.adjustmentObjectArr = adjustmentObjectArr;
 				state.allAdjustmentsCount = allAdjustmentsCount;
-				state.appliedAdjustments = 0;
+				state.fixGrammarLoading = 'done'; // when webpage refreshed, the same content is passed to userInput, and there are API call data cache
 				state.status = 'modifying';
 			}
 		},
 		updateInitialArticleContent: (state) => {
-			state.initialArticle = state.grammarFixedArticle;
+			state.initialArticle = state.grammarFixedArticle; // it's always the initialArticle get sent to API call
 			state.grammarFixedArticle = '';
+
+			// reset state properties that is staled
+			state.adjustmentObjectArr = [];
+			state.appliedAdjustments = 0;
+			state.allAdjustmentsCount = 0;
 		},
 		prepareForUserInputUpdate: (state) => {
 			state.status = 'editing';
@@ -165,8 +196,6 @@ let articleSlice = createSlice({
 
 				state.adjustmentObjectArr = result;
 				state.fixGrammarLoading = 'done';
-				state.status = 'modifying';
-				state.appliedAdjustments = 0;
 				state.allAdjustmentsCount = result.reduce<number>((acc, cur) => {
 					if (!cur.value) {
 						acc += 1;
@@ -174,8 +203,11 @@ let articleSlice = createSlice({
 					return acc;
 				}, 0);
 
-				let localData = JSON.stringify({ adjustmentObjectArr: state.adjustmentObjectArr, allAdjustmentsCount: state.allAdjustmentsCount });
-				sessionStorage.setItem('grammarFixes', localData);
+				let localData = sessionStorage.getItem('grammarFixes');
+				if (localData === null) {
+					localData = JSON.stringify({ adjustmentObjectArr: state.adjustmentObjectArr, allAdjustmentsCount: state.allAdjustmentsCount });
+					sessionStorage.setItem('grammarFixes', localData);
+				}
 			})
 			.addCase(findGrammarMistakes.rejected, (state, action) => {
 				state.fixGrammarLoading = 'done';
@@ -191,6 +223,7 @@ let articleSlice = createSlice({
 
 export var selectArticle = (state: RootState) => state.article;
 
+// useful when user tries to re-send api call with the same paragraph of article with edits
 export var reFetchGrammarMistakes = (): AppThunk => {
 	return (dispatch, getState) => {
 		let article = selectArticle(getState());
@@ -198,15 +231,16 @@ export var reFetchGrammarMistakes = (): AppThunk => {
 			dispatch(loadDataFromSessionStorage());
 		} else {
 			dispatch(updateInitialArticleContent());
-			dispatch(findGrammarMistakes(article.grammarFixedArticle));
+			dispatch(findGrammarMistakes(article.initialArticle));
 		}
 	};
 };
 
+// for click the article enter editing mode
 export var updateUserInput = (): AppThunk => {
 	return (dispatch) => {
 		dispatch(prepareForUserInputUpdate());
-		dispatch(updateInitialArticleContent());
+		dispatch(updateInitialArticleContent()); // initialArticle is what get displayed in the textarea element
 	};
 };
 

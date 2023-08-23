@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { useState } from 'react';
-import { saveInput, findGrammarMistakes, selectArticle } from '../features/article/articleSlice';
+import { saveInput, findGrammarMistakes, selectArticle, loadDataFromSessionStorage } from '../features/article/articleSlice';
 import styles from './userInput.module.css';
 
 const UserInput = () => {
@@ -10,29 +10,22 @@ const UserInput = () => {
 	let [userInput, setUserInput] = useState(initialArticle ? initialArticle : defaultString);
 	let dispatch = useAppDispatch();
 
+	let onClickHandler = () => {
+		dispatch(saveInput(userInput));
+		let cachedUserInput = sessionStorage.getItem('initialUserInput');
+		let cachedGrammarFixesData = sessionStorage.getItem('grammarFixes');
+		if (cachedUserInput === userInput && cachedGrammarFixesData !== null) {
+			dispatch(loadDataFromSessionStorage());
+		} else {
+			dispatch(findGrammarMistakes(userInput));
+		}
+	};
+
 	return (
 		<>
 			<textarea className={styles.textarea} value={userInput} onChange={(e) => setUserInput(e.target.value)} autoFocus />
-			<button
-				onClick={() => {
-					dispatch(saveInput(userInput));
-					dispatch(findGrammarMistakes(userInput)); // add logic to load cached data here
-				}}
-			>
-				Done
-			</button>
+			<button onClick={onClickHandler}>Done</button>
 		</>
 	);
 };
 export default UserInput;
-
-/**
- 
-let cachedUserInput = sessionStorage.getItem('initialUserInput');
-// console.log(cachedUserInput);
-// console.log(rawArticle);
-// console.log(cachedUserInput === rawArticle);
-if (cachedUserInput === rawArticle) {
-  thunkAPI.dispatch(loadDataFromSessionStorage());
-}
-*/
