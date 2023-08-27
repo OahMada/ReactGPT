@@ -1,30 +1,59 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArticle } from '../../utils';
-import { refactoredChange, articleStatus } from '../../types';
+import { refactoredChange, paragraphStatus, articleStatus } from '../../types';
 import axios, { AxiosError } from 'axios';
 import { RootState, AppThunk } from '../../app/store';
 
-export interface Article {
-	initialArticle: string;
-	grammarFixedArticle: string;
-	status: articleStatus;
+export interface Paragraph {
+	id: number;
+	paragraphStatus: paragraphStatus;
+	initialParagraph: string;
+	grammarFixedParagraph: string;
 	adjustmentObjectArr: refactoredChange[];
 	fixGrammarLoading: 'loading' | 'done';
 	allAdjustmentsCount: number;
 	appliedAdjustments: number;
+	error: string | null | undefined;
 }
 
-let initialState: Article = {
-	initialArticle: '',
-	grammarFixedArticle: '',
-	status: 'editing',
+let initialParagraphState: Paragraph = {
+	id: 0,
+	paragraphStatus: 'modifying',
+	initialParagraph: '',
+	grammarFixedParagraph: '',
 	adjustmentObjectArr: [],
-	fixGrammarLoading: 'loading',
+	fixGrammarLoading: 'done',
 	allAdjustmentsCount: 0,
 	appliedAdjustments: 0,
+	error: null,
 };
 
-export var findGrammarMistakes = createAsyncThunk('article/findGrammarMistakes', async (rawArticle: string, thunkAPI) => {
+interface Article {
+	userInput: string;
+	status: articleStatus;
+	paragraphs: Paragraph[];
+	error: string | null | undefined;
+}
+
+let initialArticleState: Article = {
+	userInput: '',
+	status: 'acceptingUserInput',
+	paragraphs: [],
+	error: null,
+};
+
+export var findGrammarMistakes = createAsyncThunk<
+	// Return type of the payload creator
+	string,
+	// First argument to the payload creator
+	number,
+	{
+		// Optional fields for defining thunkApi field types
+		state: RootState;
+		rejectValue: string;
+	}
+>('article/findGrammarMistakes', async (paragraphId, thunkAPI) => {
+	let paragraphs = thunkAPI.getState().article.paragraphs;
 	try {
 		let response = await axios.post(
 			'https://api.openai.com/v1/chat/completions',
@@ -34,15 +63,15 @@ export var findGrammarMistakes = createAsyncThunk('article/findGrammarMistakes',
 					{
 						role: 'system',
 						content:
-							'You are an English learning assistant. You are going to fix the grammar mistakes in the essay the user passes to you. In the process, you have to make as few edits as possible.',
+							'You are an English learning assistant. You are going to fix only the grammar mistakes in the essay the user passes to you. In the process, you have to make as few edits as possible.',
 					},
-					{ role: 'user', content: rawArticle },
+					{ role: 'user', content: paragraphs[paragraphId].initialParagraph },
 				],
 			},
 			{ headers: { 'content-type': 'application/json', Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}` } }
 		);
 
-		return response.data;
+		return response.data['choices'][0]['message']['content'];
 	} catch (error: unknown | AxiosError) {
 		if (axios.isAxiosError(error)) {
 			return thunkAPI.rejectWithValue(error.response?.data.msg);
@@ -54,15 +83,23 @@ export var findGrammarMistakes = createAsyncThunk('article/findGrammarMistakes',
 
 let articleSlice = createSlice({
 	name: 'article',
-	initialState,
+	initialState: initialArticleState,
 	reducers: {
 		saveInput: (state, action: PayloadAction<string>) => {
 			let input = sanitizeUserInput(action.payload);
-			state.initialArticle = input;
+			state.userInput = input;
+			let paragraphs = input.split(/\n\n/);
+			state.paragraphs = paragraphs.map((paragraph, index) => {
+				let obj = Object.assign({}, initialParagraphState);
+				obj.initialParagraph = paragraph;
+				obj.id = index;
+				return obj;
+			});
+			state.status = 'errorFixing';
 
 			let cachedUserInput = sessionStorage.getItem('initialUserInput');
 			if (cachedUserInput === null) {
-				sessionStorage.setItem('initialUserInput', input);
+				sessionStorage.setItem('initialUserInput', JSON.stringify(paragraphs));
 			}
 		},
 		// also be used when revert one adjustment
@@ -103,8 +140,9 @@ let articleSlice = createSlice({
 			}
 		},
 		// also used for revert changes made when reviewing the applied edits
-		acceptAllAdjustments: (state) => {
-			state.adjustmentObjectArr = state.adjustmentObjectArr.reduce<refactoredChange[]>((acc, cur) => {
+		acceptAllAdjustments: ({ paragraphs }, { payload }: PayloadAction<number>) => {
+			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
+			currentParagraph.adjustmentObjectArr = currentParagraph.adjustmentObjectArr.reduce<refactoredChange[]>((acc, cur) => {
 				if (cur.value) {
 					acc.push(cur);
 				} else if (cur.added) {
@@ -113,17 +151,18 @@ let articleSlice = createSlice({
 				}
 				return acc;
 			}, []);
-			state.status = 'doneModification';
-			state.grammarFixedArticle = updateGrammarFixedArticle(state.adjustmentObjectArr);
+			currentParagraph.paragraphStatus = 'doneModification';
+			currentParagraph.grammarFixedParagraph = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr);
 
 			// reset state properties that is staled
-			state.adjustmentObjectArr = [];
-			state.appliedAdjustments = 0;
-			state.allAdjustmentsCount = 0;
+			currentParagraph.adjustmentObjectArr = [];
+			currentParagraph.appliedAdjustments = 0;
+			currentParagraph.allAdjustmentsCount = 0;
 		},
 		// also used for finish reviewing edit history
-		doneWithCurrentArticleState: (state) => {
-			state.adjustmentObjectArr = state.adjustmentObjectArr.reduce<refactoredChange[]>((acc, cur) => {
+		doneWithCurrentParagraphState: ({ paragraphs }, { payload }: PayloadAction<number>) => {
+			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
+			currentParagraph.adjustmentObjectArr = currentParagraph.adjustmentObjectArr.reduce<refactoredChange[]>((acc, cur) => {
 				if (cur.value) {
 					acc.push(cur);
 				} else if (cur.removed) {
@@ -132,90 +171,99 @@ let articleSlice = createSlice({
 				}
 				return acc;
 			}, []);
-			state.status = 'doneModification';
-			state.grammarFixedArticle = updateGrammarFixedArticle(state.adjustmentObjectArr);
+			currentParagraph.paragraphStatus = 'doneModification';
+			currentParagraph.grammarFixedParagraph = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr);
+			console.log(currentParagraph.grammarFixedParagraph);
 
 			// reset state properties that is staled
-			state.adjustmentObjectArr = [];
-			state.appliedAdjustments = 0;
-			state.allAdjustmentsCount = 0;
+			currentParagraph.adjustmentObjectArr = [];
+			currentParagraph.appliedAdjustments = 0;
+			currentParagraph.allAdjustmentsCount = 0;
 		},
-		checkEditHistory: (state) => {
-			let result = findTheDiffsBetweenTwoStrings(state.grammarFixedArticle, state.initialArticle);
-			state.adjustmentObjectArr = result;
-			state.status = 'reviving';
+		checkEditHistory: ({ paragraphs }, { payload }: PayloadAction<number>) => {
+			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
+
+			let result = findTheDiffsBetweenTwoStrings(currentParagraph.grammarFixedParagraph, currentParagraph.initialParagraph);
+			currentParagraph.adjustmentObjectArr = result;
+			currentParagraph.paragraphStatus = 'reviving';
 			// for logic to work where when none available adjustments are left, change article.status
-			state.allAdjustmentsCount = result.reduce<number>((acc, cur) => {
+			currentParagraph.allAdjustmentsCount = result.reduce<number>((acc, cur) => {
 				if (!cur.value) {
 					acc += 1;
 				}
 				return acc;
 			}, 0);
 		},
-		revertToBeginning: (state) => {
-			state.grammarFixedArticle = state.initialArticle;
-			state.status = 'doneModification'; // when in reviewing phase it's needed
+		revertToBeginning: ({ paragraphs }, { payload }: PayloadAction<number>) => {
+			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
+			currentParagraph.grammarFixedParagraph = currentParagraph.initialParagraph;
+			currentParagraph.paragraphStatus = 'doneModification'; // when in reviewing phase it's needed
 
 			// reset state properties that is staled
-			state.adjustmentObjectArr = [];
-			state.appliedAdjustments = 0;
-			state.allAdjustmentsCount = 0;
+			currentParagraph.adjustmentObjectArr = [];
+			currentParagraph.appliedAdjustments = 0;
+			currentParagraph.allAdjustmentsCount = 0;
 		},
-		loadDataFromSessionStorage: (state) => {
-			let data = sessionStorage.getItem('grammarFixes');
-			if (data !== null) {
-				let { adjustmentObjectArr, allAdjustmentsCount } = JSON.parse(data);
-				state.adjustmentObjectArr = adjustmentObjectArr;
-				state.allAdjustmentsCount = allAdjustmentsCount;
-				state.fixGrammarLoading = 'done'; // when webpage refreshed, the same content is passed to userInput, and there are API call data cache
-				state.status = 'modifying';
-			}
-		},
-		updateInitialArticleContent: (state) => {
-			state.initialArticle = state.grammarFixedArticle; // it's always the initialArticle get sent to API call
-			state.grammarFixedArticle = '';
+		// loadDataFromSessionStorage: (state) => {
+		// 	let data = sessionStorage.getItem('grammarFixes');
+		// 	if (data !== null) {
+		// 		let { adjustmentObjectArr, allAdjustmentsCount } = JSON.parse(data);
+		// 		state.adjustmentObjectArr = adjustmentObjectArr;
+		// 		state.allAdjustmentsCount = allAdjustmentsCount;
+		// 		state.fixGrammarLoading = 'done'; // when webpage refreshed, the same content is passed to userInput, and there are API call data cache
+		// 		state.status = 'modifying';
+		// 	}
+		// },
+		updateInitialArticleContent: ({ paragraphs }, { payload }: PayloadAction<number>) => {
+			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 
+			currentParagraph.initialParagraph = currentParagraph.grammarFixedParagraph; // it's always the initialArticle get sent to API call
+			currentParagraph.paragraphStatus = 'modifying';
 			// reset state properties that is staled
-			state.adjustmentObjectArr = [];
-			state.appliedAdjustments = 0;
-			state.allAdjustmentsCount = 0;
+			currentParagraph.adjustmentObjectArr = [];
+			currentParagraph.appliedAdjustments = 0;
+			currentParagraph.allAdjustmentsCount = 0;
 		},
-		prepareForUserInputUpdate: (state) => {
-			state.status = 'editing';
+		prepareForUserInputUpdate: ({ paragraphs }, { payload }: PayloadAction<number>) => {
+			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
+			currentParagraph.paragraphStatus = 'editing';
 		},
 	},
 	extraReducers(builder) {
 		builder
-			.addCase(findGrammarMistakes.pending, (state) => {
-				state.fixGrammarLoading = 'loading';
+			.addCase(findGrammarMistakes.pending, ({ paragraphs }, { meta: { arg } }) => {
+				let currentParagraph = paragraphs.find((item) => item.id === arg) as Paragraph;
+				currentParagraph.fixGrammarLoading = 'loading';
 			})
-			.addCase(findGrammarMistakes.fulfilled, (state, action) => {
-				let result = findTheDiffsBetweenTwoStrings(state.initialArticle, action.payload['choices'][0]['message']['content']);
+			.addCase(findGrammarMistakes.fulfilled, ({ paragraphs }, { payload, meta: { arg } }) => {
+				let currentParagraph = paragraphs.find((item) => item.id === arg) as Paragraph;
+				let result = findTheDiffsBetweenTwoStrings(currentParagraph.initialParagraph, payload);
 
-				state.adjustmentObjectArr = result;
-				state.fixGrammarLoading = 'done';
-				state.status = 'modifying';
-				state.allAdjustmentsCount = result.reduce<number>((acc, cur) => {
+				currentParagraph.adjustmentObjectArr = result;
+				currentParagraph.fixGrammarLoading = 'done';
+				currentParagraph.paragraphStatus = 'modifying';
+				currentParagraph.allAdjustmentsCount = result.reduce<number>((acc, cur) => {
 					if (!cur.value) {
 						acc += 1;
 					}
 					return acc;
 				}, 0);
 
-				let localData = sessionStorage.getItem('grammarFixes');
-				if (localData === null) {
-					localData = JSON.stringify({ adjustmentObjectArr: state.adjustmentObjectArr, allAdjustmentsCount: state.allAdjustmentsCount });
-					sessionStorage.setItem('grammarFixes', localData);
-				}
-			})
-			.addCase(findGrammarMistakes.rejected, (state, action) => {
-				state.fixGrammarLoading = 'done';
-				// if (action.payload) {
-				// Being that we passed in ValidationErrors to rejectType in `createAsyncThunk`, the payload will be available here.
-				// 	state.error = action.payload.errorMessage;
-				// } else {
-				// 	state.error = action.error.message;
+				// TODO
+				// let localData = sessionStorage.getItem('grammarFixes');
+				// if (localData === null) {
+				// 	localData = JSON.stringify({ adjustmentObjectArr: state.adjustmentObjectArr, allAdjustmentsCount: state.allAdjustmentsCount });
+				// 	sessionStorage.setItem('grammarFixes', localData);
 				// }
+			})
+			.addCase(findGrammarMistakes.rejected, ({ paragraphs, error }, { payload, meta: { arg } }) => {
+				let currentParagraph = paragraphs.find((item) => item.id === arg) as Paragraph;
+				currentParagraph.fixGrammarLoading = 'done';
+				if (payload) {
+					currentParagraph.error = payload;
+				} else {
+					error = payload;
+				}
 			});
 	},
 });
@@ -223,36 +271,46 @@ let articleSlice = createSlice({
 export var selectArticle = (state: RootState) => state.article;
 
 // useful when user tries to re-send api call with the same paragraph of article with edits
-export var reFetchGrammarMistakes = (): AppThunk => {
+export var reFetchGrammarMistakes = (id: number): AppThunk => {
 	return (dispatch, getState) => {
-		dispatch(updateInitialArticleContent());
-		let article = selectArticle(getState());
-		let cachedUserInput = sessionStorage.getItem('initialUserInput');
-		if (cachedUserInput === article.initialArticle) {
-			dispatch(loadDataFromSessionStorage());
-		} else {
-			dispatch(findGrammarMistakes(article.initialArticle));
-		}
+		dispatch(updateInitialArticleContent(id));
+		// let { paragraphs } = selectArticle(getState());
+		// let cachedUserInput = sessionStorage.getItem('initialUserInput');
+		// if (cachedUserInput === article.initialArticle) {
+		// 	dispatch(loadDataFromSessionStorage());
+		// } else {
+		dispatch(findGrammarMistakes(id));
+		// }
 	};
 };
 
 // for click the article enter editing mode
-export var updateUserInput = (): AppThunk => {
+export var updateUserInput = (id: number): AppThunk => {
 	return (dispatch) => {
-		dispatch(prepareForUserInputUpdate());
-		dispatch(updateInitialArticleContent()); // initialArticle is what get displayed in the textarea element
+		dispatch(prepareForUserInputUpdate(id));
+		dispatch(updateInitialArticleContent(id)); // initialArticle is what get displayed in the textarea element
+	};
+};
+
+// the calls to API has to be in a thunk, why?
+export var findArticleGrammarMistakes = (): AppThunk => {
+	return (dispatch, getState) => {
+		let { paragraphs } = selectArticle(getState());
+		paragraphs.forEach((paragraph) => {
+			dispatch(findGrammarMistakes(paragraph.id));
+		});
 	};
 };
 
 export var {
 	saveInput,
-	ignoreSingleAdjustment,
-	acceptSingleAdjustment,
+	// ignoreSingleAdjustment,
+	// acceptSingleAdjustment,
 	acceptAllAdjustments,
 	checkEditHistory,
-	doneWithCurrentArticleState,
+	doneWithCurrentParagraphState,
 	revertToBeginning,
-	loadDataFromSessionStorage,
+	// loadDataFromSessionStorage,
 	updateInitialArticleContent,
 	prepareForUserInputUpdate,
 } = articleSlice.actions;

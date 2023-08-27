@@ -1,15 +1,18 @@
 import styles from './modal.module.css';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
-import { showModal, hideModal, ModalType } from '../features/modal/modalSlice';
-import { acceptSingleAdjustment, ignoreSingleAdjustment, selectArticle } from '../features/article/articleSlice';
+import { showModal, hideModal, selectModal } from '../features/modal/modalSlice';
+import { acceptSingleAdjustment, ignoreSingleAdjustment } from '../features/article/articleSlice';
+import { paragraphStatus } from '../types';
 
-// import { useEffect, useRef } from 'react';
+interface ModalPropType {
+	paragraphId: number;
+	paragraphStatus: paragraphStatus;
+}
 
-var Modal = ({ title, content, dimension, color, indexInArticle }: ModalType) => {
-	let article = useAppSelector(selectArticle);
-
+var Modal = ({ paragraphId, paragraphStatus }: ModalPropType) => {
 	let dispatch = useAppDispatch();
+	let { title, content, dimension, color, indexInParagraph } = useAppSelector(selectModal);
 
 	// 0.8 & 6.5 here is fixed
 	return (
@@ -27,13 +30,14 @@ var Modal = ({ title, content, dimension, color, indexInArticle }: ModalType) =>
 				{title.toUpperCase()}
 			</h4>
 			<p className={styles.content}>
+				{/* indicate white spaces that are ought to adjust */}
 				<cite>{content === ' ' ? <i>{'[space]'}</i> : content}</cite>
 			</p>
-			{article.status === 'reviving' ? (
+			{paragraphStatus === 'reviving' ? (
 				<button
 					className={`${styles['accept-btn']} ${styles['btn']}`}
 					onClick={() => {
-						dispatch(acceptSingleAdjustment(indexInArticle));
+						dispatch(acceptSingleAdjustment(indexInParagraph, paragraphId));
 						dispatch(hideModal());
 					}}
 				>
@@ -44,7 +48,7 @@ var Modal = ({ title, content, dimension, color, indexInArticle }: ModalType) =>
 					<button
 						className={`${styles['accept-btn']} ${styles['btn']}`}
 						onClick={() => {
-							dispatch(acceptSingleAdjustment(indexInArticle));
+							dispatch(acceptSingleAdjustment(indexInParagraph, paragraphId));
 							dispatch(hideModal());
 						}}
 					>
@@ -53,7 +57,7 @@ var Modal = ({ title, content, dimension, color, indexInArticle }: ModalType) =>
 					<button
 						className={`${styles['ignore-btn']} ${styles['btn']}`}
 						onClick={() => {
-							dispatch(ignoreSingleAdjustment(indexInArticle));
+							dispatch(ignoreSingleAdjustment(indexInParagraph, paragraphId));
 							dispatch(hideModal());
 						}}
 					>

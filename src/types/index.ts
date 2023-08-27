@@ -10,4 +10,5 @@ export interface refactoredChange extends ModifiedObj {
 	value?: string;
 }
 
-export type articleStatus = 'editing' | 'modifying' | 'doneModification' | 'reviving';
+export type paragraphStatus = 'editing' | 'modifying' | 'doneModification' | 'reviving';
+export type articleStatus = 'acceptingUserInput' | 'errorFixing';

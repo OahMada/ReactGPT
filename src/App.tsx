@@ -15,5 +15,4 @@ export default App;
  * multi paragraph handle: check grammar mistakes per paragraph
  * what if I want to delete one paragraph: a dedicated delete button
  * use styled component rather than css module
- *
  */

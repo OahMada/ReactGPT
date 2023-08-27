@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ModifiedObj, articleStatus } from '../../types';
+import { ModifiedObj, paragraphStatus } from '../../types';
+import { RootState } from '../../app/store';
 
 interface elementPositionDimension {
 	left: number;
@@ -9,7 +10,7 @@ interface elementPositionDimension {
 interface ModalProperties {
 	dimension: elementPositionDimension;
 	color: string;
-	indexInArticle: number;
+	indexInParagraph: number;
 }
 
 export interface ModalType extends ModalProperties {
@@ -20,7 +21,7 @@ export interface ModalType extends ModalProperties {
 
 interface payloadType extends ModalProperties {
 	modifiedObj: ModifiedObj;
-	articleStatus: articleStatus;
+	paragraphStatus: paragraphStatus;
 }
 
 let initialState: ModalType = {
@@ -29,7 +30,7 @@ let initialState: ModalType = {
 	dimension: { left: 0, top: 0 },
 	color: '',
 	showModal: false,
-	indexInArticle: 0, // used to find the right element in adjustmentObjectArr to update its content
+	indexInParagraph: 0, // used to find the right element in adjustmentObjectArr to update its content
 };
 
 let modalSlice = createSlice({
@@ -37,7 +38,7 @@ let modalSlice = createSlice({
 	initialState,
 	reducers: {
 		updateModalContent: (state, action: PayloadAction<payloadType>) => {
-			let status = action.payload.articleStatus;
+			let status = action.payload.paragraphStatus;
 			let { added, addedValue, removed, removedValue } = action.payload.modifiedObj;
 			if (added && removed) {
 				if (status === 'modifying') {
@@ -66,7 +67,7 @@ let modalSlice = createSlice({
 
 			state.dimension = action.payload.dimension;
 			state.color = action.payload.color;
-			state.indexInArticle = action.payload.indexInArticle;
+			state.indexInParagraph = action.payload.indexInParagraph;
 		},
 		showModal: (state) => {
 			state.showModal = true;
@@ -77,104 +78,8 @@ let modalSlice = createSlice({
 	},
 });
 
+export var selectModal = (state: RootState) => state.modal;
+
 export var { updateModalContent, showModal, hideModal } = modalSlice.actions;
 
 export default modalSlice.reducer;
-
-/**
- * [
-    {
-        "value": "A voiced consonant (or sound) means that it uses the vocal cords"
-    },
-    {
-        "value": ",",
-        "added": true
-    },
-    {
-        "value": " "
-    },
-    {
-        "value": "producing",
-        "added": true,
-        "removed": true
-    },
-    {
-        "value": " "
-    },
-    {
-        "removedValue": "they produce ",
-        "removed": true
-    },
-    {
-        "value": "a vibration or humming sound in the throat when "
-    },
-    {
-        "addedValue": "pronounced",
-        "added": true,
-        "removedValue": "they are said",
-        "removed": true
-    },
-    {
-        "value": ". "
-    },
-    {
-        "addedValue": "Placing",
-        "added": true,
-        "removedValue": "Put",
-        "removed": true
-    },
-    {
-        "value": " your finger on your throat and "
-    },
-    {
-        "addedValue": "pronouncing",
-        "added": true,
-        "removedValue": "then",
-        "removed": true
-    },
-    {
-        "value": " "
-    },
-    {
-        "removedValue": "pronounce ",
-        "removed": true
-    },
-    {
-        "value": "the letter L"
-    },
-    {
-        "addedValue": ",",
-        "added": true,
-        "removedValue": ".",
-        "removed": true
-    },
-    {
-        "value": " "
-    },
-    {
-        "addedValue": "you",
-        "added": true,
-        "removedValue": "You",
-        "removed": true
-    },
-    {
-        "value": " will notice a slight vibration in your "
-    },
-    {
-        "removedValue": "neck / ",
-        "removed": true
-    },
-    {
-        "value": "throat. "
-    },
-    {
-        "addedValue": "This",
-        "added": true,
-        "removedValue": "That",
-        "removed": true
-    },
-    {
-        "value": " is because it is a voiced sound."
-    }
-]
- */
