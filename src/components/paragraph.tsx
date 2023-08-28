@@ -42,7 +42,7 @@ var Paragraph = ({
 	let onMouseEnterHandler = (e: React.MouseEvent<HTMLElement>, item: refactoredChange, index: number) => {
 		let { left, top } = e.currentTarget.getBoundingClientRect();
 		let color = e.currentTarget.dataset.color!;
-		dispatch(updateModalContent({ modifiedObj: item, dimension: { left, top }, color, indexInParagraph: index, paragraphStatus }));
+		dispatch(updateModalContent({ modifiedObj: item, dimension: { left, top }, color, indexInParagraph: index, paragraphStatus, paragraphId: id }));
 		dispatch(showModal());
 	};
 
@@ -98,7 +98,7 @@ var Paragraph = ({
 						}, [])}
 					</p>
 				)}
-				{modal.showModal && <Modal paragraphId={id} paragraphStatus={paragraphStatus} />}
+				{modal.showModal && <Modal />}
 				<button
 					onClick={() => {
 						dispatch(acceptAllAdjustments(id));

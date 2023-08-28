@@ -103,40 +103,50 @@ let articleSlice = createSlice({
 			}
 		},
 		// also be used when revert one adjustment
-		acceptSingleAdjustment: (state, action: PayloadAction<number>) => {
-			let targetObj = state.adjustmentObjectArr[action.payload];
+		acceptSingleAdjustment: (
+			{ paragraphs },
+			{ payload: { indexInParagraph, paragraphId } }: PayloadAction<{ indexInParagraph: number; paragraphId: number }>
+		) => {
+			console.log(paragraphId);
+
+			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
+			let targetObj = currentParagraph.adjustmentObjectArr[indexInParagraph];
 			if (targetObj.added) {
 				targetObj.value = targetObj.addedValue;
 			} else {
-				state.adjustmentObjectArr.splice(action.payload, 1);
+				currentParagraph.adjustmentObjectArr.splice(indexInParagraph, 1);
 			}
-			state.appliedAdjustments += 1;
-			if (state.allAdjustmentsCount === state.appliedAdjustments) {
-				state.status = 'doneModification';
-				state.grammarFixedArticle = updateGrammarFixedArticle(state.adjustmentObjectArr); // required when manually accept all adjustments
+			currentParagraph.appliedAdjustments += 1;
+			if (currentParagraph.allAdjustmentsCount === currentParagraph.appliedAdjustments) {
+				currentParagraph.paragraphStatus = 'doneModification';
+				currentParagraph.grammarFixedParagraph = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr); // required when manually accept all adjustments
 
 				// reset state properties that is staled
-				state.adjustmentObjectArr = [];
-				state.appliedAdjustments = 0;
-				state.allAdjustmentsCount = 0;
+				currentParagraph.adjustmentObjectArr = [];
+				currentParagraph.appliedAdjustments = 0;
+				currentParagraph.allAdjustmentsCount = 0;
 			}
 		},
-		ignoreSingleAdjustment: (state, action: PayloadAction<number>) => {
-			let targetObj = state.adjustmentObjectArr[action.payload];
+		ignoreSingleAdjustment: (
+			{ paragraphs },
+			{ payload: { indexInParagraph, paragraphId } }: PayloadAction<{ indexInParagraph: number; paragraphId: number }>
+		) => {
+			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
+			let targetObj = currentParagraph.adjustmentObjectArr[indexInParagraph];
 			if (targetObj.removed) {
 				targetObj.value = targetObj.removedValue;
 			} else {
-				state.adjustmentObjectArr.splice(action.payload, 1);
+				currentParagraph.adjustmentObjectArr.splice(indexInParagraph, 1);
 			}
-			state.allAdjustmentsCount -= 1;
-			if (state.allAdjustmentsCount === 0) {
-				state.status = 'doneModification';
-				state.grammarFixedArticle = updateGrammarFixedArticle(state.adjustmentObjectArr); // required when manually ignore all adjustments
+			currentParagraph.allAdjustmentsCount -= 1;
+			if (currentParagraph.allAdjustmentsCount === 0) {
+				currentParagraph.paragraphStatus = 'doneModification';
+				currentParagraph.grammarFixedParagraph = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr); // required when manually ignore all adjustments
 
-				// reset state properties that is staled
-				state.adjustmentObjectArr = [];
-				state.appliedAdjustments = 0;
-				state.allAdjustmentsCount = 0;
+				// reset currentParagraph properties that is staled
+				currentParagraph.adjustmentObjectArr = [];
+				currentParagraph.appliedAdjustments = 0;
+				currentParagraph.allAdjustmentsCount = 0;
 			}
 		},
 		// also used for revert changes made when reviewing the applied edits
@@ -304,8 +314,8 @@ export var findArticleGrammarMistakes = (): AppThunk => {
 
 export var {
 	saveInput,
-	// ignoreSingleAdjustment,
-	// acceptSingleAdjustment,
+	ignoreSingleAdjustment,
+	acceptSingleAdjustment,
 	acceptAllAdjustments,
 	checkEditHistory,
 	doneWithCurrentParagraphState,

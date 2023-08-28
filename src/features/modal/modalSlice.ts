@@ -11,6 +11,8 @@ interface ModalProperties {
 	dimension: elementPositionDimension;
 	color: string;
 	indexInParagraph: number;
+	paragraphStatus: paragraphStatus;
+	paragraphId: number;
 }
 
 export interface ModalType extends ModalProperties {
@@ -21,7 +23,6 @@ export interface ModalType extends ModalProperties {
 
 interface payloadType extends ModalProperties {
 	modifiedObj: ModifiedObj;
-	paragraphStatus: paragraphStatus;
 }
 
 let initialState: ModalType = {
@@ -31,6 +32,8 @@ let initialState: ModalType = {
 	color: '',
 	showModal: false,
 	indexInParagraph: 0, // used to find the right element in adjustmentObjectArr to update its content
+	paragraphId: 0,
+	paragraphStatus: null,
 };
 
 let modalSlice = createSlice({
@@ -68,6 +71,8 @@ let modalSlice = createSlice({
 			state.dimension = action.payload.dimension;
 			state.color = action.payload.color;
 			state.indexInParagraph = action.payload.indexInParagraph;
+			state.paragraphStatus = status;
+			state.paragraphId = action.payload.paragraphId;
 		},
 		showModal: (state) => {
 			state.showModal = true;

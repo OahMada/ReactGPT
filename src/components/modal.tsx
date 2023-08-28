@@ -3,16 +3,10 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 import { showModal, hideModal, selectModal } from '../features/modal/modalSlice';
 import { acceptSingleAdjustment, ignoreSingleAdjustment } from '../features/article/articleSlice';
-import { paragraphStatus } from '../types';
 
-interface ModalPropType {
-	paragraphId: number;
-	paragraphStatus: paragraphStatus;
-}
-
-var Modal = ({ paragraphId, paragraphStatus }: ModalPropType) => {
+var Modal = () => {
 	let dispatch = useAppDispatch();
-	let { title, content, dimension, color, indexInParagraph } = useAppSelector(selectModal);
+	let { title, content, dimension, color, indexInParagraph, paragraphStatus, paragraphId } = useAppSelector(selectModal);
 
 	// 0.8 & 6.5 here is fixed
 	return (
@@ -37,7 +31,7 @@ var Modal = ({ paragraphId, paragraphStatus }: ModalPropType) => {
 				<button
 					className={`${styles['accept-btn']} ${styles['btn']}`}
 					onClick={() => {
-						dispatch(acceptSingleAdjustment(indexInParagraph, paragraphId));
+						dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
 						dispatch(hideModal());
 					}}
 				>
@@ -48,7 +42,7 @@ var Modal = ({ paragraphId, paragraphStatus }: ModalPropType) => {
 					<button
 						className={`${styles['accept-btn']} ${styles['btn']}`}
 						onClick={() => {
-							dispatch(acceptSingleAdjustment(indexInParagraph, paragraphId));
+							dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
 							dispatch(hideModal());
 						}}
 					>
@@ -57,7 +51,7 @@ var Modal = ({ paragraphId, paragraphStatus }: ModalPropType) => {
 					<button
 						className={`${styles['ignore-btn']} ${styles['btn']}`}
 						onClick={() => {
-							dispatch(ignoreSingleAdjustment(indexInParagraph, paragraphId));
+							dispatch(ignoreSingleAdjustment({ indexInParagraph, paragraphId }));
 							dispatch(hideModal());
 						}}
 					>
