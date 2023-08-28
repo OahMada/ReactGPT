@@ -12,25 +12,16 @@ import {
 } from '../features/article/articleSlice';
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modal/modalSlice';
 
-import styles from './articleDisplay.module.css';
+import styles from './paragraph.module.css';
 
 import Modal from './modal';
 
 interface ParagraphPropType {
 	paragraph: ParagraphType;
-	key: number;
 }
 
 var Paragraph = ({
-	paragraph: {
-		id,
-		initialParagraph,
-		grammarFixedParagraph: grammarFixedArticle,
-		adjustmentObjectArr,
-		fixGrammarLoading,
-		allAdjustmentsCount,
-		paragraphStatus,
-	},
+	paragraph: { id, initialParagraph, paragraphAfterGrammarFix, adjustmentObjectArr, fixGrammarLoading, allAdjustmentsCount, paragraphStatus },
 }: ParagraphPropType) => {
 	// state values
 	let modal = useAppSelector(selectModal);
@@ -54,9 +45,9 @@ var Paragraph = ({
 		return (
 			<>
 				{fixGrammarLoading === 'loading' ? (
-					<p className={styles.article}>{initialParagraph}</p>
+					<p className={styles.paragraph}>{initialParagraph}</p>
 				) : (
-					<p className={styles.article}>
+					<p className={styles.paragraph}>
 						{...adjustmentObjectArr.reduce<React.ReactNode[]>((acc, item, index) => {
 							if (item.value) {
 								acc.push(item.value);
@@ -122,19 +113,20 @@ var Paragraph = ({
 	if (paragraphStatus === 'doneModification') {
 		return (
 			<>
-				<p className={styles.article} onClick={() => dispatch(updateUserInput(id))}>
-					{grammarFixedArticle}
+				<h4>Click Paragraph to Edit</h4>
+				<p className={styles.paragraph} onClick={() => dispatch(updateUserInput(id))}>
+					{paragraphAfterGrammarFix}
 				</p>
 				<div className={styles['btn-container']}>
 					<>
-						<button onClick={() => dispatch(checkEditHistory(id))} disabled={grammarFixedArticle === initialParagraph}>
+						<button onClick={() => dispatch(checkEditHistory(id))} disabled={paragraphAfterGrammarFix === initialParagraph}>
 							Show Edit History
 						</button>
 						<button
 							onClick={() => {
 								dispatch(revertToBeginning(id));
 							}}
-							disabled={grammarFixedArticle === initialParagraph}
+							disabled={paragraphAfterGrammarFix === initialParagraph}
 						>
 							Revert All Changes
 						</button>

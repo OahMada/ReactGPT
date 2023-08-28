@@ -8,7 +8,8 @@ export interface Paragraph {
 	id: number;
 	paragraphStatus: paragraphStatus;
 	initialParagraph: string;
-	grammarFixedParagraph: string;
+	paragraphBeforeGrammarFix: string;
+	paragraphAfterGrammarFix: string;
 	adjustmentObjectArr: refactoredChange[];
 	fixGrammarLoading: 'loading' | 'done';
 	allAdjustmentsCount: number;
@@ -20,7 +21,8 @@ let initialParagraphState: Paragraph = {
 	id: 0,
 	paragraphStatus: 'modifying',
 	initialParagraph: '',
-	grammarFixedParagraph: '',
+	paragraphBeforeGrammarFix: '',
+	paragraphAfterGrammarFix: '',
 	adjustmentObjectArr: [],
 	fixGrammarLoading: 'done',
 	allAdjustmentsCount: 0,
@@ -65,7 +67,7 @@ export var findGrammarMistakes = createAsyncThunk<
 						content:
 							'You are an English learning assistant. You are going to fix only the grammar mistakes in the essay the user passes to you. In the process, you have to make as few edits as possible.',
 					},
-					{ role: 'user', content: paragraphs[paragraphId].initialParagraph },
+					{ role: 'user', content: paragraphs[paragraphId].paragraphBeforeGrammarFix },
 				],
 			},
 			{ headers: { 'content-type': 'application/json', Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}` } }
@@ -92,14 +94,15 @@ let articleSlice = createSlice({
 			state.paragraphs = paragraphs.map((paragraph, index) => {
 				let obj = Object.assign({}, initialParagraphState);
 				obj.initialParagraph = paragraph;
+				obj.paragraphBeforeGrammarFix = paragraph;
 				obj.id = index;
 				return obj;
 			});
 			state.status = 'errorFixing';
 
-			let cachedUserInput = sessionStorage.getItem('initialUserInput');
+			let cachedUserInput = sessionStorage.getItem('initialParagraphs');
 			if (cachedUserInput === null) {
-				sessionStorage.setItem('initialUserInput', JSON.stringify(paragraphs));
+				sessionStorage.setItem('initialParagraphs', JSON.stringify(state.paragraphs));
 			}
 		},
 		// also be used when revert one adjustment
@@ -107,8 +110,6 @@ let articleSlice = createSlice({
 			{ paragraphs },
 			{ payload: { indexInParagraph, paragraphId } }: PayloadAction<{ indexInParagraph: number; paragraphId: number }>
 		) => {
-			console.log(paragraphId);
-
 			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
 			let targetObj = currentParagraph.adjustmentObjectArr[indexInParagraph];
 			if (targetObj.added) {
@@ -119,7 +120,7 @@ let articleSlice = createSlice({
 			currentParagraph.appliedAdjustments += 1;
 			if (currentParagraph.allAdjustmentsCount === currentParagraph.appliedAdjustments) {
 				currentParagraph.paragraphStatus = 'doneModification';
-				currentParagraph.grammarFixedParagraph = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr); // required when manually accept all adjustments
+				currentParagraph.paragraphAfterGrammarFix = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr); // required when manually accept all adjustments
 
 				// reset state properties that is staled
 				currentParagraph.adjustmentObjectArr = [];
@@ -141,7 +142,7 @@ let articleSlice = createSlice({
 			currentParagraph.allAdjustmentsCount -= 1;
 			if (currentParagraph.allAdjustmentsCount === 0) {
 				currentParagraph.paragraphStatus = 'doneModification';
-				currentParagraph.grammarFixedParagraph = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr); // required when manually ignore all adjustments
+				currentParagraph.paragraphAfterGrammarFix = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr); // required when manually ignore all adjustments
 
 				// reset currentParagraph properties that is staled
 				currentParagraph.adjustmentObjectArr = [];
@@ -162,7 +163,7 @@ let articleSlice = createSlice({
 				return acc;
 			}, []);
 			currentParagraph.paragraphStatus = 'doneModification';
-			currentParagraph.grammarFixedParagraph = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr);
+			currentParagraph.paragraphAfterGrammarFix = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr);
 
 			// reset state properties that is staled
 			currentParagraph.adjustmentObjectArr = [];
@@ -182,8 +183,8 @@ let articleSlice = createSlice({
 				return acc;
 			}, []);
 			currentParagraph.paragraphStatus = 'doneModification';
-			currentParagraph.grammarFixedParagraph = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr);
-			console.log(currentParagraph.grammarFixedParagraph);
+			currentParagraph.paragraphAfterGrammarFix = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr);
+			console.log(currentParagraph.paragraphAfterGrammarFix);
 
 			// reset state properties that is staled
 			currentParagraph.adjustmentObjectArr = [];
@@ -192,11 +193,10 @@ let articleSlice = createSlice({
 		},
 		checkEditHistory: ({ paragraphs }, { payload }: PayloadAction<number>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
-
-			let result = findTheDiffsBetweenTwoStrings(currentParagraph.grammarFixedParagraph, currentParagraph.initialParagraph);
+			let result = findTheDiffsBetweenTwoStrings(currentParagraph.paragraphAfterGrammarFix, currentParagraph.initialParagraph);
 			currentParagraph.adjustmentObjectArr = result;
 			currentParagraph.paragraphStatus = 'reviving';
-			// for logic to work where when none available adjustments are left, change article.status
+			// for logic to work where when none available adjustments are left, change paragraphStatus
 			currentParagraph.allAdjustmentsCount = result.reduce<number>((acc, cur) => {
 				if (!cur.value) {
 					acc += 1;
@@ -206,7 +206,7 @@ let articleSlice = createSlice({
 		},
 		revertToBeginning: ({ paragraphs }, { payload }: PayloadAction<number>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
-			currentParagraph.grammarFixedParagraph = currentParagraph.initialParagraph;
+			currentParagraph.paragraphAfterGrammarFix = currentParagraph.initialParagraph;
 			currentParagraph.paragraphStatus = 'doneModification'; // when in reviewing phase it's needed
 
 			// reset state properties that is staled
@@ -227,7 +227,7 @@ let articleSlice = createSlice({
 		updateInitialArticleContent: ({ paragraphs }, { payload }: PayloadAction<number>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 
-			currentParagraph.initialParagraph = currentParagraph.grammarFixedParagraph; // it's always the initialArticle get sent to API call
+			currentParagraph.paragraphBeforeGrammarFix = currentParagraph.paragraphAfterGrammarFix; // it's always the initialArticle get sent to API call
 			currentParagraph.paragraphStatus = 'modifying';
 			// reset state properties that is staled
 			currentParagraph.adjustmentObjectArr = [];
@@ -247,7 +247,7 @@ let articleSlice = createSlice({
 			})
 			.addCase(findGrammarMistakes.fulfilled, ({ paragraphs }, { payload, meta: { arg } }) => {
 				let currentParagraph = paragraphs.find((item) => item.id === arg) as Paragraph;
-				let result = findTheDiffsBetweenTwoStrings(currentParagraph.initialParagraph, payload);
+				let result = findTheDiffsBetweenTwoStrings(currentParagraph.paragraphBeforeGrammarFix, payload);
 
 				currentParagraph.adjustmentObjectArr = result;
 				currentParagraph.fixGrammarLoading = 'done';

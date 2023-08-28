@@ -1,20 +1,3 @@
-.article {
-	letter-spacing: 2px;
-	font-size: 1.6rem;
-	border: 1px solid #ccc;
+.paragraph {
+	margin-bottom: 3rem;
 }
-
-.insert {
-	background-color: lightgreen;
-}
-
-.replacement {
-	background-color: lightblue;
-}
-
-.deletion {
-	background-color: lightcoral;
-}
-
-/* .btn-container {
-} */
