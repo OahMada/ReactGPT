@@ -15,13 +15,23 @@ import { updateModalContent, showModal, hideModal, selectModal } from '../featur
 import styles from './paragraph.module.css';
 
 import Modal from './modal';
+import UserInput from './userInput';
 
 interface ParagraphPropType {
 	paragraph: ParagraphType;
 }
 
 var Paragraph = ({
-	paragraph: { id, initialParagraph, paragraphAfterGrammarFix, adjustmentObjectArr, fixGrammarLoading, allAdjustmentsCount, paragraphStatus },
+	paragraph: {
+		id,
+		initialParagraph,
+		paragraphAfterGrammarFix,
+		adjustmentObjectArr,
+		fixGrammarLoading,
+		allAdjustmentsCount,
+		paragraphStatus,
+		paragraphBeforeGrammarFix,
+	},
 }: ParagraphPropType) => {
 	// state values
 	let modal = useAppSelector(selectModal);
@@ -41,6 +51,9 @@ var Paragraph = ({
 		dispatch(hideModal());
 	};
 
+	if (paragraphStatus === 'editing') {
+		return <UserInput paragraphId={id} />;
+	}
 	if (paragraphStatus === 'modifying' || paragraphStatus === 'reviving') {
 		return (
 			<>

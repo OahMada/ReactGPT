@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArticle } from '../../utils';
 import { refactoredChange, paragraphStatus, articleStatus } from '../../types';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import axios, { AxiosError } from 'axios';
 import { RootState, AppThunk } from '../../app/store';
 
@@ -105,6 +106,14 @@ let articleSlice = createSlice({
 				sessionStorage.setItem('initialParagraphs', JSON.stringify(state.paragraphs));
 			}
 		},
+		saveParagraphInput: (
+			{ paragraphs },
+			{ payload: { paragraphInput, paragraphId } }: PayloadAction<{ paragraphInput: string; paragraphId: number }>
+		) => {
+			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
+			currentParagraph.paragraphBeforeGrammarFix = paragraphInput;
+			currentParagraph.paragraphStatus = 'modifying';
+		},
 		// also be used when revert one adjustment
 		acceptSingleAdjustment: (
 			{ paragraphs },
@@ -184,7 +193,6 @@ let articleSlice = createSlice({
 			}, []);
 			currentParagraph.paragraphStatus = 'doneModification';
 			currentParagraph.paragraphAfterGrammarFix = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr);
-			console.log(currentParagraph.paragraphAfterGrammarFix);
 
 			// reset state properties that is staled
 			currentParagraph.adjustmentObjectArr = [];
@@ -224,7 +232,7 @@ let articleSlice = createSlice({
 		// 		state.status = 'modifying';
 		// 	}
 		// },
-		updateInitialArticleContent: ({ paragraphs }, { payload }: PayloadAction<number>) => {
+		updateParagraphBeforeGrammarFixContent: ({ paragraphs }, { payload }: PayloadAction<number>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 
 			currentParagraph.paragraphBeforeGrammarFix = currentParagraph.paragraphAfterGrammarFix; // it's always the initialArticle get sent to API call
@@ -233,6 +241,7 @@ let articleSlice = createSlice({
 			currentParagraph.adjustmentObjectArr = [];
 			currentParagraph.appliedAdjustments = 0;
 			currentParagraph.allAdjustmentsCount = 0;
+			currentParagraph.paragraphAfterGrammarFix = '';
 		},
 		prepareForUserInputUpdate: ({ paragraphs }, { payload }: PayloadAction<number>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
@@ -247,6 +256,7 @@ let articleSlice = createSlice({
 			})
 			.addCase(findGrammarMistakes.fulfilled, ({ paragraphs }, { payload, meta: { arg } }) => {
 				let currentParagraph = paragraphs.find((item) => item.id === arg) as Paragraph;
+				// when the paragraph get edited, user want to compare to the edited version
 				let result = findTheDiffsBetweenTwoStrings(currentParagraph.paragraphBeforeGrammarFix, payload);
 
 				currentParagraph.adjustmentObjectArr = result;
@@ -283,7 +293,7 @@ export var selectArticle = (state: RootState) => state.article;
 // useful when user tries to re-send api call with the same paragraph of article with edits
 export var reFetchGrammarMistakes = (id: number): AppThunk => {
 	return (dispatch, getState) => {
-		dispatch(updateInitialArticleContent(id));
+		dispatch(updateParagraphBeforeGrammarFixContent(id));
 		// let { paragraphs } = selectArticle(getState());
 		// let cachedUserInput = sessionStorage.getItem('initialUserInput');
 		// if (cachedUserInput === article.initialArticle) {
@@ -297,8 +307,8 @@ export var reFetchGrammarMistakes = (id: number): AppThunk => {
 // for click the article enter editing mode
 export var updateUserInput = (id: number): AppThunk => {
 	return (dispatch) => {
+		dispatch(updateParagraphBeforeGrammarFixContent(id)); // initialArticle is what get displayed in the textarea element
 		dispatch(prepareForUserInputUpdate(id));
-		dispatch(updateInitialArticleContent(id)); // initialArticle is what get displayed in the textarea element
 	};
 };
 
@@ -321,8 +331,9 @@ export var {
 	doneWithCurrentParagraphState,
 	revertToBeginning,
 	// loadDataFromSessionStorage,
-	updateInitialArticleContent,
+	updateParagraphBeforeGrammarFixContent,
 	prepareForUserInputUpdate,
+	saveParagraphInput,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;
