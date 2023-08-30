@@ -12,7 +12,7 @@ interface ModalProperties {
 	color: string;
 	indexInParagraph: number;
 	paragraphStatus: paragraphStatus;
-	paragraphId: number;
+	paragraphId: string;
 }
 
 export interface ModalType extends ModalProperties {
@@ -32,7 +32,7 @@ let initialState: ModalType = {
 	color: '',
 	showModal: false,
 	indexInParagraph: 0, // used to find the right element in adjustmentObjectArr to update its content
-	paragraphId: 0,
+	paragraphId: '',
 	paragraphStatus: null,
 };
 

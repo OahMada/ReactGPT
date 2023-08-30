@@ -4,9 +4,10 @@ import { refactoredChange, paragraphStatus, articleStatus } from '../../types';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import axios, { AxiosError } from 'axios';
 import { RootState, AppThunk } from '../../app/store';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface Paragraph {
-	id: number;
+	id: string;
 	paragraphStatus: paragraphStatus;
 	initialParagraph: string;
 	paragraphBeforeGrammarFix: string;
@@ -19,7 +20,7 @@ export interface Paragraph {
 }
 
 let initialParagraphState: Paragraph = {
-	id: 0,
+	id: '',
 	paragraphStatus: 'modifying',
 	initialParagraph: '',
 	paragraphBeforeGrammarFix: '',
@@ -49,7 +50,7 @@ export var findGrammarMistakes = createAsyncThunk<
 	// Return type of the payload creator
 	string,
 	// First argument to the payload creator
-	number,
+	string,
 	{
 		// Optional fields for defining thunkApi field types
 		state: RootState;
@@ -57,6 +58,7 @@ export var findGrammarMistakes = createAsyncThunk<
 	}
 >('article/findGrammarMistakes', async (paragraphId, thunkAPI) => {
 	let paragraphs = thunkAPI.getState().article.paragraphs;
+	let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
 	try {
 		let response = await axios.post(
 			'https://api.openai.com/v1/chat/completions',
@@ -68,7 +70,7 @@ export var findGrammarMistakes = createAsyncThunk<
 						content:
 							'You are an English learning assistant. You are going to fix only the grammar mistakes in the essay the user passes to you. In the process, you have to make as few edits as possible.',
 					},
-					{ role: 'user', content: paragraphs[paragraphId].paragraphBeforeGrammarFix },
+					{ role: 'user', content: currentParagraph.paragraphBeforeGrammarFix },
 				],
 			},
 			{ headers: { 'content-type': 'application/json', Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}` } }
@@ -92,11 +94,11 @@ let articleSlice = createSlice({
 			let input = sanitizeUserInput(action.payload);
 			state.userInput = input;
 			let paragraphs = input.split(/\n\n/);
-			state.paragraphs = paragraphs.map((paragraph, index) => {
+			state.paragraphs = paragraphs.map((paragraph) => {
 				let obj = Object.assign({}, initialParagraphState);
 				obj.initialParagraph = paragraph;
 				obj.paragraphBeforeGrammarFix = paragraph;
-				obj.id = index;
+				obj.id = uuidv4();
 				return obj;
 			});
 			state.status = 'errorFixing';
@@ -108,7 +110,7 @@ let articleSlice = createSlice({
 		},
 		saveParagraphInput: (
 			{ paragraphs },
-			{ payload: { paragraphInput, paragraphId } }: PayloadAction<{ paragraphInput: string; paragraphId: number }>
+			{ payload: { paragraphInput, paragraphId } }: PayloadAction<{ paragraphInput: string; paragraphId: string }>
 		) => {
 			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
 			currentParagraph.paragraphBeforeGrammarFix = paragraphInput;
@@ -117,7 +119,7 @@ let articleSlice = createSlice({
 		// also be used when revert one adjustment
 		acceptSingleAdjustment: (
 			{ paragraphs },
-			{ payload: { indexInParagraph, paragraphId } }: PayloadAction<{ indexInParagraph: number; paragraphId: number }>
+			{ payload: { indexInParagraph, paragraphId } }: PayloadAction<{ indexInParagraph: number; paragraphId: string }>
 		) => {
 			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
 			let targetObj = currentParagraph.adjustmentObjectArr[indexInParagraph];
@@ -139,7 +141,7 @@ let articleSlice = createSlice({
 		},
 		ignoreSingleAdjustment: (
 			{ paragraphs },
-			{ payload: { indexInParagraph, paragraphId } }: PayloadAction<{ indexInParagraph: number; paragraphId: number }>
+			{ payload: { indexInParagraph, paragraphId } }: PayloadAction<{ indexInParagraph: number; paragraphId: string }>
 		) => {
 			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
 			let targetObj = currentParagraph.adjustmentObjectArr[indexInParagraph];
@@ -160,7 +162,7 @@ let articleSlice = createSlice({
 			}
 		},
 		// also used for revert changes made when reviewing the applied edits
-		acceptAllAdjustments: ({ paragraphs }, { payload }: PayloadAction<number>) => {
+		acceptAllAdjustments: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 			currentParagraph.adjustmentObjectArr = currentParagraph.adjustmentObjectArr.reduce<refactoredChange[]>((acc, cur) => {
 				if (cur.value) {
@@ -180,7 +182,7 @@ let articleSlice = createSlice({
 			currentParagraph.allAdjustmentsCount = 0;
 		},
 		// also used for finish reviewing edit history
-		doneWithCurrentParagraphState: ({ paragraphs }, { payload }: PayloadAction<number>) => {
+		doneWithCurrentParagraphState: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 			currentParagraph.adjustmentObjectArr = currentParagraph.adjustmentObjectArr.reduce<refactoredChange[]>((acc, cur) => {
 				if (cur.value) {
@@ -199,7 +201,7 @@ let articleSlice = createSlice({
 			currentParagraph.appliedAdjustments = 0;
 			currentParagraph.allAdjustmentsCount = 0;
 		},
-		checkEditHistory: ({ paragraphs }, { payload }: PayloadAction<number>) => {
+		checkEditHistory: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 			let result = findTheDiffsBetweenTwoStrings(currentParagraph.paragraphAfterGrammarFix, currentParagraph.initialParagraph);
 			currentParagraph.adjustmentObjectArr = result;
@@ -212,7 +214,7 @@ let articleSlice = createSlice({
 				return acc;
 			}, 0);
 		},
-		revertToBeginning: ({ paragraphs }, { payload }: PayloadAction<number>) => {
+		revertToBeginning: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 			currentParagraph.paragraphAfterGrammarFix = currentParagraph.initialParagraph;
 			currentParagraph.paragraphStatus = 'doneModification'; // when in reviewing phase it's needed
@@ -232,7 +234,7 @@ let articleSlice = createSlice({
 		// 		state.status = 'modifying';
 		// 	}
 		// },
-		updateParagraphBeforeGrammarFixContent: ({ paragraphs }, { payload }: PayloadAction<number>) => {
+		updateParagraphBeforeGrammarFixContent: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 
 			currentParagraph.paragraphBeforeGrammarFix = currentParagraph.paragraphAfterGrammarFix; // it's always the initialArticle get sent to API call
@@ -243,7 +245,7 @@ let articleSlice = createSlice({
 			currentParagraph.allAdjustmentsCount = 0;
 			currentParagraph.paragraphAfterGrammarFix = '';
 		},
-		prepareForUserInputUpdate: ({ paragraphs }, { payload }: PayloadAction<number>) => {
+		prepareForUserInputUpdate: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 			currentParagraph.paragraphStatus = 'editing';
 		},
@@ -291,7 +293,7 @@ let articleSlice = createSlice({
 export var selectArticle = (state: RootState) => state.article;
 
 // useful when user tries to re-send api call with the same paragraph of article with edits
-export var reFetchGrammarMistakes = (id: number): AppThunk => {
+export var reFetchGrammarMistakes = (id: string): AppThunk => {
 	return (dispatch, getState) => {
 		dispatch(updateParagraphBeforeGrammarFixContent(id));
 		// let { paragraphs } = selectArticle(getState());
@@ -305,7 +307,7 @@ export var reFetchGrammarMistakes = (id: number): AppThunk => {
 };
 
 // for click the article enter editing mode
-export var updateUserInput = (id: number): AppThunk => {
+export var updateUserInput = (id: string): AppThunk => {
 	return (dispatch) => {
 		dispatch(updateParagraphBeforeGrammarFixContent(id)); // initialArticle is what get displayed in the textarea element
 		dispatch(prepareForUserInputUpdate(id));
