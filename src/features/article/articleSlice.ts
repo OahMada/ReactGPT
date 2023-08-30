@@ -6,6 +6,10 @@ import axios, { AxiosError } from 'axios';
 import { RootState, AppThunk } from '../../app/store';
 import { v4 as uuidv4 } from 'uuid';
 
+let defaultString = `A voiced consonant (or sound) means that it uses the vocal cords and they produce a vibration or humming sound in the throat when they are said. Put your finger on your throat and then pronounce the letter L. You will notice a slight vibration in your neck / throat. That is because it is a voiced sound.
+
+A voiceless sound (sometimes called an unvoiced sound) is when there is no vibration in your throat and the sound comes from the mouth area. Pronounce the letter P. You will notice how it comes from your mouth (in fact near your lips at the front of your mouth). The P sound doesn't come from your throat.`;
+
 export interface Paragraph {
 	id: string;
 	paragraphStatus: paragraphStatus;
@@ -40,7 +44,7 @@ interface Article {
 }
 
 let initialArticleState: Article = {
-	userInput: '',
+	userInput: defaultString,
 	status: 'acceptingUserInput',
 	paragraphs: [],
 	error: null,
@@ -115,6 +119,11 @@ let articleSlice = createSlice({
 			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
 			currentParagraph.paragraphBeforeGrammarFix = paragraphInput;
 			currentParagraph.paragraphStatus = 'modifying';
+
+			// when you add a new paragraph to the list
+			if (!currentParagraph.initialParagraph) {
+				currentParagraph.initialParagraph = currentParagraph.paragraphBeforeGrammarFix;
+			}
 		},
 		// also be used when revert one adjustment
 		acceptSingleAdjustment: (
@@ -249,6 +258,34 @@ let articleSlice = createSlice({
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 			currentParagraph.paragraphStatus = 'editing';
 		},
+		deleteParagraph: ({ paragraphs, status }, { payload }: PayloadAction<string>) => {
+			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === payload);
+			paragraphs.splice(currentParagraphIndex, 1);
+		},
+		insertAboveParagraph: ({ paragraphs }, { payload }: PayloadAction<string>) => {
+			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === payload);
+			console.log(currentParagraphIndex);
+
+			let newParagraph = Object.assign({}, initialParagraphState);
+			newParagraph.paragraphStatus = 'editing';
+			newParagraph.id = uuidv4();
+			newParagraph.paragraphBeforeGrammarFix = '';
+
+			paragraphs.splice(currentParagraphIndex, 0, newParagraph);
+		},
+		insertBelowParagraph: ({ paragraphs }, { payload }: PayloadAction<string>) => {
+			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === payload);
+			let newParagraph = Object.assign({}, initialParagraphState);
+			newParagraph.paragraphStatus = 'editing';
+			newParagraph.id = uuidv4();
+			paragraphs.splice(currentParagraphIndex + 1, 0, newParagraph);
+		},
+		reEnterArticle: (state) => {
+			state.userInput = '';
+			state.paragraphs = [];
+			state.status = 'acceptingUserInput';
+			state.error = null;
+		},
 	},
 	extraReducers(builder) {
 		builder
@@ -292,6 +329,7 @@ let articleSlice = createSlice({
 
 export var selectArticle = (state: RootState) => state.article;
 
+// thunks
 // useful when user tries to re-send api call with the same paragraph of article with edits
 export var reFetchGrammarMistakes = (id: string): AppThunk => {
 	return (dispatch, getState) => {
@@ -324,6 +362,16 @@ export var findArticleGrammarMistakes = (): AppThunk => {
 	};
 };
 
+export var deleteParagraphs = (id: string): AppThunk => {
+	return (dispatch, getState) => {
+		dispatch(deleteParagraph(id));
+		let { paragraphs } = selectArticle(getState());
+		if (paragraphs.length === 0) {
+			dispatch(reEnterArticle());
+		}
+	};
+};
+
 export var {
 	saveInput,
 	ignoreSingleAdjustment,
@@ -336,6 +384,10 @@ export var {
 	updateParagraphBeforeGrammarFixContent,
 	prepareForUserInputUpdate,
 	saveParagraphInput,
+	deleteParagraph,
+	insertAboveParagraph,
+	insertBelowParagraph,
+	reEnterArticle,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;
