@@ -289,6 +289,12 @@ let articleSlice = createSlice({
 			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
 			currentParagraph.fixGrammarLoadingAborter = aborter;
 		},
+		handleParagraphOrderChange: (
+			{ paragraphs },
+			{ payload: { dragTargetId, dropTargetId } }: PayloadAction<{ dragTargetId: string; dropTargetId: string }>
+		) => {
+			// TODO
+		},
 	},
 	extraReducers(builder) {
 		builder
@@ -395,6 +401,7 @@ export var {
 	insertBelowParagraph,
 	reEnterArticle,
 	loadFixGrammarLoadingAborter,
+	handleParagraphOrderChange,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;

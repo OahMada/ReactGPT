@@ -15,5 +15,3 @@ var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 	);
 };
 export default ParagraphControlBtns;
-
-// what if delete all?

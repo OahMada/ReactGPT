@@ -12,7 +12,9 @@ function App() {
 export default App;
 
 /**
- * what if I want to delete one paragraph: a dedicated delete button, also add new paragraph button
- * use styled component rather than css module
+ * drag and drop
+ * prevent line break when edit paragraph
  * redux-persist
+ * react query
+ * use styled component rather than css module
  */
