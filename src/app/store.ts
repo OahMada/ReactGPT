@@ -4,6 +4,10 @@ import modalReducer from '../features/modal/modalSlice';
 
 export var store = configureStore({
 	reducer: { article: articleReducer, modal: modalReducer },
+	middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware({
+			serializableCheck: false,
+		}),
 });
 
 export type AppDispatch = typeof store.dispatch;

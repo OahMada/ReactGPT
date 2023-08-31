@@ -317,17 +317,15 @@ let articleSlice = createSlice({
 					}, 0);
 				}
 			})
-			.addCase(findGrammarMistakes.rejected, ({ paragraphs, error }, { payload, meta: { arg } }) => {
-				console.log(payload);
-
-				let currentParagraph = paragraphs.find((item) => item.id === arg);
+			.addCase(findGrammarMistakes.rejected, ({ paragraphs, error }, action) => {
+				let currentParagraph = paragraphs.find((item) => item.id === action.meta.arg);
 				if (currentParagraph) {
 					currentParagraph.fixGrammarLoading = 'done';
 					currentParagraph.fixGrammarLoadingAborter = null;
-					if (payload) {
-						currentParagraph.error = payload;
+					if (action.payload) {
+						currentParagraph.error = action.payload;
 					} else {
-						error = payload;
+						console.log(action.error.message);
 					}
 				}
 			});
