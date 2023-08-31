@@ -21,6 +21,7 @@ export interface Paragraph {
 	allAdjustmentsCount: number;
 	appliedAdjustments: number;
 	error: string | null | undefined;
+	fixGrammarLoadingAborter: (() => void) | null;
 }
 
 let initialParagraphState: Paragraph = {
@@ -34,6 +35,7 @@ let initialParagraphState: Paragraph = {
 	allAdjustmentsCount: 0,
 	appliedAdjustments: 0,
 	error: null,
+	fixGrammarLoadingAborter: null,
 };
 
 interface Article {
@@ -77,7 +79,7 @@ export var findGrammarMistakes = createAsyncThunk<
 					{ role: 'user', content: currentParagraph.paragraphBeforeGrammarFix },
 				],
 			},
-			{ headers: { 'content-type': 'application/json', Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}` } }
+			{ headers: { 'content-type': 'application/json', Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}` }, signal: thunkAPI.signal }
 		);
 
 		return response.data['choices'][0]['message']['content'];
@@ -233,16 +235,6 @@ let articleSlice = createSlice({
 			currentParagraph.appliedAdjustments = 0;
 			currentParagraph.allAdjustmentsCount = 0;
 		},
-		// loadDataFromSessionStorage: (state) => {
-		// 	let data = sessionStorage.getItem('grammarFixes');
-		// 	if (data !== null) {
-		// 		let { adjustmentObjectArr, allAdjustmentsCount } = JSON.parse(data);
-		// 		state.adjustmentObjectArr = adjustmentObjectArr;
-		// 		state.allAdjustmentsCount = allAdjustmentsCount;
-		// 		state.fixGrammarLoading = 'done'; // when webpage refreshed, the same content is passed to userInput, and there are API call data cache
-		// 		state.status = 'modifying';
-		// 	}
-		// },
 		updateParagraphBeforeGrammarFixContent: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 
@@ -258,8 +250,12 @@ let articleSlice = createSlice({
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 			currentParagraph.paragraphStatus = 'editing';
 		},
-		deleteParagraph: ({ paragraphs, status }, { payload }: PayloadAction<string>) => {
+		deleteParagraph: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === payload);
+			if (paragraphs[currentParagraphIndex].fixGrammarLoadingAborter !== null) {
+				console.log(paragraphs[currentParagraphIndex].fixGrammarLoadingAborter);
+				paragraphs[currentParagraphIndex].fixGrammarLoadingAborter?.();
+			}
 			paragraphs.splice(currentParagraphIndex, 1);
 		},
 		insertAboveParagraph: ({ paragraphs }, { payload }: PayloadAction<string>) => {
@@ -286,42 +282,53 @@ let articleSlice = createSlice({
 			state.status = 'acceptingUserInput';
 			state.error = null;
 		},
+		loadFixGrammarLoadingAborter: (
+			{ paragraphs },
+			{ payload: { aborter, paragraphId } }: PayloadAction<{ aborter: () => void; paragraphId: string }>
+		) => {
+			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
+			currentParagraph.fixGrammarLoadingAborter = aborter;
+		},
 	},
 	extraReducers(builder) {
 		builder
 			.addCase(findGrammarMistakes.pending, ({ paragraphs }, { meta: { arg } }) => {
-				let currentParagraph = paragraphs.find((item) => item.id === arg) as Paragraph;
-				currentParagraph.fixGrammarLoading = 'loading';
+				let currentParagraph = paragraphs.find((item) => item.id === arg);
+				if (currentParagraph) {
+					currentParagraph.fixGrammarLoading = 'loading';
+				}
 			})
 			.addCase(findGrammarMistakes.fulfilled, ({ paragraphs }, { payload, meta: { arg } }) => {
-				let currentParagraph = paragraphs.find((item) => item.id === arg) as Paragraph;
-				// when the paragraph get edited, user want to compare to the edited version
-				let result = findTheDiffsBetweenTwoStrings(currentParagraph.paragraphBeforeGrammarFix, payload);
+				let currentParagraph = paragraphs.find((item) => item.id === arg);
+				// paragraph can be deleted
+				if (currentParagraph) {
+					// when the paragraph get edited, user want to compare to the edited version
+					let result = findTheDiffsBetweenTwoStrings(currentParagraph.paragraphBeforeGrammarFix, payload);
 
-				currentParagraph.adjustmentObjectArr = result;
-				currentParagraph.fixGrammarLoading = 'done';
-				currentParagraph.paragraphStatus = 'modifying';
-				currentParagraph.allAdjustmentsCount = result.reduce<number>((acc, cur) => {
-					if (!cur.value) {
-						acc += 1;
-					}
-					return acc;
-				}, 0);
-
-				// TODO
-				// let localData = sessionStorage.getItem('grammarFixes');
-				// if (localData === null) {
-				// 	localData = JSON.stringify({ adjustmentObjectArr: state.adjustmentObjectArr, allAdjustmentsCount: state.allAdjustmentsCount });
-				// 	sessionStorage.setItem('grammarFixes', localData);
-				// }
+					currentParagraph.adjustmentObjectArr = result;
+					currentParagraph.fixGrammarLoading = 'done';
+					currentParagraph.paragraphStatus = 'modifying';
+					currentParagraph.fixGrammarLoadingAborter = null;
+					currentParagraph.allAdjustmentsCount = result.reduce<number>((acc, cur) => {
+						if (!cur.value) {
+							acc += 1;
+						}
+						return acc;
+					}, 0);
+				}
 			})
 			.addCase(findGrammarMistakes.rejected, ({ paragraphs, error }, { payload, meta: { arg } }) => {
-				let currentParagraph = paragraphs.find((item) => item.id === arg) as Paragraph;
-				currentParagraph.fixGrammarLoading = 'done';
-				if (payload) {
-					currentParagraph.error = payload;
-				} else {
-					error = payload;
+				console.log(payload);
+
+				let currentParagraph = paragraphs.find((item) => item.id === arg);
+				if (currentParagraph) {
+					currentParagraph.fixGrammarLoading = 'done';
+					currentParagraph.fixGrammarLoadingAborter = null;
+					if (payload) {
+						currentParagraph.error = payload;
+					} else {
+						error = payload;
+					}
 				}
 			});
 	},
@@ -332,15 +339,9 @@ export var selectArticle = (state: RootState) => state.article;
 // thunks
 // useful when user tries to re-send api call with the same paragraph of article with edits
 export var reFetchGrammarMistakes = (id: string): AppThunk => {
-	return (dispatch, getState) => {
+	return (dispatch) => {
 		dispatch(updateParagraphBeforeGrammarFixContent(id));
-		// let { paragraphs } = selectArticle(getState());
-		// let cachedUserInput = sessionStorage.getItem('initialUserInput');
-		// if (cachedUserInput === article.initialArticle) {
-		// 	dispatch(loadDataFromSessionStorage());
-		// } else {
 		dispatch(findGrammarMistakes(id));
-		// }
 	};
 };
 
@@ -357,7 +358,15 @@ export var findArticleGrammarMistakes = (): AppThunk => {
 	return (dispatch, getState) => {
 		let { paragraphs } = selectArticle(getState());
 		paragraphs.forEach((paragraph) => {
-			dispatch(findGrammarMistakes(paragraph.id));
+			let { abort } = dispatch(findGrammarMistakes(paragraph.id));
+			dispatch(
+				loadFixGrammarLoadingAborter({
+					aborter: () => {
+						abort();
+					},
+					paragraphId: paragraph.id,
+				})
+			);
 		});
 	};
 };
@@ -380,7 +389,6 @@ export var {
 	checkEditHistory,
 	doneWithCurrentParagraphState,
 	revertToBeginning,
-	// loadDataFromSessionStorage,
 	updateParagraphBeforeGrammarFixContent,
 	prepareForUserInputUpdate,
 	saveParagraphInput,
@@ -388,6 +396,7 @@ export var {
 	insertAboveParagraph,
 	insertBelowParagraph,
 	reEnterArticle,
+	loadFixGrammarLoadingAborter,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;

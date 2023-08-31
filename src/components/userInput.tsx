@@ -30,13 +30,8 @@ const UserInput = ({ paragraphId }: { paragraphId?: string }) => {
 			dispatch(findGrammarMistakes(paragraphId));
 		} else {
 			dispatch(saveInput(input));
-			// let cachedUserInput = sessionStorage.getItem('initialUserInput');
-			// let cachedGrammarFixesData = sessionStorage.getItem('grammarFixes');
-			// if (cachedUserInput === input && cachedGrammarFixesData !== null) {
-			// 	dispatch(loadDataFromSessionStorage());
-			// } else {
-			dispatch(findArticleGrammarMistakes());
-			// }
+			let value = dispatch(findArticleGrammarMistakes());
+			console.log(value);
 		}
 	};
 

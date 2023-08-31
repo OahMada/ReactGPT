@@ -22,16 +22,7 @@ interface ParagraphPropType {
 }
 
 var Paragraph = ({
-	paragraph: {
-		id,
-		initialParagraph,
-		paragraphAfterGrammarFix,
-		adjustmentObjectArr,
-		fixGrammarLoading,
-		allAdjustmentsCount,
-		paragraphStatus,
-		paragraphBeforeGrammarFix,
-	},
+	paragraph: { id, initialParagraph, paragraphAfterGrammarFix, adjustmentObjectArr, fixGrammarLoading, allAdjustmentsCount, paragraphStatus },
 }: ParagraphPropType) => {
 	// state values
 	let modal = useAppSelector(selectModal);
