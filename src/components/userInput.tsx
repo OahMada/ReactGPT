@@ -30,8 +30,7 @@ const UserInput = ({ paragraphId }: { paragraphId?: string }) => {
 			dispatch(findGrammarMistakes(paragraphId));
 		} else {
 			dispatch(saveInput(input));
-			let value = dispatch(findArticleGrammarMistakes());
-			console.log(value);
+			dispatch(findArticleGrammarMistakes());
 		}
 	};
 

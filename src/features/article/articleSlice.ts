@@ -74,7 +74,7 @@ export var findGrammarMistakes = createAsyncThunk<
 					{
 						role: 'system',
 						content:
-							'You are an English learning assistant. You are going to fix only the grammar mistakes in the essay the user passes to you. In the process, you have to make as few edits as possible.',
+							'You are an English learning assistant. You are going to fix only the grammar mistakes in the essay the user passes to you. In the process, you have to make as few edits as possible. If there are no grammar mistakes, simply return the essay back please.',
 					},
 					{ role: 'user', content: currentParagraph.paragraphBeforeGrammarFix },
 				],
@@ -293,7 +293,13 @@ let articleSlice = createSlice({
 			{ paragraphs },
 			{ payload: { dragTargetId, dropTargetId } }: PayloadAction<{ dragTargetId: string; dropTargetId: string }>
 		) => {
-			// TODO
+			// put dargTarget before drop target
+			let dragTargetParagraphIndex = paragraphs.findIndex((item) => item.id === dragTargetId);
+			let dropTargetParagraphIndex = paragraphs.findIndex((item) => item.id === dropTargetId);
+			let dragTargetParagraph = paragraphs[dragTargetParagraphIndex];
+
+			paragraphs.splice(dragTargetParagraphIndex, 1);
+			paragraphs.splice(dropTargetParagraphIndex, 0, dragTargetParagraph);
 		},
 	},
 	extraReducers(builder) {

@@ -22,7 +22,16 @@ interface ParagraphPropType {
 }
 
 var Paragraph = ({
-	paragraph: { id, initialParagraph, paragraphAfterGrammarFix, adjustmentObjectArr, fixGrammarLoading, allAdjustmentsCount, paragraphStatus },
+	paragraph: {
+		id,
+		initialParagraph,
+		paragraphBeforeGrammarFix,
+		paragraphAfterGrammarFix,
+		adjustmentObjectArr,
+		fixGrammarLoading,
+		allAdjustmentsCount,
+		paragraphStatus,
+	},
 }: ParagraphPropType) => {
 	// state values
 	let modal = useAppSelector(selectModal);
@@ -49,7 +58,7 @@ var Paragraph = ({
 		return (
 			<>
 				{fixGrammarLoading === 'loading' ? (
-					<p className={styles.paragraph}>{initialParagraph}</p>
+					<p className={styles.paragraph}>{paragraphBeforeGrammarFix}</p>
 				) : (
 					<p className={styles.paragraph}>
 						{...adjustmentObjectArr.reduce<React.ReactNode[]>((acc, item, index) => {
