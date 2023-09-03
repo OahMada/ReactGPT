@@ -260,7 +260,6 @@ let articleSlice = createSlice({
 		},
 		insertAboveParagraph: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === payload);
-			console.log(currentParagraphIndex);
 
 			let newParagraph = Object.assign({}, initialParagraphState);
 			newParagraph.paragraphStatus = 'editing';
