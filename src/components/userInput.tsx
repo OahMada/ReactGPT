@@ -15,7 +15,7 @@ const UserInput = ({ paragraphId }: { paragraphId?: string }) => {
 	let { userInput, paragraphs } = useAppSelector(selectArticle);
 	let inputState;
 	if (paragraphId !== undefined) {
-		let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
+		let currentParagraph = paragraphs.find((item: Paragraph) => item.id === paragraphId) as Paragraph;
 		inputState = currentParagraph.paragraphBeforeGrammarFix;
 	} else {
 		inputState = userInput;

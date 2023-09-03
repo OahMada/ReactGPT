@@ -12,9 +12,9 @@ function App() {
 export default App;
 
 /**
- * drag and drop
+ * a useEffect hook to resend api call
+ * a grab handle for drag and drop
  * prevent line break when edit paragraph
- * redux-persist
- * react query
  * use styled component rather than css module
+ * react query
  */

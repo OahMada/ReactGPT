@@ -64,7 +64,7 @@ export var findGrammarMistakes = createAsyncThunk<
 	}
 >('article/findGrammarMistakes', async (paragraphId, thunkAPI) => {
 	let paragraphs = thunkAPI.getState().article.paragraphs;
-	let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
+	let currentParagraph = paragraphs.find((item: Paragraph) => item.id === paragraphId) as Paragraph;
 	try {
 		let response = await axios.post(
 			'https://api.openai.com/v1/chat/completions',
@@ -366,7 +366,7 @@ export var updateUserInput = (id: string): AppThunk => {
 export var findArticleGrammarMistakes = (): AppThunk => {
 	return (dispatch, getState) => {
 		let { paragraphs } = selectArticle(getState());
-		paragraphs.forEach((paragraph) => {
+		paragraphs.forEach((paragraph: Paragraph) => {
 			let { abort } = dispatch(findGrammarMistakes(paragraph.id));
 			dispatch(
 				loadFixGrammarLoadingAborter({

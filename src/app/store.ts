@@ -1,22 +1,29 @@
 import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
-import session from 'redux-persist/lib/storage/session'; // defaults to localStorage for web
+import sessionStorage from 'redux-persist/lib/storage/session'; // defaults to localStorage for web
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
 import articleReducer from '../features/article/articleSlice';
 import modalReducer from '../features/modal/modalSlice';
 
-var persistConfig = {
+var rootPersistConfig = {
 	key: 'root',
-	storage: session,
+	storage: sessionStorage,
+	stateReconciler: autoMergeLevel2,
+};
+
+var articlePersistConfig = {
+	key: 'article',
+	storage: sessionStorage,
 };
 
 var rootReducer = combineReducers({
-	article: persistReducer(persistConfig, articleReducer),
+	article: persistReducer(articlePersistConfig, articleReducer),
 	modal: modalReducer,
 });
 
 export var store = configureStore({
-	reducer: rootReducer,
+	reducer: persistReducer<ReturnType<typeof rootReducer>>(rootPersistConfig, rootReducer), //https://github.com/rt2zz/redux-persist/issues/1368
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
 			serializableCheck: false,

@@ -1,5 +1,5 @@
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { selectArticle, handleParagraphOrderChange } from '../features/article/articleSlice';
+import { selectArticle, handleParagraphOrderChange, Paragraph as ParagraphType } from '../features/article/articleSlice';
 
 import UserInput from './userInput';
 import Paragraph from './paragraph';
@@ -27,7 +27,7 @@ export var ArticleDisplay = () => {
 		return <UserInput />;
 	}
 
-	return article.paragraphs.map((paragraph, index) => {
+	return article.paragraphs.map((paragraph: ParagraphType) => {
 		return (
 			<div
 				className={styles.paragraph}
