@@ -108,11 +108,6 @@ let articleSlice = createSlice({
 				return obj;
 			});
 			state.status = 'errorFixing';
-
-			let cachedUserInput = sessionStorage.getItem('initialParagraphs');
-			if (cachedUserInput === null) {
-				sessionStorage.setItem('initialParagraphs', JSON.stringify(state.paragraphs));
-			}
 		},
 		saveParagraphInput: (
 			{ paragraphs },
@@ -281,10 +276,7 @@ let articleSlice = createSlice({
 			state.status = 'acceptingUserInput';
 			state.error = null;
 		},
-		loadFixGrammarLoadingAborter: (
-			{ paragraphs },
-			{ payload: { aborter, paragraphId } }: PayloadAction<{ aborter: () => void; paragraphId: string }>
-		) => {
+		loadFixGrammarLoadingAborter: ({ paragraphs }, { payload: { aborter, paragraphId } }: PayloadAction<{ aborter: any; paragraphId: string }>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
 			currentParagraph.fixGrammarLoadingAborter = aborter;
 		},
@@ -370,9 +362,7 @@ export var findArticleGrammarMistakes = (): AppThunk => {
 			let { abort } = dispatch(findGrammarMistakes(paragraph.id));
 			dispatch(
 				loadFixGrammarLoadingAborter({
-					aborter: () => {
-						abort();
-					},
+					aborter: abort,
 					paragraphId: paragraph.id,
 				})
 			);
