@@ -5,6 +5,8 @@ import { refactoredChange, paragraphStatus, articleStatus } from '../../types';
 import axios, { AxiosError } from 'axios';
 import { RootState, AppThunk } from '../../app/store';
 import { v4 as uuidv4 } from 'uuid';
+import { QueryFunctionContext } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 let defaultString = `A voiced consonant (or sound) means that it uses the vocal cords and they produce a vibration or humming sound in the throat when they are said. Put your finger on your throat and then pronounce the letter L. You will notice a slight vibration in your neck / throat. That is because it is a voiced sound.
 
@@ -51,6 +53,38 @@ let initialArticleState: Article = {
 	paragraphs: [],
 	error: null,
 };
+
+var gptKeys = (paragraph: string) => {
+	return ['gpt', paragraph] as const;
+};
+
+var queryGPT = async ({ queryKey, signal }: QueryFunctionContext<ReturnType<typeof gptKeys>>) => {
+	let response = await axios.post(
+		'https://api.openai.com/v1/chat/completions',
+		{
+			model: 'gpt-3.5-turbo',
+			messages: [
+				{
+					role: 'system',
+					content:
+						'You are an English learning assistant. You are going to fix only the grammar mistakes in the essay the user passes to you. In the process, you have to make as few edits as possible. If there are no grammar mistakes, simply return the essay back please.',
+				},
+				{ role: 'user', content: queryKey[1] },
+			],
+		},
+		{ headers: { 'content-type': 'application/json', Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}` }, signal }
+	);
+
+	return response.data['choices'][0]['message']['content'];
+};
+
+export function useGPT(paragraph: string) {
+	return useQuery({
+		queryKey: gptKeys(paragraph),
+		queryFn: queryGPT,
+		select: (data) => findTheDiffsBetweenTwoStrings(paragraph, data),
+	});
+}
 
 export var findGrammarMistakes = createAsyncThunk<
 	// Return type of the payload creator
@@ -328,7 +362,7 @@ let articleSlice = createSlice({
 					if (action.payload) {
 						currentParagraph.error = action.payload;
 					} else {
-						console.log(action.error.message);
+						console.log(action.error.message + action.meta.arg);
 					}
 				}
 			});

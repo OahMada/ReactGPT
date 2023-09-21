@@ -6,9 +6,11 @@ import {
 	checkEditHistory,
 	doneWithCurrentParagraphState,
 	revertToBeginning,
+	findGrammarMistakes,
 	reFetchGrammarMistakes,
 	updateUserInput,
 	Paragraph as ParagraphType,
+	useGPT,
 } from '../features/article/articleSlice';
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modal/modalSlice';
 
@@ -33,6 +35,11 @@ var Paragraph = ({
 		paragraphStatus,
 	},
 }: ParagraphPropType) => {
+	let { data, isLoading, error } = useGPT(paragraphBeforeGrammarFix);
+	if (data) {
+		console.log(data);
+	}
+
 	// state values
 	let modal = useAppSelector(selectModal);
 
@@ -57,11 +64,11 @@ var Paragraph = ({
 	if (paragraphStatus === 'modifying' || paragraphStatus === 'reviving') {
 		return (
 			<>
-				{fixGrammarLoading === 'loading' ? (
+				{isLoading ? (
 					<p className={styles.paragraph}>{paragraphBeforeGrammarFix}</p>
 				) : (
 					<p className={styles.paragraph}>
-						{...adjustmentObjectArr.reduce<React.ReactNode[]>((acc, item, index) => {
+						{...data.reduce<React.ReactNode[]>((acc, item, index) => {
 							if (item.value) {
 								acc.push(item.value);
 							} else if (item.removed || item.added) {
@@ -107,7 +114,7 @@ var Paragraph = ({
 					onClick={() => {
 						dispatch(acceptAllAdjustments(id));
 					}}
-					disabled={allAdjustmentsCount === 0 || fixGrammarLoading === 'loading'} // TODO show notification here if no error
+					disabled={allAdjustmentsCount === 0 || isLoading} // TODO show notification here if no error
 				>
 					{paragraphStatus === 'modifying' && 'Accept All'}
 					{paragraphStatus === 'reviving' && 'Revert All'}
@@ -116,7 +123,7 @@ var Paragraph = ({
 					onClick={() => {
 						dispatch(doneWithCurrentParagraphState(id));
 					}}
-					disabled={fixGrammarLoading === 'loading'}
+					disabled={isLoading}
 				>
 					Done
 				</button>

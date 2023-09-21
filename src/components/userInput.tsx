@@ -13,6 +13,7 @@ import styles from './userInput.module.css';
 
 const UserInput = ({ paragraphId }: { paragraphId?: string }) => {
 	let { userInput, paragraphs } = useAppSelector(selectArticle);
+
 	let inputState;
 	if (paragraphId !== undefined) {
 		let currentParagraph = paragraphs.find((item: Paragraph) => item.id === paragraphId) as Paragraph;
@@ -25,12 +26,13 @@ const UserInput = ({ paragraphId }: { paragraphId?: string }) => {
 	let dispatch = useAppDispatch();
 
 	let onClickHandler = () => {
+		// click paragraph for editing
 		if (paragraphId !== undefined) {
 			dispatch(saveParagraphInput({ paragraphId, paragraphInput: input }));
-			dispatch(findGrammarMistakes(paragraphId));
+			// dispatch(findGrammarMistakes(paragraphId));
 		} else {
 			dispatch(saveInput(input));
-			dispatch(findArticleGrammarMistakes());
+			// dispatch(findArticleGrammarMistakes());
 		}
 	};
 
