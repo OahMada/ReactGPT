@@ -1,12 +1,13 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArticle } from '../../utils';
 import { refactoredChange, paragraphStatus, articleStatus } from '../../types';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { RootState, AppThunk } from '../../app/store';
 import { v4 as uuidv4 } from 'uuid';
 import { QueryFunctionContext } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
 let defaultString = `A voiced consonant (or sound) means that it uses the vocal cords and they produce a vibration or humming sound in the throat when they are said. Put your finger on your throat and then pronounce the letter L. You will notice a slight vibration in your neck / throat. That is because it is a voiced sound.
 
@@ -19,11 +20,8 @@ export interface Paragraph {
 	paragraphBeforeGrammarFix: string;
 	paragraphAfterGrammarFix: string;
 	adjustmentObjectArr: refactoredChange[];
-	fixGrammarLoading: 'loading' | 'done';
 	allAdjustmentsCount: number;
 	appliedAdjustments: number;
-	error: string | null | undefined;
-	fixGrammarLoadingAborter: (() => void) | null;
 }
 
 let initialParagraphState: Paragraph = {
@@ -33,11 +31,8 @@ let initialParagraphState: Paragraph = {
 	paragraphBeforeGrammarFix: '',
 	paragraphAfterGrammarFix: '',
 	adjustmentObjectArr: [],
-	fixGrammarLoading: 'done',
 	allAdjustmentsCount: 0,
 	appliedAdjustments: 0,
-	error: null,
-	fixGrammarLoadingAborter: null,
 };
 
 interface Article {
@@ -67,7 +62,7 @@ var queryGPT = async ({ queryKey, signal }: QueryFunctionContext<ReturnType<type
 				{
 					role: 'system',
 					content:
-						'You are an English learning assistant. You are going to fix only the grammar mistakes in the essay the user passes to you. In the process, you have to make as few edits as possible. If there are no grammar mistakes, simply return the essay back please.',
+						"You are an English learning assistant. You are going to fix only the grammar mistakes in the essay that the user passes to you. In the process, you have to make as few edits as possible. If there are no grammar mistakes, simply return the same unchanged essay back, please. If you received greeting messages, there's no need to greet back; just check for grammar mistakes as well.",
 				},
 				{ role: 'user', content: queryKey[1] },
 			],
@@ -79,52 +74,25 @@ var queryGPT = async ({ queryKey, signal }: QueryFunctionContext<ReturnType<type
 };
 
 export function useGPT(paragraph: string) {
-	return useQuery({
+	let dispatch = useAppDispatch();
+	let { paragraphs } = useAppSelector(selectArticle);
+	let currentParagraph = paragraphs.find((item) => item.paragraphBeforeGrammarFix === paragraph) as Paragraph;
+
+	let result = useQuery({
 		queryKey: gptKeys(paragraph),
 		queryFn: queryGPT,
 		select: (data) => findTheDiffsBetweenTwoStrings(paragraph, data),
+		// prevent fetch when in editing mode, only fetch after editing finished
+		enabled: currentParagraph.paragraphStatus === 'modifying',
 	});
+
+	// populate local state
+	if (result.data && currentParagraph.adjustmentObjectArr.length === 0 && currentParagraph.paragraphStatus === 'modifying') {
+		dispatch(populateParagraphLocalState({ paragraphId: currentParagraph.id, data: result.data }));
+	}
+
+	return result;
 }
-
-export var findGrammarMistakes = createAsyncThunk<
-	// Return type of the payload creator
-	string,
-	// First argument to the payload creator
-	string,
-	{
-		// Optional fields for defining thunkApi field types
-		state: RootState;
-		rejectValue: string;
-	}
->('article/findGrammarMistakes', async (paragraphId, thunkAPI) => {
-	let paragraphs = thunkAPI.getState().article.paragraphs;
-	let currentParagraph = paragraphs.find((item: Paragraph) => item.id === paragraphId) as Paragraph;
-	try {
-		let response = await axios.post(
-			'https://api.openai.com/v1/chat/completions',
-			{
-				model: 'gpt-3.5-turbo',
-				messages: [
-					{
-						role: 'system',
-						content:
-							'You are an English learning assistant. You are going to fix only the grammar mistakes in the essay the user passes to you. In the process, you have to make as few edits as possible. If there are no grammar mistakes, simply return the essay back please.',
-					},
-					{ role: 'user', content: currentParagraph.paragraphBeforeGrammarFix },
-				],
-			},
-			{ headers: { 'content-type': 'application/json', Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}` }, signal: thunkAPI.signal }
-		);
-
-		return response.data['choices'][0]['message']['content'];
-	} catch (error: unknown | AxiosError) {
-		if (axios.isAxiosError(error)) {
-			return thunkAPI.rejectWithValue(error.response?.data.msg);
-		} else {
-			throw error;
-		}
-	}
-});
 
 let articleSlice = createSlice({
 	name: 'article',
@@ -155,6 +123,18 @@ let articleSlice = createSlice({
 			if (!currentParagraph.initialParagraph) {
 				currentParagraph.initialParagraph = currentParagraph.paragraphBeforeGrammarFix;
 			}
+		},
+		populateParagraphLocalState: ({ paragraphs }, { payload: { paragraphId, data } }) => {
+			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
+
+			currentParagraph.adjustmentObjectArr = data;
+			currentParagraph.paragraphStatus = 'modifying';
+			currentParagraph.allAdjustmentsCount = currentParagraph.adjustmentObjectArr.reduce<number>((acc, cur) => {
+				if (!cur.value) {
+					acc += 1;
+				}
+				return acc;
+			}, 0);
 		},
 		// also be used when revert one adjustment
 		acceptSingleAdjustment: (
@@ -267,7 +247,8 @@ let articleSlice = createSlice({
 		updateParagraphBeforeGrammarFixContent: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 
-			currentParagraph.paragraphBeforeGrammarFix = currentParagraph.paragraphAfterGrammarFix; // it's always the initialArticle get sent to API call
+			// too early, would trigger unnecessary useQuery call
+			currentParagraph.paragraphBeforeGrammarFix = currentParagraph.paragraphAfterGrammarFix;
 			currentParagraph.paragraphStatus = 'modifying';
 			// reset state properties that is staled
 			currentParagraph.adjustmentObjectArr = [];
@@ -281,10 +262,6 @@ let articleSlice = createSlice({
 		},
 		deleteParagraph: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === payload);
-			if (paragraphs[currentParagraphIndex].fixGrammarLoadingAborter !== null) {
-				console.log(paragraphs[currentParagraphIndex].fixGrammarLoadingAborter);
-				paragraphs[currentParagraphIndex].fixGrammarLoadingAborter?.();
-			}
 			paragraphs.splice(currentParagraphIndex, 1);
 		},
 		insertAboveParagraph: ({ paragraphs }, { payload }: PayloadAction<string>) => {
@@ -310,10 +287,6 @@ let articleSlice = createSlice({
 			state.status = 'acceptingUserInput';
 			state.error = null;
 		},
-		loadFixGrammarLoadingAborter: ({ paragraphs }, { payload: { aborter, paragraphId } }: PayloadAction<{ aborter: any; paragraphId: string }>) => {
-			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
-			currentParagraph.fixGrammarLoadingAborter = aborter;
-		},
 		handleParagraphOrderChange: (
 			{ paragraphs },
 			{ payload: { dragTargetId, dropTargetId } }: PayloadAction<{ dragTargetId: string; dropTargetId: string }>
@@ -327,46 +300,6 @@ let articleSlice = createSlice({
 			paragraphs.splice(dropTargetParagraphIndex, 0, dragTargetParagraph);
 		},
 	},
-	extraReducers(builder) {
-		builder
-			.addCase(findGrammarMistakes.pending, ({ paragraphs }, { meta: { arg } }) => {
-				let currentParagraph = paragraphs.find((item) => item.id === arg);
-				if (currentParagraph) {
-					currentParagraph.fixGrammarLoading = 'loading';
-				}
-			})
-			.addCase(findGrammarMistakes.fulfilled, ({ paragraphs }, { payload, meta: { arg } }) => {
-				let currentParagraph = paragraphs.find((item) => item.id === arg);
-				// paragraph can be deleted
-				if (currentParagraph) {
-					// when the paragraph get edited, user want to compare to the edited version
-					let result = findTheDiffsBetweenTwoStrings(currentParagraph.paragraphBeforeGrammarFix, payload);
-
-					currentParagraph.adjustmentObjectArr = result;
-					currentParagraph.fixGrammarLoading = 'done';
-					currentParagraph.paragraphStatus = 'modifying';
-					currentParagraph.fixGrammarLoadingAborter = null;
-					currentParagraph.allAdjustmentsCount = result.reduce<number>((acc, cur) => {
-						if (!cur.value) {
-							acc += 1;
-						}
-						return acc;
-					}, 0);
-				}
-			})
-			.addCase(findGrammarMistakes.rejected, ({ paragraphs, error }, action) => {
-				let currentParagraph = paragraphs.find((item) => item.id === action.meta.arg);
-				if (currentParagraph) {
-					currentParagraph.fixGrammarLoading = 'done';
-					currentParagraph.fixGrammarLoadingAborter = null;
-					if (action.payload) {
-						currentParagraph.error = action.payload;
-					} else {
-						console.log(action.error.message + action.meta.arg);
-					}
-				}
-			});
-	},
 });
 
 export var selectArticle = (state: RootState) => state.article;
@@ -376,7 +309,6 @@ export var selectArticle = (state: RootState) => state.article;
 export var reFetchGrammarMistakes = (id: string): AppThunk => {
 	return (dispatch) => {
 		dispatch(updateParagraphBeforeGrammarFixContent(id));
-		dispatch(findGrammarMistakes(id));
 	};
 };
 
@@ -385,22 +317,6 @@ export var updateUserInput = (id: string): AppThunk => {
 	return (dispatch) => {
 		dispatch(updateParagraphBeforeGrammarFixContent(id)); // initialArticle is what get displayed in the textarea element
 		dispatch(prepareForUserInputUpdate(id));
-	};
-};
-
-// the calls to API has to be in a thunk, why?
-export var findArticleGrammarMistakes = (): AppThunk => {
-	return (dispatch, getState) => {
-		let { paragraphs } = selectArticle(getState());
-		paragraphs.forEach((paragraph: Paragraph) => {
-			let { abort } = dispatch(findGrammarMistakes(paragraph.id));
-			dispatch(
-				loadFixGrammarLoadingAborter({
-					aborter: abort,
-					paragraphId: paragraph.id,
-				})
-			);
-		});
 	};
 };
 
@@ -416,6 +332,7 @@ export var deleteParagraphs = (id: string): AppThunk => {
 
 export var {
 	saveInput,
+	populateParagraphLocalState,
 	ignoreSingleAdjustment,
 	acceptSingleAdjustment,
 	acceptAllAdjustments,
@@ -429,7 +346,6 @@ export var {
 	insertAboveParagraph,
 	insertBelowParagraph,
 	reEnterArticle,
-	loadFixGrammarLoadingAborter,
 	handleParagraphOrderChange,
 } = articleSlice.actions;
 

@@ -1,14 +1,6 @@
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { useState } from 'react';
-import {
-	saveInput,
-	findGrammarMistakes,
-	findArticleGrammarMistakes,
-	selectArticle,
-	// loadDataFromSessionStorage
-	saveParagraphInput,
-	Paragraph,
-} from '../features/article/articleSlice';
+import { saveInput, selectArticle, saveParagraphInput, Paragraph } from '../features/article/articleSlice';
 import styles from './userInput.module.css';
 
 const UserInput = ({ paragraphId }: { paragraphId?: string }) => {
@@ -29,10 +21,8 @@ const UserInput = ({ paragraphId }: { paragraphId?: string }) => {
 		// click paragraph for editing
 		if (paragraphId !== undefined) {
 			dispatch(saveParagraphInput({ paragraphId, paragraphInput: input }));
-			// dispatch(findGrammarMistakes(paragraphId));
 		} else {
 			dispatch(saveInput(input));
-			// dispatch(findArticleGrammarMistakes());
 		}
 	};
 

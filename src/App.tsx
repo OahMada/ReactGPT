@@ -12,9 +12,8 @@ function App() {
 export default App;
 
 /**
- * a useEffect hook to resend api call
  * a grab handle for drag and drop
  * prevent line break when edit paragraph
  * use styled component rather than css module
- * react query
+ * word suggestion
  */

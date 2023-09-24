@@ -6,7 +6,6 @@ import {
 	checkEditHistory,
 	doneWithCurrentParagraphState,
 	revertToBeginning,
-	findGrammarMistakes,
 	reFetchGrammarMistakes,
 	updateUserInput,
 	Paragraph as ParagraphType,
@@ -30,15 +29,13 @@ var Paragraph = ({
 		paragraphBeforeGrammarFix,
 		paragraphAfterGrammarFix,
 		adjustmentObjectArr,
-		fixGrammarLoading,
+		// fixGrammarLoading,
 		allAdjustmentsCount,
 		paragraphStatus,
 	},
 }: ParagraphPropType) => {
-	let { data, isLoading, error } = useGPT(paragraphBeforeGrammarFix);
-	if (data) {
-		console.log(data);
-	}
+	// fetch API
+	let { isLoading, error, refetch } = useGPT(paragraphBeforeGrammarFix);
 
 	// state values
 	let modal = useAppSelector(selectModal);
@@ -61,55 +58,55 @@ var Paragraph = ({
 	if (paragraphStatus === 'editing') {
 		return <UserInput paragraphId={id} />;
 	}
+
+	// TODO show toast and retry button on error
 	if (paragraphStatus === 'modifying' || paragraphStatus === 'reviving') {
 		return (
 			<>
-				{isLoading ? (
-					<p className={styles.paragraph}>{paragraphBeforeGrammarFix}</p>
-				) : (
-					<p className={styles.paragraph}>
-						{...data.reduce<React.ReactNode[]>((acc, item, index) => {
-							if (item.value) {
-								acc.push(item.value);
-							} else if (item.removed || item.added) {
-								if (item.added && !item.removed) {
-									let element =
-										paragraphStatus === 'modifying' ? (
-											<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
-												<ins className={styles.insert}>{item.addedValue}</ins>
-											</span>
-										) : (
-											<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
-												<del className={styles.deletion}>{item.addedValue}</del>
-											</span>
-										);
-									acc.push(element);
-								} else if (item.added && item.removed) {
-									let element = (
-										<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
-											<del className={styles.replacement}>{item.removedValue}</del>
+				{(isLoading || error) && <p className={styles.paragraph}>{paragraphBeforeGrammarFix}</p>}
+
+				<p className={styles.paragraph}>
+					{...adjustmentObjectArr.reduce<React.ReactNode[]>((acc, item, index) => {
+						if (item.value) {
+							acc.push(item.value);
+						} else if (item.removed || item.added) {
+							if (item.added && !item.removed) {
+								let element =
+									paragraphStatus === 'modifying' ? (
+										<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
+											<ins className={styles.insert}>{item.addedValue}</ins>
+										</span>
+									) : (
+										<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
+											<del className={styles.deletion}>{item.addedValue}</del>
 										</span>
 									);
-									acc.push(element);
-								} else if (!item.added && item.removed) {
-									let element =
-										paragraphStatus === 'modifying' ? (
-											<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
-												<del className={styles.deletion}>{item.removedValue}</del>
-											</span>
-										) : (
-											<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
-												<ins className={styles.insert}>{item.removedValue}</ins>
-											</span>
-										);
-									acc.push(element);
-								}
+								acc.push(element);
+							} else if (item.added && item.removed) {
+								let element = (
+									<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
+										<del className={styles.replacement}>{item.removedValue}</del>
+									</span>
+								);
+								acc.push(element);
+							} else if (!item.added && item.removed) {
+								let element =
+									paragraphStatus === 'modifying' ? (
+										<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
+											<del className={styles.deletion}>{item.removedValue}</del>
+										</span>
+									) : (
+										<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
+											<ins className={styles.insert}>{item.removedValue}</ins>
+										</span>
+									);
+								acc.push(element);
 							}
-							return acc;
-						}, [])}
-					</p>
-				)}
-				{modal.showModal && <Modal />}
+						}
+						return acc;
+					}, [])}
+				</p>
+
 				<button
 					onClick={() => {
 						dispatch(acceptAllAdjustments(id));
@@ -127,6 +124,7 @@ var Paragraph = ({
 				>
 					Done
 				</button>
+				{modal.showModal && <Modal />}
 			</>
 		);
 	}
@@ -153,6 +151,7 @@ var Paragraph = ({
 						<button
 							onClick={() => {
 								dispatch(reFetchGrammarMistakes(id));
+								refetch();
 							}}
 						>
 							Find Grammar Mistakes

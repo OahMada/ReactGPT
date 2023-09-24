@@ -12,6 +12,7 @@ var queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {
 			staleTime: Infinity,
+			retry: false, // otherwise too much waiting
 		},
 	},
 });
