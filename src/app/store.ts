@@ -1,15 +1,18 @@
+// redux toolkit
 import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit';
 
+// redux persist
 import { persistStore, persistReducer } from 'redux-persist'; // doc: https://blog.reactnativecoach.com/the-definitive-guide-to-redux-persist-84738167975
-import sessionStorage from 'redux-persist/lib/storage/session';
+import storage from 'redux-persist/lib/storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
+// reducers
 import articleReducer from '../features/article/articleSlice';
 import modalReducer from '../features/modal/modalSlice';
 
 var rootPersistConfig = {
 	key: 'root',
-	storage: sessionStorage,
+	storage,
 	stateReconciler: autoMergeLevel2,
 	whitelist: ['article'],
 };
