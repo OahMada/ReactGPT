@@ -2,33 +2,36 @@
 import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit';
 
 // redux persist
-import { persistStore, persistReducer } from 'redux-persist'; // doc: https://blog.reactnativecoach.com/the-definitive-guide-to-redux-persist-84738167975
+import { persistStore, persistReducer, createTransform } from 'redux-persist'; // doc: https://blog.reactnativecoach.com/the-definitive-guide-to-redux-persist-84738167975
 import storage from 'redux-persist/lib/storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
+
+// compress
+import { compress, decompress } from 'lz-string';
 
 // reducers
 import articleReducer from '../features/article/articleSlice';
 import modalReducer from '../features/modal/modalSlice';
 
-var rootPersistConfig = {
-	key: 'root',
-	storage,
-	stateReconciler: autoMergeLevel2,
-	whitelist: ['article'],
-};
+var compressTransform = createTransform(
+	(state) => compress(JSON.stringify(state)),
+	(state) => JSON.parse(decompress(state))
+);
 
 var articlePersistConfig = {
 	key: 'article',
-	storage: sessionStorage,
+	storage,
+	stateReconciler: autoMergeLevel2,
+	transforms: [compressTransform],
 };
 
 var rootReducer = combineReducers({
-	article: persistReducer(articlePersistConfig, articleReducer),
+	article: persistReducer<ReturnType<typeof articleReducer>>(articlePersistConfig, articleReducer), //https://github.com/rt2zz/redux-persist/issues/1368
 	modal: modalReducer,
 });
 
 export var store = configureStore({
-	reducer: persistReducer<ReturnType<typeof rootReducer>>(rootPersistConfig, rootReducer), //https://github.com/rt2zz/redux-persist/issues/1368
+	reducer: rootReducer, //https://github.com/rt2zz/redux-persist/issues/1368
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
 			serializableCheck: false,
