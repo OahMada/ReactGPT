@@ -1,5 +1,6 @@
-import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { useState } from 'react';
+
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { saveInput, selectArticle, saveParagraphInput, Paragraph } from '../features/article/articleSlice';
 import styles from './userInput.module.css';
 

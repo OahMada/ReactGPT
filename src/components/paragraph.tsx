@@ -23,16 +23,7 @@ interface ParagraphPropType {
 }
 
 var Paragraph = ({
-	paragraph: {
-		id,
-		initialParagraph,
-		paragraphBeforeGrammarFix,
-		paragraphAfterGrammarFix,
-		adjustmentObjectArr,
-		// fixGrammarLoading,
-		allAdjustmentsCount,
-		paragraphStatus,
-	},
+	paragraph: { id, initialParagraph, paragraphBeforeGrammarFix, paragraphAfterGrammarFix, adjustmentObjectArr, allAdjustmentsCount, paragraphStatus },
 }: ParagraphPropType) => {
 	// fetch API
 	let { isLoading, error, refetch } = useGPT(paragraphBeforeGrammarFix);

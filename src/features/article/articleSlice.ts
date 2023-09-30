@@ -1,12 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArticle } from '../../utils';
-import { refactoredChange, paragraphStatus, articleStatus } from '../../types';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import axios from 'axios';
-import { RootState, AppThunk } from '../../app/store';
-import { v4 as uuidv4 } from 'uuid';
+
+// react query
 import { QueryFunctionContext } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
+
+import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
+
+import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArticle } from '../../utils';
+import { refactoredChange, paragraphStatus, articleStatus } from '../../types';
+import { RootState, AppThunk } from '../../app/store';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
 let defaultString = `A voiced consonant (or sound) means that it uses the vocal cords and they produce a vibration or humming sound in the throat when they are said. Put your finger on your throat and then pronounce the letter L. You will notice a slight vibration in your neck / throat. That is because it is a voiced sound.
