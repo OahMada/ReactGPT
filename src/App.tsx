@@ -12,14 +12,14 @@ function App() {
 export default App;
 
 /**
- * a grab handle for drag and drop
- * prevent line break when edit paragraph https://github.com/orgs/react-hook-form/discussions/2549#discussioncomment-373578
- * use styled component rather than css module
- * word suggestion
+ * https://github.com/Andarist/react-textarea-autosize
+ * toastify
  * error boundary
- * React Hook Form
+ * use styled component rather than css module
+ * a grab handle for drag and drop
+ * word suggestion
  * component extraction
- * react router
  * show fix inline or separately
  * show last changes only or show changes from beginning
+ * react router
  */

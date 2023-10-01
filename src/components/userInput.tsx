@@ -11,6 +11,9 @@ interface UserInputType {
 	text: string;
 }
 
+// log the last character inputted from previous render
+let userInputLastCharacter = '';
+
 var UserInput = ({ paragraphId }: { paragraphId?: string }) => {
 	// calculate the paragraph text
 	let { paragraphs } = useAppSelector(selectArticle);
@@ -52,14 +55,21 @@ var UserInput = ({ paragraphId }: { paragraphId?: string }) => {
 				autoFocus
 				{...register('text', {
 					required: 'This filed is required',
-					onChange: () => {
+					onChange: (e) => {
 						// clear errors after submitting https://stackoverflow.com/a/67659536/5800789 https://github.com/react-hook-form/react-hook-form/releases/tag/v7.16.0
 						clearErrors('text');
+						userInputLastCharacter = e.target.value.slice(-1);
 					},
 				})}
 				onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-					// TODO only control two adjacent enter key stroke
-					// e.key === 'Enter' && e.preventDefault();
+					// https://github.com/orgs/react-hook-form/discussions/2549#discussioncomment-373578
+					// prevent double line feeds, notify user to create a new paragraph
+					if (paragraphId !== undefined) {
+						if (e.key === 'Enter' && userInputLastCharacter === '\n') {
+							e.preventDefault();
+							// TODO reminder: create new paragraph
+						}
+					}
 				}}
 			/>
 			<button type='submit'>Done</button>
