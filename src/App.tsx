@@ -13,7 +13,7 @@ export default App;
 
 /**
  * a grab handle for drag and drop
- * prevent line break when edit paragraph
+ * prevent line break when edit paragraph https://github.com/orgs/react-hook-form/discussions/2549#discussioncomment-373578
  * use styled component rather than css module
  * word suggestion
  * error boundary
@@ -21,5 +21,5 @@ export default App;
  * component extraction
  * react router
  * show fix inline or separately
- * show last changes only or show changes from begining
+ * show last changes only or show changes from beginning
  */
