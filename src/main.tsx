@@ -46,7 +46,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 					<App />
 				</PersistGate>
 			</Provider>
-			<ReactQueryDevtools initialIsOpen={false} />
+			<ReactQueryDevtools initialIsOpen={true} panelPosition='right' />
 		</PersistQueryClientProvider>
 	</React.StrictMode>
 );

@@ -64,7 +64,7 @@ let articleSlice = createSlice({
 			{ payload: { paragraphInput, paragraphId } }: PayloadAction<{ paragraphInput: string; paragraphId: string }>
 		) => {
 			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
-			currentParagraph.paragraphBeforeGrammarFix = paragraphInput;
+			currentParagraph.paragraphBeforeGrammarFix = sanitizeUserInput(paragraphInput);
 			currentParagraph.paragraphStatus = 'modifying';
 
 			// when you add a new paragraph to the list

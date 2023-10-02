@@ -5,7 +5,9 @@ import { saveInput, selectArticle, saveParagraphInput, Paragraph } from '../feat
 
 import styles from './userInput.module.css';
 
-import { defaultUserInput } from '../utils/index';
+import 'react-toastify/dist/ReactToastify.min.css';
+import { ToastContainer } from 'react-toastify';
+import { defaultUserInput, createToast } from '../utils/index';
 
 interface UserInputType {
 	text: string;
@@ -48,32 +50,36 @@ var UserInput = ({ paragraphId }: { paragraphId?: string }) => {
 	};
 
 	return (
-		<form onSubmit={handleSubmit(onsubmit)}>
-			{errors.text && <p>{errors.text.message}</p>}
-			<textarea
-				className={styles.textarea}
-				autoFocus
-				{...register('text', {
-					required: 'This filed is required',
-					onChange: (e) => {
-						// clear errors after submitting https://stackoverflow.com/a/67659536/5800789 https://github.com/react-hook-form/react-hook-form/releases/tag/v7.16.0
-						clearErrors('text');
-						userInputLastCharacter = e.target.value.slice(-1);
-					},
-				})}
-				onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-					// https://github.com/orgs/react-hook-form/discussions/2549#discussioncomment-373578
-					// prevent double line feeds, notify user to create a new paragraph
-					if (paragraphId !== undefined) {
-						if (e.key === 'Enter' && userInputLastCharacter === '\n') {
-							e.preventDefault();
-							// TODO reminder: create new paragraph
+		<>
+			<form onSubmit={handleSubmit(onsubmit)}>
+				{errors.text && <p>{errors.text.message}</p>}
+				<textarea
+					className={styles.textarea}
+					autoFocus
+					{...register('text', {
+						required: 'This filed is required',
+						onChange: (e) => {
+							// clear errors after submitting https://stackoverflow.com/a/67659536/5800789 https://github.com/react-hook-form/react-hook-form/releases/tag/v7.16.0
+							clearErrors('text');
+							userInputLastCharacter = e.target.value.slice(-1);
+						},
+					})}
+					onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+						// https://github.com/orgs/react-hook-form/discussions/2549#discussioncomment-373578
+						// prevent double line feeds, notify user to create a new paragraph
+						if (paragraphId !== undefined) {
+							// TODO bug regarding this
+							if (e.key === 'Enter' && userInputLastCharacter === '\n') {
+								e.preventDefault();
+								createToast({ type: 'info', message: 'Consider adding a new paragraph instead of using double line breaks.' });
+							}
 						}
-					}
-				}}
-			/>
-			<button type='submit'>Done</button>
-		</form>
+					}}
+				/>
+				<button type='submit'>Done</button>
+			</form>
+			<ToastContainer limit={3} />
+		</>
 	);
 };
 export default UserInput;

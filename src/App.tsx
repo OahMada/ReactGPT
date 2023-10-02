@@ -24,4 +24,5 @@ export default App;
  * react-beautiful-dnd
  * react-autosuggest
  * react-hotkeys
+ * done an empty paragraph delete it
  */
