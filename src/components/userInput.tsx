@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -14,9 +16,10 @@ interface UserInputType {
 }
 
 // log the last character inputted from previous render
-let userInputLastCharacter = '';
 
 var UserInput = ({ paragraphId }: { paragraphId?: string }) => {
+	let [userInputLastCharacter, setUserInputLastCharacter] = useState('');
+
 	// calculate the paragraph text
 	let { paragraphs } = useAppSelector(selectArticle);
 	let paragraphValue;
@@ -61,14 +64,13 @@ var UserInput = ({ paragraphId }: { paragraphId?: string }) => {
 						onChange: (e) => {
 							// clear errors after submitting https://stackoverflow.com/a/67659536/5800789 https://github.com/react-hook-form/react-hook-form/releases/tag/v7.16.0
 							clearErrors('text');
-							userInputLastCharacter = e.target.value.slice(-1);
+							setUserInputLastCharacter(e.target.value.slice(-1));
 						},
 					})}
 					onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 						// https://github.com/orgs/react-hook-form/discussions/2549#discussioncomment-373578
 						// prevent double line feeds, notify user to create a new paragraph
 						if (paragraphId !== undefined) {
-							// TODO bug regarding this
 							if (e.key === 'Enter' && userInputLastCharacter === '\n') {
 								e.preventDefault();
 								createToast({ type: 'info', message: 'Consider adding a new paragraph instead of using double line breaks.' });
