@@ -9,9 +9,9 @@ import {
 	reFetchGrammarMistakes,
 	updateUserInput,
 	Paragraph as ParagraphType,
-	useGPT,
 } from '../features/article/articleSlice';
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modal/modalSlice';
+import { useGPT } from '../query/GPT';
 
 import styles from './paragraph.module.css';
 

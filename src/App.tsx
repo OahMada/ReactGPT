@@ -12,7 +12,6 @@ function App() {
 export default App;
 
 /**
- * https://github.com/Andarist/react-textarea-autosize
  * toastify
  * error boundary
  * use styled component rather than css module
@@ -22,4 +21,7 @@ export default App;
  * show fix inline or separately
  * show last changes only or show changes from beginning
  * react router
+ * react-beautiful-dnd
+ * react-autosuggest
+ * react-hotkeys
  */
