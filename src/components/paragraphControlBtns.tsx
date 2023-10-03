@@ -14,4 +14,5 @@ var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 		</div>
 	);
 };
+
 export default ParagraphControlBtns;

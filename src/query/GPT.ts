@@ -10,11 +10,11 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { Paragraph, populateParagraphLocalState, selectArticle } from '../features/article/articleSlice';
 import { findTheDiffsBetweenTwoStrings } from '../utils';
 
-var gptKeys = (paragraph: string) => {
+export var gptKeys = (paragraph: string) => {
 	return ['gpt', paragraph] as const;
 };
 
-var queryGPT = async ({ queryKey, signal }: QueryFunctionContext<ReturnType<typeof gptKeys>>) => {
+export var queryGPT = async ({ queryKey, signal }: QueryFunctionContext<ReturnType<typeof gptKeys>>) => {
 	let response = await axios.post(
 		'https://api.openai.com/v1/chat/completions',
 		{

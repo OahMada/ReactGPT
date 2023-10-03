@@ -12,8 +12,6 @@ function App() {
 export default App;
 
 /**
- * toastify
- * error boundary
  * use styled component rather than css module
  * a grab handle for drag and drop
  * word suggestion

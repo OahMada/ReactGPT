@@ -1,3 +1,5 @@
+import { useErrorBoundary } from 'react-error-boundary';
+
 import { refactoredChange } from '../types';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 
@@ -18,21 +20,22 @@ import styles from './paragraph.module.css';
 import Modal from './modal';
 import UserInput from './userInput';
 
-interface ParagraphPropType {
-	paragraph: ParagraphType;
-}
-
 var Paragraph = ({
 	paragraph: { id, initialParagraph, paragraphBeforeGrammarFix, paragraphAfterGrammarFix, adjustmentObjectArr, allAdjustmentsCount, paragraphStatus },
-}: ParagraphPropType) => {
+}: {
+	paragraph: ParagraphType;
+}) => {
+	// dispatch
+	let dispatch = useAppDispatch();
+
+	// error boundary
+	let { showBoundary } = useErrorBoundary();
+
 	// fetch API
 	let { isLoading, error, refetch } = useGPT(paragraphBeforeGrammarFix);
 
 	// state values
 	let modal = useAppSelector(selectModal);
-
-	// dispatch
-	let dispatch = useAppDispatch();
 
 	// handlers
 	let onMouseEnterHandler = (e: React.MouseEvent<HTMLElement>, item: refactoredChange, index: number) => {
@@ -50,11 +53,15 @@ var Paragraph = ({
 		return <UserInput paragraphId={id} />;
 	}
 
+	if (error) {
+		showBoundary(error);
+	}
+
 	// TODO show toast and retry button on error
 	if (paragraphStatus === 'modifying' || paragraphStatus === 'reviving') {
 		return (
 			<>
-				{isLoading || error ? (
+				{isLoading ? (
 					<p className={styles.paragraph}>{paragraphBeforeGrammarFix}</p>
 				) : (
 					<p className={styles.paragraph}>
