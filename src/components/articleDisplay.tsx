@@ -61,7 +61,7 @@ export var ArticleDisplay = () => {
 				onDrop={handleDrop}
 			>
 				<ErrorBoundary
-					FallbackComponent={(props) => <FallbackComponent {...{ props }} paragraphText={paragraph.paragraphBeforeGrammarFix} />}
+					fallbackRender={(props) => <FallbackComponent {...{ props }} paragraphText={paragraph.paragraphBeforeGrammarFix} />}
 					onReset={() => {
 						// handle network error
 						QueryClient.ensureQueryData({ queryKey: gptKeys(paragraph.paragraphBeforeGrammarFix), queryFn: queryGPT });
