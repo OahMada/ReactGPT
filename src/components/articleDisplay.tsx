@@ -1,4 +1,6 @@
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
+import { ToastContainer } from 'react-toastify';
+import { createToast } from '../utils';
 
 import { useQueryClient } from '@tanstack/react-query';
 import { gptKeys, queryGPT } from '../query/GPT';
@@ -17,12 +19,13 @@ interface FallbackComponentTypes {
 	paragraphText: string;
 }
 
+// TODO allow paragraph edit in error state
 var FallbackComponent = ({ props: { error, resetErrorBoundary }, paragraphText }: FallbackComponentTypes) => {
 	return (
 		<>
 			<p>{paragraphText}</p>
-			<p>{error.message}</p>
 			<button onClick={() => resetErrorBoundary()}>Retry</button>
+			<ToastContainer />
 		</>
 	);
 };
@@ -31,8 +34,8 @@ export var ArticleDisplay = () => {
 	let QueryClient = useQueryClient();
 
 	// state values
-	let article = useAppSelector(selectArticle);
 	let dispatch = useAppDispatch();
+	let article = useAppSelector(selectArticle);
 
 	let handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
 		e.dataTransfer.setData('ReactGpt/paragraph', e.currentTarget.id);
@@ -66,7 +69,7 @@ export var ArticleDisplay = () => {
 						// handle network error
 						QueryClient.ensureQueryData({ queryKey: gptKeys(paragraph.paragraphBeforeGrammarFix), queryFn: queryGPT });
 					}}
-					onError={(error) => console.log(error)}
+					onError={(error) => createToast({ type: 'error', message: error.message })}
 				>
 					<Paragraph paragraph={paragraph} />
 					<ParagraphControlBtns paragraphId={paragraph.id} />

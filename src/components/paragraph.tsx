@@ -57,7 +57,6 @@ var Paragraph = ({
 		showBoundary(error);
 	}
 
-	// TODO show toast and retry button on error
 	if (paragraphStatus === 'modifying' || paragraphStatus === 'reviving') {
 		return (
 			<>

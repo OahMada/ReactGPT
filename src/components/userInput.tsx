@@ -7,7 +7,6 @@ import { saveInput, selectArticle, saveParagraphInput, Paragraph } from '../feat
 
 import styles from './userInput.module.css';
 
-import 'react-toastify/dist/ReactToastify.min.css';
 import { ToastContainer } from 'react-toastify';
 import { defaultUserInput, createToast } from '../utils/index';
 

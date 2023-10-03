@@ -1,4 +1,7 @@
 import './App.css';
+// toast css
+import 'react-toastify/dist/ReactToastify.min.css';
+
 import { ArticleDisplay } from './components/articleDisplay';
 
 function App() {
