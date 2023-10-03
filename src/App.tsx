@@ -16,15 +16,13 @@ export default App;
 
 /**
  * use styled component rather than css module
- * a grab handle for drag and drop
+ * a grab handle for drag and drop react-beautiful-dnd
  * textarea auto-resize
- * word suggestion
+ * word suggestion react-autosuggest
  * component extraction
  * show fix inline or separately
  * show last changes only or show changes from beginning
  * react router
- * react-beautiful-dnd
- * react-autosuggest
- * react-hotkeys
  * done an empty paragraph delete it
+ * react-hotkeys
  */
