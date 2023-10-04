@@ -1,4 +1,4 @@
-import { deleteParagraphs, insertAboveParagraph, insertBelowParagraph } from '../features/article/articleSlice';
+import { deleteParagraphs, insertAboveParagraph, insertBelowParagraph } from '../features/articleSlice';
 import { useAppDispatch } from '../app/hooks';
 
 var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {

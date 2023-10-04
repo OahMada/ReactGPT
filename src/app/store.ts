@@ -10,8 +10,8 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import { compress, decompress } from 'lz-string';
 
 // reducers
-import articleReducer from '../features/article/articleSlice';
-import modalReducer from '../features/modal/modalSlice';
+import articleReducer from '../features/articleSlice';
+import modalReducer from '../features/modalSlice';
 
 var compressTransform = createTransform(
 	(state) => compress(JSON.stringify(state)),

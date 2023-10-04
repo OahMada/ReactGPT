@@ -2,9 +2,9 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArticle } from '../../utils';
-import { refactoredChange, paragraphStatus, articleStatus } from '../../types';
-import { RootState, AppThunk } from '../../app/store';
+import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArticle } from '../utils';
+import { refactoredChange, paragraphStatus, articleStatus } from '../types';
+import { RootState, AppThunk } from '../app/store';
 
 export interface Paragraph {
 	id: string;

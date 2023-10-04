@@ -1,8 +1,8 @@
 import styles from './modal.module.css';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
-import { showModal, hideModal, selectModal } from '../features/modal/modalSlice';
-import { acceptSingleAdjustment, ignoreSingleAdjustment } from '../features/article/articleSlice';
+import { showModal, hideModal, selectModal } from '../features/modalSlice';
+import { acceptSingleAdjustment, ignoreSingleAdjustment } from '../features/articleSlice';
 
 var Modal = () => {
 	let dispatch = useAppDispatch();

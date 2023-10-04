@@ -1,6 +1,7 @@
 import './App.css';
 // toast css
 import 'react-toastify/dist/ReactToastify.min.css';
+import { ToastContainer } from 'react-toastify';
 
 import { ArticleDisplay } from './components/articleDisplay';
 
@@ -8,6 +9,7 @@ function App() {
 	return (
 		<section className='app'>
 			<ArticleDisplay />
+			<ToastContainer limit={3} />
 		</section>
 	);
 }

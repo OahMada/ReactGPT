@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { Paragraph, populateParagraphLocalState, selectArticle } from '../features/article/articleSlice';
+import { Paragraph, populateParagraphLocalState, selectArticle } from '../features/articleSlice';
 import { findTheDiffsBetweenTwoStrings } from '../utils';
 
 export var gptKeys = (paragraph: string) => {

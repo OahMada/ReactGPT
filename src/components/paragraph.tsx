@@ -1,4 +1,5 @@
 import { useErrorBoundary } from 'react-error-boundary';
+import styled from 'styled-components';
 
 import { refactoredChange } from '../types';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
@@ -11,11 +12,9 @@ import {
 	reFetchGrammarMistakes,
 	updateUserInput,
 	Paragraph as ParagraphType,
-} from '../features/article/articleSlice';
-import { updateModalContent, showModal, hideModal, selectModal } from '../features/modal/modalSlice';
+} from '../features/articleSlice';
+import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
 import { useGPT } from '../query/GPT';
-
-import styles from './paragraph.module.css';
 
 import Modal from './modal';
 import UserInput from './userInput';
@@ -61,9 +60,9 @@ var Paragraph = ({
 		return (
 			<>
 				{isLoading ? (
-					<p className={styles.paragraph}>{paragraphBeforeGrammarFix}</p>
+					<StyledParagraph>{paragraphBeforeGrammarFix}</StyledParagraph>
 				) : (
-					<p className={styles.paragraph}>
+					<StyledParagraph>
 						{...adjustmentObjectArr.reduce<React.ReactNode[]>((acc, item, index) => {
 							if (item.value) {
 								acc.push(item.value);
@@ -72,18 +71,18 @@ var Paragraph = ({
 									let element =
 										paragraphStatus === 'modifying' ? (
 											<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
-												<ins className={styles.insert}>{item.addedValue}</ins>
+												<ins className='insert'>{item.addedValue}</ins>
 											</span>
 										) : (
 											<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
-												<del className={styles.deletion}>{item.addedValue}</del>
+												<del className='deletion'>{item.addedValue}</del>
 											</span>
 										);
 									acc.push(element);
 								} else if (item.added && item.removed) {
 									let element = (
 										<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
-											<del className={styles.replacement}>{item.removedValue}</del>
+											<del className='replacement'>{item.removedValue}</del>
 										</span>
 									);
 									acc.push(element);
@@ -91,11 +90,11 @@ var Paragraph = ({
 									let element =
 										paragraphStatus === 'modifying' ? (
 											<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
-												<del className={styles.deletion}>{item.removedValue}</del>
+												<del className='deletion'>{item.removedValue}</del>
 											</span>
 										) : (
 											<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
-												<ins className={styles.insert}>{item.removedValue}</ins>
+												<ins className='insert'>{item.removedValue}</ins>
 											</span>
 										);
 									acc.push(element);
@@ -103,7 +102,7 @@ var Paragraph = ({
 							}
 							return acc;
 						}, [])}
-					</p>
+					</StyledParagraph>
 				)}
 
 				<button
@@ -131,34 +130,49 @@ var Paragraph = ({
 		return (
 			<>
 				<h4>Click Paragraph to Edit</h4>
-				<p className={styles.paragraph} onClick={() => dispatch(updateUserInput(id))}>
-					{paragraphAfterGrammarFix}
-				</p>
-				<div className={styles['btn-container']}>
-					<>
-						<button onClick={() => dispatch(checkEditHistory(id))} disabled={paragraphAfterGrammarFix === initialParagraph}>
-							Show Edit History
-						</button>
-						<button
-							onClick={() => {
-								dispatch(revertToBeginning(id));
-							}}
-							disabled={paragraphAfterGrammarFix === initialParagraph}
-						>
-							Revert All Changes
-						</button>
-						<button
-							onClick={() => {
-								dispatch(reFetchGrammarMistakes(id));
-								refetch();
-							}}
-						>
-							Find Grammar Mistakes
-						</button>
-					</>
+				<StyledParagraph onClick={() => dispatch(updateUserInput(id))}>{paragraphAfterGrammarFix}</StyledParagraph>
+				<div>
+					<button onClick={() => dispatch(checkEditHistory(id))} disabled={paragraphAfterGrammarFix === initialParagraph}>
+						Show Edit History
+					</button>
+					<button
+						onClick={() => {
+							dispatch(revertToBeginning(id));
+						}}
+						disabled={paragraphAfterGrammarFix === initialParagraph}
+					>
+						Revert All Changes
+					</button>
+					<button
+						onClick={() => {
+							dispatch(reFetchGrammarMistakes(id));
+							refetch();
+						}}
+					>
+						Find Grammar Mistakes
+					</button>
 				</div>
 			</>
 		);
 	}
 };
 export default Paragraph;
+
+export var StyledParagraph = styled.p`
+	letter-spacing: 2px;
+	font-size: 1.6rem;
+	border: 1px solid #ccc;
+	margin-bottom: 1rem;
+
+	& .insert {
+		background-color: lightgreen;
+	}
+
+	& .replacement {
+		background-color: lightblue;
+	}
+
+	& .deletion {
+		background-color: lightcoral;
+	}
+`;

@@ -1,31 +1,39 @@
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
-import { ToastContainer } from 'react-toastify';
 import { createToast } from '../utils';
+import styled from 'styled-components';
 
+// query
 import { useQueryClient } from '@tanstack/react-query';
 import { gptKeys, queryGPT } from '../query/GPT';
 
+// redux
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { selectArticle, handleParagraphOrderChange, Paragraph as ParagraphType } from '../features/article/articleSlice';
+import { selectArticle, handleParagraphOrderChange, Paragraph as ParagraphType } from '../features/articleSlice';
 
 import UserInput from './userInput';
 import Paragraph from './paragraph';
 import ParagraphControlBtns from './paragraphControlBtns';
+import { StyledParagraph } from './paragraph';
 
-import styles from './articleDisplay.module.css';
+import { updateUserInput } from '../features/articleSlice';
 
 interface FallbackComponentTypes {
 	props: FallbackProps;
 	paragraphText: string;
+	paragraphId: string;
 }
 
-// TODO allow paragraph edit in error state
-var FallbackComponent = ({ props: { error, resetErrorBoundary }, paragraphText }: FallbackComponentTypes) => {
+// TODO bug regarding the edit functionality
+var FallbackComponent = ({ props: { resetErrorBoundary }, paragraphText, paragraphId }: FallbackComponentTypes) => {
+	let dispatch = useAppDispatch();
+
+	// if (paragraphStatus === 'editing') {
+	// 	return <UserInput paragraphId={paragraphId} />;
+	// }
 	return (
 		<>
-			<p>{paragraphText}</p>
+			<StyledParagraph onClick={() => dispatch(updateUserInput(paragraphId))}>{paragraphText}</StyledParagraph>
 			<button onClick={() => resetErrorBoundary()}>Retry</button>
-			<ToastContainer />
 		</>
 	);
 };
@@ -54,17 +62,11 @@ export var ArticleDisplay = () => {
 
 	return article.paragraphs.map((paragraph: ParagraphType) => {
 		return (
-			<div
-				className={styles.paragraph}
-				key={paragraph.id}
-				draggable
-				id={paragraph.id}
-				onDragOver={(ev) => ev.preventDefault()}
-				onDragStart={handleDrag}
-				onDrop={handleDrop}
-			>
+			<Wrapper key={paragraph.id} draggable id={paragraph.id} onDragOver={(ev) => ev.preventDefault()} onDragStart={handleDrag} onDrop={handleDrop}>
 				<ErrorBoundary
-					fallbackRender={(props) => <FallbackComponent {...{ props }} paragraphText={paragraph.paragraphBeforeGrammarFix} />}
+					fallbackRender={(props) => (
+						<FallbackComponent {...{ props }} paragraphText={paragraph.paragraphBeforeGrammarFix} paragraphId={paragraph.id} />
+					)}
 					onReset={() => {
 						// handle network error
 						QueryClient.ensureQueryData({ queryKey: gptKeys(paragraph.paragraphBeforeGrammarFix), queryFn: queryGPT });
@@ -74,7 +76,17 @@ export var ArticleDisplay = () => {
 					<Paragraph paragraph={paragraph} />
 					<ParagraphControlBtns paragraphId={paragraph.id} />
 				</ErrorBoundary>
-			</div>
+			</Wrapper>
 		);
 	});
 };
+
+var Wrapper = styled.article // .attrs(() => ({
+// 	draggable: true,
+// }))
+`
+	padding: 1rem;
+	margin-bottom: 1rem;
+	background-color: lightgray;
+	cursor: grab;
+`;
