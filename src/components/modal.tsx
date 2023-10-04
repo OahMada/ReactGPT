@@ -11,17 +11,17 @@ var Modal = () => {
 	// 0.8 & 6.5 here is fixed
 	return (
 		<Wrapper
-			style={{ left: `calc( ${dimension.left}px - 0.8rem)`, top: `calc( ${dimension.top}px - 6.5rem) ` }}
 			onMouseLeave={() => {
 				dispatch(hideModal());
 			}}
 			onMouseEnter={() => {
 				dispatch(showModal());
 			}}
+			titleDecoColor={color}
+			positionLeft={dimension.left}
+			positionTop={dimension.top}
 		>
-			<h4 className='title' style={{ textDecorationColor: color }}>
-				{title.toUpperCase()}
-			</h4>
+			<h4 className='title'>{title.toUpperCase()}</h4>
 			<p className='content'>
 				{/* indicate white spaces that are ought to adjust */}
 				<cite>{content === ' ' ? <i>{'[space]'}</i> : content}</cite>
@@ -63,7 +63,7 @@ var Modal = () => {
 };
 export default Modal;
 
-var Wrapper = styled.div`
+var Wrapper = styled.div<{ titleDecoColor: string; positionLeft: number; positionTop: number }>`
 	padding: 0.8rem;
 	border-radius: 5px;
 	border: 1px solid black;
@@ -73,12 +73,15 @@ var Wrapper = styled.div`
 	display: flex;
 	flex-direction: column;
 	justify-content: space-around;
+	left: ${(props) => `calc( ${props.positionLeft}px - 0.8rem)`};
+	top: ${(props) => `calc( ${props.positionTop}px - 6.5rem) `};
 
 	.title {
 		font-size: 1.2rem;
 		font-weight: 600;
 		line-height: 1;
 		text-decoration: underline 3px;
+		text-decoration-color: ${(props) => props.titleDecoColor};
 	}
 
 	.content {
