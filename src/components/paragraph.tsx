@@ -164,15 +164,15 @@ export var StyledParagraph = styled.p`
 	border: 1px solid #ccc;
 	margin-bottom: 1rem;
 
-	& .insert {
+	.insert {
 		background-color: lightgreen;
 	}
 
-	& .replacement {
+	.replacement {
 		background-color: lightblue;
 	}
 
-	& .deletion {
+	.deletion {
 		background-color: lightcoral;
 	}
 `;

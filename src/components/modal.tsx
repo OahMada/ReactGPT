@@ -1,4 +1,4 @@
-import styles from './modal.module.css';
+import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 import { showModal, hideModal, selectModal } from '../features/modalSlice';
@@ -10,8 +10,7 @@ var Modal = () => {
 
 	// 0.8 & 6.5 here is fixed
 	return (
-		<div
-			className={styles.container}
+		<Wrapper
 			style={{ left: `calc( ${dimension.left}px - 0.8rem)`, top: `calc( ${dimension.top}px - 6.5rem) ` }}
 			onMouseLeave={() => {
 				dispatch(hideModal());
@@ -20,16 +19,16 @@ var Modal = () => {
 				dispatch(showModal());
 			}}
 		>
-			<h4 className={styles.title} style={{ textDecorationColor: color }}>
+			<h4 className='title' style={{ textDecorationColor: color }}>
 				{title.toUpperCase()}
 			</h4>
-			<p className={styles.content}>
+			<p className='content'>
 				{/* indicate white spaces that are ought to adjust */}
 				<cite>{content === ' ' ? <i>{'[space]'}</i> : content}</cite>
 			</p>
 			{paragraphStatus === 'reviving' ? (
 				<button
-					className={`${styles['accept-btn']} ${styles['btn']}`}
+					className='accept-btn btn'
 					onClick={() => {
 						dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
 						dispatch(hideModal());
@@ -38,9 +37,9 @@ var Modal = () => {
 					REVERT
 				</button>
 			) : (
-				<div className={styles['btn-container']}>
+				<div className='btn-container'>
 					<button
-						className={`${styles['accept-btn']} ${styles['btn']}`}
+						className='accept-btn btn'
 						onClick={() => {
 							dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
 							dispatch(hideModal());
@@ -49,7 +48,7 @@ var Modal = () => {
 						ACCEPT
 					</button>
 					<button
-						className={`${styles['ignore-btn']} ${styles['btn']}`}
+						className='ignore-btn btn'
 						onClick={() => {
 							dispatch(ignoreSingleAdjustment({ indexInParagraph, paragraphId }));
 							dispatch(hideModal());
@@ -59,7 +58,53 @@ var Modal = () => {
 					</button>
 				</div>
 			)}
-		</div>
+		</Wrapper>
 	);
 };
 export default Modal;
+
+var Wrapper = styled.div`
+	padding: 0.8rem;
+	border-radius: 5px;
+	border: 1px solid black;
+	width: fit-content;
+	position: fixed;
+	background-color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+
+	.title {
+		font-size: 1.2rem;
+		font-weight: 600;
+		line-height: 1;
+		text-decoration: underline 3px;
+	}
+
+	.content {
+		margin: 0.5rem 0;
+		font-size: 1.5rem;
+		line-height: 1;
+	}
+
+	.btn-container {
+		display: flex;
+		justify-content: space-between;
+		gap: 5px;
+		margin-top: 3px;
+	}
+
+	.btn {
+		border: none;
+		background-color: transparent;
+		font-size: 1rem;
+	}
+
+	.accept-btn {
+		color: green;
+	}
+
+	.ignore-btn {
+		color: gray;
+	}
+`;
