@@ -26,4 +26,5 @@ export default App;
  * react router
  * done an empty paragraph delete it
  * react-hotkeys
+ * export as pdf doc etc
  */

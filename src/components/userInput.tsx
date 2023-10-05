@@ -53,6 +53,7 @@ var UserInput = ({ paragraphId }: { paragraphId?: string }) => {
 			{errors.text && <p>{errors.text.message}</p>}
 			<textarea
 				autoFocus
+				autoComplete='on'
 				{...register('text', {
 					required: 'This filed is required',
 					onChange: (e) => {

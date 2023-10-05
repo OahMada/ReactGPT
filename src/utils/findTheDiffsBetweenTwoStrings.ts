@@ -43,7 +43,8 @@ export var findTheDiffsBetweenTwoStrings = (strA: string, strB: string) => {
 		.reduce<refactoredChange[]>((acc, cur) => {
 			// two adjacent changes
 			let previousObj = acc[acc.length - 1];
-			if (acc.length > 1 && (previousObj?.added || previousObj?.removed) && (cur.added || cur.removed)) {
+
+			if (acc.length >= 1 && (previousObj?.added || previousObj?.removed) && (cur.added || cur.removed)) {
 				// concat same string keys
 				Object.keys(cur).forEach((key) => {
 					if (previousObj[key] && typeof previousObj[key] === 'string') {

@@ -17,7 +17,7 @@ var Modal = () => {
 			onMouseEnter={() => {
 				dispatch(showModal());
 			}}
-			titleDecoColor={color}
+			titleColor={color}
 			positionLeft={dimension.left}
 			positionTop={dimension.top}
 		>
@@ -63,7 +63,9 @@ var Modal = () => {
 };
 export default Modal;
 
-var Wrapper = styled.div<{ titleDecoColor: string; positionLeft: number; positionTop: number }>`
+// TODO bug here
+
+var Wrapper = styled.div<{ titleColor: string; positionLeft: number; positionTop: number }>`
 	padding: 0.8rem;
 	border-radius: 5px;
 	border: 1px solid black;
@@ -81,7 +83,7 @@ var Wrapper = styled.div<{ titleDecoColor: string; positionLeft: number; positio
 		font-weight: 600;
 		line-height: 1;
 		text-decoration: underline 3px;
-		text-decoration-color: ${(props) => props.titleDecoColor};
+		text-decoration-color: ${(props) => props.titleColor};
 	}
 
 	.content {
