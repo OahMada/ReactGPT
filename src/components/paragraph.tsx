@@ -2,8 +2,10 @@ import { useErrorBoundary } from 'react-error-boundary';
 import styled from 'styled-components';
 
 import { refactoredChange } from '../types';
-import { useAppSelector, useAppDispatch } from '../app/hooks';
 
+import { useGPT } from '../query/GPT';
+
+import { useAppSelector, useAppDispatch } from '../app/hooks';
 import {
 	acceptAllAdjustments,
 	checkEditHistory,
@@ -14,7 +16,6 @@ import {
 	Paragraph as ParagraphType,
 } from '../features/articleSlice';
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
-import { useGPT } from '../query/GPT';
 
 import Modal from './modal';
 import UserInput from './userInput';

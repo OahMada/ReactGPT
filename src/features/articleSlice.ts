@@ -237,15 +237,11 @@ let articleSlice = createSlice({
 		},
 		handleParagraphOrderChange: (
 			{ paragraphs },
-			{ payload: { dragTargetId, dropTargetId } }: PayloadAction<{ dragTargetId: string; dropTargetId: string }>
+			{ payload: { destinationIndex, sourceIndex } }: PayloadAction<{ destinationIndex: number; sourceIndex: number }>
 		) => {
 			// put dargTarget before drop target
-			let dragTargetParagraphIndex = paragraphs.findIndex((item) => item.id === dragTargetId);
-			let dropTargetParagraphIndex = paragraphs.findIndex((item) => item.id === dropTargetId);
-			let dragTargetParagraph = paragraphs[dragTargetParagraphIndex];
-
-			paragraphs.splice(dragTargetParagraphIndex, 1);
-			paragraphs.splice(dropTargetParagraphIndex, 0, dragTargetParagraph);
+			let [dragTargetParagraph] = paragraphs.splice(sourceIndex, 1);
+			paragraphs.splice(destinationIndex, 0, dragTargetParagraph);
 		},
 	},
 });

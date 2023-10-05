@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
 
+// redux
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { showModal, hideModal, selectModal } from '../features/modalSlice';
 import { acceptSingleAdjustment, ignoreSingleAdjustment } from '../features/articleSlice';
 
