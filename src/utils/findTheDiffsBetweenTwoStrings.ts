@@ -4,25 +4,6 @@ import { refactoredChange } from '../types';
 export var findTheDiffsBetweenTwoStrings = (strA: string, strB: string) => {
 	let result = diffWords(strA, strB);
 	let refactoredResult = result
-		// combine white spaces between the additions
-		// .reduce<Change[]>((acc, cur) => {
-		// 	if (acc.length > 1 && acc[acc.length - 1].added && cur.value === ' ') {
-		// 		acc[acc.length - 1].value += cur.value;
-		// 	}
-		// 	acc.push(cur);
-		// 	return acc;
-		// }, [])
-		// combine white spaces between removal
-		// .reduce<Change[]>((acc, cur) => {
-		// 	if (acc.length > 1 && acc[acc.length - 1].value === ' ' && cur.removed) {
-		// 		cur.value = acc[acc.length - 1].value + cur.value;
-		// 	}
-		// 	acc.push(cur);
-		// 	return acc;
-		// }, [])
-		// remove items whose value only contain white spaces
-		// .filter((item) => !(item.value === ' ' && item.added === undefined && item.removed === undefined))
-		// .filter((item) => item.value !== ' ')
 		// remove redundant properties and reshape change objects
 		.reduce<refactoredChange[]>((acc, cur) => {
 			if (cur.added || cur.removed) {

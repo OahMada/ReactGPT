@@ -4,40 +4,35 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { showModal, hideModal, selectModal } from '../features/modalSlice';
 import { acceptSingleAdjustment, ignoreSingleAdjustment } from '../features/articleSlice';
 
+// for the purpose of https://styled-components.com/docs/faqs#shouldforwardprop-is-no-longer-provided-by-default
+// the warning said: Warning: React does not recognize the `positionTop` prop on a DOM element...
+import isPropValid from '@emotion/is-prop-valid';
+import { StyleSheetManager } from 'styled-components';
+
 var Modal = () => {
 	let dispatch = useAppDispatch();
 	let { title, content, dimension, color, indexInParagraph, paragraphStatus, paragraphId } = useAppSelector(selectModal);
 
 	// 0.8 & 6.5 here is fixed
 	return (
-		<Wrapper
-			onMouseLeave={() => {
-				dispatch(hideModal());
-			}}
-			onMouseEnter={() => {
-				dispatch(showModal());
-			}}
-			titleColor={color}
-			positionLeft={dimension.left}
-			positionTop={dimension.top}
-		>
-			<h4 className='title'>{title.toUpperCase()}</h4>
-			<p className='content'>
-				{/* indicate white spaces that are ought to adjust */}
-				<cite>{content === ' ' ? <i>{'[space]'}</i> : content}</cite>
-			</p>
-			{paragraphStatus === 'reviving' ? (
-				<button
-					className='accept-btn btn'
-					onClick={() => {
-						dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
-						dispatch(hideModal());
-					}}
-				>
-					REVERT
-				</button>
-			) : (
-				<div className='btn-container'>
+		<StyleSheetManager shouldForwardProp={isPropValid}>
+			<Wrapper
+				onMouseLeave={() => {
+					dispatch(hideModal());
+				}}
+				onMouseEnter={() => {
+					dispatch(showModal());
+				}}
+				titleColor={color}
+				positionLeft={dimension.left}
+				positionTop={dimension.top}
+			>
+				<h4 className='title'>{title.toUpperCase()}</h4>
+				<p className='content'>
+					{/* indicate white spaces that are ought to adjust */}
+					<cite>{content === ' ' ? <i>{'[space]'}</i> : content}</cite>
+				</p>
+				{paragraphStatus === 'reviving' ? (
 					<button
 						className='accept-btn btn'
 						onClick={() => {
@@ -45,20 +40,32 @@ var Modal = () => {
 							dispatch(hideModal());
 						}}
 					>
-						ACCEPT
+						REVERT
 					</button>
-					<button
-						className='ignore-btn btn'
-						onClick={() => {
-							dispatch(ignoreSingleAdjustment({ indexInParagraph, paragraphId }));
-							dispatch(hideModal());
-						}}
-					>
-						IGNORE
-					</button>
-				</div>
-			)}
-		</Wrapper>
+				) : (
+					<div className='btn-container'>
+						<button
+							className='accept-btn btn'
+							onClick={() => {
+								dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
+								dispatch(hideModal());
+							}}
+						>
+							ACCEPT
+						</button>
+						<button
+							className='ignore-btn btn'
+							onClick={() => {
+								dispatch(ignoreSingleAdjustment({ indexInParagraph, paragraphId }));
+								dispatch(hideModal());
+							}}
+						>
+							IGNORE
+						</button>
+					</div>
+				)}
+			</Wrapper>
+		</StyleSheetManager>
 	);
 };
 export default Modal;
