@@ -17,7 +17,6 @@ function App() {
 export default App;
 
 /**
- * a grab handle for drag and drop react-beautiful-dnd
  * textarea auto-resize
  * word suggestion react-autosuggest
  * component extraction

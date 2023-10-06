@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { FallbackProps } from 'react-error-boundary';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { saveInput, selectArticle, saveParagraphInput, Paragraph } from '../features/articleSlice';
@@ -13,7 +14,7 @@ interface UserInputType {
 
 // log the last character inputted from previous render
 
-var UserInput = ({ paragraphId }: { paragraphId?: string }) => {
+var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; resetErrorBoundary?: FallbackProps['resetErrorBoundary'] }) => {
 	let [userInputLastCharacter, setUserInputLastCharacter] = useState('');
 
 	// calculate the paragraph text
@@ -42,6 +43,11 @@ var UserInput = ({ paragraphId }: { paragraphId?: string }) => {
 		if (paragraphId !== undefined) {
 			// click paragraph for editing
 			dispatch(saveParagraphInput({ paragraphId, paragraphInput: data.text }));
+
+			// for editing in error state
+			if (resetErrorBoundary) {
+				resetErrorBoundary();
+			}
 		} else {
 			// initial article
 			dispatch(saveInput(data.text));

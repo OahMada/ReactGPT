@@ -196,7 +196,10 @@ let articleSlice = createSlice({
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 
 			// too early, would trigger unnecessary useQuery call
-			currentParagraph.paragraphBeforeGrammarFix = currentParagraph.paragraphAfterGrammarFix;
+			if (currentParagraph.paragraphAfterGrammarFix !== '') {
+				// when the network error happens, the paragraphAfterGrammarFix would be empty
+				currentParagraph.paragraphBeforeGrammarFix = currentParagraph.paragraphAfterGrammarFix;
+			}
 			currentParagraph.paragraphStatus = 'modifying';
 			// reset state properties that is staled
 			currentParagraph.adjustmentObjectArr = [];

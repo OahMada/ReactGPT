@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import styled from 'styled-components';
-import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
 
 // query
 import { useQueryClient } from '@tanstack/react-query';
@@ -44,20 +44,23 @@ var StrictModeDroppable = ({ children, ...props }: DroppableProps) => {
 
 interface FallbackComponentTypes {
 	props: FallbackProps;
-	paragraphText: string;
 	paragraphId: string;
 }
 
-// TODO bug regarding the edit functionality
-var FallbackComponent = ({ props: { resetErrorBoundary }, paragraphText, paragraphId }: FallbackComponentTypes) => {
+var FallbackComponent = ({ props: { resetErrorBoundary }, paragraphId }: FallbackComponentTypes) => {
 	let dispatch = useAppDispatch();
+	let { paragraphs } = useAppSelector(selectArticle);
+	let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as ParagraphType;
 
-	// if (paragraphStatus === 'editing') {
-	// 	return <UserInput paragraphId={paragraphId} />;
-	// }
+	// allow edit
+	// TODO After editing, prevent the original paragraph from retrying.
+	if (currentParagraph.paragraphStatus === 'editing') {
+		return <UserInput paragraphId={paragraphId} resetErrorBoundary={resetErrorBoundary} />;
+	}
+
 	return (
 		<>
-			<StyledParagraph onClick={() => dispatch(updateUserInput(paragraphId))}>{paragraphText}</StyledParagraph>
+			<StyledParagraph onClick={() => dispatch(updateUserInput(paragraphId))}>{currentParagraph.paragraphBeforeGrammarFix}</StyledParagraph>
 			<button onClick={() => resetErrorBoundary()}>Retry</button>
 		</>
 	);
@@ -71,8 +74,11 @@ export var ArticleDisplay = () => {
 	let article = useAppSelector(selectArticle);
 
 	let handleOnDragEnd = (result: DropResult) => {
-		if (!result.destination) return;
-		dispatch(handleParagraphOrderChange({ destinationIndex: result.destination.index, sourceIndex: result.source.index }));
+		let { destination, source } = result;
+		if (!destination) return;
+		if (destination.droppableId === source.droppableId && destination.index === source.index) return;
+
+		dispatch(handleParagraphOrderChange({ destinationIndex: destination.index, sourceIndex: source.index }));
 	};
 
 	if (article.status === 'acceptingUserInput') {
@@ -88,20 +94,21 @@ export var ArticleDisplay = () => {
 							return (
 								<Draggable key={paragraph.id} draggableId={paragraph.id} index={index}>
 									{(provided) => (
-										<Wrapper ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+										<Wrapper ref={provided.innerRef} {...provided.draggableProps}>
+											<div className='grabber' {...provided.dragHandleProps}></div>
 											<ErrorBoundary
-												fallbackRender={(props) => (
-													<FallbackComponent {...{ props }} paragraphText={paragraph.paragraphBeforeGrammarFix} paragraphId={paragraph.id} />
-												)}
+												fallbackRender={(props) => <FallbackComponent {...{ props }} paragraphId={paragraph.id} />}
 												onReset={() => {
 													// handle network error
+													console.log(paragraph.paragraphBeforeGrammarFix);
+
 													QueryClient.ensureQueryData({ queryKey: gptKeys(paragraph.paragraphBeforeGrammarFix), queryFn: queryGPT });
 												}}
 												onError={(error) => createToast({ type: 'error', message: error.message })}
 											>
 												<Paragraph paragraph={paragraph} />
-												<ParagraphControlBtns paragraphId={paragraph.id} />
 											</ErrorBoundary>
+											<ParagraphControlBtns paragraphId={paragraph.id} />
 										</Wrapper>
 									)}
 								</Draggable>
@@ -115,12 +122,16 @@ export var ArticleDisplay = () => {
 	);
 };
 
-var Wrapper = styled.article // .attrs(() => ({
-// 	draggable: true,
-// }))
-`
+var Wrapper = styled.article`
 	padding: 1rem;
 	margin-bottom: 1rem;
 	background-color: lightgray;
-	cursor: grab;
+	display: flex;
+	flex-direction: column;
+
+	.grabber {
+		width: 2rem;
+		height: 2rem;
+		background-color: lightskyblue;
+	}
 `;
