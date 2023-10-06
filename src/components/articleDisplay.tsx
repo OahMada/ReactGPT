@@ -1,6 +1,7 @@
 // library
 import { useEffect, useState } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
+// console would still log the error, see https://github.com/facebook/react/issues/15069
 import styled from 'styled-components';
 import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
 

@@ -17,6 +17,7 @@ function App() {
 export default App;
 
 /**
+ * refetch when click on find grammar mistakes button
  * textarea auto-resize
  * word suggestion react-autosuggest
  * component extraction
