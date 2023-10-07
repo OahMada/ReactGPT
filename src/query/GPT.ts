@@ -50,13 +50,16 @@ export function useGPT(paragraph: string) {
 		enabled: currentParagraph.paragraphStatus === 'modifying',
 	});
 
+	console.log(result.data);
+
 	// to solve a bug:https://bobbyhadz.com/blog/react-cannot-update-component-while-rendering-different-component#cannot-update-a-component-while-rendering-a-different-component
 	useEffect(() => {
 		// populate local state
-		if (result.data && currentParagraph.adjustmentObjectArr.length === 0 && currentParagraph.paragraphStatus === 'modifying') {
+		// after clicking fix grammar mistakes button for refetch, if not check result.isFetched, old data would get populated
+		if (result.isFetched && result.data && currentParagraph.adjustmentObjectArr.length === 0 && currentParagraph.paragraphStatus === 'modifying') {
 			dispatch(populateParagraphLocalState({ paragraphId: currentParagraph.id, data: result.data }));
 		}
-	}, [currentParagraph.adjustmentObjectArr.length, currentParagraph.id, currentParagraph.paragraphStatus, dispatch, result.data]);
+	}, [currentParagraph.adjustmentObjectArr.length, currentParagraph.id, currentParagraph.paragraphStatus, dispatch, result.data, result.isFetched]);
 
 	return result;
 }

@@ -17,14 +17,15 @@ function App() {
 export default App;
 
 /**
- * refetch when click on find grammar mistakes button
+ * react query error boundary
+ * if nothing changes, save edit won't trigger refetch
  * textarea auto-resize
  * word suggestion react-autosuggest
  * component extraction
  * show fix inline or separately
  * show last changes only or show changes from beginning
- * react router
  * done an empty paragraph delete it
+ * react router
  * react-hotkeys
  * export as pdf doc etc
  */

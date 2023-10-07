@@ -1,9 +1,10 @@
 import { useErrorBoundary } from 'react-error-boundary';
 import styled from 'styled-components';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { refactoredChange } from '../types';
 
-import { useGPT } from '../query/GPT';
+import { useGPT, gptKeys } from '../query/GPT';
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import {
@@ -32,7 +33,11 @@ var Paragraph = ({
 	let { showBoundary } = useErrorBoundary();
 
 	// fetch API
-	let { isLoading, error, refetch } = useGPT(paragraphBeforeGrammarFix);
+	// isFetching is for action initiated by click the fix grammar mistakes button
+	let { isLoading, error, isFetching } = useGPT(paragraphBeforeGrammarFix);
+
+	// query client
+	let QueryClient = useQueryClient();
 
 	// state values
 	let modal = useAppSelector(selectModal);
@@ -60,7 +65,7 @@ var Paragraph = ({
 	if (paragraphStatus === 'modifying' || paragraphStatus === 'reviving') {
 		return (
 			<>
-				{isLoading ? (
+				{isLoading || isFetching ? (
 					<StyledParagraph>{paragraphBeforeGrammarFix}</StyledParagraph>
 				) : (
 					<StyledParagraph>
@@ -146,8 +151,11 @@ var Paragraph = ({
 					</button>
 					<button
 						onClick={() => {
+							QueryClient.invalidateQueries({
+								queryKey: gptKeys(paragraphBeforeGrammarFix),
+								exact: true,
+							});
 							dispatch(reFetchGrammarMistakes(id));
-							refetch();
 						}}
 					>
 						Find Grammar Mistakes

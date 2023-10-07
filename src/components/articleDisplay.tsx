@@ -7,7 +7,7 @@ import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } fro
 
 // query
 import { useQueryClient } from '@tanstack/react-query';
-import { gptKeys, queryGPT } from '../query/GPT';
+import { gptKeys, queryGPT, useGPT } from '../query/GPT';
 
 // redux
 import { useAppSelector, useAppDispatch } from '../app/hooks';
@@ -50,11 +50,14 @@ interface FallbackComponentTypes {
 
 var FallbackComponent = ({ props: { resetErrorBoundary }, paragraphId }: FallbackComponentTypes) => {
 	let dispatch = useAppDispatch();
+	let QueryClient = useQueryClient(); // TODO useQuery instead
+
 	let { paragraphs } = useAppSelector(selectArticle);
 	let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as ParagraphType;
 
+	console.log(QueryClient.isFetching());
+
 	// allow edit
-	// TODO After editing, prevent the original paragraph from retrying.
 	if (currentParagraph.paragraphStatus === 'editing') {
 		return <UserInput paragraphId={paragraphId} resetErrorBoundary={resetErrorBoundary} />;
 	}
@@ -62,14 +65,20 @@ var FallbackComponent = ({ props: { resetErrorBoundary }, paragraphId }: Fallbac
 	return (
 		<>
 			<StyledParagraph onClick={() => dispatch(updateUserInput(paragraphId))}>{currentParagraph.paragraphBeforeGrammarFix}</StyledParagraph>
-			<button onClick={() => resetErrorBoundary()}>Retry</button>
+			<button
+				onClick={async () => {
+					await QueryClient.fetchQuery({ queryKey: gptKeys(currentParagraph.paragraphBeforeGrammarFix), queryFn: queryGPT });
+					resetErrorBoundary();
+				}}
+				disabled
+			>
+				Retry
+			</button>
 		</>
 	);
 };
 
 export var ArticleDisplay = () => {
-	let QueryClient = useQueryClient();
-
 	// state values
 	let dispatch = useAppDispatch();
 	let article = useAppSelector(selectArticle);
@@ -99,13 +108,10 @@ export var ArticleDisplay = () => {
 											<div className='grabber' {...provided.dragHandleProps}></div>
 											<ErrorBoundary
 												fallbackRender={(props) => <FallbackComponent {...{ props }} paragraphId={paragraph.id} />}
-												onReset={() => {
-													// handle network error
-													console.log(paragraph.paragraphBeforeGrammarFix);
-
-													QueryClient.ensureQueryData({ queryKey: gptKeys(paragraph.paragraphBeforeGrammarFix), queryFn: queryGPT });
-												}}
 												onError={(error) => createToast({ type: 'error', message: error.message })}
+												onReset={() => {
+													console.log(paragraph.paragraphBeforeGrammarFix);
+												}}
 											>
 												<Paragraph paragraph={paragraph} />
 											</ErrorBoundary>
