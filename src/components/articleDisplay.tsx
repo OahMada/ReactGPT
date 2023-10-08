@@ -1,15 +1,11 @@
 // library
 import { useEffect, useState } from 'react';
-import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
-import { useQueryErrorResetBoundary } from '@tanstack/react-query';
+import { ErrorBoundary } from 'react-error-boundary';
+import { useQueryErrorResetBoundary } from '@tanstack/react-query'; // https://www.thisdot.co/blog/common-patterns-and-nuances-using-react-query/#handling-errors-with-error-boundaries
 
 // console would still log the error, see https://github.com/facebook/react/issues/15069
 import styled from 'styled-components';
 import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
-
-// query
-import { useQueryClient } from '@tanstack/react-query';
-import { gptKeys, queryGPT, useGPT } from '../query/GPT';
 
 // redux
 import { useAppSelector, useAppDispatch } from '../app/hooks';
@@ -43,41 +39,6 @@ var StrictModeDroppable = ({ children, ...props }: DroppableProps) => {
 	}
 
 	return <Droppable {...props}>{children}</Droppable>;
-};
-
-interface FallbackComponentTypes {
-	props: FallbackProps;
-	paragraphId: string;
-}
-
-var FallbackComponent = ({ props: { resetErrorBoundary }, paragraphId }: FallbackComponentTypes) => {
-	let dispatch = useAppDispatch();
-	let QueryClient = useQueryClient(); // TODO useQuery instead
-
-	let { paragraphs } = useAppSelector(selectArticle);
-	let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as ParagraphType;
-
-	console.log(QueryClient.isFetching());
-
-	// allow edit
-	if (currentParagraph.paragraphStatus === 'editing') {
-		return <UserInput paragraphId={paragraphId} resetErrorBoundary={resetErrorBoundary} />;
-	}
-
-	return (
-		<>
-			<StyledParagraph onClick={() => dispatch(updateUserInput(paragraphId))}>{currentParagraph.paragraphBeforeGrammarFix}</StyledParagraph>
-			<button
-				onClick={async () => {
-					await QueryClient.fetchQuery({ queryKey: gptKeys(currentParagraph.paragraphBeforeGrammarFix), queryFn: queryGPT });
-					resetErrorBoundary();
-				}}
-				disabled
-			>
-				Retry
-			</button>
-		</>
-	);
 };
 
 export var ArticleDisplay = () => {
@@ -130,7 +91,9 @@ export var ArticleDisplay = () => {
 														</>
 													);
 												}}
-												onError={(error) => createToast({ type: 'error', message: error.message })}
+												onError={(error) => {
+													createToast({ type: 'error', message: error.message, toastId: error.message });
+												}}
 												onReset={reset}
 											>
 												<Paragraph paragraph={paragraph} />
@@ -155,6 +118,7 @@ var Wrapper = styled.article`
 	background-color: lightgray;
 	display: flex;
 	flex-direction: column;
+	white-space: pre-wrap; // preserve user input line feeds
 
 	.grabber {
 		width: 2rem;

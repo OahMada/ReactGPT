@@ -4,9 +4,10 @@ interface createToastType {
 	type?: TypeOptions;
 	message: string;
 	theme?: Theme;
+	toastId: string;
 }
 
-export var createToast = ({ type = 'default', message, theme = 'light' }: createToastType) => {
+export var createToast = ({ type = 'default', message, theme = 'light', toastId }: createToastType) => {
 	toast(message, {
 		position: 'top-left',
 		autoClose: 3000,
@@ -16,5 +17,6 @@ export var createToast = ({ type = 'default', message, theme = 'light' }: create
 		draggable: true,
 		theme: theme,
 		type: type,
+		toastId,
 	});
 };

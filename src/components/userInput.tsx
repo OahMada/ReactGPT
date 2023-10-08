@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { FallbackProps } from 'react-error-boundary';
+import TextareaAutosize from 'react-textarea-autosize';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { saveInput, selectArticle, saveParagraphInput, Paragraph } from '../features/articleSlice';
@@ -28,8 +29,8 @@ var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; re
 	let {
 		register,
 		handleSubmit,
-		formState: { errors },
 		clearErrors,
+		// formState: { errors },
 	} = useForm({
 		values: {
 			text: paragraphValue ?? defaultUserInput,
@@ -56,15 +57,16 @@ var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; re
 
 	return (
 		<StyledForm onSubmit={handleSubmit(onsubmit)}>
-			{errors.text && <p>{errors.text.message}</p>}
-			<textarea
+			{/* {errors.text && <p>{errors.text.message}</p>} */}
+			<TextareaAutosize
+				// TODO minRows could be dynamic?
+				minRows={paragraphId ? undefined : 30}
 				autoFocus
-				autoComplete='on'
 				{...register('text', {
-					required: 'This filed is required',
+					// required: 'This filed is required',
 					onChange: (e) => {
 						// clear errors after submitting https://stackoverflow.com/a/67659536/5800789 https://github.com/react-hook-form/react-hook-form/releases/tag/v7.16.0
-						clearErrors('text');
+						// clearErrors('text');
 						setUserInputLastCharacter(e.target.value.slice(-1));
 					},
 				})}
@@ -74,7 +76,11 @@ var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; re
 					if (paragraphId !== undefined) {
 						if (e.key === 'Enter' && userInputLastCharacter === '\n') {
 							e.preventDefault();
-							createToast({ type: 'info', message: 'Consider adding a new paragraph instead of using double line breaks.' });
+							createToast({
+								type: 'info',
+								message: 'Consider adding a new paragraph instead of using double line breaks.',
+								toastId: 'create new paragraph notice',
+							});
 						}
 					}
 				}}

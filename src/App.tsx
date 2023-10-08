@@ -17,15 +17,15 @@ function App() {
 export default App;
 
 /**
- * react query error boundary
  * if nothing changes, save edit won't trigger refetch
- * textarea auto-resize
+ * done an empty paragraph delete it
+ * modal dynamic position props
+ * Undo button on a toast for paragraph deletion action.
  * word suggestion react-autosuggest
- * component extraction
  * show fix inline or separately
  * show last changes only or show changes from beginning
- * done an empty paragraph delete it
  * react router
  * react-hotkeys
  * export as pdf doc etc
+ * component extraction
  */
