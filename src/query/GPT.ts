@@ -51,7 +51,7 @@ export function useGPT(paragraph: string) {
 		useErrorBoundary: true,
 	});
 
-	console.log(result.data);
+	// console.log(result.data);
 	// to solve a bug:https://bobbyhadz.com/blog/react-cannot-update-component-while-rendering-different-component#cannot-update-a-component-while-rendering-a-different-component
 	useEffect(() => {
 		// populate local state

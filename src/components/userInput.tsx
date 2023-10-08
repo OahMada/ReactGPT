@@ -29,7 +29,7 @@ var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; re
 	let {
 		register,
 		handleSubmit,
-		clearErrors,
+		// clearErrors,
 		// formState: { errors },
 	} = useForm({
 		values: {
