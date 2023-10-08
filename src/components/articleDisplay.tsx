@@ -1,6 +1,8 @@
 // library
 import { useEffect, useState } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
+import { useQueryErrorResetBoundary } from '@tanstack/react-query';
+
 // console would still log the error, see https://github.com/facebook/react/issues/15069
 import styled from 'styled-components';
 import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
@@ -91,6 +93,8 @@ export var ArticleDisplay = () => {
 		dispatch(handleParagraphOrderChange({ destinationIndex: destination.index, sourceIndex: source.index }));
 	};
 
+	let { reset } = useQueryErrorResetBoundary();
+
 	if (article.status === 'acceptingUserInput') {
 		return <UserInput />;
 	}
@@ -107,11 +111,27 @@ export var ArticleDisplay = () => {
 										<Wrapper ref={provided.innerRef} {...provided.draggableProps}>
 											<div className='grabber' {...provided.dragHandleProps}></div>
 											<ErrorBoundary
-												fallbackRender={(props) => <FallbackComponent {...{ props }} paragraphId={paragraph.id} />}
-												onError={(error) => createToast({ type: 'error', message: error.message })}
-												onReset={() => {
-													console.log(paragraph.paragraphBeforeGrammarFix);
+												fallbackRender={({ resetErrorBoundary }) => {
+													if (paragraph.paragraphStatus === 'editing') {
+														return <UserInput paragraphId={paragraph.id} resetErrorBoundary={resetErrorBoundary} />;
+													}
+													return (
+														<>
+															<StyledParagraph onClick={() => dispatch(updateUserInput(paragraph.id))}>
+																{paragraph.paragraphBeforeGrammarFix}
+															</StyledParagraph>
+															<button
+																onClick={async () => {
+																	resetErrorBoundary();
+																}}
+															>
+																Retry
+															</button>
+														</>
+													);
 												}}
+												onError={(error) => createToast({ type: 'error', message: error.message })}
+												onReset={reset}
 											>
 												<Paragraph paragraph={paragraph} />
 											</ErrorBoundary>

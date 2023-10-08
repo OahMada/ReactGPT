@@ -48,10 +48,10 @@ export function useGPT(paragraph: string) {
 		select: (data) => findTheDiffsBetweenTwoStrings(paragraph, data),
 		// prevent fetch when in editing mode, only fetch after editing finished
 		enabled: currentParagraph.paragraphStatus === 'modifying',
+		useErrorBoundary: true,
 	});
 
 	console.log(result.data);
-
 	// to solve a bug:https://bobbyhadz.com/blog/react-cannot-update-component-while-rendering-different-component#cannot-update-a-component-while-rendering-a-different-component
 	useEffect(() => {
 		// populate local state

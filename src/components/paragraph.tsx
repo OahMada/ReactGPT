@@ -1,4 +1,3 @@
-import { useErrorBoundary } from 'react-error-boundary';
 import styled from 'styled-components';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -29,12 +28,9 @@ var Paragraph = ({
 	// dispatch
 	let dispatch = useAppDispatch();
 
-	// error boundary
-	let { showBoundary } = useErrorBoundary();
-
 	// fetch API
 	// isFetching is for action initiated by click the fix grammar mistakes button
-	let { isLoading, error, isFetching } = useGPT(paragraphBeforeGrammarFix);
+	let { isLoading, isFetching } = useGPT(paragraphBeforeGrammarFix);
 
 	// query client
 	let QueryClient = useQueryClient();
@@ -56,10 +52,6 @@ var Paragraph = ({
 
 	if (paragraphStatus === 'editing') {
 		return <UserInput paragraphId={id} />;
-	}
-
-	if (error) {
-		showBoundary(error);
 	}
 
 	if (paragraphStatus === 'modifying' || paragraphStatus === 'reviving') {
@@ -115,7 +107,7 @@ var Paragraph = ({
 					onClick={() => {
 						dispatch(acceptAllAdjustments(id));
 					}}
-					disabled={allAdjustmentsCount === 0 || isLoading} // TODO show notification here if no error
+					disabled={allAdjustmentsCount === 0 || isLoading || isFetching} // TODO show notification here if no error
 				>
 					{paragraphStatus === 'modifying' && 'Accept All'}
 					{paragraphStatus === 'reviving' && 'Revert All'}
@@ -124,7 +116,7 @@ var Paragraph = ({
 					onClick={() => {
 						dispatch(doneWithCurrentParagraphState(id));
 					}}
-					disabled={isLoading}
+					disabled={isLoading || isFetching}
 				>
 					Done
 				</button>
