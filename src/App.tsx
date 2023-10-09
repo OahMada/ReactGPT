@@ -18,7 +18,6 @@ export default App;
 
 /**
  * it's still possible to insert double line feeds. find a better way.
- * if nothing changes, save edit won't trigger refetch
  * done an empty paragraph delete it
  * modal dynamic position props
  * Undo button on a toast for paragraph deletion action.

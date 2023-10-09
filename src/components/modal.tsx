@@ -71,8 +71,6 @@ var Modal = () => {
 };
 export default Modal;
 
-// TODO bug here
-
 var Wrapper = styled.div<{ titleColor: string; positionLeft: number; positionTop: number }>`
 	padding: 0.8rem;
 	border-radius: 5px;

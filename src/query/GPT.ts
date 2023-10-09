@@ -47,7 +47,7 @@ export function useGPT(paragraph: string) {
 		queryFn: queryGPT,
 		select: (data) => findTheDiffsBetweenTwoStrings(paragraph, data),
 		// prevent fetch when in editing mode, only fetch after editing finished
-		enabled: currentParagraph.paragraphStatus === 'modifying',
+		enabled: currentParagraph.paragraphStatus === 'modifying' && !currentParagraph.cancelQuery,
 		useErrorBoundary: true,
 	});
 
@@ -56,10 +56,24 @@ export function useGPT(paragraph: string) {
 	useEffect(() => {
 		// populate local state
 		// after clicking fix grammar mistakes button for refetch, if not check result.isFetched, old data would get populated
-		if (result.isFetched && result.data && currentParagraph.adjustmentObjectArr.length === 0 && currentParagraph.paragraphStatus === 'modifying') {
+		if (
+			result.isFetched &&
+			result.data &&
+			currentParagraph.adjustmentObjectArr.length === 0 &&
+			currentParagraph.paragraphStatus === 'modifying' &&
+			!currentParagraph.cancelQuery
+		) {
 			dispatch(populateParagraphLocalState({ paragraphId: currentParagraph.id, data: result.data }));
 		}
-	}, [currentParagraph.adjustmentObjectArr.length, currentParagraph.id, currentParagraph.paragraphStatus, dispatch, result.data, result.isFetched]);
+	}, [
+		currentParagraph.adjustmentObjectArr.length,
+		currentParagraph.cancelQuery,
+		currentParagraph.id,
+		currentParagraph.paragraphStatus,
+		dispatch,
+		result.data,
+		result.isFetched,
+	]);
 
 	return result;
 }

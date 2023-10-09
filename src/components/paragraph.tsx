@@ -142,8 +142,8 @@ var Paragraph = ({
 						Revert All Changes
 					</button>
 					<button
-						onClick={() => {
-							QueryClient.invalidateQueries({
+						onClick={async () => {
+							await QueryClient.invalidateQueries({
 								queryKey: gptKeys(paragraphBeforeGrammarFix),
 								exact: true,
 							});

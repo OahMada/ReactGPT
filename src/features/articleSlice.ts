@@ -15,6 +15,7 @@ export interface Paragraph {
 	adjustmentObjectArr: refactoredChange[];
 	allAdjustmentsCount: number;
 	appliedAdjustments: number;
+	cancelQuery: boolean;
 }
 
 let initialParagraphState: Paragraph = {
@@ -26,6 +27,7 @@ let initialParagraphState: Paragraph = {
 	adjustmentObjectArr: [],
 	allAdjustmentsCount: 0,
 	appliedAdjustments: 0,
+	cancelQuery: false,
 };
 
 interface Article {
@@ -65,7 +67,11 @@ let articleSlice = createSlice({
 		) => {
 			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
 			currentParagraph.paragraphBeforeGrammarFix = sanitizeUserInput(paragraphInput);
-			currentParagraph.paragraphStatus = 'modifying';
+			if (currentParagraph.adjustmentObjectArr.length === 0) {
+				currentParagraph.paragraphStatus = 'doneModification';
+			} else {
+				currentParagraph.paragraphStatus = 'modifying';
+			}
 
 			// when you add a new paragraph to the list
 			if (!currentParagraph.initialParagraph) {
@@ -97,6 +103,8 @@ let articleSlice = createSlice({
 				currentParagraph.adjustmentObjectArr.splice(indexInParagraph, 1);
 			}
 			currentParagraph.appliedAdjustments += 1;
+			currentParagraph.cancelQuery = true;
+
 			if (currentParagraph.allAdjustmentsCount === currentParagraph.appliedAdjustments) {
 				currentParagraph.paragraphStatus = 'doneModification';
 				currentParagraph.paragraphAfterGrammarFix = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr); // required when manually accept all adjustments
@@ -143,6 +151,7 @@ let articleSlice = createSlice({
 			}, []);
 			currentParagraph.paragraphStatus = 'doneModification';
 			currentParagraph.paragraphAfterGrammarFix = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr);
+			currentParagraph.cancelQuery = true;
 
 			// reset state properties that is staled
 			currentParagraph.adjustmentObjectArr = [];
@@ -163,6 +172,7 @@ let articleSlice = createSlice({
 			}, []);
 			currentParagraph.paragraphStatus = 'doneModification';
 			currentParagraph.paragraphAfterGrammarFix = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr);
+			currentParagraph.cancelQuery = true;
 
 			// reset state properties that is staled
 			currentParagraph.adjustmentObjectArr = [];
@@ -195,7 +205,6 @@ let articleSlice = createSlice({
 		updateParagraphBeforeGrammarFixContent: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 
-			// too early, would trigger unnecessary useQuery call
 			if (currentParagraph.paragraphAfterGrammarFix !== '') {
 				// when the network error happens, the paragraphAfterGrammarFix would be empty
 				currentParagraph.paragraphBeforeGrammarFix = currentParagraph.paragraphAfterGrammarFix;
@@ -205,7 +214,6 @@ let articleSlice = createSlice({
 			currentParagraph.adjustmentObjectArr = [];
 			currentParagraph.appliedAdjustments = 0;
 			currentParagraph.allAdjustmentsCount = 0;
-			currentParagraph.paragraphAfterGrammarFix = '';
 		},
 		prepareForUserInputUpdate: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
@@ -246,6 +254,10 @@ let articleSlice = createSlice({
 			let [dragTargetParagraph] = paragraphs.splice(sourceIndex, 1);
 			paragraphs.splice(destinationIndex, 0, dragTargetParagraph);
 		},
+		disableCancelQueryState: ({ paragraphs }, { payload }) => {
+			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
+			currentParagraph.cancelQuery = false;
+		},
 	},
 });
 
@@ -256,6 +268,7 @@ export var selectArticle = (state: RootState) => state.article;
 export var reFetchGrammarMistakes = (id: string): AppThunk => {
 	return (dispatch) => {
 		dispatch(updateParagraphBeforeGrammarFixContent(id));
+		dispatch(disableCancelQueryState(id));
 	};
 };
 
@@ -294,6 +307,7 @@ export var {
 	insertBelowParagraph,
 	reEnterArticle,
 	handleParagraphOrderChange,
+	disableCancelQueryState,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;

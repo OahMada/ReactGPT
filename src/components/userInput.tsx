@@ -5,7 +5,7 @@ import { FallbackProps } from 'react-error-boundary';
 import TextareaAutosize from 'react-textarea-autosize';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { saveInput, selectArticle, saveParagraphInput, Paragraph } from '../features/articleSlice';
+import { saveInput, selectArticle, saveParagraphInput, Paragraph, disableCancelQueryState } from '../features/articleSlice';
 
 import { defaultUserInput, createToast } from '../utils/index';
 
@@ -30,12 +30,15 @@ var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; re
 		register,
 		handleSubmit,
 		// clearErrors,
-		// formState: { errors },
+		formState: {
+			// errors,
+			isDirty,
+		},
 	} = useForm({
-		values: {
+		defaultValues: {
 			text: paragraphValue ?? defaultUserInput,
 		},
-		reValidateMode: 'onSubmit',
+		// reValidateMode: 'onSubmit',
 	});
 
 	let dispatch = useAppDispatch();
@@ -48,6 +51,11 @@ var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; re
 			// for editing in error state
 			if (resetErrorBoundary) {
 				resetErrorBoundary();
+			}
+
+			// if have applied grammar fixes, and entered input state, but made no changes
+			if (!resetErrorBoundary && isDirty === true) {
+				dispatch(disableCancelQueryState(paragraphId));
 			}
 		} else {
 			// initial article
