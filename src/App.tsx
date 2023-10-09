@@ -18,7 +18,7 @@ export default App;
 
 /**
  * make an app flow
- * it's still possible to insert double line feeds. find a better way.
+ * it's still possible to insert double line feeds. find a better way: a way to locate input position
  * modal dynamic position props
  * Undo button on a toast for paragraph deletion action.
  * word suggestion react-autosuggest

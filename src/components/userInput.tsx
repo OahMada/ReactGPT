@@ -71,7 +71,7 @@ var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; re
 		<StyledForm onSubmit={handleSubmit(onsubmit)}>
 			{/* {errors.text && <p>{errors.text.message}</p>} */}
 			<TextareaAutosize
-				// TODO minRows could be dynamic?
+				// TODO minRows could be dynamic? // container height divide by line height?
 				minRows={paragraphId ? undefined : 30}
 				autoFocus
 				{...register('text', {
