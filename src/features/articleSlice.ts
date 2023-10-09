@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArticle } from '../utils';
+import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArticle, createToast } from '../utils';
 import { refactoredChange, paragraphStatus, articleStatus } from '../types';
 import { RootState, AppThunk } from '../app/store';
 
@@ -67,7 +67,7 @@ let articleSlice = createSlice({
 		) => {
 			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
 			currentParagraph.paragraphBeforeGrammarFix = sanitizeUserInput(paragraphInput);
-			if (currentParagraph.adjustmentObjectArr.length === 0) {
+			if (currentParagraph.adjustmentObjectArr.length === 0 && currentParagraph.cancelQuery === true) {
 				currentParagraph.paragraphStatus = 'doneModification';
 			} else {
 				currentParagraph.paragraphStatus = 'modifying';
@@ -89,6 +89,10 @@ let articleSlice = createSlice({
 				}
 				return acc;
 			}, 0);
+
+			if (currentParagraph.allAdjustmentsCount === 0) {
+				createToast({ type: 'info', message: 'None grammar mistakes found.', toastId: 'none grammar mistakes' });
+			}
 		},
 		// also be used when revert one adjustment
 		acceptSingleAdjustment: (

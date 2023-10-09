@@ -17,15 +17,17 @@ function App() {
 export default App;
 
 /**
+ * make an app flow
  * it's still possible to insert double line feeds. find a better way.
- * done an empty paragraph delete it
  * modal dynamic position props
  * Undo button on a toast for paragraph deletion action.
  * word suggestion react-autosuggest
  * show fix inline or separately
  * show last changes only or show changes from beginning
- * react router
+ * react router: switch paragraphs
  * react-hotkeys
  * export as pdf doc etc
  * component extraction
+ * test
+ * rethought html layout and css
  */
