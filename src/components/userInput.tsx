@@ -7,7 +7,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { saveInput, selectArticle, saveParagraphInput, Paragraph, disableCancelQueryState, deleteParagraph } from '../features/articleSlice';
 
-import { defaultUserInput, createToast } from '../utils/index';
+import { defaultUserInput, createToast, sanitizeUserInput } from '../utils/index';
 
 interface UserInputType {
 	text: string;
@@ -58,6 +58,11 @@ var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; re
 			if (data.text === '') {
 				// empty paragraph get deleted right away
 				dispatch(deleteParagraph(paragraphId));
+			}
+
+			// trailing whitespace or line feeds do not count
+			if (sanitizeUserInput(data.text) === paragraphValue) {
+				isDirty = false;
 			}
 
 			// make the paragraph entitled for refetch: cancelQuery set to false

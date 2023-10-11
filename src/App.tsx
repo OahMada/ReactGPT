@@ -17,8 +17,6 @@ function App() {
 export default App;
 
 /**
- * bug: when a line feed is input
- * modal dynamic position props
  * Undo button on a toast for paragraph deletion action.
  * word suggestion react-autosuggest
  * show fix inline or separately
@@ -29,6 +27,7 @@ export default App;
  * test
  * rethought html layout and css
  * accept user input opaiAPI key and encrypt the key save to local-storage
+ * modal dynamic position props
  * component extraction
  * sanitize user input
  */
