@@ -113,7 +113,13 @@ var Paragraph = ({
 					{paragraphStatus === 'reviving' && 'Revert All'}
 				</button>
 				<button
-					onClick={() => {
+					onClick={async () => {
+						// to make sure the next time, paragraph changed back to old content, there will be a refetch
+						await QueryClient.invalidateQueries({
+							queryKey: gptKeys(paragraphBeforeGrammarFix),
+							exact: true,
+							refetchType: 'none',
+						});
 						dispatch(doneWithCurrentParagraphState(id));
 					}}
 					disabled={isLoading || isFetching}

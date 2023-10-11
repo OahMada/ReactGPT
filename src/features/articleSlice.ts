@@ -34,14 +34,14 @@ interface Article {
 	userInput: string;
 	status: articleStatus;
 	paragraphs: Paragraph[];
-	error: string | null | undefined;
+	paragraphRemoveQueue: Paragraph['id'][];
 }
 
 let initialArticleState: Article = {
 	userInput: '',
 	status: 'acceptingUserInput',
 	paragraphs: [],
-	error: null,
+	paragraphRemoveQueue: [],
 };
 
 let articleSlice = createSlice({
@@ -206,7 +206,7 @@ let articleSlice = createSlice({
 			currentParagraph.appliedAdjustments = 0;
 			currentParagraph.allAdjustmentsCount = 0;
 		},
-		updateParagraphBeforeGrammarFixContent: ({ paragraphs }, { payload }: PayloadAction<string>) => {
+		updateParagraphBeforeGrammarFixState: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 
 			if (currentParagraph.paragraphAfterGrammarFix !== '') {
@@ -219,7 +219,7 @@ let articleSlice = createSlice({
 			currentParagraph.appliedAdjustments = 0;
 			currentParagraph.allAdjustmentsCount = 0;
 		},
-		prepareForUserInputUpdate: ({ paragraphs }, { payload }: PayloadAction<string>) => {
+		prepareForUserUpdateParagraph: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 			currentParagraph.paragraphStatus = 'editing';
 		},
@@ -248,7 +248,6 @@ let articleSlice = createSlice({
 			state.userInput = '';
 			state.paragraphs = [];
 			state.status = 'acceptingUserInput';
-			state.error = null;
 		},
 		handleParagraphOrderChange: (
 			{ paragraphs },
@@ -271,7 +270,7 @@ export var selectArticle = (state: RootState) => state.article;
 // useful when user tries to re-send api call with the same paragraph of article with edits
 export var reFetchGrammarMistakes = (id: string): AppThunk => {
 	return (dispatch) => {
-		dispatch(updateParagraphBeforeGrammarFixContent(id));
+		dispatch(updateParagraphBeforeGrammarFixState(id));
 		dispatch(disableCancelQueryState(id));
 	};
 };
@@ -279,8 +278,8 @@ export var reFetchGrammarMistakes = (id: string): AppThunk => {
 // for click the article enter editing mode
 export var updateUserInput = (id: string): AppThunk => {
 	return (dispatch) => {
-		dispatch(updateParagraphBeforeGrammarFixContent(id)); // initialArticle is what get displayed in the textarea element
-		dispatch(prepareForUserInputUpdate(id));
+		dispatch(updateParagraphBeforeGrammarFixState(id)); // paragraphBeforeGrammarFix is what get displayed in the textarea element
+		dispatch(prepareForUserUpdateParagraph(id));
 	};
 };
 
@@ -303,8 +302,8 @@ export var {
 	checkEditHistory,
 	doneWithCurrentParagraphState,
 	revertToBeginning,
-	updateParagraphBeforeGrammarFixContent,
-	prepareForUserInputUpdate,
+	updateParagraphBeforeGrammarFixState,
+	prepareForUserUpdateParagraph,
 	saveParagraphInput,
 	deleteParagraph,
 	insertAboveParagraph,
