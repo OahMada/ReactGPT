@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useImperativeHandle } from 'react';
 import styled from 'styled-components';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { FallbackProps } from 'react-error-boundary';
@@ -16,11 +16,12 @@ interface UserInputType {
 // log the last character inputted from previous render
 
 var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; resetErrorBoundary?: FallbackProps['resetErrorBoundary'] }) => {
-	let [userInputLastCharacter, setUserInputLastCharacter] = useState('');
+	let textareaRef = useRef<HTMLTextAreaElement>(null);
+	let dispatch = useAppDispatch();
 
 	// calculate the paragraph text
 	let { paragraphs } = useAppSelector(selectArticle);
-	let paragraphValue;
+	let paragraphValue: string | undefined;
 	if (paragraphId !== undefined) {
 		let currentParagraph = paragraphs.find((item: Paragraph) => item.id === paragraphId) as Paragraph;
 		paragraphValue = currentParagraph.paragraphBeforeGrammarFix;
@@ -41,7 +42,16 @@ var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; re
 		// reValidateMode: 'onSubmit',
 	});
 
-	let dispatch = useAppDispatch();
+	let { ref, ...rest } = register('text', {
+		// required: 'This filed is required',
+		onChange: (e) => {
+			// clear errors after submitting https://stackoverflow.com/a/67659536/5800789 https://github.com/react-hook-form/react-hook-form/releases/tag/v7.16.0
+			// clearErrors('text');
+		},
+	});
+
+	// https://react-hook-form.com/faqs#Howtosharerefusage
+	useImperativeHandle(ref, () => textareaRef.current);
 
 	let onsubmit: SubmitHandler<UserInputType> = (data) => {
 		if (paragraphId !== undefined) {
@@ -74,19 +84,22 @@ var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; re
 				// TODO minRows could be dynamic? // container height divide by line height?
 				minRows={paragraphId ? undefined : 30}
 				autoFocus
-				{...register('text', {
-					// required: 'This filed is required',
-					onChange: (e) => {
-						// clear errors after submitting https://stackoverflow.com/a/67659536/5800789 https://github.com/react-hook-form/react-hook-form/releases/tag/v7.16.0
-						// clearErrors('text');
-						setUserInputLastCharacter(e.target.value.slice(-1));
-					},
-				})}
+				{...rest}
+				ref={textareaRef}
 				onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 					// https://github.com/orgs/react-hook-form/discussions/2549#discussioncomment-373578
 					// prevent double line feeds, notify user to create a new paragraph
 					if (paragraphId !== undefined) {
-						if (e.key === 'Enter' && userInputLastCharacter === '\n') {
+						let cursorPosition: number | undefined = textareaRef.current?.selectionStart;
+						let text: string | undefined = textareaRef.current?.value;
+						let characterBeforeCursorPosition: string | undefined;
+						let characterAfterCursorPosition: string | undefined;
+						if (cursorPosition !== undefined && text) {
+							characterBeforeCursorPosition = text[cursorPosition - 1];
+							characterAfterCursorPosition = text[cursorPosition];
+						}
+
+						if ((characterBeforeCursorPosition === '\n' || characterAfterCursorPosition === '\n') && e.key === 'Enter') {
 							e.preventDefault();
 							createToast({
 								type: 'info',

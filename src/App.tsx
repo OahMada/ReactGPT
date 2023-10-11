@@ -17,8 +17,7 @@ function App() {
 export default App;
 
 /**
- * make an app flow
- * it's still possible to insert double line feeds. find a better way: a way to locate input position
+ * bug: when a line feed is input
  * modal dynamic position props
  * Undo button on a toast for paragraph deletion action.
  * word suggestion react-autosuggest
@@ -27,7 +26,9 @@ export default App;
  * react router: switch paragraphs
  * react-hotkeys
  * export as pdf doc etc
- * component extraction
  * test
  * rethought html layout and css
+ * accept user input opaiAPI key and encrypt the key save to local-storage
+ * component extraction
+ * sanitize user input
  */
