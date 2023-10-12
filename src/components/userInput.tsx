@@ -5,7 +5,7 @@ import { FallbackProps } from 'react-error-boundary';
 import TextareaAutosize from 'react-textarea-autosize';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { saveInput, selectArticle, saveParagraphInput, Paragraph, disableCancelQueryState, deleteParagraphRightAway } from '../features/articleSlice';
+import { saveInput, selectArticle, saveParagraphInput, Paragraph, disableCancelQueryState, deleteParagraph } from '../features/articleSlice';
 
 import { defaultUserInput, createToast, sanitizeUserInput } from '../utils/index';
 
@@ -57,7 +57,7 @@ var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; re
 		if (paragraphId !== undefined) {
 			if (data.text === '') {
 				// empty paragraph get deleted right away
-				dispatch(deleteParagraphRightAway(paragraphId));
+				dispatch(deleteParagraph(paragraphId));
 			}
 
 			// trailing whitespace or line feeds do not count
@@ -108,7 +108,7 @@ var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; re
 							e.preventDefault();
 							createToast({
 								type: 'info',
-								content: 'Consider adding a new paragraph instead of using double line breaks.',
+								message: 'Consider adding a new paragraph instead of using double line breaks.',
 								toastId: 'create new paragraph notice',
 							});
 						}

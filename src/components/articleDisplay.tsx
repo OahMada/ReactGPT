@@ -65,47 +65,45 @@ export var ArticleDisplay = () => {
 			<StrictModeDroppable droppableId='paragraphs'>
 				{(provided) => (
 					<div ref={provided.innerRef} {...provided.droppableProps}>
-						{article.paragraphs
-							.filter((paragraph) => !article.paragraphRemoveQueue.includes(paragraph.id))
-							.map((paragraph: ParagraphType, index) => {
-								return (
-									<Draggable key={paragraph.id} draggableId={paragraph.id} index={index}>
-										{(provided) => (
-											<Wrapper ref={provided.innerRef} {...provided.draggableProps}>
-												<div className='grabber' {...provided.dragHandleProps}></div>
-												<ErrorBoundary
-													fallbackRender={({ resetErrorBoundary }) => {
-														if (paragraph.paragraphStatus === 'editing') {
-															return <UserInput paragraphId={paragraph.id} resetErrorBoundary={resetErrorBoundary} />;
-														}
-														return (
-															<>
-																<StyledParagraph onClick={() => dispatch(updateUserInput(paragraph.id))}>
-																	{paragraph.paragraphBeforeGrammarFix}
-																</StyledParagraph>
-																<button
-																	onClick={async () => {
-																		resetErrorBoundary();
-																	}}
-																>
-																	Retry
-																</button>
-															</>
-														);
-													}}
-													onError={(error) => {
-														createToast({ type: 'error', content: error.message, toastId: error.message });
-													}}
-													onReset={reset}
-												>
-													<Paragraph paragraph={paragraph} />
-												</ErrorBoundary>
-												<ParagraphControlBtns paragraphId={paragraph.id} />
-											</Wrapper>
-										)}
-									</Draggable>
-								);
-							})}
+						{article.paragraphs.map((paragraph: ParagraphType, index) => {
+							return (
+								<Draggable key={paragraph.id} draggableId={paragraph.id} index={index}>
+									{(provided) => (
+										<Wrapper ref={provided.innerRef} {...provided.draggableProps}>
+											<div className='grabber' {...provided.dragHandleProps}></div>
+											<ErrorBoundary
+												fallbackRender={({ resetErrorBoundary }) => {
+													if (paragraph.paragraphStatus === 'editing') {
+														return <UserInput paragraphId={paragraph.id} resetErrorBoundary={resetErrorBoundary} />;
+													}
+													return (
+														<>
+															<StyledParagraph onClick={() => dispatch(updateUserInput(paragraph.id))}>
+																{paragraph.paragraphBeforeGrammarFix}
+															</StyledParagraph>
+															<button
+																onClick={async () => {
+																	resetErrorBoundary();
+																}}
+															>
+																Retry
+															</button>
+														</>
+													);
+												}}
+												onError={(error) => {
+													createToast({ type: 'error', message: error.message, toastId: error.message });
+												}}
+												onReset={reset}
+											>
+												<Paragraph paragraph={paragraph} />
+											</ErrorBoundary>
+											<ParagraphControlBtns paragraphId={paragraph.id} />
+										</Wrapper>
+									)}
+								</Draggable>
+							);
+						})}
 						{provided.placeholder}
 					</div>
 				)}

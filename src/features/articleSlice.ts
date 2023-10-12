@@ -91,7 +91,7 @@ let articleSlice = createSlice({
 			}, 0);
 
 			if (currentParagraph.allAdjustmentsCount === 0) {
-				createToast({ type: 'info', content: 'None grammar mistakes found.', toastId: 'none grammar mistakes' });
+				createToast({ type: 'info', message: 'None grammar mistakes found.', toastId: 'none grammar mistakes' });
 			}
 		},
 		// also be used when revert one adjustment
@@ -223,19 +223,9 @@ let articleSlice = createSlice({
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 			currentParagraph.paragraphStatus = 'editing';
 		},
-		deleteParagraphRightAway: ({ paragraphs }, { payload }: PayloadAction<string>) => {
+		deleteParagraph: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === payload);
 			paragraphs.splice(currentParagraphIndex, 1);
-		},
-		deleteParagraph: (state, { payload }) => {
-			state.paragraphs = state.paragraphs.filter((paragraph) => !state.paragraphRemoveQueue.includes(paragraph.id));
-			state.paragraphRemoveQueue = state.paragraphRemoveQueue.filter((id) => id !== payload);
-		},
-		addParagraphToDeletionQueue: ({ paragraphRemoveQueue }, { payload }) => {
-			paragraphRemoveQueue.push(payload);
-		},
-		undoParagraphDeletion: (state, { payload }) => {
-			state.paragraphRemoveQueue = state.paragraphRemoveQueue.filter((id) => id !== payload);
 		},
 		insertAboveParagraph: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === payload);
@@ -321,9 +311,6 @@ export var {
 	reEnterArticle,
 	handleParagraphOrderChange,
 	disableCancelQueryState,
-	addParagraphToDeletionQueue,
-	undoParagraphDeletion,
-	deleteParagraphRightAway,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;

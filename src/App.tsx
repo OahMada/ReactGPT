@@ -9,7 +9,7 @@ function App() {
 	return (
 		<section className='app'>
 			<ArticleDisplay />
-			{/* <ToastContainer limit={3} /> */}
+			<ToastContainer limit={3} />
 		</section>
 	);
 }
