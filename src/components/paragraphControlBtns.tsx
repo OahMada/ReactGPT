@@ -1,6 +1,15 @@
-import { deleteParagraphs, insertAboveParagraph, insertBelowParagraph } from '../features/articleSlice';
+import { useRef } from 'react';
+import { toast, ToastContainer, Id } from 'react-toastify';
+
+import {
+	deleteParagraphs,
+	insertAboveParagraph,
+	insertBelowParagraph,
+	addParagraphToDeletionQueue,
+	undoParagraphDeletion,
+} from '../features/articleSlice';
 import { useAppDispatch } from '../app/hooks';
-import { toast, ToastContainer } from 'react-toastify';
+import { createToast } from '../utils';
 
 interface UndoProps {
 	onUndo: () => void;
@@ -22,11 +31,34 @@ var Undo = ({ onUndo, closeToast }: UndoProps) => {
 
 var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 	let dispatch = useAppDispatch();
+	let toastId = useRef<Id>();
 
 	let handleParagraphDeletion = () => {
-		dispatch(deleteParagraphs(paragraphId));
-		toast(<Undo onUndo={() => {}} closeToast={() => {}} />, {});
+		dispatch(addParagraphToDeletionQueue(paragraphId));
+		toastId.current = createToast({
+			type: 'error',
+			content: (
+				<Undo
+					onUndo={() => {
+						console.log('undo');
+						dispatch(undoParagraphDeletion(paragraphId));
+					}}
+					closeToast={() => {
+						toast.dismiss(toastId.current);
+					}}
+				/>
+			),
+		});
 	};
+
+	let unsubscribe = toast.onChange((toastItem) => {
+		if (toastItem.status === 'removed') {
+			dispatch(deleteParagraphs(paragraphId));
+		}
+	});
+
+	// unsubscribe();
+
 	return (
 		<div>
 			<button onClick={handleParagraphDeletion}>Delete Paragraph</button>

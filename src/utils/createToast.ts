@@ -1,17 +1,19 @@
-import { toast, TypeOptions, Theme } from 'react-toastify';
+import { toast, TypeOptions, Theme, ToastContent } from 'react-toastify';
 
 interface createToastType {
 	type?: TypeOptions;
-	message: string;
+	content: ToastContent;
 	theme?: Theme;
-	toastId: string;
+	toastId?: string;
 }
 
-export var createToast = ({ type = 'default', message, theme = 'light', toastId }: createToastType) => {
-	toast(message, {
+export var createToast = ({ type = 'default', content, theme = 'light', toastId }: createToastType) => {
+	console.log('creating toast');
+
+	return toast(content, {
 		position: 'top-left',
 		autoClose: 3000,
-		hideProgressBar: true,
+		// hideProgressBar: true,
 		closeOnClick: true,
 		pauseOnHover: true,
 		draggable: true,
