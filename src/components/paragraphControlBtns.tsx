@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { toast, Id } from 'react-toastify';
+import { toast, Id, ToastContentProps } from 'react-toastify';
 
 import {
 	deleteParagraph,
@@ -11,12 +11,13 @@ import {
 import { useAppDispatch } from '../app/hooks';
 import { createToast } from '../utils';
 
-interface UndoProps {
+// https://github.com/fkhadra/react-toastify/issues/568#issuecomment-779847274
+interface UndoProps extends Partial<ToastContentProps> {
 	onUndo: () => void;
 	closeToast: () => void;
 }
 
-var Undo = ({ onUndo, closeToast }: UndoProps) => {
+var Undo = ({ closeToast, onUndo }: UndoProps) => {
 	const handleClick = () => {
 		onUndo();
 		closeToast();
@@ -38,6 +39,7 @@ var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 
 		toast.onChange((toastItem) => {
 			if (toastItem.status === 'removed' && toastItem.id === toastId.current) {
+				// If the toastId check isn't included, changes to any toast would trigger the following.
 				dispatch(deleteParagraph(paragraphId));
 			}
 		});

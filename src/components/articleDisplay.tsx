@@ -109,6 +109,7 @@ export var ArticleDisplay = () => {
 							})}
 						{provided.placeholder}
 						<ToastContainer closeOnClick={false} closeButton={false} />
+						{/* For the `ParagraphControlBtns` element, if it were within the element itself, then every element would render a separate toast. */}
 					</div>
 				)}
 			</StrictModeDroppable>

@@ -227,7 +227,7 @@ let articleSlice = createSlice({
 			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === payload);
 			paragraphs.splice(currentParagraphIndex, 1);
 		},
-		finishDeleteAction: (state, { payload }) => {
+		finishParagraphDeletion: (state, { payload }) => {
 			if (state.paragraphRemoveQueue.includes(payload)) {
 				let currentParagraphIndex = state.paragraphs.findIndex((item) => item.id === payload);
 				state.paragraphs.splice(currentParagraphIndex, 1);
@@ -298,7 +298,7 @@ export var updateUserInput = (id: string): AppThunk => {
 
 export var deleteParagraph = (paragraphId: string): AppThunk => {
 	return (dispatch, getState) => {
-		dispatch(finishDeleteAction(paragraphId));
+		dispatch(finishParagraphDeletion(paragraphId));
 		let { paragraphs } = selectArticle(getState());
 		if (paragraphs.length === 0) {
 			dispatch(reEnterArticle());
@@ -318,7 +318,7 @@ export var {
 	updateParagraphBeforeGrammarFixState,
 	prepareForUserUpdateParagraph,
 	saveParagraphInput,
-	finishDeleteAction,
+	finishParagraphDeletion,
 	insertAboveParagraph,
 	insertBelowParagraph,
 	reEnterArticle,

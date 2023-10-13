@@ -8,8 +8,6 @@ interface createToastType {
 }
 
 export var createToast = ({ type = 'default', content, theme = 'light', toastId }: createToastType) => {
-	console.log('creating toast');
-
 	return toast(content, {
 		position: 'top-left',
 		autoClose: 3000,
