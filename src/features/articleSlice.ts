@@ -227,9 +227,12 @@ let articleSlice = createSlice({
 			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === payload);
 			paragraphs.splice(currentParagraphIndex, 1);
 		},
-		deleteParagraph: (state, { payload }) => {
-			state.paragraphs = state.paragraphs.filter((paragraph) => !state.paragraphRemoveQueue.includes(paragraph.id));
-			state.paragraphRemoveQueue = state.paragraphRemoveQueue.filter((id) => id !== payload);
+		finishDeleteAction: (state, { payload }) => {
+			if (state.paragraphRemoveQueue.includes(payload)) {
+				let currentParagraphIndex = state.paragraphs.findIndex((item) => item.id === payload);
+				state.paragraphs.splice(currentParagraphIndex, 1);
+				state.paragraphRemoveQueue = state.paragraphRemoveQueue.filter((id) => id !== payload);
+			}
 		},
 		addParagraphToDeletionQueue: ({ paragraphRemoveQueue }, { payload }) => {
 			paragraphRemoveQueue.push(payload);
@@ -293,9 +296,9 @@ export var updateUserInput = (id: string): AppThunk => {
 	};
 };
 
-export var deleteParagraphs = (id: string): AppThunk => {
+export var deleteParagraph = (paragraphId: string): AppThunk => {
 	return (dispatch, getState) => {
-		dispatch(deleteParagraph(id));
+		dispatch(finishDeleteAction(paragraphId));
 		let { paragraphs } = selectArticle(getState());
 		if (paragraphs.length === 0) {
 			dispatch(reEnterArticle());
@@ -315,7 +318,7 @@ export var {
 	updateParagraphBeforeGrammarFixState,
 	prepareForUserUpdateParagraph,
 	saveParagraphInput,
-	deleteParagraph,
+	finishDeleteAction,
 	insertAboveParagraph,
 	insertBelowParagraph,
 	reEnterArticle,

@@ -1,8 +1,8 @@
 import { useRef } from 'react';
-import { toast, ToastContainer, Id } from 'react-toastify';
+import { toast, Id } from 'react-toastify';
 
 import {
-	deleteParagraphs,
+	deleteParagraph,
 	insertAboveParagraph,
 	insertBelowParagraph,
 	addParagraphToDeletionQueue,
@@ -35,12 +35,18 @@ var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 
 	let handleParagraphDeletion = () => {
 		dispatch(addParagraphToDeletionQueue(paragraphId));
+
+		toast.onChange((toastItem) => {
+			if (toastItem.status === 'removed' && toastItem.id === toastId.current) {
+				dispatch(deleteParagraph(paragraphId));
+			}
+		});
+
 		toastId.current = createToast({
 			type: 'error',
 			content: (
 				<Undo
 					onUndo={() => {
-						console.log('undo');
 						dispatch(undoParagraphDeletion(paragraphId));
 					}}
 					closeToast={() => {
@@ -51,14 +57,6 @@ var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 		});
 	};
 
-	let unsubscribe = toast.onChange((toastItem) => {
-		if (toastItem.status === 'removed') {
-			dispatch(deleteParagraphs(paragraphId));
-		}
-	});
-
-	// unsubscribe();
-
 	return (
 		<div>
 			<button onClick={handleParagraphDeletion}>Delete Paragraph</button>
@@ -67,7 +65,6 @@ var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 				<button onClick={() => dispatch(insertAboveParagraph(paragraphId))}>Insert Above</button>
 				<button onClick={() => dispatch(insertBelowParagraph(paragraphId))}>Insert Bellow</button>
 			</div>
-			<ToastContainer closeOnClick={false} closeButton={false} />
 		</div>
 	);
 };

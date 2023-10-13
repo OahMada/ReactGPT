@@ -17,7 +17,10 @@ function App() {
 export default App;
 
 /**
- * Undo button on a toast for paragraph deletion action.
+ * there might be empty queryGPT result?
+ * different toast container setup in different component
+ * when all paragraphs deleted, display empty textarea
+ * when the last paragraph is undertaking deletion, display some fill in text
  * word suggestion react-autosuggest
  * show fix inline or separately
  * show last changes only or show changes from beginning
