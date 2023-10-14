@@ -91,6 +91,7 @@ var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; re
 				autoFocus
 				{...rest}
 				ref={textareaRef}
+				spellCheck='true'
 				onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 					// https://github.com/orgs/react-hook-form/discussions/2549#discussioncomment-373578
 					// prevent double line feeds, notify user to create a new paragraph

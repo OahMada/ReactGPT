@@ -57,6 +57,7 @@ var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 				/>
 			),
 			containerId: 'paragraphDeletion',
+			options: { hideProgressBar: true },
 		});
 	};
 

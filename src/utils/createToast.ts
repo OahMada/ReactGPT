@@ -1,4 +1,4 @@
-import { toast, TypeOptions, Theme, ToastContent } from 'react-toastify';
+import { toast, TypeOptions, Theme, ToastContent, ToastOptions } from 'react-toastify';
 
 interface createToastType {
 	type?: TypeOptions;
@@ -6,21 +6,28 @@ interface createToastType {
 	theme?: Theme;
 	toastId?: string;
 	containerId?: string;
+	options?: Partial<ToastOptions>;
 }
 
 // pass toastId to avoid duplication
 // pass containerId to render toast container with specific settings
-export var createToast = ({ type = 'default', content, theme = 'light', toastId, containerId }: createToastType) => {
-	return toast(content, {
-		position: 'top-left',
-		autoClose: 3000,
-		// hideProgressBar: true,
-		closeOnClick: true,
-		pauseOnHover: true,
-		draggable: true,
-		theme: theme,
-		type: type,
-		toastId,
-		containerId,
-	});
+export var createToast = ({ type = 'default', content, theme = 'light', toastId, containerId, options }: createToastType) => {
+	return toast(
+		content,
+		Object.assign(
+			{
+				position: 'top-left',
+				autoClose: 3000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				theme: theme,
+				type: type,
+				toastId,
+				containerId,
+			},
+			options
+		)
+	);
 };

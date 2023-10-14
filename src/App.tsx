@@ -18,10 +18,8 @@ function App() {
 export default App;
 
 /**
- * there might be empty queryGPT result?
  * when all paragraphs deleted, display empty textarea
  * when the last paragraph is undertaking deletion, display some fill in text
- * pass in custom toast option to createToast
  * word suggestion react-autosuggest
  * show fix inline or separately
  * show last changes only or show changes from beginning
