@@ -56,6 +56,7 @@ var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 					}}
 				/>
 			),
+			containerId: 'paragraphDeletion',
 		});
 	};
 

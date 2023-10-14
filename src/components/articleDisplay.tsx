@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useQueryErrorResetBoundary } from '@tanstack/react-query'; // https://www.thisdot.co/blog/common-patterns-and-nuances-using-react-query/#handling-errors-with-error-boundaries
-import { ToastContainer } from 'react-toastify';
 
 // console would still log the error, see https://github.com/facebook/react/issues/15069
 import styled from 'styled-components';
@@ -108,8 +107,7 @@ export var ArticleDisplay = () => {
 								);
 							})}
 						{provided.placeholder}
-						<ToastContainer closeOnClick={false} closeButton={false} />
-						{/* For the `ParagraphControlBtns` element, if it were within the element itself, then every element would render a separate toast. */}
+						{/* For the `ParagraphControlBtns` element, if the toastContainer were within the element itself, then every element would render a separate toast. */}
 					</div>
 				)}
 			</StrictModeDroppable>
