@@ -19,7 +19,6 @@ export default App;
 
 /**
  * when all paragraphs deleted, display empty textarea
- * when the last paragraph is undertaking deletion, display some fill in text
  * word suggestion react-autosuggest
  * show fix inline or separately
  * show last changes only or show changes from beginning

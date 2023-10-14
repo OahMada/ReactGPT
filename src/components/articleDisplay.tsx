@@ -16,6 +16,7 @@ import UserInput from './userInput';
 import Paragraph from './paragraph';
 import ParagraphControlBtns from './paragraphControlBtns';
 import { StyledParagraph } from './paragraph';
+import EmptyParagraphList from './emptyParagraphList';
 
 // utils
 import { createToast } from '../utils';
@@ -65,6 +66,7 @@ export var ArticleDisplay = () => {
 			<StrictModeDroppable droppableId='paragraphs'>
 				{(provided) => (
 					<div ref={provided.innerRef} {...provided.droppableProps}>
+						{article.paragraphs.filter((paragraph) => !article.paragraphRemoveQueue.includes(paragraph.id)).length === 0 && <EmptyParagraphList />}
 						{article.paragraphs
 							.filter((paragraph) => !article.paragraphRemoveQueue.includes(paragraph.id))
 							.map((paragraph: ParagraphType, index) => {

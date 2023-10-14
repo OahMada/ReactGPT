@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { toast, Id, ToastContentProps } from 'react-toastify';
 
 import {
-	deleteParagraph,
+	finishParagraphDeletion,
 	insertAboveParagraph,
 	insertBelowParagraph,
 	addParagraphToDeletionQueue,
@@ -40,7 +40,7 @@ var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 		toast.onChange((toastItem) => {
 			if (toastItem.status === 'removed' && toastItem.id === toastId.current) {
 				// If the toastId check isn't included, changes to any toast would trigger the following.
-				dispatch(deleteParagraph(paragraphId));
+				dispatch(finishParagraphDeletion(paragraphId));
 			}
 		});
 
@@ -57,7 +57,7 @@ var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 				/>
 			),
 			containerId: 'paragraphDeletion',
-			options: { hideProgressBar: true },
+			options: { hideProgressBar: false },
 		});
 	};
 

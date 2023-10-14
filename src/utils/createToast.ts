@@ -18,7 +18,7 @@ export var createToast = ({ type = 'default', content, theme = 'light', toastId,
 			{
 				position: 'top-left',
 				autoClose: 3000,
-				hideProgressBar: false,
+				hideProgressBar: true,
 				closeOnClick: true,
 				pauseOnHover: true,
 				draggable: true,

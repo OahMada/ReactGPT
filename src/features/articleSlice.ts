@@ -296,16 +296,6 @@ export var updateUserInput = (id: string): AppThunk => {
 	};
 };
 
-export var deleteParagraph = (paragraphId: string): AppThunk => {
-	return (dispatch, getState) => {
-		dispatch(finishParagraphDeletion(paragraphId));
-		let { paragraphs } = selectArticle(getState());
-		if (paragraphs.length === 0) {
-			dispatch(reEnterArticle());
-		}
-	};
-};
-
 export var {
 	saveInput,
 	populateParagraphLocalState,
