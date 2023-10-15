@@ -22,9 +22,9 @@ export default App;
  * show fix inline or separately
  * show last changes only or show changes from beginning
  * react router: switch paragraphs
+ * accept user input opaiAPI key and encrypt the key save to local-storage
  * react-hotkeys
  * export as pdf doc etc
- * accept user input opaiAPI key and encrypt the key save to local-storage
  * sanitize user input
  * test
  * rethought html layout and css

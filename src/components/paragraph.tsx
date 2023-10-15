@@ -107,7 +107,7 @@ var Paragraph = ({
 					onClick={() => {
 						dispatch(acceptAllAdjustments(id));
 					}}
-					disabled={allAdjustmentsCount === 0 || isLoading || isFetching} // TODO show notification here if no error
+					disabled={allAdjustmentsCount === 0 || isLoading || isFetching}
 				>
 					{paragraphStatus === 'modifying' && 'Accept All'}
 					{paragraphStatus === 'reviving' && 'Revert All'}
