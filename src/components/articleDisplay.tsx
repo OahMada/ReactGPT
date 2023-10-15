@@ -12,7 +12,8 @@ import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectArticle, handleParagraphOrderChange, Paragraph as ParagraphType, updateUserInput } from '../features/articleSlice';
 
 // components
-import UserInput from './userInput';
+import ParagraphInput from './paragraphInput';
+import ArticleInput from './articleInput';
 import Paragraph from './paragraph';
 import ParagraphControlBtns from './paragraphControlBtns';
 import { StyledParagraph } from './paragraph';
@@ -58,7 +59,7 @@ export var ArticleDisplay = () => {
 	let { reset } = useQueryErrorResetBoundary();
 
 	if (article.status === 'acceptingUserInput') {
-		return <UserInput />;
+		return <ArticleInput />;
 	}
 
 	return (
@@ -78,7 +79,7 @@ export var ArticleDisplay = () => {
 												<ErrorBoundary
 													fallbackRender={({ resetErrorBoundary }) => {
 														if (paragraph.paragraphStatus === 'editing') {
-															return <UserInput paragraphId={paragraph.id} resetErrorBoundary={resetErrorBoundary} />;
+															return <ParagraphInput paragraphId={paragraph.id} resetErrorBoundary={resetErrorBoundary} />;
 														}
 														return (
 															<>

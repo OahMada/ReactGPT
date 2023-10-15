@@ -5,27 +5,23 @@ import { FallbackProps } from 'react-error-boundary';
 import TextareaAutosize from 'react-textarea-autosize';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { saveInput, selectArticle, saveParagraphInput, Paragraph, disableCancelQueryState, deleteParagraphRightAway } from '../features/articleSlice';
+import { selectArticle, saveParagraphInput, Paragraph, disableCancelQueryState, deleteParagraphRightAway } from '../features/articleSlice';
 
-import { defaultUserInput, createToast, sanitizeUserInput } from '../utils/index';
+import { createToast, sanitizeUserInput } from '../utils/index';
 
-interface UserInputType {
-	text: string;
+interface ParagraphInputType {
+	paragraph: string;
 }
 
 // log the last character inputted from previous render
-
-var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; resetErrorBoundary?: FallbackProps['resetErrorBoundary'] }) => {
+var ParagraphInput = ({ paragraphId, resetErrorBoundary }: { paragraphId: string; resetErrorBoundary?: FallbackProps['resetErrorBoundary'] }) => {
 	let textareaRef = useRef<HTMLTextAreaElement>(null);
 	let dispatch = useAppDispatch();
 
 	// calculate the paragraph text
 	let { paragraphs } = useAppSelector(selectArticle);
-	let paragraphValue: string | undefined;
-	if (paragraphId !== undefined) {
-		let currentParagraph = paragraphs.find((item: Paragraph) => item.id === paragraphId) as Paragraph;
-		paragraphValue = currentParagraph.paragraphBeforeGrammarFix;
-	}
+	let currentParagraph = paragraphs.find((item: Paragraph) => item.id === paragraphId) as Paragraph;
+	let paragraphValue = currentParagraph.paragraphBeforeGrammarFix;
 
 	let {
 		register,
@@ -37,48 +33,36 @@ var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; re
 		},
 	} = useForm({
 		defaultValues: {
-			text: paragraphValue ?? defaultUserInput,
+			paragraph: paragraphValue,
 		},
-		// reValidateMode: 'onSubmit',
 	});
 
-	let { ref, ...rest } = register('text', {
-		// required: 'This filed is required',
-		onChange: (e) => {
-			// clear errors after submitting https://stackoverflow.com/a/67659536/5800789 https://github.com/react-hook-form/react-hook-form/releases/tag/v7.16.0
-			// clearErrors('text');
-		},
-	});
+	let { ref, ...rest } = register('paragraph');
 
 	// https://react-hook-form.com/faqs#Howtosharerefusage
 	useImperativeHandle(ref, () => textareaRef.current);
 
-	let onsubmit: SubmitHandler<UserInputType> = (data) => {
-		if (paragraphId !== undefined) {
-			if (data.text === '') {
-				// empty paragraph get deleted right away
-				dispatch(deleteParagraphRightAway(paragraphId));
-			}
+	let onsubmit: SubmitHandler<ParagraphInputType> = (data) => {
+		if (data.paragraph === '') {
+			// empty paragraph get deleted right away
+			dispatch(deleteParagraphRightAway(paragraphId));
+		}
 
-			// trailing whitespace or line feeds do not count
-			if (sanitizeUserInput(data.text) === paragraphValue) {
-				isDirty = false;
-			}
+		// trailing whitespace or line feeds do not count
+		if (sanitizeUserInput(data.paragraph) === paragraphValue) {
+			isDirty = false;
+		}
 
-			// make the paragraph entitled for refetch: cancelQuery set to false
-			if (!resetErrorBoundary && isDirty === true) {
-				dispatch(disableCancelQueryState(paragraphId));
-			}
-			// click paragraph for editing
-			dispatch(saveParagraphInput({ paragraphId, paragraphInput: data.text }));
+		// make the paragraph entitled for refetch: cancelQuery set to false
+		if (!resetErrorBoundary && isDirty === true) {
+			dispatch(disableCancelQueryState(paragraphId));
+		}
+		// click paragraph for editing
+		dispatch(saveParagraphInput({ paragraphId, paragraphInput: data.paragraph }));
 
-			// for editing in error state
-			if (resetErrorBoundary) {
-				resetErrorBoundary();
-			}
-		} else {
-			// initial article
-			dispatch(saveInput(data.text));
+		// for editing in error state
+		if (resetErrorBoundary) {
+			resetErrorBoundary();
 		}
 	};
 
@@ -86,8 +70,6 @@ var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; re
 		<StyledForm onSubmit={handleSubmit(onsubmit)}>
 			{/* {errors.text && <p>{errors.text.message}</p>} */}
 			<TextareaAutosize
-				// TODO minRows could be dynamic? // container height divide by line height?
-				minRows={paragraphId ? undefined : 30}
 				autoFocus
 				{...rest}
 				ref={textareaRef}
@@ -120,7 +102,7 @@ var UserInput = ({ paragraphId, resetErrorBoundary }: { paragraphId?: string; re
 		</StyledForm>
 	);
 };
-export default UserInput;
+export default ParagraphInput;
 
 var StyledForm = styled.form`
 	height: 100%;

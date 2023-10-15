@@ -18,7 +18,7 @@ function App() {
 export default App;
 
 /**
- * when all paragraphs deleted, display empty textarea
+ * a button to add default string
  * word suggestion react-autosuggest
  * show fix inline or separately
  * show last changes only or show changes from beginning

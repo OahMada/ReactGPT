@@ -18,7 +18,7 @@ import {
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
 
 import Modal from './modal';
-import UserInput from './userInput';
+import ParagraphInput from './paragraphInput';
 
 var Paragraph = ({
 	paragraph: { id, initialParagraph, paragraphBeforeGrammarFix, paragraphAfterGrammarFix, adjustmentObjectArr, allAdjustmentsCount, paragraphStatus },
@@ -51,7 +51,7 @@ var Paragraph = ({
 	};
 
 	if (paragraphStatus === 'editing') {
-		return <UserInput paragraphId={id} />;
+		return <ParagraphInput paragraphId={id} />;
 	}
 
 	if (paragraphStatus === 'modifying' || paragraphStatus === 'reviving') {
