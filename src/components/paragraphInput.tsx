@@ -26,11 +26,7 @@ var ParagraphInput = ({ paragraphId, resetErrorBoundary }: { paragraphId: string
 	let {
 		register,
 		handleSubmit,
-		// clearErrors,
-		formState: {
-			// errors,
-			isDirty,
-		},
+		formState: { isDirty },
 	} = useForm({
 		defaultValues: {
 			paragraph: paragraphValue,
@@ -68,7 +64,6 @@ var ParagraphInput = ({ paragraphId, resetErrorBoundary }: { paragraphId: string
 
 	return (
 		<StyledForm onSubmit={handleSubmit(onsubmit)}>
-			{/* {errors.text && <p>{errors.text.message}</p>} */}
 			<TextareaAutosize
 				autoFocus
 				{...rest}

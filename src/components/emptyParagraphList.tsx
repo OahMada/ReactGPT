@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify';
+
 import { useAppDispatch } from '../app/hooks';
 import { reEnterArticle } from '../features/articleSlice';
 
@@ -7,7 +9,14 @@ var EmptyParagraphList = () => {
 	return (
 		<div>
 			<h1>No Content Yet, Create New?</h1>
-			<button onClick={() => dispatch(reEnterArticle())}>Edit</button>
+			<button
+				onClick={() => {
+					dispatch(reEnterArticle());
+					toast.dismiss(); // dismiss any displaying toasts
+				}}
+			>
+				Edit
+			</button>
 		</div>
 	);
 };

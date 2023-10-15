@@ -18,17 +18,16 @@ function App() {
 export default App;
 
 /**
- * a button to add default string
  * word suggestion react-autosuggest
  * show fix inline or separately
  * show last changes only or show changes from beginning
  * react router: switch paragraphs
  * react-hotkeys
  * export as pdf doc etc
+ * accept user input opaiAPI key and encrypt the key save to local-storage
+ * sanitize user input
  * test
  * rethought html layout and css
- * accept user input opaiAPI key and encrypt the key save to local-storage
  * modal dynamic position props
- * component extraction
- * sanitize user input
+ * update user flow
  */

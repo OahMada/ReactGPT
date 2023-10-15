@@ -4,6 +4,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 
 import { useAppDispatch } from '../app/hooks';
 import { saveInput } from '../features/articleSlice';
+import { createToast, defaultArticleInput } from '../utils';
 
 interface ArticleInputType {
 	article: string;
@@ -18,12 +19,17 @@ var ArticleInput = () => {
 		handleSubmit,
 		clearErrors,
 		formState: { errors },
+		setValue,
 	} = useForm({
 		defaultValues: {
 			article: '',
 		},
-		reValidateMode: 'onSubmit',
+		reValidateMode: 'onSubmit', // Because I don't want the error message to show up every time I clear out the article text.
 	});
+
+	if (errors.article) {
+		createToast({ type: 'error', content: errors.article.message, toastId: errors.article.message });
+	}
 
 	let onsubmit: SubmitHandler<ArticleInputType> = (data) => {
 		dispatch(saveInput(data.article));
@@ -31,7 +37,18 @@ var ArticleInput = () => {
 
 	return (
 		<StyledForm onSubmit={handleSubmit(onsubmit)}>
-			{errors.article && <p>{errors.article.message}</p>}
+			{/* {
+				errors.article && <p>{errors.article.message}</p> // replace with toast
+			} */}
+			<button
+				type='button'
+				onClick={() => {
+					setValue('article', defaultArticleInput);
+				}}
+			>
+				Fill in Demonstration Text
+			</button>
+
 			<TextareaAutosize
 				// TODO minRows could be dynamic? // container height divide by line height?
 				minRows={30}
@@ -40,7 +57,7 @@ var ArticleInput = () => {
 					required: 'This filed is required',
 					onChange: () => {
 						// clear errors after submitting https://stackoverflow.com/a/67659536/5800789 https://github.com/react-hook-form/react-hook-form/releases/tag/v7.16.0
-						clearErrors('article');
+						clearErrors('article'); //It is needed when displaying the error message text, or the message would keep showing up.
 					},
 				})}
 				spellCheck='true'
