@@ -23,7 +23,16 @@ import Modal from './modal';
 import ParagraphInput from './paragraphInput';
 
 var Paragraph = ({
-	paragraph: { id, initialParagraph, paragraphBeforeGrammarFix, paragraphAfterGrammarFix, adjustmentObjectArr, allAdjustmentsCount, paragraphStatus },
+	paragraph: {
+		id,
+		initialParagraph,
+		paragraphBeforeGrammarFix,
+		paragraphAfterGrammarFix,
+		adjustmentObjectArr,
+		allAdjustmentsCount,
+		paragraphStatus,
+		editHistoryMode,
+	},
 }: {
 	paragraph: ParagraphType;
 }) => {
@@ -43,6 +52,8 @@ var Paragraph = ({
 	// handlers
 	let onMouseEnterHandler = (e: React.MouseEvent<HTMLElement>, item: refactoredChange, index: number) => {
 		let { left, top } = e.currentTarget.getBoundingClientRect();
+		// target is whatever you actually clicked on. It can vary, as this can be within an element that the event was bound to.
+		// currentTarget is the element you actually bound the event to. This will never change.
 		let color = e.currentTarget.dataset.color!;
 		dispatch(updateModalContent({ modifiedObj: item, dimension: { left, top }, color, indexInParagraph: index, paragraphStatus, paragraphId: id }));
 		dispatch(showModal());
@@ -54,6 +65,7 @@ var Paragraph = ({
 
 	let handleEditHistoryMode = (e: React.ChangeEvent<HTMLInputElement>) => {
 		dispatch(alterCheckEditHistoryMode({ paragraphId: id, mode: e.target.value as EditHistoryMode }));
+		dispatch(checkEditHistory(id));
 	};
 
 	if (paragraphStatus === 'editing') {
@@ -67,11 +79,25 @@ var Paragraph = ({
 					<fieldset>
 						<legend>Check edit history mode:</legend>
 						<div>
-							<input type='radio' id={`${id}Creation`} name={id} value='paragraphCreation' checked onChange={handleEditHistoryMode} />
+							<input
+								type='radio'
+								id={`${id}Creation`}
+								name={id}
+								value='paragraphCreation'
+								checked={editHistoryMode === 'paragraphCreation'}
+								onChange={handleEditHistoryMode}
+							/>
 							<label htmlFor={`${id}Creation`}>Since Paragraph Creation</label>
 						</div>
 						<div>
-							<input type='radio' id={`${id}LastEdit`} name={id} value='paragraphLastEdit' onChange={handleEditHistoryMode} />
+							<input
+								type='radio'
+								id={`${id}LastEdit`}
+								name={id}
+								value='paragraphLastEdit'
+								checked={editHistoryMode === 'paragraphLastEdit'}
+								onChange={handleEditHistoryMode}
+							/>
 							<label htmlFor={`${id}LastEdit`}>Since Paragraph Last Edit</label>
 						</div>
 					</fieldset>
