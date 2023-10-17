@@ -6,28 +6,34 @@ import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArt
 import { refactoredChange, paragraphStatus, articleStatus } from '../types';
 import { RootState, AppThunk } from '../app/store';
 
+export type EditHistoryMode = 'paragraphCreation' | 'paragraphLastEdit';
+
 export interface Paragraph {
 	id: string;
 	paragraphStatus: paragraphStatus;
 	initialParagraph: string;
+	updatedInitialParagraph: string;
 	paragraphBeforeGrammarFix: string;
 	paragraphAfterGrammarFix: string;
 	adjustmentObjectArr: refactoredChange[];
 	allAdjustmentsCount: number;
 	appliedAdjustments: number;
 	cancelQuery: boolean;
+	editHistoryMode: EditHistoryMode;
 }
 
 let initialParagraphState: Paragraph = {
 	id: '',
 	paragraphStatus: 'modifying',
 	initialParagraph: '',
+	updatedInitialParagraph: '',
 	paragraphBeforeGrammarFix: '',
 	paragraphAfterGrammarFix: '',
 	adjustmentObjectArr: [],
 	allAdjustmentsCount: 0,
 	appliedAdjustments: 0,
 	cancelQuery: false,
+	editHistoryMode: 'paragraphCreation',
 };
 
 interface Article {
@@ -48,13 +54,14 @@ let articleSlice = createSlice({
 	name: 'article',
 	initialState: initialArticleState,
 	reducers: {
-		saveInput: (state, action: PayloadAction<string>) => {
+		saveArticleInput: (state, action: PayloadAction<string>) => {
 			let input = sanitizeUserInput(action.payload);
 			state.userInput = input;
 			let paragraphs = input.split(/\n\n/);
 			state.paragraphs = paragraphs.map((paragraph) => {
 				let obj = Object.assign({}, initialParagraphState);
 				obj.initialParagraph = paragraph;
+				obj.updatedInitialParagraph = paragraph;
 				obj.paragraphBeforeGrammarFix = paragraph;
 				obj.id = uuidv4();
 				return obj;
@@ -66,16 +73,17 @@ let articleSlice = createSlice({
 			{ payload: { paragraphInput, paragraphId } }: PayloadAction<{ paragraphInput: string; paragraphId: string }>
 		) => {
 			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
+			// when you add a new paragraph to the list
+			if (!currentParagraph.initialParagraph) {
+				currentParagraph.initialParagraph = currentParagraph.paragraphBeforeGrammarFix;
+			}
+			currentParagraph.updatedInitialParagraph = sanitizeUserInput(paragraphInput);
 			currentParagraph.paragraphBeforeGrammarFix = sanitizeUserInput(paragraphInput);
+			// second part of the condition is for bypass the unwanted modifying state
 			if (currentParagraph.adjustmentObjectArr.length === 0 && currentParagraph.cancelQuery === true) {
 				currentParagraph.paragraphStatus = 'doneModification';
 			} else {
 				currentParagraph.paragraphStatus = 'modifying';
-			}
-
-			// when you add a new paragraph to the list
-			if (!currentParagraph.initialParagraph) {
-				currentParagraph.initialParagraph = currentParagraph.paragraphBeforeGrammarFix;
 			}
 		},
 		populateParagraphLocalState: ({ paragraphs }, { payload: { paragraphId, data } }) => {
@@ -185,7 +193,12 @@ let articleSlice = createSlice({
 		},
 		checkEditHistory: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
-			let result = findTheDiffsBetweenTwoStrings(currentParagraph.paragraphAfterGrammarFix, currentParagraph.initialParagraph);
+			let result: refactoredChange[] = [];
+			if (currentParagraph.editHistoryMode === 'paragraphCreation') {
+				result = findTheDiffsBetweenTwoStrings(currentParagraph.paragraphAfterGrammarFix, currentParagraph.initialParagraph);
+			} else if (currentParagraph.editHistoryMode === 'paragraphLastEdit') {
+				result = findTheDiffsBetweenTwoStrings(currentParagraph.paragraphAfterGrammarFix, currentParagraph.updatedInitialParagraph);
+			}
 			currentParagraph.adjustmentObjectArr = result;
 			currentParagraph.paragraphStatus = 'reviving';
 			// for logic to work where when none available adjustments are left, change paragraphStatus
@@ -274,6 +287,13 @@ let articleSlice = createSlice({
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 			currentParagraph.cancelQuery = false;
 		},
+		alterCheckEditHistoryMode: (
+			{ paragraphs },
+			{ payload: { paragraphId, mode } }: PayloadAction<{ mode: EditHistoryMode; paragraphId: string }>
+		) => {
+			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
+			currentParagraph.editHistoryMode = mode;
+		},
 	},
 });
 
@@ -297,7 +317,7 @@ export var updateUserInput = (id: string): AppThunk => {
 };
 
 export var {
-	saveInput,
+	saveArticleInput,
 	populateParagraphLocalState,
 	ignoreSingleAdjustment,
 	acceptSingleAdjustment,
@@ -317,6 +337,7 @@ export var {
 	addParagraphToDeletionQueue,
 	undoParagraphDeletion,
 	deleteParagraphRightAway,
+	alterCheckEditHistoryMode,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;

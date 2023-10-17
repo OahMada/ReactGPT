@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import TextareaAutosize from 'react-textarea-autosize';
 
 import { useAppDispatch } from '../app/hooks';
-import { saveInput } from '../features/articleSlice';
+import { saveArticleInput } from '../features/articleSlice';
 import { createToast, defaultArticleInput } from '../utils';
 
 interface ArticleInputType {
@@ -32,7 +32,7 @@ var ArticleInput = () => {
 	}
 
 	let onsubmit: SubmitHandler<ArticleInputType> = (data) => {
-		dispatch(saveInput(data.article));
+		dispatch(saveArticleInput(data.article));
 	};
 
 	return (

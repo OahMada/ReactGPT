@@ -14,6 +14,8 @@ import {
 	reFetchGrammarMistakes,
 	updateUserInput,
 	Paragraph as ParagraphType,
+	alterCheckEditHistoryMode,
+	EditHistoryMode,
 } from '../features/articleSlice';
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
 
@@ -50,6 +52,10 @@ var Paragraph = ({
 		dispatch(hideModal());
 	};
 
+	let handleEditHistoryMode = (e: React.ChangeEvent<HTMLInputElement>) => {
+		dispatch(alterCheckEditHistoryMode({ paragraphId: id, mode: e.target.value as EditHistoryMode }));
+	};
+
 	if (paragraphStatus === 'editing') {
 		return <ParagraphInput paragraphId={id} />;
 	}
@@ -57,6 +63,19 @@ var Paragraph = ({
 	if (paragraphStatus === 'modifying' || paragraphStatus === 'reviving') {
 		return (
 			<>
+				{paragraphStatus === 'reviving' && (
+					<fieldset>
+						<legend>Check edit history mode:</legend>
+						<div>
+							<input type='radio' id={`${id}Creation`} name={id} value='paragraphCreation' checked onChange={handleEditHistoryMode} />
+							<label htmlFor={`${id}Creation`}>Since Paragraph Creation</label>
+						</div>
+						<div>
+							<input type='radio' id={`${id}LastEdit`} name={id} value='paragraphLastEdit' onChange={handleEditHistoryMode} />
+							<label htmlFor={`${id}LastEdit`}>Since Paragraph Last Edit</label>
+						</div>
+					</fieldset>
+				)}
 				{isLoading || isFetching ? (
 					<StyledParagraph>{paragraphBeforeGrammarFix}</StyledParagraph>
 				) : (
@@ -80,7 +99,7 @@ var Paragraph = ({
 								} else if (item.added && item.removed) {
 									let element = (
 										<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
-											<del className='replacement'>{item.removedValue}</del>
+											<del className='replacement'>{item.addedValue}</del>
 										</span>
 									);
 									acc.push(element);
