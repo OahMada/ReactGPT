@@ -73,12 +73,16 @@ let articleSlice = createSlice({
 			{ payload: { paragraphInput, paragraphId } }: PayloadAction<{ paragraphInput: string; paragraphId: string }>
 		) => {
 			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
+
+			if (currentParagraph.cancelQuery === false) {
+				currentParagraph.updatedInitialParagraph = sanitizeUserInput(paragraphInput);
+			}
+			currentParagraph.paragraphBeforeGrammarFix = sanitizeUserInput(paragraphInput);
 			// when you add a new paragraph to the list
-			if (!currentParagraph.initialParagraph) {
+			if (currentParagraph.initialParagraph === '') {
 				currentParagraph.initialParagraph = currentParagraph.paragraphBeforeGrammarFix;
 			}
-			currentParagraph.updatedInitialParagraph = sanitizeUserInput(paragraphInput);
-			currentParagraph.paragraphBeforeGrammarFix = sanitizeUserInput(paragraphInput);
+			// cancelQuery is in sync with isDirty react-hook-form state
 			// second part of the condition is for bypass the unwanted modifying state
 			if (currentParagraph.adjustmentObjectArr.length === 0 && currentParagraph.cancelQuery === true) {
 				currentParagraph.paragraphStatus = 'doneModification';
@@ -255,12 +259,9 @@ let articleSlice = createSlice({
 		},
 		insertAboveParagraph: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === payload);
-
 			let newParagraph = Object.assign({}, initialParagraphState);
 			newParagraph.paragraphStatus = 'editing';
 			newParagraph.id = uuidv4();
-			newParagraph.paragraphBeforeGrammarFix = '';
-
 			paragraphs.splice(currentParagraphIndex, 0, newParagraph);
 		},
 		insertBelowParagraph: ({ paragraphs }, { payload }: PayloadAction<string>) => {

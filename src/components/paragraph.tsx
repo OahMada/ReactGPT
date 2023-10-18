@@ -123,11 +123,17 @@ var Paragraph = ({
 										);
 									acc.push(element);
 								} else if (item.added && item.removed) {
-									let element = (
-										<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
-											<del className='replacement'>{item.addedValue}</del>
-										</span>
-									);
+									let element =
+										paragraphStatus === 'modifying' ? (
+											<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
+												<del className='replacement'>{item.addedValue}</del>
+											</span>
+										) : (
+											<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
+												<del className='replacement'>{item.removedValue}</del>
+											</span>
+										);
+
 									acc.push(element);
 								} else if (!item.added && item.removed) {
 									let element =

@@ -18,7 +18,7 @@ function App() {
 export default App;
 
 /**
- * show last changes only or show changes from beginning
+ * same paragraph input
  *
  * react router: switch paragraphs
  *

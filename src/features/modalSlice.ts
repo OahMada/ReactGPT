@@ -44,12 +44,12 @@ let modalSlice = createSlice({
 			let status = action.payload.paragraphStatus;
 			let { added, addedValue, removed, removedValue } = action.payload.modifiedObj;
 			if (added && removed) {
+				state.title = 'Original Value: ';
 				if (status === 'modifying') {
-					state.title = 'Replaced From: ';
+					state.content = removedValue!;
 				} else if (status === 'reviving') {
-					state.title = 'Replace With: ';
+					state.content = addedValue!;
 				}
-				state.content = removedValue!;
 			}
 			if (added && !removed) {
 				if (status === 'modifying') {
