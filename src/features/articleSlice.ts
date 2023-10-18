@@ -76,8 +76,9 @@ let articleSlice = createSlice({
 
 			if (currentParagraph.cancelQuery === false) {
 				currentParagraph.updatedInitialParagraph = sanitizeUserInput(paragraphInput);
+				// prevent state change if no edits made, or react query's isLoading is gonna be true
+				currentParagraph.paragraphBeforeGrammarFix = sanitizeUserInput(paragraphInput);
 			}
-			currentParagraph.paragraphBeforeGrammarFix = sanitizeUserInput(paragraphInput);
 			// when you add a new paragraph to the list
 			if (currentParagraph.initialParagraph === '') {
 				currentParagraph.initialParagraph = currentParagraph.paragraphBeforeGrammarFix;
@@ -122,6 +123,16 @@ let articleSlice = createSlice({
 			currentParagraph.cancelQuery = true;
 
 			if (currentParagraph.allAdjustmentsCount === currentParagraph.appliedAdjustments) {
+				// reset states to keep things consistent
+				if (currentParagraph.paragraphStatus === 'reviving') {
+					if (currentParagraph.editHistoryMode === 'paragraphCreation') {
+						currentParagraph.updatedInitialParagraph = currentParagraph.initialParagraph;
+						currentParagraph.paragraphBeforeGrammarFix = currentParagraph.initialParagraph;
+					} else if (currentParagraph.editHistoryMode === 'paragraphLastEdit') {
+						currentParagraph.paragraphBeforeGrammarFix = currentParagraph.updatedInitialParagraph;
+					}
+				}
+
 				currentParagraph.paragraphStatus = 'doneModification';
 				currentParagraph.paragraphAfterGrammarFix = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr); // required when manually accept all adjustments
 
@@ -165,6 +176,17 @@ let articleSlice = createSlice({
 				}
 				return acc;
 			}, []);
+
+			// reset states to keep things consistent
+			if (currentParagraph.paragraphStatus === 'reviving') {
+				if (currentParagraph.editHistoryMode === 'paragraphCreation') {
+					currentParagraph.updatedInitialParagraph = currentParagraph.initialParagraph;
+					currentParagraph.paragraphBeforeGrammarFix = currentParagraph.initialParagraph;
+				} else if (currentParagraph.editHistoryMode === 'paragraphLastEdit') {
+					currentParagraph.paragraphBeforeGrammarFix = currentParagraph.updatedInitialParagraph;
+				}
+			}
+
 			currentParagraph.paragraphStatus = 'doneModification';
 			currentParagraph.paragraphAfterGrammarFix = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr);
 			currentParagraph.cancelQuery = true;
@@ -186,6 +208,7 @@ let articleSlice = createSlice({
 				}
 				return acc;
 			}, []);
+
 			currentParagraph.paragraphStatus = 'doneModification';
 			currentParagraph.paragraphAfterGrammarFix = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr);
 			currentParagraph.cancelQuery = true;
@@ -216,7 +239,11 @@ let articleSlice = createSlice({
 		},
 		revertToBeginning: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
+			// currentParagraph.editHistoryMode === 'paragraphCreation' this is the only case here
 			currentParagraph.paragraphAfterGrammarFix = currentParagraph.initialParagraph;
+			currentParagraph.updatedInitialParagraph = currentParagraph.initialParagraph;
+			currentParagraph.paragraphBeforeGrammarFix = currentParagraph.initialParagraph;
+
 			currentParagraph.paragraphStatus = 'doneModification'; // when in reviewing phase it's needed
 
 			// reset state properties that is staled
@@ -227,7 +254,8 @@ let articleSlice = createSlice({
 		updateParagraphBeforeGrammarFixState: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 
-			if (currentParagraph.paragraphAfterGrammarFix !== '') {
+			// prevent state change if no edits made, or react query's isLoading is gonna be true
+			if (currentParagraph.paragraphAfterGrammarFix !== '' && currentParagraph.cancelQuery === false) {
 				// when the network error happens, the paragraphAfterGrammarFix would be empty
 				currentParagraph.paragraphBeforeGrammarFix = currentParagraph.paragraphAfterGrammarFix;
 			}

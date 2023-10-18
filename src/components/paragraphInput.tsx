@@ -21,7 +21,7 @@ var ParagraphInput = ({ paragraphId, resetErrorBoundary }: { paragraphId: string
 	// calculate the paragraph text
 	let { paragraphs } = useAppSelector(selectArticle);
 	let currentParagraph = paragraphs.find((item: Paragraph) => item.id === paragraphId) as Paragraph;
-	let paragraphValue = currentParagraph.paragraphBeforeGrammarFix;
+	let paragraphValue = currentParagraph.paragraphAfterGrammarFix;
 
 	let {
 		register,
