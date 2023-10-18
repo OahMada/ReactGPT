@@ -18,6 +18,7 @@ function App() {
 export default App;
 
 /**
+ * unwanted isLoading state
  * same paragraph input
  *
  * react router: switch paragraphs

@@ -203,6 +203,7 @@ let articleSlice = createSlice({
 			} else if (currentParagraph.editHistoryMode === 'paragraphLastEdit') {
 				result = findTheDiffsBetweenTwoStrings(currentParagraph.paragraphAfterGrammarFix, currentParagraph.updatedInitialParagraph);
 			}
+
 			currentParagraph.adjustmentObjectArr = result;
 			currentParagraph.paragraphStatus = 'reviving';
 			// for logic to work where when none available adjustments are left, change paragraphStatus

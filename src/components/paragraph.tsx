@@ -164,9 +164,9 @@ var Paragraph = ({
 					{paragraphStatus === 'reviving' && 'Revert All'}
 				</button>
 				<button
-					onClick={async () => {
+					onClick={() => {
 						// to make sure the next time, paragraph changed back to old content, there will be a refetch
-						await QueryClient.invalidateQueries({
+						QueryClient.invalidateQueries({
 							queryKey: gptKeys(paragraphBeforeGrammarFix),
 							exact: true,
 							refetchType: 'none',
@@ -199,8 +199,8 @@ var Paragraph = ({
 						Revert All Changes
 					</button>
 					<button
-						onClick={async () => {
-							await QueryClient.invalidateQueries({
+						onClick={() => {
+							QueryClient.invalidateQueries({
 								queryKey: gptKeys(paragraphBeforeGrammarFix),
 								exact: true,
 							});
