@@ -10,8 +10,8 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { Paragraph, populateParagraphLocalState, selectArticle } from '../features/articleSlice';
 import { findTheDiffsBetweenTwoStrings } from '../utils';
 
-export var gptKeys = (paragraph: string) => {
-	return ['gpt', paragraph] as const;
+export var gptKeys = (paragraph: string, paragraphId: string) => {
+	return ['gpt', paragraph, paragraphId] as const;
 };
 
 export var queryGPT = async ({ queryKey, signal }: QueryFunctionContext<ReturnType<typeof gptKeys>>) => {
@@ -37,13 +37,13 @@ export var queryGPT = async ({ queryKey, signal }: QueryFunctionContext<ReturnTy
 	return response.data['choices'][0]['message']['content'];
 };
 
-export function useGPT(paragraph: string) {
+export function useGPT(paragraph: string, paragraphId: string) {
 	let dispatch = useAppDispatch();
 	let { paragraphs } = useAppSelector(selectArticle);
-	let currentParagraph = paragraphs.find((item) => item.paragraphBeforeGrammarFix === paragraph) as Paragraph;
+	let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
 
 	let result = useQuery({
-		queryKey: gptKeys(paragraph),
+		queryKey: gptKeys(paragraph, paragraphId),
 		queryFn: queryGPT,
 		select: (data) => findTheDiffsBetweenTwoStrings(paragraph, data),
 		// prevent fetch when in editing mode, only fetch after editing finished

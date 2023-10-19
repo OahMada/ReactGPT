@@ -41,7 +41,7 @@ var Paragraph = ({
 
 	// fetch API
 	// isFetching is for action initiated by click the fix grammar mistakes button
-	let { isLoading, isFetching } = useGPT(paragraphBeforeGrammarFix);
+	let { isLoading, isFetching } = useGPT(paragraphBeforeGrammarFix, id);
 
 	// query client
 	let QueryClient = useQueryClient();
@@ -167,7 +167,7 @@ var Paragraph = ({
 					onClick={() => {
 						// to make sure the next time, paragraph changed back to old content, there will be a refetch
 						QueryClient.invalidateQueries({
-							queryKey: gptKeys(paragraphBeforeGrammarFix),
+							queryKey: gptKeys(paragraphBeforeGrammarFix, id),
 							exact: true,
 							refetchType: 'none',
 						});
@@ -201,7 +201,7 @@ var Paragraph = ({
 					<button
 						onClick={() => {
 							QueryClient.invalidateQueries({
-								queryKey: gptKeys(paragraphBeforeGrammarFix),
+								queryKey: gptKeys(paragraphBeforeGrammarFix, id),
 								exact: true,
 							});
 							dispatch(reFetchGrammarMistakes(id));

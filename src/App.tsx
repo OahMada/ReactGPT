@@ -18,9 +18,6 @@ function App() {
 export default App;
 
 /**
- * unwanted isLoading state
- * same paragraph input
- *
  * react router: switch paragraphs
  *
  * accept user input opaiAPI key and encrypt the key save to local-storage
