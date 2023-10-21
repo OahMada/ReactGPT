@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { FallbackProps } from 'react-error-boundary';
 import TextareaAutosize from 'react-textarea-autosize';
+import { useLocalStorage } from 'react-use';
+import { compress, decompress } from 'lz-string';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectArticle, saveParagraphInput, Paragraph, disableCancelQueryState, deleteParagraphRightAway } from '../features/articleSlice';
@@ -25,17 +27,28 @@ var ParagraphInput = ({ paragraphId, resetErrorBoundary }: { paragraphId: string
 		// if there were network error, use paragraphBeforeGrammarFix instead
 		currentParagraph.paragraphAfterGrammarFix === '' ? currentParagraph.paragraphBeforeGrammarFix : currentParagraph.paragraphAfterGrammarFix;
 
+	// Persist the paragraph while editing
+	let [localParagraph, setLocalParagraph, removeLocalParagraph] = useLocalStorage(paragraphId, paragraphValue, {
+		raw: false,
+		serializer: (value) => compress(JSON.stringify(value)),
+		deserializer: (value) => JSON.parse(decompress(value)),
+	});
+
 	let {
 		register,
 		handleSubmit,
 		formState: { isDirty },
 	} = useForm({
 		defaultValues: {
-			paragraph: paragraphValue,
+			paragraph: localParagraph ?? paragraphValue,
 		},
 	});
 
-	let { ref, ...rest } = register('paragraph');
+	let { ref, ...rest } = register('paragraph', {
+		onChange: (e) => {
+			setLocalParagraph(e.target.value);
+		},
+	});
 
 	// https://react-hook-form.com/faqs#Howtosharerefusage
 	useImperativeHandle(ref, () => textareaRef.current);
@@ -49,6 +62,9 @@ var ParagraphInput = ({ paragraphId, resetErrorBoundary }: { paragraphId: string
 		// trailing whitespace or line feeds do not count
 		if (sanitizeUserInput(data.paragraph) === paragraphValue) {
 			isDirty = false;
+		} else {
+			// When the webpage is refreshed, `isDirty` is reset to false. This ensures that the value is correct.
+			isDirty = true;
 		}
 
 		// make the paragraph entitled for refetch: cancelQuery set to false
@@ -62,6 +78,7 @@ var ParagraphInput = ({ paragraphId, resetErrorBoundary }: { paragraphId: string
 		if (resetErrorBoundary) {
 			resetErrorBoundary();
 		}
+		removeLocalParagraph();
 	};
 
 	return (

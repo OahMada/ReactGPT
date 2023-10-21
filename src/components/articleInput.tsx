@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import TextareaAutosize from 'react-textarea-autosize';
+import { useLocalStorage } from 'react-use';
+import { compress, decompress } from 'lz-string';
 
 import { useAppDispatch } from '../app/hooks';
 import { saveArticleInput } from '../features/articleSlice';
@@ -14,6 +16,12 @@ interface ArticleInputType {
 var ArticleInput = () => {
 	let dispatch = useAppDispatch();
 
+	let [localArticle, setLocalArticle, removeLocalArticle] = useLocalStorage('article', '', {
+		raw: false,
+		serializer: (value) => compress(JSON.stringify(value)),
+		deserializer: (value) => JSON.parse(decompress(value)),
+	});
+
 	let {
 		register,
 		handleSubmit,
@@ -22,7 +30,7 @@ var ArticleInput = () => {
 		setValue,
 	} = useForm({
 		defaultValues: {
-			article: '',
+			article: localArticle ?? '',
 		},
 		reValidateMode: 'onSubmit', // Because I don't want the error message to show up every time I clear out the article text.
 	});
@@ -33,6 +41,7 @@ var ArticleInput = () => {
 
 	let onsubmit: SubmitHandler<ArticleInputType> = (data) => {
 		dispatch(saveArticleInput(data.article));
+		removeLocalArticle();
 	};
 
 	return (
@@ -55,9 +64,10 @@ var ArticleInput = () => {
 				autoFocus
 				{...register('article', {
 					required: 'This filed is required',
-					onChange: () => {
+					onChange: (e) => {
 						// clear errors after submitting https://stackoverflow.com/a/67659536/5800789 https://github.com/react-hook-form/react-hook-form/releases/tag/v7.16.0
 						clearErrors('article'); //It is needed when displaying the error message text, or the message would keep showing up.
+						setLocalArticle(e.target.value);
 					},
 				})}
 				spellCheck='true'
