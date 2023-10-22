@@ -7,17 +7,20 @@ import {
 	insertBelowParagraph,
 	addParagraphToDeletionQueue,
 	undoParagraphDeletion,
+	selectArticle,
+	Paragraph,
 } from '../features/articleSlice';
-import { useAppDispatch } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { createToast } from '../utils';
 
 // https://github.com/fkhadra/react-toastify/issues/568#issuecomment-779847274
 interface UndoProps extends Partial<ToastContentProps> {
 	onUndo: () => void;
 	closeToast: () => void;
+	paragraph: string;
 }
 
-var Undo = ({ closeToast, onUndo }: UndoProps) => {
+var Undo = ({ closeToast, onUndo, paragraph }: UndoProps) => {
 	const handleClick = () => {
 		onUndo();
 		closeToast();
@@ -25,7 +28,7 @@ var Undo = ({ closeToast, onUndo }: UndoProps) => {
 
 	return (
 		<div>
-			Paragraph Deleted <button onClick={handleClick}>UNDO</button>
+			Paragraph {paragraph ? `"${paragraph.slice(0, 10)}..." ` : ''}Deleted <button onClick={handleClick}>UNDO</button>
 		</div>
 	);
 };
@@ -33,6 +36,9 @@ var Undo = ({ closeToast, onUndo }: UndoProps) => {
 var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 	let dispatch = useAppDispatch();
 	let toastId = useRef<Id>();
+
+	let { paragraphs } = useAppSelector(selectArticle);
+	let currentParagraph = paragraphs.find((item: Paragraph) => item.id === paragraphId) as Paragraph;
 
 	let handleParagraphDeletion = () => {
 		dispatch(addParagraphToDeletionQueue(paragraphId));
@@ -54,6 +60,7 @@ var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 					closeToast={() => {
 						toast.dismiss(toastId.current);
 					}}
+					paragraph={currentParagraph.paragraphAfterGrammarFix}
 				/>
 			),
 			containerId: 'paragraphDeletion',
