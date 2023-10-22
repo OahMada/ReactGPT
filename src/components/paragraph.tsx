@@ -5,7 +5,7 @@ import { useRef } from 'react';
 
 import { refactoredChange } from '../types';
 
-import { useGPT, gptKeys } from '../query/GPT';
+import { useGrammarQuery, grammarQueryKeys } from '../query/grammarQuery';
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import {
@@ -45,7 +45,7 @@ var Paragraph = ({
 
 	// fetch API
 	// isFetching is for action initiated by click the fix grammar mistakes button
-	let { isLoading, isFetching } = useGPT(paragraphBeforeGrammarFix, id);
+	let { isLoading, isFetching } = useGrammarQuery(paragraphBeforeGrammarFix, id);
 
 	// query client
 	let QueryClient = useQueryClient();
@@ -181,7 +181,7 @@ var Paragraph = ({
 					onClick={() => {
 						// to make sure the next time, paragraph changed back to old content, there will be a refetch
 						QueryClient.invalidateQueries({
-							queryKey: gptKeys(paragraphBeforeGrammarFix, id),
+							queryKey: grammarQueryKeys(paragraphBeforeGrammarFix, id),
 							exact: true,
 							refetchType: 'none',
 						});
@@ -216,7 +216,7 @@ var Paragraph = ({
 					<button
 						onClick={() => {
 							QueryClient.invalidateQueries({
-								queryKey: gptKeys(paragraphBeforeGrammarFix, id),
+								queryKey: grammarQueryKeys(paragraphBeforeGrammarFix, id),
 								exact: true,
 							});
 							dispatch(reFetchGrammarMistakes(id));

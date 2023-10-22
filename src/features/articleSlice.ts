@@ -110,6 +110,7 @@ let articleSlice = createSlice({
 						currentParagraph.paragraphBeforeGrammarFix.slice(0, 10) + (currentParagraph.paragraphBeforeGrammarFix.length > 10 ? '...' : '')
 					}" has no grammar mistakes found.`,
 					toastId: paragraphId + 'NoGrammarMistakes',
+					options: { hideProgressBar: false },
 				});
 			}
 		},

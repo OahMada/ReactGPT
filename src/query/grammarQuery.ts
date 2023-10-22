@@ -10,11 +10,11 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { Paragraph, populateParagraphLocalState, selectArticle } from '../features/articleSlice';
 import { findTheDiffsBetweenTwoStrings } from '../utils';
 
-export var gptKeys = (paragraph: string, paragraphId: string) => {
-	return ['gpt', paragraph, paragraphId] as const;
+export var grammarQueryKeys = (paragraph: string, paragraphId: string) => {
+	return ['grammar', paragraph, paragraphId] as const;
 };
 
-export var queryGPT = async ({ queryKey, signal }: QueryFunctionContext<ReturnType<typeof gptKeys>>) => {
+export var queryGrammarMistakes = async ({ queryKey, signal }: QueryFunctionContext<ReturnType<typeof grammarQueryKeys>>) => {
 	let response = await axios.post(
 		'https://api.openai.com/v1/chat/completions',
 		{
@@ -37,14 +37,14 @@ export var queryGPT = async ({ queryKey, signal }: QueryFunctionContext<ReturnTy
 	return response.data['choices'][0]['message']['content'];
 };
 
-export function useGPT(paragraph: string, paragraphId: string) {
+export function useGrammarQuery(paragraph: string, paragraphId: string) {
 	let dispatch = useAppDispatch();
 	let { paragraphs } = useAppSelector(selectArticle);
 	let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
 
 	let result = useQuery({
-		queryKey: gptKeys(paragraph, paragraphId),
-		queryFn: queryGPT,
+		queryKey: grammarQueryKeys(paragraph, paragraphId),
+		queryFn: queryGrammarMistakes,
 		select: (data) => {
 			// There might be double line feeds in the returned value of GPT.
 			data = data.replace(/\n{2,}/g, '\n');
