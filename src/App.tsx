@@ -19,24 +19,23 @@ export default App;
 
 /**
  * paragraph translation
- * a show translation button
+ * a show translation button/click again hide
  *
  * react router: switch paragraphs
- *
  *
  * accept user input opaiAPI key and encrypt the key save to local-storage
  * a way to invoke hidden default api key
  * change api key setting
  *
  * preview result
- *
  * export as pdf doc etc
  *
  * react-hotkeys
- * sanitize user input
  * test
+ *
+ * update user flow
+ *
  * rethought html layout and css
  * modal dynamic position props
- * update user flow
  * MUI
  */
