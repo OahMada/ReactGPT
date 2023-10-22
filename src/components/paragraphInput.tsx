@@ -37,6 +37,7 @@ var ParagraphInput = ({ paragraphId, resetErrorBoundary }: { paragraphId: string
 	let {
 		register,
 		handleSubmit,
+		setValue,
 		formState: { isDirty },
 	} = useForm({
 		defaultValues: {
@@ -91,25 +92,31 @@ var ParagraphInput = ({ paragraphId, resetErrorBoundary }: { paragraphId: string
 				onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 					// https://github.com/orgs/react-hook-form/discussions/2549#discussioncomment-373578
 					// prevent double line feeds, notify user to create a new paragraph
-					if (paragraphId !== undefined) {
-						let cursorPosition: number | undefined = textareaRef.current?.selectionStart;
-						let text: string | undefined = textareaRef.current?.value;
-						let characterBeforeCursorPosition: string | undefined;
-						let characterAfterCursorPosition: string | undefined;
-						if (cursorPosition !== undefined && text) {
-							characterBeforeCursorPosition = text[cursorPosition - 1];
-							characterAfterCursorPosition = text[cursorPosition];
-						}
+					let cursorPosition: number | undefined = textareaRef.current?.selectionStart!;
+					let text: string | undefined = textareaRef.current?.value!;
+					let characterBeforeCursorPosition = text[cursorPosition - 1];
+					let characterAfterCursorPosition = text[cursorPosition];
 
-						if ((characterBeforeCursorPosition === '\n' || characterAfterCursorPosition === '\n') && e.key === 'Enter') {
-							e.preventDefault();
-							createToast({
-								type: 'info',
-								content: 'Consider adding a new paragraph instead of using double line breaks.',
-								toastId: 'create new paragraph notice',
-							});
-						}
+					if ((characterBeforeCursorPosition === '\n' || characterAfterCursorPosition === '\n') && e.key === 'Enter') {
+						e.preventDefault();
+						createToast({
+							type: 'info',
+							content: 'Consider adding a new paragraph instead of using double line breaks.',
+							toastId: 'create new paragraph notice',
+						});
 					}
+				}}
+				// https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event // https://stackoverflow.com/questions/20509061/window-clipboarddata-getdatatext-doesnt-work-in-chrome
+				// remove double line feeds from pasting text
+				onPaste={(e: React.ClipboardEvent) => {
+					e.preventDefault();
+
+					let paste = e.clipboardData.getData('text');
+					paste = paste.replace(/\n{2,}/g, '\n');
+					let selectionStart: number | undefined = textareaRef.current?.selectionStart!;
+					let selectionEnd: number | undefined = textareaRef.current?.selectionEnd!;
+					let text: string | undefined = textareaRef.current?.value!;
+					setValue('paragraph', text.substring(0, selectionStart) + paste + text.substring(selectionEnd));
 				}}
 			/>
 			<button type='submit'>Done</button>

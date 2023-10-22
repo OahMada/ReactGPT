@@ -45,7 +45,11 @@ export function useGPT(paragraph: string, paragraphId: string) {
 	let result = useQuery({
 		queryKey: gptKeys(paragraph, paragraphId),
 		queryFn: queryGPT,
-		select: (data) => findTheDiffsBetweenTwoStrings(paragraph, data),
+		select: (data) => {
+			// There might be double line feeds in the returned value of GPT.
+			data = data.replace(/\n{2,}/g, '\n');
+			return findTheDiffsBetweenTwoStrings(paragraph, data);
+		},
 		// prevent fetch when in editing mode, only fetch after editing finished
 		enabled: currentParagraph.paragraphStatus === 'modifying' && !currentParagraph.cancelQuery,
 		useErrorBoundary: true,

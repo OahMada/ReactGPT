@@ -18,6 +18,9 @@ function App() {
 export default App;
 
 /**
+ * click find grammar mistakes, and the old text is displayed, why?
+ * show paragraph context when deleting
+ *
  * react router: switch paragraphs
  *
  * accept user input opaiAPI key and encrypt the key save to local-storage

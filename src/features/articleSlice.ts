@@ -104,7 +104,13 @@ let articleSlice = createSlice({
 			}, 0);
 
 			if (currentParagraph.allAdjustmentsCount === 0) {
-				createToast({ type: 'info', content: 'None grammar mistakes found.', toastId: 'none grammar mistakes' });
+				createToast({
+					type: 'info',
+					content: `Paragraph "${
+						currentParagraph.paragraphBeforeGrammarFix.slice(0, 10) + (currentParagraph.paragraphBeforeGrammarFix.length > 10 ? '...' : '')
+					}" has grammar mistakes found.`,
+					toastId: paragraphId,
+				});
 			}
 		},
 		// also be used when revert one adjustment
