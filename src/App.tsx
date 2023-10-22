@@ -18,7 +18,6 @@ function App() {
 export default App;
 
 /**
- * click find grammar mistakes, and the old text is displayed, why?
  * pasted text gets split by double line feeds, and new paragraph automatically crated
  *
  * react router: switch paragraphs

@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import { useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import { useRef } from 'react';
 
 import { refactoredChange } from '../types';
 
@@ -36,6 +38,8 @@ var Paragraph = ({
 }: {
 	paragraph: ParagraphType;
 }) => {
+	let doneButtonRef = useRef<HTMLButtonElement>(null);
+
 	// dispatch
 	let dispatch = useAppDispatch();
 
@@ -67,6 +71,16 @@ var Paragraph = ({
 		dispatch(alterCheckEditHistoryMode({ paragraphId: id, mode: e.target.value as EditHistoryMode }));
 		dispatch(checkEditHistory(id));
 	};
+
+	// automatically click the done button a certain condition
+	toast.onChange((toastItem) => {
+		if (toastItem.status === 'removed' && toastItem.id === id + 'NoGrammarMistakes' && paragraphStatus === 'modifying') {
+			// If the toastId check isn't included, changes to any toast would trigger the following.
+			if (doneButtonRef.current) {
+				doneButtonRef.current!.click();
+			}
+		}
+	});
 
 	if (paragraphStatus === 'editing') {
 		return <ParagraphInput paragraphId={id} />;
@@ -174,6 +188,7 @@ var Paragraph = ({
 						dispatch(doneWithCurrentParagraphState(id));
 					}}
 					disabled={isLoading || isFetching}
+					ref={doneButtonRef}
 				>
 					Done
 				</button>
