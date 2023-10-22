@@ -108,7 +108,7 @@ let articleSlice = createSlice({
 					type: 'info',
 					content: `Paragraph "${
 						currentParagraph.paragraphBeforeGrammarFix.slice(0, 10) + (currentParagraph.paragraphBeforeGrammarFix.length > 10 ? '...' : '')
-					}" has grammar mistakes found.`,
+					}" has no grammar mistakes found.`,
 					toastId: paragraphId,
 				});
 			}
@@ -339,6 +339,7 @@ export var selectArticle = (state: RootState) => state.article;
 // useful when user tries to re-send api call with the same paragraph of article with edits
 export var reFetchGrammarMistakes = (id: string): AppThunk => {
 	return (dispatch) => {
+		dispatch(disableCancelQueryState(id));
 		dispatch(updateParagraphBeforeGrammarFixState(id));
 		dispatch(disableCancelQueryState(id));
 	};

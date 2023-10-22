@@ -24,7 +24,7 @@ export default App;
  * react router: switch paragraphs
  *
  * accept user input opaiAPI key and encrypt the key save to local-storage
- * a way to invoke hidden api key
+ * a way to invoke hidden default api key
  * change api key setting
  *
  * preview result
