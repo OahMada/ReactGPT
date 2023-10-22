@@ -19,8 +19,11 @@ export default App;
 
 /**
  * pasted text gets split by double line feeds, and new paragraph automatically crated
+ * paragraph translation
+ * a show translation button
  *
  * react router: switch paragraphs
+ *
  *
  * accept user input opaiAPI key and encrypt the key save to local-storage
  * a way to invoke hidden default api key
