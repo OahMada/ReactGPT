@@ -299,12 +299,23 @@ let articleSlice = createSlice({
 			newParagraph.id = uuidv4();
 			paragraphs.splice(currentParagraphIndex, 0, newParagraph);
 		},
-		insertBelowParagraph: ({ paragraphs }, { payload }: PayloadAction<string>) => {
-			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === payload);
+		insertBelowParagraph: (
+			{ paragraphs },
+			{
+				payload: { paragraphId, newParagraphText, indexOffset },
+			}: PayloadAction<{ paragraphId: string; newParagraphText?: string; indexOffset?: number }>
+		) => {
+			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === paragraphId);
 			let newParagraph = Object.assign({}, initialParagraphState);
 			newParagraph.paragraphStatus = 'editing';
 			newParagraph.id = uuidv4();
-			paragraphs.splice(currentParagraphIndex + 1, 0, newParagraph);
+			if (newParagraphText) {
+				newParagraph.initialParagraph = newParagraphText;
+				newParagraph.updatedInitialParagraph = newParagraphText;
+				newParagraph.paragraphBeforeGrammarFix = newParagraphText;
+			}
+
+			paragraphs.splice(currentParagraphIndex + 1 + (indexOffset ?? 0), 0, newParagraph);
 		},
 		reEnterArticle: (state) => {
 			state.userInput = '';

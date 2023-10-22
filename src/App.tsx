@@ -18,7 +18,6 @@ function App() {
 export default App;
 
 /**
- * pasted text gets split by double line feeds, and new paragraph automatically crated
  * paragraph translation
  * a show translation button
  *

@@ -74,7 +74,7 @@ var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 			<div>
 				<button>Insert New Paragraph</button>
 				<button onClick={() => dispatch(insertAboveParagraph(paragraphId))}>Insert Above</button>
-				<button onClick={() => dispatch(insertBelowParagraph(paragraphId))}>Insert Bellow</button>
+				<button onClick={() => dispatch(insertBelowParagraph({ paragraphId }))}>Insert Bellow</button>
 			</div>
 		</div>
 	);

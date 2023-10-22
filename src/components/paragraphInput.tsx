@@ -7,7 +7,14 @@ import { useLocalStorage } from 'react-use';
 import { compress, decompress } from 'lz-string';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { selectArticle, saveParagraphInput, Paragraph, disableCancelQueryState, deleteParagraphRightAway } from '../features/articleSlice';
+import {
+	selectArticle,
+	saveParagraphInput,
+	Paragraph,
+	disableCancelQueryState,
+	deleteParagraphRightAway,
+	insertBelowParagraph,
+} from '../features/articleSlice';
 
 import { createToast, sanitizeUserInput } from '../utils/index';
 
@@ -112,11 +119,23 @@ var ParagraphInput = ({ paragraphId, resetErrorBoundary }: { paragraphId: string
 					e.preventDefault();
 
 					let paste = e.clipboardData.getData('text');
-					paste = paste.replace(/\n{2,}/g, '\n');
+					// paste = paste.replace(/\n{2,}/g, '\n');
 					let selectionStart: number | undefined = textareaRef.current?.selectionStart!;
 					let selectionEnd: number | undefined = textareaRef.current?.selectionEnd!;
 					let text: string | undefined = textareaRef.current?.value!;
-					setValue('paragraph', text.substring(0, selectionStart) + paste + text.substring(selectionEnd));
+
+					let combinedText = text.substring(0, selectionStart) + paste + text.substring(selectionEnd);
+					let splitCombinedTextArr = combinedText.split(/\n{2,}/);
+
+					setValue('paragraph', splitCombinedTextArr[0]);
+					splitCombinedTextArr.shift();
+
+					let payloadId = paragraphId;
+					for (let index = 0; index < splitCombinedTextArr.length; index++) {
+						let splitText = splitCombinedTextArr[index];
+						dispatch(insertBelowParagraph({ paragraphId: payloadId, newParagraphText: splitText, indexOffset: index }));
+						// payloadId = getNewlyCreatedParagraphId(splitText);
+					}
 				}}
 			/>
 			<button type='submit'>Done</button>
