@@ -1,10 +1,10 @@
 // react query
 import { QueryFunctionContext, useQuery } from '@tanstack/react-query';
-
 import axios from 'axios';
+import { useEffect } from 'react';
 
-import { useAppSelector } from '../app/hooks';
-import { Paragraph, selectArticle } from '../features/articleSlice';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
+import { Paragraph, selectArticle, loadTranslationTextToLocalState } from '../features/articleSlice';
 
 export var translationQueryKeys = (paragraphText: string, paragraphId: string) => {
 	return ['translation', paragraphText, paragraphId] as const;
@@ -30,6 +30,7 @@ export var queryTranslation = async ({ queryKey, signal }: QueryFunctionContext<
 };
 
 export function useTranslationQuery(paragraph: string, paragraphId: string) {
+	let dispatch = useAppDispatch();
 	let { paragraphs } = useAppSelector(selectArticle);
 	let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
 
@@ -39,6 +40,10 @@ export function useTranslationQuery(paragraph: string, paragraphId: string) {
 		enabled: currentParagraph.paragraphStatus === 'doneModification' && currentParagraph.showTranslation,
 		useErrorBoundary: true,
 	});
+
+	useEffect(() => {
+		dispatch(loadTranslationTextToLocalState({ paragraphId, translationText: result.data }));
+	}, [dispatch, paragraphId, result.data]);
 
 	return result;
 }
