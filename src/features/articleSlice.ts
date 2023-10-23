@@ -20,6 +20,7 @@ export interface Paragraph {
 	appliedAdjustments: number;
 	cancelQuery: boolean;
 	editHistoryMode: EditHistoryMode;
+	showTranslation: boolean;
 }
 
 let initialParagraphState: Paragraph = {
@@ -34,6 +35,7 @@ let initialParagraphState: Paragraph = {
 	appliedAdjustments: 0,
 	cancelQuery: false,
 	editHistoryMode: 'paragraphCreation',
+	showTranslation: false,
 };
 
 interface Article {
@@ -147,6 +149,7 @@ let articleSlice = createSlice({
 				currentParagraph.adjustmentObjectArr = [];
 				currentParagraph.appliedAdjustments = 0;
 				currentParagraph.allAdjustmentsCount = 0;
+				currentParagraph.showTranslation = false;
 			}
 		},
 		ignoreSingleAdjustment: (
@@ -202,6 +205,7 @@ let articleSlice = createSlice({
 			currentParagraph.adjustmentObjectArr = [];
 			currentParagraph.appliedAdjustments = 0;
 			currentParagraph.allAdjustmentsCount = 0;
+			currentParagraph.showTranslation = false;
 		},
 		// also used for finish reviewing edit history
 		doneWithCurrentParagraphState: ({ paragraphs }, { payload }: PayloadAction<string>) => {
@@ -224,6 +228,7 @@ let articleSlice = createSlice({
 			currentParagraph.adjustmentObjectArr = [];
 			currentParagraph.appliedAdjustments = 0;
 			currentParagraph.allAdjustmentsCount = 0;
+			currentParagraph.showTranslation = false;
 		},
 		checkEditHistory: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
@@ -257,6 +262,7 @@ let articleSlice = createSlice({
 			currentParagraph.adjustmentObjectArr = [];
 			currentParagraph.appliedAdjustments = 0;
 			currentParagraph.allAdjustmentsCount = 0;
+			currentParagraph.showTranslation = false;
 		},
 		updateParagraphBeforeGrammarFixState: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
@@ -271,6 +277,9 @@ let articleSlice = createSlice({
 			currentParagraph.adjustmentObjectArr = [];
 			currentParagraph.appliedAdjustments = 0;
 			currentParagraph.allAdjustmentsCount = 0;
+
+			// Before refetching, set translation to be hidden.
+			currentParagraph.showTranslation = false;
 		},
 		prepareForUserUpdateParagraph: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
@@ -342,6 +351,10 @@ let articleSlice = createSlice({
 			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
 			currentParagraph.editHistoryMode = mode;
 		},
+		toggleTranslation: ({ paragraphs }, { payload }) => {
+			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
+			currentParagraph.showTranslation = !currentParagraph.showTranslation;
+		},
 	},
 });
 
@@ -353,7 +366,6 @@ export var reFetchGrammarMistakes = (id: string): AppThunk => {
 	return (dispatch) => {
 		dispatch(disableCancelQueryState(id));
 		dispatch(updateParagraphBeforeGrammarFixState(id));
-		dispatch(disableCancelQueryState(id));
 	};
 };
 
@@ -387,6 +399,7 @@ export var {
 	undoParagraphDeletion,
 	deleteParagraphRightAway,
 	alterCheckEditHistoryMode,
+	toggleTranslation,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;

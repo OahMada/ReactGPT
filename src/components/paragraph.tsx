@@ -6,6 +6,7 @@ import { useRef } from 'react';
 import { refactoredChange } from '../types';
 
 import { useGrammarQuery, grammarQueryKeys } from '../query/grammarQuery';
+import { useTranslationQuery } from '../query/translationQuery';
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import {
@@ -18,6 +19,7 @@ import {
 	Paragraph as ParagraphType,
 	alterCheckEditHistoryMode,
 	EditHistoryMode,
+	toggleTranslation,
 } from '../features/articleSlice';
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
 
@@ -34,6 +36,7 @@ var Paragraph = ({
 		allAdjustmentsCount,
 		paragraphStatus,
 		editHistoryMode,
+		showTranslation,
 	},
 }: {
 	paragraph: ParagraphType;
@@ -44,8 +47,13 @@ var Paragraph = ({
 	let dispatch = useAppDispatch();
 
 	// fetch API
-	// isFetching is for action initiated by click the fix grammar mistakes button
-	let { isLoading, isFetching } = useGrammarQuery(paragraphBeforeGrammarFix, id);
+	// isGrammarFixesFetching is for action initiated by click the fix grammar mistakes button
+	let { isLoading: isGrammarFixesLoading, isFetching: isGrammarFixesFetching } = useGrammarQuery(paragraphBeforeGrammarFix, id);
+	let {
+		isLoading: isTranslationLoading,
+		isFetching: isTranslationFetching,
+		data: translationText,
+	} = useTranslationQuery(paragraphAfterGrammarFix, id);
 
 	// query client
 	let QueryClient = useQueryClient();
@@ -82,10 +90,13 @@ var Paragraph = ({
 		}
 	});
 
+	// -------------- Editing--------------
+
 	if (paragraphStatus === 'editing') {
 		return <ParagraphInput paragraphId={id} />;
 	}
 
+	// -------------- Modifying / Reviving --------------
 	if (paragraphStatus === 'modifying' || paragraphStatus === 'reviving') {
 		return (
 			<>
@@ -116,7 +127,7 @@ var Paragraph = ({
 						</div>
 					</fieldset>
 				)}
-				{isLoading || isFetching ? (
+				{isGrammarFixesLoading || isGrammarFixesFetching ? (
 					<StyledParagraph>{paragraphBeforeGrammarFix}</StyledParagraph>
 				) : (
 					<StyledParagraph>
@@ -172,7 +183,7 @@ var Paragraph = ({
 					onClick={() => {
 						dispatch(acceptAllAdjustments(id));
 					}}
-					disabled={allAdjustmentsCount === 0 || isLoading || isFetching}
+					disabled={allAdjustmentsCount === 0 || isGrammarFixesLoading || isGrammarFixesFetching}
 				>
 					{paragraphStatus === 'modifying' && 'Accept All'}
 					{paragraphStatus === 'reviving' && 'Revert All'}
@@ -187,7 +198,7 @@ var Paragraph = ({
 						});
 						dispatch(doneWithCurrentParagraphState(id));
 					}}
-					disabled={isLoading || isFetching}
+					disabled={isGrammarFixesLoading || isGrammarFixesFetching}
 					ref={doneButtonRef}
 				>
 					Done
@@ -196,11 +207,13 @@ var Paragraph = ({
 			</>
 		);
 	}
+	// -------------- Done Modification --------------
 	if (paragraphStatus === 'doneModification') {
 		return (
 			<>
 				<h4>Click Paragraph to Edit</h4>
 				<StyledParagraph onClick={() => dispatch(updateUserInput(id))}>{paragraphAfterGrammarFix}</StyledParagraph>
+				{showTranslation && <StyledParagraph>{isTranslationLoading ? 'Loading...' : translationText}</StyledParagraph>}
 				<div>
 					<button onClick={() => dispatch(checkEditHistory(id))} disabled={paragraphAfterGrammarFix === initialParagraph}>
 						Show Edit History
@@ -223,6 +236,9 @@ var Paragraph = ({
 						}}
 					>
 						Find Grammar Mistakes
+					</button>
+					<button onClick={() => dispatch(toggleTranslation(id))} disabled={isTranslationFetching}>
+						{!translationText ? 'Show Translation' : 'Hide Translation'}
 					</button>
 				</div>
 			</>

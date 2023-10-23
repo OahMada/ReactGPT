@@ -18,8 +18,8 @@ function App() {
 export default App;
 
 /**
- * paragraph translation
- * a show translation button/click again hide
+ * load translation to local state
+ * migrating to tanStack query V5
  *
  * react router: switch paragraphs
  *
