@@ -21,7 +21,6 @@ export interface Paragraph {
 	cancelQuery: boolean;
 	editHistoryMode: EditHistoryMode;
 	showTranslation: boolean;
-	translationText: string; // for export purpose
 }
 
 let initialParagraphState: Paragraph = {
@@ -37,7 +36,6 @@ let initialParagraphState: Paragraph = {
 	cancelQuery: false,
 	editHistoryMode: 'paragraphCreation',
 	showTranslation: false,
-	translationText: '',
 };
 
 interface Article {
@@ -357,13 +355,6 @@ let articleSlice = createSlice({
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 			currentParagraph.showTranslation = !currentParagraph.showTranslation;
 		},
-		loadTranslationTextToLocalState: (
-			{ paragraphs },
-			{ payload: { translationText, paragraphId } }: PayloadAction<{ translationText: string; paragraphId: string }>
-		) => {
-			let currentParagraph = paragraphs.find((item) => item.id === paragraphId) as Paragraph;
-			currentParagraph.translationText = translationText;
-		},
 	},
 });
 
@@ -409,7 +400,6 @@ export var {
 	deleteParagraphRightAway,
 	alterCheckEditHistoryMode,
 	toggleTranslation,
-	loadTranslationTextToLocalState,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;
