@@ -18,9 +18,6 @@ function App() {
 export default App;
 
 /**
- * load translation to local state
- * migrating to tanStack query V5
- *
  * react router: switch paragraphs
  *
  * accept user input opaiAPI key and encrypt the key save to local-storage
@@ -28,7 +25,7 @@ export default App;
  * change api key setting
  *
  * preview result
- * export as pdf doc etc
+ * export as pdf doc etc, send to mail
  *
  * react-hotkeys
  * test

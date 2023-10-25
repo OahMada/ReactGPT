@@ -48,9 +48,9 @@ var Paragraph = ({
 
 	// fetch API
 	// isGrammarFixesFetching is for action initiated by click the fix grammar mistakes button
-	let { isLoading: isGrammarFixesLoading, isFetching: isGrammarFixesFetching } = useGrammarQuery(paragraphBeforeGrammarFix, id);
+	let { isPending: isGrammarFixesPending, isFetching: isGrammarFixesFetching } = useGrammarQuery(paragraphBeforeGrammarFix, id);
 	let {
-		isLoading: isTranslationLoading,
+		isPending: isTranslationPending,
 		isFetching: isTranslationFetching,
 		data: translationText,
 	} = useTranslationQuery(paragraphAfterGrammarFix, id);
@@ -127,7 +127,7 @@ var Paragraph = ({
 						</div>
 					</fieldset>
 				)}
-				{isGrammarFixesLoading || isGrammarFixesFetching ? (
+				{isGrammarFixesPending || isGrammarFixesFetching ? (
 					<StyledParagraph>{paragraphBeforeGrammarFix}</StyledParagraph>
 				) : (
 					<StyledParagraph>
@@ -183,7 +183,7 @@ var Paragraph = ({
 					onClick={() => {
 						dispatch(acceptAllAdjustments(id));
 					}}
-					disabled={allAdjustmentsCount === 0 || isGrammarFixesLoading || isGrammarFixesFetching}
+					disabled={allAdjustmentsCount === 0 || isGrammarFixesPending || isGrammarFixesFetching}
 				>
 					{paragraphStatus === 'modifying' && 'Accept All'}
 					{paragraphStatus === 'reviving' && 'Revert All'}
@@ -198,7 +198,7 @@ var Paragraph = ({
 						});
 						dispatch(doneWithCurrentParagraphState(id));
 					}}
-					disabled={isGrammarFixesLoading || isGrammarFixesFetching}
+					disabled={isGrammarFixesPending || isGrammarFixesFetching}
 					ref={doneButtonRef}
 				>
 					Done
@@ -213,7 +213,7 @@ var Paragraph = ({
 			<>
 				<h4>Click Paragraph to Edit</h4>
 				<StyledParagraph onClick={() => dispatch(updateUserInput(id))}>{paragraphAfterGrammarFix}</StyledParagraph>
-				{showTranslation && <StyledParagraph>{isTranslationLoading ? 'Loading...' : translationText}</StyledParagraph>}
+				{showTranslation && <StyledParagraph>{isTranslationPending ? 'Loading...' : translationText}</StyledParagraph>}
 				<div>
 					<button onClick={() => dispatch(checkEditHistory(id))} disabled={paragraphAfterGrammarFix === initialParagraph}>
 						Show Edit History

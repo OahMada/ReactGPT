@@ -26,7 +26,7 @@ var queryClient = new QueryClient({
 		queries: {
 			staleTime: Infinity,
 			retry: false, // otherwise too much waiting
-			cacheTime: Infinity,
+			gcTime: Infinity,
 		},
 	},
 });
@@ -46,7 +46,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 					<App />
 				</PersistGate>
 			</Provider>
-			<ReactQueryDevtools initialIsOpen={true} panelPosition='right' />
+			<ReactQueryDevtools initialIsOpen={true} position='right' />
 		</PersistQueryClientProvider>
 	</React.StrictMode>
 );

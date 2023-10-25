@@ -52,7 +52,7 @@ export function useGrammarQuery(paragraph: string, paragraphId: string) {
 		},
 		// prevent fetch when in editing mode, only fetch after editing finished
 		enabled: currentParagraph.paragraphStatus === 'modifying' && !currentParagraph.cancelQuery,
-		useErrorBoundary: true,
+		throwOnError: true,
 	});
 
 	// console.log(result.data);

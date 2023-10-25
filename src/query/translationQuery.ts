@@ -37,7 +37,7 @@ export function useTranslationQuery(paragraph: string, paragraphId: string) {
 		queryKey: translationQueryKeys(paragraph, paragraphId),
 		queryFn: queryTranslation,
 		enabled: currentParagraph.paragraphStatus === 'doneModification' && currentParagraph.showTranslation,
-		useErrorBoundary: true,
+		throwOnError: true,
 	});
 
 	return result;
