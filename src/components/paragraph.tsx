@@ -238,7 +238,7 @@ var Paragraph = ({
 						Find Grammar Mistakes
 					</button>
 					<button onClick={() => dispatch(toggleTranslation(id))} disabled={isTranslationFetching}>
-						{!translationText ? 'Show Translation' : 'Hide Translation'}
+						{isTranslationFetching || !showTranslation ? 'Show Translation' : 'Hide Translation'}
 					</button>
 				</div>
 			</>
