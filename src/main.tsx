@@ -8,6 +8,8 @@ import { persistor, store } from './app/store';
 // redux persist
 import { PersistGate } from 'redux-persist/integration/react';
 
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
 // components
 import App from './App';
 import './index.css';
@@ -38,12 +40,19 @@ var persister = createSyncStoragePersister({
 	retry: removeOldestQuery,
 });
 
+var router = createBrowserRouter([
+	{
+		path: '/',
+		element: <App />,
+	},
+]);
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
 		<PersistQueryClientProvider client={queryClient} persistOptions={{ persister, maxAge: Infinity, buster: '' }}>
 			<Provider store={store}>
 				<PersistGate loading={null} persistor={persistor}>
-					<App />
+					<RouterProvider router={router} />
 				</PersistGate>
 			</Provider>
 			<ReactQueryDevtools initialIsOpen={true} position='right' />

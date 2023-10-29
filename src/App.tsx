@@ -19,6 +19,7 @@ export default App;
 
 /**
  * react router: switch paragraphs
+ * search, add new article, delete article, pin article
  *
  * accept user input opaiAPI key and encrypt the key save to local-storage
  * a way to invoke hidden default api key
