@@ -11,7 +11,9 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 // components
-import App from './App';
+import Root from './routes/root';
+import ErrorPage from './error-page';
+import Article from './routes/article';
 import './index.css';
 
 // react query and persister
@@ -43,7 +45,14 @@ var persister = createSyncStoragePersister({
 var router = createBrowserRouter([
 	{
 		path: '/',
-		element: <App />,
+		element: <Root />,
+		errorElement: <ErrorPage />,
+		children: [
+			{
+				path: 'article/:articleId',
+				element: <Article />,
+			},
+		],
 	},
 ]);
 

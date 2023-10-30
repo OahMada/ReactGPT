@@ -1,21 +1,29 @@
-import './App.css';
 // toast css
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
-import { ArticleDisplay } from './components/articleDisplay';
+import { ArticleDisplay } from '../components/articleDisplay';
+import styled from 'styled-components';
 
-function App() {
+function Article() {
 	return (
-		<section className='app'>
+		<StyledSection>
 			<ArticleDisplay />
 			<ToastContainer enableMultiContainer containerId={'paragraphDeletion'} closeOnClick={false} closeButton={false} />
 			<ToastContainer limit={3} enableMultiContainer />
-		</section>
+		</StyledSection>
 	);
 }
 
-export default App;
+var StyledSection = styled.section`
+	border: 1px solid #ccc;
+	padding: 6rem;
+	width: 100%;
+	height: 80vh;
+	position: relative;
+`;
+
+export default Article;
 
 /**
  * react router: switch paragraphs
