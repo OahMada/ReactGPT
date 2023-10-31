@@ -3,6 +3,8 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useLocalStorage } from 'react-use';
 import { compress, decompress } from 'lz-string';
+import { redirect } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 
 import { useAppDispatch } from '../app/hooks';
 import { saveArticleInput } from '../features/articleSlice';
@@ -42,6 +44,8 @@ var ArticleInput = () => {
 	let onsubmit: SubmitHandler<ArticleInputType> = (data) => {
 		dispatch(saveArticleInput(data.article));
 		removeLocalArticle();
+		let articleId = uuidv4();
+		// redirect(`article/${articleId}`);
 	};
 
 	return (

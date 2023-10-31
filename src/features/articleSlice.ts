@@ -3,13 +3,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
 import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArticle, createToast } from '../utils';
-import { refactoredChange, paragraphStatus, articleStatus } from '../types';
+import { refactoredChange, paragraphStatus } from '../types';
 import { RootState, AppThunk } from '../app/store';
 
 export type EditHistoryMode = 'paragraphCreation' | 'paragraphLastEdit';
 
 export interface Paragraph {
 	id: string;
+	articleId: string;
 	paragraphStatus: paragraphStatus;
 	initialParagraph: string;
 	updatedInitialParagraph: string;
@@ -25,6 +26,7 @@ export interface Paragraph {
 
 let initialParagraphState: Paragraph = {
 	id: '',
+	articleId: '',
 	paragraphStatus: 'modifying',
 	initialParagraph: '',
 	updatedInitialParagraph: '',
@@ -39,17 +41,15 @@ let initialParagraphState: Paragraph = {
 };
 
 interface Article {
-	userInput: string;
-	status: articleStatus;
 	paragraphs: Paragraph[];
 	paragraphRemoveQueue: Paragraph['id'][];
+	articlesQueue: Paragraph['articleId'][];
 }
 
 let initialArticleState: Article = {
-	userInput: '',
-	status: 'acceptingUserInput',
 	paragraphs: [],
 	paragraphRemoveQueue: [],
+	articlesQueue: [],
 };
 
 let articleSlice = createSlice({
@@ -58,7 +58,7 @@ let articleSlice = createSlice({
 	reducers: {
 		saveArticleInput: (state, action: PayloadAction<string>) => {
 			let input = sanitizeUserInput(action.payload);
-			state.userInput = input;
+			let articleId = uuidv4();
 			let paragraphs = input.split(/\n\n/);
 			state.paragraphs = paragraphs.map((paragraph) => {
 				let obj = Object.assign({}, initialParagraphState);
@@ -66,9 +66,11 @@ let articleSlice = createSlice({
 				obj.updatedInitialParagraph = paragraph;
 				obj.paragraphBeforeGrammarFix = paragraph;
 				obj.id = uuidv4();
+				obj.articleId = articleId;
 				return obj;
 			});
-			state.status = 'errorFixing';
+			state.articlesQueue.push(articleId);
+			// state.status = 'errorFixing';
 		},
 		saveParagraphInput: (
 			{ paragraphs },
@@ -327,11 +329,10 @@ let articleSlice = createSlice({
 
 			paragraphs.splice(currentParagraphIndex + 1 + (indexOffset ?? 0), 0, newParagraph);
 		},
-		reEnterArticle: (state) => {
-			state.userInput = '';
-			state.paragraphs = [];
-			state.status = 'acceptingUserInput';
-		},
+		// reEnterArticle: (state) => {
+		// 	state.paragraphs = [];
+		// 	state.status = 'acceptingUserInput';
+		// },
 		handleParagraphOrderChange: (
 			{ paragraphs },
 			{ payload: { destinationIndex, sourceIndex } }: PayloadAction<{ destinationIndex: number; sourceIndex: number }>
@@ -392,7 +393,6 @@ export var {
 	finishParagraphDeletion,
 	insertAboveParagraph,
 	insertBelowParagraph,
-	reEnterArticle,
 	handleParagraphOrderChange,
 	disableCancelQueryState,
 	addParagraphToDeletionQueue,

@@ -14,6 +14,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Root from './routes/root';
 import ErrorPage from './error-page';
 import Article from './routes/article';
+import ArticleInput from './routes/articleInput';
 import './index.css';
 
 // react query and persister
@@ -48,6 +49,7 @@ var router = createBrowserRouter([
 		element: <Root />,
 		errorElement: <ErrorPage />,
 		children: [
+			{ index: true, element: <ArticleInput /> },
 			{
 				path: 'article/:articleId',
 				element: <Article />,

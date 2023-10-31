@@ -13,7 +13,7 @@ import { selectArticle, handleParagraphOrderChange, Paragraph as ParagraphType, 
 
 // components
 import ParagraphInput from './paragraphInput';
-import ArticleInput from './articleInput';
+// import ArticleInput from './articleInput';
 import Paragraph from './paragraph';
 import ParagraphControlBtns from './paragraphControlBtns';
 import { StyledParagraph } from './paragraph';
@@ -57,10 +57,6 @@ export var ArticleDisplay = () => {
 	};
 
 	let { reset } = useQueryErrorResetBoundary();
-
-	if (article.status === 'acceptingUserInput') {
-		return <ArticleInput />;
-	}
 
 	return (
 		<DragDropContext onDragEnd={handleOnDragEnd}>
