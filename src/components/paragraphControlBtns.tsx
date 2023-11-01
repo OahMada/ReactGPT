@@ -43,7 +43,7 @@ var Undo = ({ closeToast, onUndo, paragraph }: UndoProps) => {
 var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 	let dispatch = useAppDispatch();
 	let toastId = useRef<Id>();
-	let { articleId } = useParams();
+	const { articleId } = useParams();
 	throwIfUndefined(articleId);
 
 	let { paragraphs } = useAppSelector(selectArticle);
@@ -56,9 +56,8 @@ var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 			if (toastItem.status === 'removed' && toastItem.id === toastId.current) {
 				// If the toastId check isn't included, changes to any toast would trigger the following.
 				dispatch(finishParagraphDeletion(paragraphId));
-				// high likely a ts bug here
-				// @ts-ignore
-				dispatch(removeArticle({ articleId, mode: 'implicit' })); // remove article reference if none paragraphs left
+				// remove article reference if none paragraphs left
+				dispatch(removeArticle({ articleId, mode: 'implicit' }));
 			}
 		});
 

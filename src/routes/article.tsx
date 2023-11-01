@@ -26,12 +26,11 @@ var StyledSection = styled.section`
 export default Article;
 
 /**
- * react router: switch paragraphs
- * search, add new article, delete article, pin article
- * create article ID, form submit, and save id to state
- * https://bobbyhadz.com/blog/react-redirect-after-form-submit
+ * react router: search, delete article, pin article
+ * finish tutorial
  *
  * remove article.tsx maybe?
+ * fix drag and drop and paragraph inserting
  *
  * accept user input opaiAPI key and encrypt the key save to local-storage
  * a way to invoke hidden default api key
