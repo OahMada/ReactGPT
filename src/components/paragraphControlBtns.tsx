@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { toast, Id, ToastContentProps } from 'react-toastify';
+import { useParams } from 'react-router-dom';
 
 import {
 	finishParagraphDeletion,
@@ -9,6 +10,7 @@ import {
 	undoParagraphDeletion,
 	selectArticle,
 	Paragraph,
+	removeArticle,
 } from '../features/articleSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { createToast } from '../utils';
@@ -18,6 +20,11 @@ interface UndoProps extends Partial<ToastContentProps> {
 	onUndo: () => void;
 	closeToast: () => void;
 	paragraph: string;
+}
+
+// https://stackoverflow.com/questions/70426863/how-to-make-typescript-know-my-variable-is-not-undefined-anymore
+function throwIfUndefined<T>(x: T | undefined): asserts x is T {
+	if (typeof x === 'undefined') throw new Error(`${x} is undefined`);
 }
 
 var Undo = ({ closeToast, onUndo, paragraph }: UndoProps) => {
@@ -36,6 +43,8 @@ var Undo = ({ closeToast, onUndo, paragraph }: UndoProps) => {
 var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 	let dispatch = useAppDispatch();
 	let toastId = useRef<Id>();
+	let { articleId } = useParams();
+	throwIfUndefined(articleId);
 
 	let { paragraphs } = useAppSelector(selectArticle);
 	let currentParagraph = paragraphs.find((item: Paragraph) => item.id === paragraphId) as Paragraph;
@@ -47,6 +56,9 @@ var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 			if (toastItem.status === 'removed' && toastItem.id === toastId.current) {
 				// If the toastId check isn't included, changes to any toast would trigger the following.
 				dispatch(finishParagraphDeletion(paragraphId));
+				// high likely a ts bug here
+				// @ts-ignore
+				dispatch(removeArticle({ articleId, mode: 'implicit' })); // remove article reference if none paragraphs left
 			}
 		});
 

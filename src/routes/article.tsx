@@ -29,6 +29,9 @@ export default Article;
  * react router: switch paragraphs
  * search, add new article, delete article, pin article
  * create article ID, form submit, and save id to state
+ * https://bobbyhadz.com/blog/react-redirect-after-form-submit
+ *
+ * remove article.tsx maybe?
  *
  * accept user input opaiAPI key and encrypt the key save to local-storage
  * a way to invoke hidden default api key

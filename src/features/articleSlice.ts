@@ -43,34 +43,34 @@ let initialParagraphState: Paragraph = {
 interface Article {
 	paragraphs: Paragraph[];
 	paragraphRemoveQueue: Paragraph['id'][];
-	articlesQueue: Paragraph['articleId'][];
+	articleQueue: Paragraph['articleId'][];
 }
 
 let initialArticleState: Article = {
 	paragraphs: [],
 	paragraphRemoveQueue: [],
-	articlesQueue: [],
+	articleQueue: [],
 };
 
 let articleSlice = createSlice({
 	name: 'article',
 	initialState: initialArticleState,
 	reducers: {
-		saveArticleInput: (state, action: PayloadAction<string>) => {
-			let input = sanitizeUserInput(action.payload);
-			let articleId = uuidv4();
+		saveArticleInput: (state, { payload: { articleText, articleId } }: PayloadAction<{ articleText: string; articleId: string }>) => {
+			let input = sanitizeUserInput(articleText);
 			let paragraphs = input.split(/\n\n/);
-			state.paragraphs = paragraphs.map((paragraph) => {
-				let obj = Object.assign({}, initialParagraphState);
-				obj.initialParagraph = paragraph;
-				obj.updatedInitialParagraph = paragraph;
-				obj.paragraphBeforeGrammarFix = paragraph;
-				obj.id = uuidv4();
-				obj.articleId = articleId;
-				return obj;
-			});
-			state.articlesQueue.push(articleId);
-			// state.status = 'errorFixing';
+			state.paragraphs.push(
+				...paragraphs.map((paragraph) => {
+					let obj = Object.assign({}, initialParagraphState);
+					obj.initialParagraph = paragraph;
+					obj.updatedInitialParagraph = paragraph;
+					obj.paragraphBeforeGrammarFix = paragraph;
+					obj.id = uuidv4();
+					obj.articleId = articleId;
+					return obj;
+				})
+			);
+			state.articleQueue.push(articleId);
 		},
 		saveParagraphInput: (
 			{ paragraphs },
@@ -329,10 +329,6 @@ let articleSlice = createSlice({
 
 			paragraphs.splice(currentParagraphIndex + 1 + (indexOffset ?? 0), 0, newParagraph);
 		},
-		// reEnterArticle: (state) => {
-		// 	state.paragraphs = [];
-		// 	state.status = 'acceptingUserInput';
-		// },
 		handleParagraphOrderChange: (
 			{ paragraphs },
 			{ payload: { destinationIndex, sourceIndex } }: PayloadAction<{ destinationIndex: number; sourceIndex: number }>
@@ -355,6 +351,18 @@ let articleSlice = createSlice({
 		toggleTranslation: ({ paragraphs }, { payload }) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 			currentParagraph.showTranslation = !currentParagraph.showTranslation;
+		},
+		removeArticle: (state, { payload: { articleId, mode } }: PayloadAction<{ articleId: string; mode: 'explicit' | 'implicit' }>) => {
+			if (mode === 'implicit') {
+				// by removing paragraphs one by one
+				let articleParagraphCount = state.paragraphs.filter((paragraph) => paragraph.articleId === articleId).length;
+				let articleIndex = state.articleQueue.indexOf(articleId);
+				if (articleParagraphCount === 0) {
+					state.articleQueue.splice(articleIndex, 1);
+				}
+			} else if (mode === 'explicit') {
+				// by deleting the paragraph as a whole
+			}
 		},
 	},
 });
@@ -400,6 +408,7 @@ export var {
 	deleteParagraphRightAway,
 	alterCheckEditHistoryMode,
 	toggleTranslation,
+	removeArticle,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;

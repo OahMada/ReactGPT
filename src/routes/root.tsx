@@ -4,12 +4,12 @@ import { useAppSelector } from '../app/hooks';
 import { selectArticle } from '../features/articleSlice';
 
 export default function Root() {
-	let { articlesQueue, paragraphs } = useAppSelector(selectArticle);
+	let { articleQueue, paragraphs } = useAppSelector(selectArticle);
 
 	let buildArticle = (articleId: string) => {
 		return paragraphs.reduce<string>((acc, cur) => {
 			if (cur.articleId === articleId) {
-				if (cur.paragraphBeforeGrammarFix) {
+				if (cur.paragraphAfterGrammarFix) {
 					acc += cur.paragraphAfterGrammarFix;
 				} else {
 					acc += cur.paragraphBeforeGrammarFix;
@@ -27,7 +27,7 @@ export default function Root() {
 					<li>
 						<Link to='/'>New Article</Link>
 					</li>
-					{articlesQueue.map((articleId) => {
+					{articleQueue.map((articleId) => {
 						return (
 							<li key={articleId}>
 								<Link to={`article/${articleId}`}>{buildArticle(articleId).slice(0, 20)}</Link>

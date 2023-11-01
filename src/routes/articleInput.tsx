@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useLocalStorage } from 'react-use';
 import { compress, decompress } from 'lz-string';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useAppDispatch } from '../app/hooks';
@@ -17,6 +17,7 @@ interface ArticleInputType {
 // log the last character inputted from previous render
 var ArticleInput = () => {
 	let dispatch = useAppDispatch();
+	let navigate = useNavigate();
 
 	let [localArticle, setLocalArticle, removeLocalArticle] = useLocalStorage('article', '', {
 		raw: false,
@@ -42,10 +43,10 @@ var ArticleInput = () => {
 	}
 
 	let onsubmit: SubmitHandler<ArticleInputType> = (data) => {
-		dispatch(saveArticleInput(data.article));
-		removeLocalArticle();
 		let articleId = uuidv4();
-		// redirect(`article/${articleId}`);
+		dispatch(saveArticleInput({ articleText: data.article, articleId }));
+		removeLocalArticle();
+		navigate(`article/${articleId}`);
 	};
 
 	return (

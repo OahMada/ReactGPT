@@ -1,17 +1,15 @@
 import { toast } from 'react-toastify';
-
-import { useAppDispatch } from '../app/hooks';
-// import { reEnterArticle } from '../features/articleSlice';
+import { useNavigate } from 'react-router-dom';
 
 var EmptyParagraphList = () => {
-	let dispatch = useAppDispatch();
+	let navigate = useNavigate();
 
 	return (
 		<div>
 			<h1>No Content Yet, Create New?</h1>
 			<button
 				onClick={() => {
-					// dispatch(reEnterArticle()); // link to article input page
+					navigate('/');
 					toast.dismiss(); // dismiss any displaying toasts
 				}}
 			>
