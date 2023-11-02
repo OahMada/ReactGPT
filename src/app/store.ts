@@ -23,6 +23,7 @@ var articlePersistConfig = {
 	storage,
 	stateReconciler: autoMergeLevel2,
 	transforms: [compressTransform],
+	blacklist: ['paragraphRemoveQueue', 'articleRemoveQueue'],
 };
 
 var rootReducer = combineReducers({
