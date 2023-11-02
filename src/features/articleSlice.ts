@@ -44,12 +44,14 @@ interface Article {
 	paragraphs: Paragraph[];
 	paragraphRemoveQueue: Paragraph['id'][];
 	articleQueue: Paragraph['articleId'][];
+	articleRemoveQueue: Paragraph['articleId'][];
 }
 
 let initialArticleState: Article = {
 	paragraphs: [],
 	paragraphRemoveQueue: [],
 	articleQueue: [],
+	articleRemoveQueue: [],
 };
 
 let articleSlice = createSlice({
@@ -353,16 +355,25 @@ let articleSlice = createSlice({
 			currentParagraph.showTranslation = !currentParagraph.showTranslation;
 		},
 		removeArticle: (state, { payload: { articleId, mode } }: PayloadAction<{ articleId: string; mode: 'explicit' | 'implicit' }>) => {
+			let articleIndex = state.articleQueue.indexOf(articleId);
 			if (mode === 'implicit') {
 				// by removing paragraphs one by one
 				let articleParagraphCount = state.paragraphs.filter((paragraph) => paragraph.articleId === articleId).length;
-				let articleIndex = state.articleQueue.indexOf(articleId);
 				if (articleParagraphCount === 0) {
 					state.articleQueue.splice(articleIndex, 1);
 				}
 			} else if (mode === 'explicit') {
-				// by deleting the paragraph as a whole
+				if (state.articleRemoveQueue.includes(articleId)) {
+					state.paragraphs = state.paragraphs.filter((paragraph) => paragraph.articleId !== articleId);
+					state.articleQueue.splice(articleIndex, 1);
+				}
 			}
+		},
+		addArticleToDeletionQueue: (state, { payload }) => {
+			state.articleRemoveQueue.push(payload);
+		},
+		undoArticleDeletion: (state, { payload }) => {
+			state.articleRemoveQueue = state.articleRemoveQueue.filter((articleId) => articleId !== payload);
 		},
 	},
 });
@@ -409,6 +420,8 @@ export var {
 	alterCheckEditHistoryMode,
 	toggleTranslation,
 	removeArticle,
+	addArticleToDeletionQueue,
+	undoArticleDeletion,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;

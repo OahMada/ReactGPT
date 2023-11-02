@@ -13,18 +13,13 @@ import {
 	removeArticle,
 } from '../features/articleSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { createToast } from '../utils';
+import { createToast, throwIfUndefined } from '../utils';
 
 // https://github.com/fkhadra/react-toastify/issues/568#issuecomment-779847274
 interface UndoProps extends Partial<ToastContentProps> {
 	onUndo: () => void;
 	closeToast: () => void;
 	paragraph: string;
-}
-
-// https://stackoverflow.com/questions/70426863/how-to-make-typescript-know-my-variable-is-not-undefined-anymore
-function throwIfUndefined<T>(x: T | undefined): asserts x is T {
-	if (typeof x === 'undefined') throw new Error(`${x} is undefined`);
 }
 
 var Undo = ({ closeToast, onUndo, paragraph }: UndoProps) => {

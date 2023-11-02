@@ -70,3 +70,29 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 		</PersistQueryClientProvider>
 	</React.StrictMode>
 );
+
+/**
+ * react router: search, pin article
+ * finish tutorial
+ * is the persisted data right when I delete article?
+ *
+ * What if I reload page when deleting (with toast)?
+ *
+ * fix drag and drop and paragraph inserting
+ *
+ * accept user input opaiAPI key and encrypt the key save to local-storage
+ * a way to invoke hidden default api key
+ * change api key setting
+ *
+ * preview result
+ * export as pdf doc etc, send to mail
+ *
+ * react-hotkeys
+ * test
+ *
+ * update user flow
+ *
+ * rethought html layout and css
+ * modal dynamic position props
+ * MUI
+ */
