@@ -1,10 +1,12 @@
-import { Outlet, NavLink, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, useParams, useSearchParams, useSubmit, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAppDispatch } from '../app/hooks';
+import { useLocalStorage } from 'react-use';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { useEffect } from 'react';
 
-import { useAppSelector } from '../app/hooks';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectArticle, removeArticle, addArticleToDeletionQueue } from '../features/articleSlice';
+import { performFuseSearch } from '../utils';
 
 interface SearchForm {
 	search: string;
@@ -12,14 +14,24 @@ interface SearchForm {
 
 export default function Root() {
 	let dispatch = useAppDispatch();
-	let navigate = useNavigate();
-	const { articleId: currentArticle } = useParams();
-	let { register, handleSubmit } = useForm<SearchForm>(); // https://react-hook-form.com/ts#SubmitHandler
-	let [searchParams, setSearchParams] = useSearchParams();
-
-	console.log(searchParams.get('search'));
-
 	let { articleQueue, paragraphs } = useAppSelector(selectArticle);
+
+	let navigate = useNavigate();
+	let submit = useSubmit();
+	let location = useLocation();
+	console.log(location);
+
+	const { articleId: currentArticle } = useParams();
+	let [searchParams, setSearchParams] = useSearchParams();
+	let query = searchParams.get('search');
+
+	// preserve the search on page refresh
+	let [localQuery, setLocalQuery] = useLocalStorage('query', '');
+	let { register, handleSubmit, watch } = useForm<SearchForm>({
+		defaultValues: {
+			search: localQuery ?? '',
+		},
+	}); // https://react-hook-form.com/ts#SubmitHandler
 
 	let buildArticle = (articleId: string) => {
 		return paragraphs.reduce<string>((acc, cur) => {
@@ -39,17 +51,36 @@ export default function Root() {
 	let articles = articleQueue.map((articleId) => {
 		return { articleId, articleText: buildArticle(articleId) };
 	});
-	// TODO filter articles based on search params
+
+	// filter articles based on search params
+	if (query) {
+		articles = performFuseSearch(articles, query);
+	}
 
 	let onSubmit: SubmitHandler<SearchForm> = (data) => {
 		setSearchParams({ search: data.search });
 	};
 
+	// https://stackoverflow.com/questions/63466463/how-to-submit-react-form-fields-on-onchange-rather-than-on-submit-using-react-ho
+	// useEffect(() => {
+	// 	let subscription = watch(() => handleSubmit(onSubmit)());
+	// 	return () => subscription.unsubscribe();
+	// }, [handleSubmit, watch]);
+
 	return (
 		<>
 			<div>
 				<form role='search' onSubmit={handleSubmit(onSubmit)}>
-					<input aria-label='Search articles' type='search' placeholder='Search' {...register('search')} />
+					<input
+						aria-label='Search articles'
+						type='search'
+						placeholder='Search'
+						{...register('search', {
+							onChange: (e) => {
+								setLocalQuery(e.target.value);
+							},
+						})}
+					/>
 				</form>
 				<NavLink to='/'>New Article</NavLink>
 			</div>

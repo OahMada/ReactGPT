@@ -73,8 +73,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 /**
  * react router: search, pin article
- * should I use react hook form(yes I can); should it be on the main path (it does't need to be in the url);
  * finish tutorial
+ *
  * is the persisted data right when I delete article?
  *
  * fix drag and drop and paragraph inserting
