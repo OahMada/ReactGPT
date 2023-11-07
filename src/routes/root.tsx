@@ -1,7 +1,7 @@
-import { Outlet, NavLink, useNavigate, useParams, useSearchParams, useSubmit, useLocation } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, useParams, useSearchParams, useSubmit, useLocation, createSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLocalStorage } from 'react-use';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
@@ -19,15 +19,14 @@ export default function Root() {
 	let navigate = useNavigate();
 	let submit = useSubmit();
 	let location = useLocation();
-	console.log(location);
 
 	const { articleId: currentArticle } = useParams();
-	let [searchParams, setSearchParams] = useSearchParams();
+	let [searchParams] = useSearchParams();
 	let query = searchParams.get('search');
 
 	// preserve the search on page refresh
 	let [localQuery, setLocalQuery] = useLocalStorage('query', '');
-	let { register, handleSubmit, watch } = useForm<SearchForm>({
+	let { register } = useForm<SearchForm>({
 		defaultValues: {
 			search: localQuery ?? '',
 		},
@@ -57,20 +56,24 @@ export default function Root() {
 		articles = performFuseSearch(articles, query);
 	}
 
-	let onSubmit: SubmitHandler<SearchForm> = (data) => {
-		setSearchParams({ search: data.search });
+	let handleNavigate = (path: string) => {
+		// https://stackoverflow.com/questions/65800658/react-router-v6-navigate-to-a-url-with-searchparams
+		if (query) {
+			navigate({
+				pathname: path,
+				search: `?${createSearchParams({
+					search: query,
+				})}`,
+			});
+		} else {
+			navigate(path);
+		}
 	};
-
-	// https://stackoverflow.com/questions/63466463/how-to-submit-react-form-fields-on-onchange-rather-than-on-submit-using-react-ho
-	// useEffect(() => {
-	// 	let subscription = watch(() => handleSubmit(onSubmit)());
-	// 	return () => subscription.unsubscribe();
-	// }, [handleSubmit, watch]);
 
 	return (
 		<>
 			<div>
-				<form role='search' onSubmit={handleSubmit(onSubmit)}>
+				<form role='search'>
 					<input
 						aria-label='Search articles'
 						type='search'
@@ -78,6 +81,9 @@ export default function Root() {
 						{...register('search', {
 							onChange: (e) => {
 								setLocalQuery(e.target.value);
+
+								// use location.pathname to add search params on the same location
+								submit(e.currentTarget.form, { method: 'get', action: location.pathname });
 							},
 						})}
 					/>
@@ -89,7 +95,10 @@ export default function Root() {
 					{articles.map((article) => {
 						return (
 							<li key={article.articleId}>
-								<NavLink to={`article/${article.articleId}`}>{article.articleText.slice(0, 20)}</NavLink>
+								{/* need border for this*/}
+								<div onClick={() => handleNavigate(`article/${article.articleId}`)}>
+									<p>{article.articleText.slice(0, 20)}</p>
+								</div>
 								<div>
 									{/* TODO hover to show */}
 									<button
