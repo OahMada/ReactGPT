@@ -1,6 +1,5 @@
 // react query
 import { QueryFunctionContext, useQuery } from '@tanstack/react-query';
-
 import axios from 'axios';
 
 import { useAppSelector } from '../app/hooks';

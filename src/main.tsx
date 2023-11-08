@@ -8,14 +8,8 @@ import { persistor, store } from './app/store';
 // redux persist
 import { PersistGate } from 'redux-persist/integration/react';
 
+// react router
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
-// components
-import Root from './routes/root';
-import ErrorPage from './error-page';
-import Article from './routes/article';
-import ArticleInput from './routes/articleInput';
-import './index.css';
 
 // react query and persister
 import { QueryClient } from '@tanstack/react-query';
@@ -23,8 +17,15 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PersistQueryClientProvider, removeOldestQuery } from '@tanstack/react-query-persist-client';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 
-// data compress
+// data compressing
 import { compress, decompress } from 'lz-string';
+
+// components
+import Root from './routes/root';
+import ErrorPage from './error-page';
+import Article from './routes/article';
+import ArticleInput from './routes/articleInput';
+import './index.css';
 
 var queryClient = new QueryClient({
 	defaultOptions: {

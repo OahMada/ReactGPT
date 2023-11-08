@@ -1,12 +1,11 @@
-// library
+// libraries
 import { useEffect, useState } from 'react';
+// console would still log the error, see https://github.com/facebook/react/issues/15069
 import { ErrorBoundary } from 'react-error-boundary';
 import { useQueryErrorResetBoundary } from '@tanstack/react-query'; // https://www.thisdot.co/blog/common-patterns-and-nuances-using-react-query/#handling-errors-with-error-boundaries
 import { useParams } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
-
-// console would still log the error, see https://github.com/facebook/react/issues/15069
 import styled from 'styled-components';
 import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
 
@@ -16,7 +15,6 @@ import { selectArticle, handleParagraphOrderChange, Paragraph as ParagraphType, 
 
 // components
 import ParagraphInput from '../components/paragraphInput';
-// import ArticleInput from './articleInput';
 import Paragraph from '../components/paragraph';
 import ParagraphControlBtns from '../components/paragraphControlBtns';
 import { StyledParagraph } from '../components/paragraph';
@@ -51,7 +49,9 @@ var Article = () => {
 	// state values
 	let dispatch = useAppDispatch();
 	let article = useAppSelector(selectArticle);
-	let { articleId } = useParams();
+	let combinedArticleQueue = [...article.articleQueue.favorites, ...article.articleQueue.normal];
+
+	const { articleId } = useParams();
 	throwIfUndefined(articleId);
 	let filteredParagraphs = article.paragraphs
 		// filter paragraphs by articleId
@@ -76,6 +76,7 @@ var Article = () => {
 				<StrictModeDroppable droppableId='paragraphs'>
 					{(provided) => (
 						<div ref={provided.innerRef} {...provided.droppableProps}>
+							{/* {combinedArticleQueue.indexOf(articleId) === -1 && } */}
 							{filteredParagraphs.length === 0 && <EmptyParagraphList />}
 							{filteredParagraphs.map((paragraph: ParagraphType, index) => {
 								return (
