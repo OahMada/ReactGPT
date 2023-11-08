@@ -72,13 +72,15 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 );
 
 /**
- * react router: search, pin article
+ * react router: pin article
  * finish tutorial
+ * navigate to un-existed article route
  *
  * is the persisted data right when I delete article?
  *
  * fix drag and drop and paragraph inserting
  *
+ * protected route
  * accept user input opaiAPI key and encrypt the key save to local-storage
  * a way to invoke hidden default api key
  * change api key setting

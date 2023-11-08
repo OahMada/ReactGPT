@@ -2,7 +2,6 @@ import { Outlet, NavLink, useNavigate, useParams, useSearchParams, useSubmit, us
 import styled from 'styled-components';
 import { useLocalStorage } from 'react-use';
 import { useForm } from 'react-hook-form';
-import { useEffect } from 'react';
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectArticle, removeArticle, addArticleToDeletionQueue } from '../features/articleSlice';
@@ -19,16 +18,16 @@ export default function Root() {
 	let navigate = useNavigate();
 	let submit = useSubmit();
 	let location = useLocation();
-
 	const { articleId: currentArticle } = useParams();
 	let [searchParams] = useSearchParams();
+
 	let query = searchParams.get('search');
 
-	// preserve the search on page refresh
 	let [localQuery, setLocalQuery] = useLocalStorage('query', '');
-	let { register } = useForm<SearchForm>({
+	let { register, handleSubmit } = useForm<SearchForm>({
+		values: { search: query ?? '' }, // clear input after clicking back button
 		defaultValues: {
-			search: localQuery ?? '',
+			search: localQuery ?? '', // preserve the search on page refresh
 		},
 	}); // https://react-hook-form.com/ts#SubmitHandler
 
@@ -56,6 +55,9 @@ export default function Root() {
 		articles = performFuseSearch(articles, query);
 	}
 
+	// do nothing on form submission, prevent pressing enter key and reloading page, instead submit on content change
+	let onSubmit = () => {};
+
 	let handleNavigate = (path: string) => {
 		// https://stackoverflow.com/questions/65800658/react-router-v6-navigate-to-a-url-with-searchparams
 		if (query) {
@@ -73,7 +75,7 @@ export default function Root() {
 	return (
 		<>
 			<div>
-				<form role='search'>
+				<form role='search' onSubmit={handleSubmit(onSubmit)}>
 					<input
 						aria-label='Search articles'
 						type='search'
@@ -81,9 +83,13 @@ export default function Root() {
 						{...register('search', {
 							onChange: (e) => {
 								setLocalQuery(e.target.value);
-
-								// use location.pathname to add search params on the same location
-								submit(e.currentTarget.form, { method: 'get', action: location.pathname });
+								// use location.pathname to add search params to the same url
+								let isFirstSearch = query == null;
+								submit(e.currentTarget.form, {
+									method: 'get',
+									action: location.pathname,
+									replace: !isFirstSearch,
+								});
 							},
 						})}
 					/>
