@@ -72,12 +72,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 );
 
 /**
- * react router: pin article
- * finish tutorial
- * navigate to un-existed article route
- *
+ * finish tutorial/navigate to un-existed article route
+ * paragraph deletion bug
  * is the persisted data right when I delete article?
- *
  * fix drag and drop and paragraph inserting
  *
  * protected route

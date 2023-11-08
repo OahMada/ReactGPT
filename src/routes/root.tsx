@@ -4,7 +4,7 @@ import { useLocalStorage } from 'react-use';
 import { useForm } from 'react-hook-form';
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { selectArticle, removeArticle, addArticleToDeletionQueue } from '../features/articleSlice';
+import { selectArticle, removeArticle, addArticleToDeletionQueue, unPinArticle, pinArticle } from '../features/articleSlice';
 import { performFuseSearch } from '../utils';
 
 interface SearchForm {
@@ -45,8 +45,10 @@ export default function Root() {
 		}, '');
 	};
 
+	let combinedArticleQueue = [...articleQueue.favorites, ...articleQueue.normal];
+
 	// build articles array and run filters on it
-	let articles = articleQueue.map((articleId) => {
+	let articles = combinedArticleQueue.map((articleId) => {
 		return { articleId, articleText: buildArticle(articleId) };
 	});
 
@@ -72,6 +74,10 @@ export default function Root() {
 		}
 	};
 
+	let articleIsInFavorites = (articleId: string) => {
+		return articleQueue.favorites.indexOf(articleId) !== -1 ? true : false;
+	};
+
 	return (
 		<>
 			<div>
@@ -94,10 +100,10 @@ export default function Root() {
 						})}
 					/>
 				</form>
-				<NavLink to='/'>New Article</NavLink>
 			</div>
 			<nav>
 				<ul>
+					<NavLink to='/'>New Article</NavLink>
 					{articles.map((article) => {
 						return (
 							<li key={article.articleId}>
@@ -119,7 +125,23 @@ export default function Root() {
 									>
 										Delete
 									</button>
-									<button>Pin</button>
+									{articleIsInFavorites(article.articleId) ? (
+										<button
+											onClick={() => {
+												dispatch(unPinArticle(article.articleId));
+											}}
+										>
+											Unpin
+										</button>
+									) : (
+										<button
+											onClick={() => {
+												dispatch(pinArticle(article.articleId));
+											}}
+										>
+											Pin
+										</button>
+									)}
 								</div>
 							</li>
 						);

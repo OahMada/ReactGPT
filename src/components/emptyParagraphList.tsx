@@ -13,7 +13,7 @@ var EmptyParagraphList = () => {
 					toast.dismiss(); // dismiss any displaying toasts
 				}}
 			>
-				Edit
+				Create
 			</button>
 		</div>
 	);

@@ -71,7 +71,7 @@ var Article = () => {
 
 	return (
 		<>
-			<ArticleControlBtns articleId={articleId} />
+			{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
 			<DragDropContext onDragEnd={handleOnDragEnd}>
 				<StrictModeDroppable droppableId='paragraphs'>
 					{(provided) => (

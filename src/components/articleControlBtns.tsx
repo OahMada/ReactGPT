@@ -3,7 +3,7 @@ import { toast, Id, ToastContentProps } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { removeArticle, addArticleToDeletionQueue, undoArticleDeletion, selectArticle } from '../features/articleSlice';
+import { removeArticle, addArticleToDeletionQueue, undoArticleDeletion, selectArticle, pinArticle, unPinArticle } from '../features/articleSlice';
 import { createToast } from '../utils';
 
 interface UndoProps extends Partial<ToastContentProps> {
@@ -25,7 +25,7 @@ var Undo = ({ closeToast, onUndo }: UndoProps) => {
 };
 
 var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
-	let { articleRemoveQueue } = useAppSelector(selectArticle);
+	let { articleRemoveQueue, articleQueue } = useAppSelector(selectArticle);
 	let toastId = useRef<Id>();
 	let dispatch = useAppDispatch();
 	let navigate = useNavigate();
@@ -60,8 +60,27 @@ var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 		});
 	};
 
+	let articleIsInFavorites = articleQueue.favorites.indexOf(articleId) !== -1 ? true : false;
+
 	return (
 		<div>
+			{articleIsInFavorites ? (
+				<button
+					onClick={() => {
+						dispatch(unPinArticle(articleId));
+					}}
+				>
+					Unpin
+				</button>
+			) : (
+				<button
+					onClick={() => {
+						dispatch(pinArticle(articleId));
+					}}
+				>
+					Pin
+				</button>
+			)}
 			<button onClick={handleArticleDeletion}>Delete Article</button>
 			<button>Preview Article</button>
 			{/* TODO */}

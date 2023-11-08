@@ -43,14 +43,14 @@ let initialParagraphState: Paragraph = {
 interface Article {
 	paragraphs: Paragraph[];
 	paragraphRemoveQueue: Paragraph['id'][];
-	articleQueue: Paragraph['articleId'][];
+	articleQueue: { favorites: Paragraph['articleId'][]; normal: Paragraph['articleId'][] };
 	articleRemoveQueue: Paragraph['articleId'][];
 }
 
 let initialArticleState: Article = {
 	paragraphs: [],
 	paragraphRemoveQueue: [],
-	articleQueue: [],
+	articleQueue: { favorites: [], normal: [] },
 	articleRemoveQueue: [],
 };
 
@@ -72,7 +72,7 @@ let articleSlice = createSlice({
 					return obj;
 				})
 			);
-			state.articleQueue.push(articleId);
+			state.articleQueue.normal.push(articleId);
 		},
 		saveParagraphInput: (
 			{ paragraphs },
@@ -355,17 +355,30 @@ let articleSlice = createSlice({
 			currentParagraph.showTranslation = !currentParagraph.showTranslation;
 		},
 		removeArticle: (state, { payload: { articleId, mode } }: PayloadAction<{ articleId: string; mode: 'explicit' | 'implicit' }>) => {
-			let articleIndex = state.articleQueue.indexOf(articleId);
+			let articleIsInFavorites: boolean = false;
+			let index = state.articleQueue.normal.indexOf(articleId);
+			if (index !== -1) {
+				articleIsInFavorites = true;
+				index = state.articleQueue.favorites.indexOf(articleId);
+			}
 			if (mode === 'implicit') {
 				// by removing paragraphs one by one
 				let articleParagraphCount = state.paragraphs.filter((paragraph) => paragraph.articleId === articleId).length;
 				if (articleParagraphCount === 0) {
-					state.articleQueue.splice(articleIndex, 1);
+					if (articleIsInFavorites) {
+						state.articleQueue.favorites.splice(index, 1);
+					} else {
+						state.articleQueue.normal.splice(index, 1);
+					}
 				}
 			} else if (mode === 'explicit') {
 				if (state.articleRemoveQueue.includes(articleId)) {
 					state.paragraphs = state.paragraphs.filter((paragraph) => paragraph.articleId !== articleId);
-					state.articleQueue.splice(articleIndex, 1);
+					if (articleIsInFavorites) {
+						state.articleQueue.favorites.splice(index, 1);
+					} else {
+						state.articleQueue.normal.splice(index, 1);
+					}
 				}
 			}
 		},
@@ -374,6 +387,16 @@ let articleSlice = createSlice({
 		},
 		undoArticleDeletion: (state, { payload }) => {
 			state.articleRemoveQueue = state.articleRemoveQueue.filter((articleId) => articleId !== payload);
+		},
+		pinArticle: ({ articleQueue }, { payload }) => {
+			let index = articleQueue.normal.indexOf(payload);
+			articleQueue.favorites.push(payload);
+			articleQueue.normal.splice(index, 1);
+		},
+		unPinArticle: ({ articleQueue }, { payload }) => {
+			let index = articleQueue.favorites.indexOf(payload);
+			articleQueue.normal.unshift(payload);
+			articleQueue.favorites.splice(index, 1);
 		},
 	},
 });
@@ -422,6 +445,8 @@ export var {
 	removeArticle,
 	addArticleToDeletionQueue,
 	undoArticleDeletion,
+	pinArticle,
+	unPinArticle,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;
