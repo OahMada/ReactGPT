@@ -69,6 +69,11 @@ var Article = () => {
 
 	let { reset } = useQueryErrorResetBoundary();
 
+	// handle not found routes
+	if (combinedArticleQueue.indexOf(articleId) === -1) {
+		throw new Error('Not Found');
+	}
+
 	return (
 		<>
 			{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
@@ -76,7 +81,6 @@ var Article = () => {
 				<StrictModeDroppable droppableId='paragraphs'>
 					{(provided) => (
 						<div ref={provided.innerRef} {...provided.droppableProps}>
-							{/* {combinedArticleQueue.indexOf(articleId) === -1 && } */}
 							{filteredParagraphs.length === 0 && <EmptyParagraphList />}
 							{filteredParagraphs.map((paragraph: ParagraphType, index) => {
 								return (

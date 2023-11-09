@@ -50,10 +50,15 @@ var router = createBrowserRouter([
 		element: <Root />,
 		errorElement: <ErrorPage />,
 		children: [
-			{ index: true, element: <ArticleInput /> },
 			{
-				path: 'article/:articleId',
-				element: <Article />,
+				errorElement: <ErrorPage />,
+				children: [
+					{ index: true, element: <ArticleInput /> },
+					{
+						path: 'article/:articleId',
+						element: <Article />,
+					},
+				],
 			},
 		],
 	},
