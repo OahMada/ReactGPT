@@ -1,5 +1,5 @@
 // react
-import React from 'react';
+import React, { Children } from 'react';
 import ReactDOM from 'react-dom/client';
 
 // redux
@@ -25,6 +25,7 @@ import Root from './routes/root';
 import ErrorPage from './error-page';
 import Article from './routes/article';
 import ArticleInput from './routes/articleInput';
+import Setting from './routes/setting';
 import './index.css';
 
 var queryClient = new QueryClient({
@@ -62,6 +63,10 @@ var router = createBrowserRouter([
 			},
 		],
 	},
+	{
+		path: 'setting',
+		element: <Setting />,
+	},
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -78,8 +83,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 );
 
 /**
- * finish tutorial/navigate to un-existed article route
- * paragraph deletion bug
+ * article deletion bug
  * is the persisted data right when I delete article?
  * fix drag and drop and paragraph inserting
  *
