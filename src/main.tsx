@@ -20,6 +20,10 @@ import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persist
 // data compressing
 import { compress, decompress } from 'lz-string';
 
+// toast
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
+
 // components
 import Root from './routes/root';
 import ErrorPage from './error-page';
@@ -79,6 +83,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 			<Provider store={store}>
 				<PersistGate loading={null} persistor={persistor}>
 					<RouterProvider router={router} />
+					<ToastContainer enableMultiContainer containerId={'paragraphDeletion'} closeOnClick={false} closeButton={false} />
+					<ToastContainer limit={3} enableMultiContainer />
 				</PersistGate>
 			</Provider>
 			<ReactQueryDevtools initialIsOpen={true} position='right' />
@@ -91,8 +97,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  * is the persisted data right when I delete article?
  * fix drag and drop and paragraph inserting
  *
- * api key validation
+ * article creation date
  *
+ * api key validation
+ * "^sk-[a-zA-Z0-9]{32,}$"
  * a way to invoke hidden default api key
  *
  * preview result

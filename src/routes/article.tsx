@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useQueryErrorResetBoundary } from '@tanstack/react-query'; // https://www.thisdot.co/blog/common-patterns-and-nuances-using-react-query/#handling-errors-with-error-boundaries
 import { useParams } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css';
+
 import styled from 'styled-components';
 import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
 
@@ -127,8 +126,6 @@ var Article = () => {
 					)}
 				</StrictModeDroppable>
 			</DragDropContext>
-			<ToastContainer enableMultiContainer containerId={'paragraphDeletion'} closeOnClick={false} closeButton={false} />
-			<ToastContainer limit={3} enableMultiContainer />
 		</>
 	);
 };
