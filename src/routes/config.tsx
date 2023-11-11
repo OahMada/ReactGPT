@@ -1,16 +1,18 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useLocalStorage } from 'react-use';
+import { useNavigate } from 'react-router-dom';
+import secureLocalStorage from 'react-secure-storage';
 
 interface APIKey {
 	key: string;
 }
 
-var Setting = () => {
+var Config = () => {
 	let { register, handleSubmit } = useForm<APIKey>();
-	let [apiKey, setApiKey] = useLocalStorage('apiKey');
+	let navigate = useNavigate();
 
 	let onSubmit: SubmitHandler<APIKey> = (data) => {
-		console.log(data);
+		secureLocalStorage.setItem('string', data.key);
+		navigate('/');
 	};
 
 	return (
@@ -22,4 +24,4 @@ var Setting = () => {
 		</section>
 	);
 };
-export default Setting;
+export default Config;

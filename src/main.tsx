@@ -1,5 +1,5 @@
 // react
-import React, { Children } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 // redux
@@ -25,7 +25,7 @@ import Root from './routes/root';
 import ErrorPage from './error-page';
 import Article from './routes/article';
 import ArticleInput from './routes/articleInput';
-import Setting from './routes/setting';
+import Config from './routes/config';
 import './index.css';
 
 var queryClient = new QueryClient({
@@ -47,25 +47,29 @@ var persister = createSyncStoragePersister({
 
 var router = createBrowserRouter([
 	{
-		path: '/',
-		element: <Root />,
 		errorElement: <ErrorPage />,
 		children: [
 			{
-				errorElement: <ErrorPage />,
+				path: '/',
+				element: <Root />,
 				children: [
-					{ index: true, element: <ArticleInput /> },
 					{
-						path: 'article/:articleId',
-						element: <Article />,
+						errorElement: <ErrorPage />,
+						children: [
+							{ index: true, element: <ArticleInput /> },
+							{
+								path: 'article/:articleId',
+								element: <Article />,
+							},
+						],
 					},
 				],
 			},
+			{
+				path: 'config',
+				element: <Config />,
+			},
 		],
-	},
-	{
-		path: 'setting',
-		element: <Setting />,
 	},
 ]);
 
@@ -87,7 +91,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  * is the persisted data right when I delete article?
  * fix drag and drop and paragraph inserting
  *
- * protected route
+ * api key validation
+ *
  * accept user input opaiAPI key and encrypt the key save to local-storage
  * a way to invoke hidden default api key
  * change api key setting
