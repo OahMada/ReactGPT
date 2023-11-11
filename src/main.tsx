@@ -93,9 +93,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  *
  * api key validation
  *
- * accept user input opaiAPI key and encrypt the key save to local-storage
  * a way to invoke hidden default api key
- * change api key setting
  *
  * preview result
  * export as pdf doc etc, send to mail

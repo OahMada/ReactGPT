@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import secureLocalStorage from 'react-secure-storage';
 
 // react query
 import { QueryFunctionContext } from '@tanstack/react-query';
@@ -30,7 +31,7 @@ export var queryGrammarMistakes = async ({ queryKey, signal }: QueryFunctionCont
 				{ role: 'user', content: queryKey[1] },
 			],
 		},
-		{ headers: { 'content-type': 'application/json', Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}` }, signal }
+		{ headers: { 'content-type': 'application/json', Authorization: `Bearer ${secureLocalStorage.getItem('string')}` }, signal }
 	);
 
 	return response.data['choices'][0]['message']['content'];

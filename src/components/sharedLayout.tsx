@@ -80,6 +80,7 @@ var SharedLayout = () => {
 	return (
 		<>
 			<div>
+				<button onClick={() => navigate('/config')}>CONFIG</button>
 				<form role='search' onSubmit={handleSubmit(onSubmit)}>
 					<input
 						aria-label='Search articles'

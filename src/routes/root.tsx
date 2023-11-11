@@ -1,13 +1,13 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLocalStorage } from 'react-use';
+import secureLocalStorage from 'react-secure-storage';
 
 import SharedLayout from '../components/sharedLayout';
 
 export default function Root() {
-	let [APIKey] = useLocalStorage('APIKey');
+	let secureLocalStorageAPIKey = secureLocalStorage.getItem('string');
 
-	return APIKey ? (
+	return secureLocalStorageAPIKey ? (
 		<>
 			<SharedLayout />
 			<StyledSection id='detail'>
