@@ -1,8 +1,8 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import secureLocalStorage from 'react-secure-storage';
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { testQuery, testQueryKeys } from '../query/testQuery';
 import { createToast } from '../utils';
@@ -13,12 +13,16 @@ interface APIKey {
 
 var Config = () => {
 	let navigate = useNavigate();
+	let QueryClient = useQueryClient();
+
 	let [inEdit, setInEdit] = useState(false);
+	let [key, setKey] = useState('');
 	let {
 		register,
 		handleSubmit,
 		clearErrors,
-		formState: { errors, isSubmitSuccessful }, // TODO toast message for errors
+		formState: { errors, isSubmitSuccessful },
+		setValue,
 	} = useForm<APIKey>({
 		reValidateMode: 'onSubmit',
 		defaultValues: {
@@ -26,31 +30,42 @@ var Config = () => {
 		},
 	});
 
-	console.log(isSubmitSuccessful);
-
-	let secureLocalStorageAPIKey = secureLocalStorage.getItem('string') as string | null;
-
-	let { data } = useQuery({
-		queryKey: testQueryKeys(secureLocalStorageAPIKey as string),
+	let { isError, isFetched } = useQuery({
+		queryKey: testQueryKeys(key),
 		queryFn: testQuery,
-		enabled: isSubmitSuccessful && Boolean(secureLocalStorageAPIKey),
+		enabled: isSubmitSuccessful,
 	});
 
-	console.log(data);
-
 	let onSubmit: SubmitHandler<APIKey> = (data) => {
-		secureLocalStorage.setItem('string', data.key);
-		if (inEdit) {
-			// navigate(-1);
-			setInEdit(false);
-		} else {
-			// navigate('/');
-		}
+		setKey(data.key);
 	};
 
 	if (errors?.key?.message) {
 		createToast({ type: 'error', content: errors.key.message, toastId: errors.key.message });
 	}
+	let secureLocalStorageAPIKey = secureLocalStorage.getItem('string') as string | null;
+
+	useEffect(() => {
+		if (isFetched) {
+			if (isError) {
+				// setKey(''); // clear local state
+				setValue('key', ''); // clear form input value
+				createToast({ type: 'error', content: 'Invalid API Key.', toastId: 'Invalid API Key' });
+				// QueryClient.invalidateQueries({
+				// 	queryKey: testQueryKeys(key),
+				// 	exact: true,
+				// });
+			} else {
+				secureLocalStorage.setItem('string', key);
+				if (inEdit) {
+					navigate(-1);
+					setInEdit(false);
+				} else {
+					navigate('/');
+				}
+			}
+		}
+	}, [QueryClient, inEdit, isError, isFetched, key, navigate, setValue]);
 
 	return (
 		<section>
@@ -76,7 +91,7 @@ var Config = () => {
 									value: /^sk-[a-zA-Z0-9]{32,}$/,
 									message: 'Invalid API Key Format',
 								},
-								onChange: (e) => {
+								onChange: () => {
 									// clear errors after submitting https://stackoverflow.com/a/67659536/5800789 https://github.com/react-hook-form/react-hook-form/releases/tag/v7.16.0
 									clearErrors('key'); //It is needed when displaying the error message text, or the message would keep showing up.
 								},
@@ -96,9 +111,11 @@ var Config = () => {
 					Edit
 				</button>
 			)}
-			<button type='button' onClick={() => navigate(-1)}>
-				Cancel
-			</button>
+			{secureLocalStorageAPIKey && (
+				<button type='button' onClick={() => navigate(-1)}>
+					Cancel
+				</button>
+			)}
 		</section>
 	);
 };

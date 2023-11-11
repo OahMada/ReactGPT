@@ -99,9 +99,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  *
  * article creation date
  *
- * api key validation
- * "^sk-[a-zA-Z0-9]{32,}$"
  * a way to invoke hidden default api key
+ * discard react query error state
  *
  * preview result
  * export as pdf doc etc, send to mail
