@@ -16,6 +16,5 @@ export var testQuery = async ({ queryKey, signal }: QueryFunctionContext) => {
 		{ headers: { 'content-type': 'application/json', Authorization: `Bearer ${queryKey[1]}` }, signal }
 	);
 
-	console.log(response);
-	return response.data;
+	return response;
 };

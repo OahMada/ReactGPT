@@ -2,7 +2,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import secureLocalStorage from 'react-secure-storage';
 import { useState, useEffect } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { testQuery, testQueryKeys } from '../query/testQuery';
 import { createToast } from '../utils';
@@ -13,16 +13,15 @@ interface APIKey {
 
 var Config = () => {
 	let navigate = useNavigate();
-	let QueryClient = useQueryClient();
 
-	let [inEdit, setInEdit] = useState(false);
-	let [key, setKey] = useState('');
+	let [inEdit, setInEdit] = useState(false); // to track the editing status
+	let [key, setKey] = useState(''); // to access form submission data out of onSubmit handler
 	let {
 		register,
 		handleSubmit,
 		clearErrors,
 		formState: { errors, isSubmitSuccessful },
-		setValue,
+		reset,
 	} = useForm<APIKey>({
 		reValidateMode: 'onSubmit',
 		defaultValues: {
@@ -30,7 +29,7 @@ var Config = () => {
 		},
 	});
 
-	let { isError, isFetched } = useQuery({
+	let { isError, isFetched, isFetching } = useQuery({
 		queryKey: testQueryKeys(key),
 		queryFn: testQuery,
 		enabled: isSubmitSuccessful,
@@ -40,32 +39,31 @@ var Config = () => {
 		setKey(data.key);
 	};
 
+	// create form error toast
 	if (errors?.key?.message) {
 		createToast({ type: 'error', content: errors.key.message, toastId: errors.key.message });
+		reset(); // reset form state
 	}
+
 	let secureLocalStorageAPIKey = secureLocalStorage.getItem('string') as string | null;
 
 	useEffect(() => {
-		if (isFetched) {
+		// only run when done fetching. ifFetched is for the beginning state, or the else logic is going to run
+		if (!isFetching && isFetched) {
 			if (isError) {
-				// setKey(''); // clear local state
-				setValue('key', ''); // clear form input value
 				createToast({ type: 'error', content: 'Invalid API Key.', toastId: 'Invalid API Key' });
-				// QueryClient.invalidateQueries({
-				// 	queryKey: testQueryKeys(key),
-				// 	exact: true,
-				// });
 			} else {
 				secureLocalStorage.setItem('string', key);
 				if (inEdit) {
-					navigate(-1);
 					setInEdit(false);
+					navigate(-1);
 				} else {
 					navigate('/');
 				}
 			}
+			reset(); // reset form after process done
 		}
-	}, [QueryClient, inEdit, isError, isFetched, key, navigate, setValue]);
+	}, [isError, isFetching, isFetched, key, inEdit, navigate, reset]);
 
 	return (
 		<section>
@@ -97,7 +95,7 @@ var Config = () => {
 								},
 							})}
 						/>
-						<button type='submit' disabled={errors?.key?.message ? true : false}>
+						<button type='submit' disabled={errors?.key?.message ? true : false || isFetching}>
 							Done
 						</button>
 					</form>
@@ -120,5 +118,3 @@ var Config = () => {
 	);
 };
 export default Config;
-
-// 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
