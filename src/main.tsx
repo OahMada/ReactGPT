@@ -91,19 +91,17 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 );
 
 /**
- * article deletion bug
- * is the persisted data right when I delete article?
- * fix drag and drop and paragraph inserting
- *
- * article creation date
- *
- * a way to invoke hidden default api key
- * create demo
- *
  * can I offload axios call into serverless function?
+ * article deletion bug
+ * fix drag and drop and paragraph inserting
+ * delete article and navigate away
+ * is the persisted data right when I delete article?
  *
  * ## features
+ * article creation date
+ *
  * preview result
+ *
  * export as pdf doc etc, send to mail
  *
  * react-hotkeys
