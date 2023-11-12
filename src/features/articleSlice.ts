@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArticle, createToast } from '../utils';
 import { refactoredChange, paragraphStatus } from '../types';
-import { RootState, AppThunk } from '../app/store';
+import { RootState, AppThunk } from '../redux/store';
 
 export type EditHistoryMode = 'paragraphCreation' | 'paragraphLastEdit';
 

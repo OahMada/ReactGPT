@@ -6,7 +6,7 @@ import { QueryFunctionContext } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { Paragraph, populateParagraphLocalState, selectArticle } from '../features/articleSlice';
 import { findTheDiffsBetweenTwoStrings } from '../utils';
 

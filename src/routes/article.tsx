@@ -4,28 +4,22 @@ import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useQueryErrorResetBoundary } from '@tanstack/react-query'; // https://www.thisdot.co/blog/common-patterns-and-nuances-using-react-query/#handling-errors-with-error-boundaries
 import { useParams } from 'react-router-dom';
-
 import styled from 'styled-components';
 import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
 
 // redux
-import { useAppSelector, useAppDispatch } from '../app/hooks';
+import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { selectArticle, handleParagraphOrderChange, Paragraph as ParagraphType, updateUserInput } from '../features/articleSlice';
 
 // components
-import ParagraphInput from '../components/paragraphInput';
-import Paragraph from '../components/paragraph';
-import ParagraphControlBtns from '../components/paragraphControlBtns';
-import { StyledParagraph } from '../components/paragraph';
-import EmptyParagraphList from '../components/emptyParagraphList';
-import ArticleControlBtns from '../components/articleControlBtns';
+import { StyledParagraph, ParagraphInput, Paragraph, ParagraphControlBtns, EmptyParagraphList, ArticleControlBtns } from '../components';
 
 // utils
 import { createToast, throwIfUndefined } from '../utils';
 
 // Credits to https://github.com/GiovanniACamacho and https://github.com/Meligy for the TypeScript version
 // Original post: https://github.com/atlassian/react-beautiful-dnd/issues/2399#issuecomment-1175638194
-var StrictModeDroppable = ({ children, ...props }: DroppableProps) => {
+export var StrictModeDroppable = ({ children, ...props }: DroppableProps) => {
 	const [enabled, setEnabled] = useState(false);
 
 	useEffect(() => {
@@ -44,7 +38,7 @@ var StrictModeDroppable = ({ children, ...props }: DroppableProps) => {
 	return <Droppable {...props}>{children}</Droppable>;
 };
 
-var Article = () => {
+export var Article = () => {
 	// state values
 	let dispatch = useAppDispatch();
 	let article = useAppSelector(selectArticle);
@@ -144,5 +138,3 @@ var Wrapper = styled.article`
 		background-color: lightskyblue;
 	}
 `;
-
-export default Article;

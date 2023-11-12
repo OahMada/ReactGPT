@@ -12,7 +12,7 @@ import {
 	Paragraph,
 	removeArticle,
 } from '../features/articleSlice';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { createToast, throwIfUndefined } from '../utils';
 
 // https://github.com/fkhadra/react-toastify/issues/568#issuecomment-779847274
@@ -35,7 +35,7 @@ var Undo = ({ closeToast, onUndo, paragraph }: UndoProps) => {
 	);
 };
 
-var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
+export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 	let dispatch = useAppDispatch();
 	let toastId = useRef<Id>();
 	const { articleId } = useParams();
@@ -85,5 +85,3 @@ var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 		</div>
 	);
 };
-
-export default ParagraphControlBtns;

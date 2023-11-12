@@ -6,7 +6,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { useLocalStorage } from 'react-use';
 import { compress, decompress } from 'lz-string';
 
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
 	selectArticle,
 	saveParagraphInput,
@@ -23,7 +23,13 @@ interface ParagraphInputType {
 }
 
 // log the last character inputted from previous render
-var ParagraphInput = ({ paragraphId, resetErrorBoundary }: { paragraphId: string; resetErrorBoundary?: FallbackProps['resetErrorBoundary'] }) => {
+export var ParagraphInput = ({
+	paragraphId,
+	resetErrorBoundary,
+}: {
+	paragraphId: string;
+	resetErrorBoundary?: FallbackProps['resetErrorBoundary'];
+}) => {
 	let textareaRef = useRef<HTMLTextAreaElement>(null);
 	let dispatch = useAppDispatch();
 
@@ -142,7 +148,6 @@ var ParagraphInput = ({ paragraphId, resetErrorBoundary }: { paragraphId: string
 		</StyledForm>
 	);
 };
-export default ParagraphInput;
 
 var StyledForm = styled.form`
 	height: 100%;

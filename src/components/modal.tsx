@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 // redux
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { showModal, hideModal, selectModal } from '../features/modalSlice';
 import { acceptSingleAdjustment, ignoreSingleAdjustment } from '../features/articleSlice';
 
@@ -69,6 +69,7 @@ var Modal = () => {
 		</StyleSheetManager>
 	);
 };
+
 export default Modal;
 
 var Wrapper = styled.div<{ titleColor: string; positionLeft: number; positionTop: number }>`

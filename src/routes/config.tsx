@@ -7,19 +7,18 @@ import { useQuery } from '@tanstack/react-query';
 import { testQuery, testQueryKeys } from '../query/testQuery';
 import { createToast } from '../utils';
 import { selectConfig, toggleAPIKeyInEdit } from '../features/configSlice';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
 
 interface APIKey {
 	key: string;
 }
 
-var Config = () => {
+export var Config = () => {
 	let navigate = useNavigate();
 
-	// let [inEdit, setInEdit] = useState(false); // to track the editing status
 	let { APIKeyInEdit } = useAppSelector(selectConfig);
 	let dispatch = useAppDispatch();
-	let [key, setKey] = useState(''); // to access form submission data out of onSubmit handler // TODO put into redux
+	let [key, setKey] = useState(''); // to access form submission data out of onSubmit handler
 	let {
 		register,
 		handleSubmit,
@@ -127,4 +126,3 @@ var Config = () => {
 		</section>
 	);
 };
-export default Config;

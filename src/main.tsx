@@ -4,7 +4,8 @@ import ReactDOM from 'react-dom/client';
 
 // redux
 import { Provider } from 'react-redux';
-import { persistor, store } from './app/store';
+import { persistor, store } from './redux/store';
+
 // redux persist
 import { PersistGate } from 'redux-persist/integration/react';
 
@@ -25,11 +26,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 // components
-import Root from './routes/root';
-import ErrorPage from './error-page';
-import Article from './routes/article';
-import ArticleInput from './routes/articleInput';
-import Config from './routes/config';
+import { Root, Article, ArticleInput, Config, ErrorPage } from './routes';
+
 import './index.css';
 
 var queryClient = new QueryClient({

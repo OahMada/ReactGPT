@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { toast, Id, ToastContentProps } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { removeArticle, addArticleToDeletionQueue, undoArticleDeletion, selectArticle, pinArticle, unPinArticle } from '../features/articleSlice';
 import { createToast } from '../utils';
 
@@ -24,7 +24,7 @@ var Undo = ({ closeToast, onUndo }: UndoProps) => {
 	);
 };
 
-var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
+export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 	let { articleRemoveQueue, articleQueue } = useAppSelector(selectArticle);
 	let toastId = useRef<Id>();
 	let dispatch = useAppDispatch();
@@ -87,4 +87,3 @@ var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 		</div>
 	);
 };
-export default ArticleControlBtns;

@@ -3,7 +3,7 @@ import { QueryFunctionContext, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import secureLocalStorage from 'react-secure-storage';
 
-import { useAppSelector } from '../app/hooks';
+import { useAppSelector } from '../redux/hooks';
 import { Paragraph, selectArticle } from '../features/articleSlice';
 
 export var translationQueryKeys = (paragraphText: string, paragraphId: string) => {

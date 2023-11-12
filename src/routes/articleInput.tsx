@@ -6,7 +6,7 @@ import { compress, decompress } from 'lz-string';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-import { useAppDispatch } from '../app/hooks';
+import { useAppDispatch } from '../redux/hooks';
 import { saveArticleInput } from '../features/articleSlice';
 import { createToast, defaultArticleInput } from '../utils';
 
@@ -15,7 +15,7 @@ interface ArticleInputType {
 }
 
 // log the last character inputted from previous render
-var ArticleInput = () => {
+export var ArticleInput = () => {
 	let dispatch = useAppDispatch();
 	let navigate = useNavigate();
 
@@ -81,7 +81,6 @@ var ArticleInput = () => {
 		</StyledForm>
 	);
 };
-export default ArticleInput;
 
 var StyledForm = styled.form`
 	height: 100%;

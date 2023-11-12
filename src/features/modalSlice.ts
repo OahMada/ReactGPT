@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ModifiedObj, paragraphStatus } from '../types';
-import { RootState } from '../app/store';
+import { RootState } from '../redux/store';
 
 interface elementPositionDimension {
 	left: number;

@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-var EmptyParagraphList = () => {
+export var EmptyParagraphList = () => {
 	let navigate = useNavigate();
 
 	return (
@@ -18,4 +18,3 @@ var EmptyParagraphList = () => {
 		</div>
 	);
 };
-export default EmptyParagraphList;

@@ -2,7 +2,7 @@ import { NavLink, useNavigate, useParams, useSearchParams, useSubmit, useLocatio
 import { useLocalStorage } from 'react-use';
 import { useForm } from 'react-hook-form';
 
-import { useAppSelector, useAppDispatch } from '../app/hooks';
+import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { selectArticle, removeArticle, addArticleToDeletionQueue, unPinArticle, pinArticle } from '../features/articleSlice';
 import { performFuseSearch } from '../utils';
 
@@ -10,7 +10,7 @@ interface SearchForm {
 	search: string;
 }
 
-var SharedLayout = () => {
+export var SharedLayout = () => {
 	let dispatch = useAppDispatch();
 	let { articleQueue, paragraphs } = useAppSelector(selectArticle);
 
@@ -151,4 +151,3 @@ var SharedLayout = () => {
 		</>
 	);
 };
-export default SharedLayout;

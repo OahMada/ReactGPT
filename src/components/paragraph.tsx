@@ -8,7 +8,7 @@ import { refactoredChange } from '../types';
 import { useGrammarQuery, grammarQueryKeys } from '../query/grammarQuery';
 import { useTranslationQuery } from '../query/translationQuery';
 
-import { useAppSelector, useAppDispatch } from '../app/hooks';
+import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import {
 	acceptAllAdjustments,
 	checkEditHistory,
@@ -24,9 +24,9 @@ import {
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
 
 import Modal from './modal';
-import ParagraphInput from './paragraphInput';
+import { ParagraphInput } from './paragraphInput';
 
-var Paragraph = ({
+export var Paragraph = ({
 	paragraph: {
 		id,
 		initialParagraph,
@@ -245,7 +245,6 @@ var Paragraph = ({
 		);
 	}
 };
-export default Paragraph;
 
 export var StyledParagraph = styled.p`
 	letter-spacing: 2px;

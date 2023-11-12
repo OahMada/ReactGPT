@@ -2,9 +2,9 @@ import { Navigate, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import secureLocalStorage from 'react-secure-storage';
 
-import SharedLayout from '../components/sharedLayout';
+import { SharedLayout } from '../components';
 
-export default function Root() {
+export function Root() {
 	let secureLocalStorageAPIKey = secureLocalStorage.getItem('string');
 
 	return secureLocalStorageAPIKey ? (
