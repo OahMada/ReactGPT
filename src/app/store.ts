@@ -12,6 +12,7 @@ import { compress, decompress } from 'lz-string';
 // reducers
 import articleReducer from '../features/articleSlice';
 import modalReducer from '../features/modalSlice';
+import configReducer from '../features/configSlice';
 
 var compressTransform = createTransform(
 	(state) => compress(JSON.stringify(state)),
@@ -26,9 +27,15 @@ var articlePersistConfig = {
 	blacklist: ['paragraphRemoveQueue', 'articleRemoveQueue'],
 };
 
+var configPersistConfig = {
+	key: 'config',
+	storage,
+};
+
 var rootReducer = combineReducers({
 	article: persistReducer<ReturnType<typeof articleReducer>>(articlePersistConfig, articleReducer), //https://github.com/rt2zz/redux-persist/issues/1368
 	modal: modalReducer,
+	config: persistReducer<ReturnType<typeof configReducer>>(configPersistConfig, configReducer),
 });
 
 export var store = configureStore({

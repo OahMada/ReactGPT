@@ -6,6 +6,8 @@ import { useQuery } from '@tanstack/react-query';
 
 import { testQuery, testQueryKeys } from '../query/testQuery';
 import { createToast } from '../utils';
+import { selectConfig, toggleAPIKeyInEdit } from '../features/configSlice';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 interface APIKey {
 	key: string;
@@ -14,8 +16,10 @@ interface APIKey {
 var Config = () => {
 	let navigate = useNavigate();
 
-	let [inEdit, setInEdit] = useState(false); // to track the editing status
-	let [key, setKey] = useState(''); // to access form submission data out of onSubmit handler
+	// let [inEdit, setInEdit] = useState(false); // to track the editing status
+	let { APIKeyInEdit } = useAppSelector(selectConfig);
+	let dispatch = useAppDispatch();
+	let [key, setKey] = useState(''); // to access form submission data out of onSubmit handler // TODO put into redux
 	let {
 		register,
 		handleSubmit,
@@ -54,8 +58,8 @@ var Config = () => {
 				createToast({ type: 'error', content: 'Invalid API Key.', toastId: 'Invalid API Key' });
 			} else {
 				secureLocalStorage.setItem('string', key);
-				if (inEdit) {
-					setInEdit(false);
+				if (APIKeyInEdit) {
+					dispatch(toggleAPIKeyInEdit());
 					navigate(-1);
 				} else {
 					navigate('/');
@@ -63,7 +67,7 @@ var Config = () => {
 			}
 			reset(); // reset form after process done
 		}
-	}, [isError, isFetching, isFetched, key, inEdit, navigate, reset]);
+	}, [isError, isFetching, isFetched, key, APIKeyInEdit, navigate, reset, dispatch]);
 
 	return (
 		<section>
@@ -76,7 +80,7 @@ var Config = () => {
 			)}
 			<p>The key will be securely stored locally.</p>
 
-			{inEdit || !secureLocalStorageAPIKey ? (
+			{APIKeyInEdit || !secureLocalStorageAPIKey ? (
 				<>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<label htmlFor='api-key'>Input Your OpenAI API Key: </label>
@@ -103,14 +107,20 @@ var Config = () => {
 			) : (
 				<button
 					onClick={() => {
-						setInEdit(true);
+						dispatch(toggleAPIKeyInEdit());
 					}}
 				>
 					Edit
 				</button>
 			)}
 			{secureLocalStorageAPIKey && (
-				<button type='button' onClick={() => navigate(-1)}>
+				<button
+					type='button'
+					onClick={() => {
+						navigate(-1);
+						dispatch(toggleAPIKeyInEdit());
+					}}
+				>
 					Cancel
 				</button>
 			)}

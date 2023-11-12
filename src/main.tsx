@@ -100,14 +100,20 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  * article creation date
  *
  * a way to invoke hidden default api key
- * discard react query error state
+ * create demo
  *
+ * can I offload axios call into serverless function?
+ *
+ * ## features
  * preview result
  * export as pdf doc etc, send to mail
  *
  * react-hotkeys
+ *
+ * ## test
  * test
  *
+ * ## outlook and other
  * update user flow
  *
  * rethought html layout and css
