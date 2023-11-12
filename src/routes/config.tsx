@@ -39,7 +39,7 @@ export var Config = () => {
 	});
 
 	let onSubmit: SubmitHandler<APIKey> = (data) => {
-		if (data.key === 'MAGIC') {
+		if (data.key === import.meta.env.VITE_OPENAI_API_KEY_ALIAS) {
 			setKey(import.meta.env.VITE_OPENAI_API_KEY);
 		} else {
 			setKey(data.key);
@@ -93,7 +93,7 @@ export var Config = () => {
 							{...register('key', {
 								required: 'Please enter your API key.',
 								pattern: {
-									value: /^sk-[a-zA-Z0-9]{32,}$|MAGIC/,
+									value: new RegExp(`^sk-[a-zA-Z0-9]{32,}$|${import.meta.env.VITE_OPENAI_API_KEY_ALIAS}`),
 									message: 'Invalid API Key Format',
 								},
 								onChange: () => {
