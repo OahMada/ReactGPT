@@ -96,6 +96,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  * fix drag and drop and paragraph inserting
  * delete article and navigate away
  * is the persisted data right when I delete article?
+ * Click Paragraph to Edit not shown on every paragraph
+ * Accept All and Done button all disabled?
+ * refresh page gone error
  *
  * ## features
  * article creation date
