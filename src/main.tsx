@@ -91,7 +91,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 );
 
 /**
- * can I offload axios call into serverless function?
+ * cancel external api request in Netlify serverless function
  * article deletion bug
  * fix drag and drop and paragraph inserting
  * delete article and navigate away

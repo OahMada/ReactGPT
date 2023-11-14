@@ -1,5 +1,6 @@
-import axios from 'axios';
 import { Context } from '@netlify/functions';
+import { buildAxiosResponse } from '../src/utils';
+var controller = new AbortController();
 
 export default async (req: Request) => {
 	let reqBody = await req.json();
@@ -12,23 +13,8 @@ export default async (req: Request) => {
 		url,
 		data: { model: 'gpt-3.5-turbo', messages: [{ role: 'user', content: 'This is a test' }] },
 		headers: { 'content-type': 'application/json', Authorization: `Bearer ${reqBody.key}` },
+		signal: controller.signal,
 	};
 
-	try {
-		let { data, status, statusText } = await axios(config);
-		return new Response(JSON.stringify(data), { status, statusText });
-	} catch (error) {
-		// https://axios-http.com/docs/handling_errors
-		if (error.response) {
-			return new Response(JSON.stringify(error.response.data), { status: error.response.status, statusText: error.response.statusText });
-		} else if (error.request) {
-			// The request was made but no response was received
-			// `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-			// http.ClientRequest in node.js
-			return new Response(JSON.stringify(error.request), { status: 500 });
-		} else {
-			// Something happened in setting up the request that triggered an Error
-			return new Response(JSON.stringify(error.message), { status: 500 });
-		}
-	}
+	return await buildAxiosResponse(config);
 };

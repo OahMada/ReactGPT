@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import secureLocalStorage from 'react-secure-storage';
 
 // react query
 import { QueryFunctionContext } from '@tanstack/react-query';
@@ -16,22 +15,11 @@ export var grammarQueryKeys = (paragraph: string, paragraphId: string) => {
 
 export var queryGrammarMistakes = async ({ queryKey, signal }: QueryFunctionContext<ReturnType<typeof grammarQueryKeys>>) => {
 	let response = await axios.post(
-		'https://api.openai.com/v1/chat/completions',
+		'/.netlify/functions/fetchGrammarMistakes',
 		{
-			model: 'gpt-3.5-turbo',
-			messages: [
-				{
-					role: 'system',
-					content: `You are an English grammar fixer. You will correct only the grammar mistakes in the essay that the user provides. In the process, you should aim to make as few edits as possible.
-
-					You will not engage in a conversation with the user. If you receive greeting messages like "Hello," your task is to check their grammar and return them as they are.
-					
-					If you receive gibberish messages, handle them as they are (while still fixing the grammar as you're a grammar fixer). There is no need to try to determine the user's intentions.`,
-				},
-				{ role: 'user', content: queryKey[1] },
-			],
+			text: queryKey[1],
 		},
-		{ headers: { 'content-type': 'application/json', Authorization: `Bearer ${secureLocalStorage.getItem('string')}` }, signal }
+		{ signal }
 	);
 
 	return response.data['choices'][0]['message']['content'];
