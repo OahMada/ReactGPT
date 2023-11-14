@@ -8,12 +8,11 @@ export var testQueryKeys = (APIKey: string) => {
 
 export var testQuery = async ({ queryKey, signal }: QueryFunctionContext) => {
 	let response = await axios.post(
-		'https://api.openai.com/v1/chat/completions',
+		'/.netlify/functions/testAPI',
 		{
-			model: 'gpt-3.5-turbo',
-			messages: [{ role: 'user', content: 'This is a test' }],
+			key: queryKey[1],
 		},
-		{ headers: { 'content-type': 'application/json', Authorization: `Bearer ${queryKey[1]}` }, signal }
+		{ signal }
 	);
 
 	return response;

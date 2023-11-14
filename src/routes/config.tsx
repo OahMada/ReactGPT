@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { testQuery, testQueryKeys } from '../query/testQuery';
+
 import { createToast } from '../utils';
 import { selectConfig, toggleAPIKeyInEdit } from '../features/configSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
@@ -39,11 +40,11 @@ export var Config = () => {
 	});
 
 	let onSubmit: SubmitHandler<APIKey> = (data) => {
-		if (data.key === import.meta.env.VITE_OPENAI_API_KEY_ALIAS) {
-			setKey(import.meta.env.VITE_OPENAI_API_KEY);
-		} else {
-			setKey(data.key);
-		}
+		// if (data.key === import.meta.env.VITE_OPENAI_API_KEY_ALIAS) {
+		// 	setKey(import.meta.env.VITE_OPENAI_API_KEY);
+		// } else {
+		setKey(data.key);
+		// }
 	};
 
 	// create form error toast
