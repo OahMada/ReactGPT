@@ -1,6 +1,5 @@
 import { Context } from '@netlify/functions';
 import { buildAxiosResponse } from '../src/utils';
-var controller = new AbortController();
 
 export default async (req: Request) => {
 	let reqBody = await req.json();
@@ -13,7 +12,6 @@ export default async (req: Request) => {
 		url,
 		data: { model: 'gpt-3.5-turbo', messages: [{ role: 'user', content: 'This is a test' }] },
 		headers: { 'content-type': 'application/json', Authorization: `Bearer ${reqBody.key}` },
-		signal: controller.signal,
 	};
 
 	return await buildAxiosResponse(config);

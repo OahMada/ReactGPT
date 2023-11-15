@@ -5,6 +5,8 @@ import { QueryFunctionContext } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
+import secureLocalStorage from 'react-secure-storage';
+
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { Paragraph, populateParagraphLocalState, selectArticle } from '../features/articleSlice';
 import { findTheDiffsBetweenTwoStrings } from '../utils';
@@ -18,6 +20,7 @@ export var queryGrammarMistakes = async ({ queryKey, signal }: QueryFunctionCont
 		'/.netlify/functions/fetchGrammarMistakes',
 		{
 			text: queryKey[1],
+			key: secureLocalStorage.getItem('string'),
 		},
 		{ signal }
 	);

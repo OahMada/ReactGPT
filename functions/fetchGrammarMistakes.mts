@@ -1,12 +1,10 @@
 import { Context } from '@netlify/functions';
 import { buildAxiosResponse } from '../src/utils';
-import secureLocalStorage from 'react-secure-storage';
-var controller = new AbortController();
 
 export default async (req: Request) => {
 	let reqBody = await req.json();
 
-	var key = secureLocalStorage.getItem('string');
+	var key = reqBody.key;
 	if (key === Netlify.env.get('VITE_OPENAI_API_KEY_ALIAS')) {
 		key === Netlify.env.get('VITE_OPENAI_API_KEY');
 	}
@@ -30,7 +28,6 @@ export default async (req: Request) => {
 			],
 		},
 		headers: { 'content-type': 'application/json', Authorization: `Bearer ${key}` },
-		signal: controller.signal,
 	};
 
 	return await buildAxiosResponse(config);

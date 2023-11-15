@@ -12,18 +12,12 @@ export var translationQueryKeys = (paragraphText: string, paragraphId: string) =
 
 export var queryTranslation = async ({ queryKey, signal }: QueryFunctionContext<ReturnType<typeof translationQueryKeys>>) => {
 	let response = await axios.post(
-		'https://api.openai.com/v1/chat/completions',
+		'/.netlify/functions/fetchTranslation',
 		{
-			model: 'gpt-3.5-turbo',
-			messages: [
-				{
-					role: 'system',
-					content: `You are a language translator. You will translate any text provided by the user into Chinese.`,
-				},
-				{ role: 'user', content: queryKey[1] },
-			],
+			text: queryKey[1],
+			key: secureLocalStorage.getItem('string'),
 		},
-		{ headers: { 'content-type': 'application/json', Authorization: `Bearer ${secureLocalStorage.getItem('string')}` }, signal }
+		{ signal }
 	);
 
 	return response.data['choices'][0]['message']['content'];
