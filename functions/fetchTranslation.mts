@@ -29,6 +29,6 @@ export default async (req: Request) => {
 	return await buildAxiosResponse(config);
 };
 
-export const config: Config = {
+export var config: Config = {
 	method: 'POST',
 };

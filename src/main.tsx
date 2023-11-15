@@ -91,8 +91,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 );
 
 /**
- * cancel external api request in Netlify serverless function
- * keep user defined key on client side
  * article deletion bug
  * fix drag and drop and paragraph inserting
  * delete article and navigate away
