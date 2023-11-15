@@ -6,7 +6,7 @@ export default async (req: Request) => {
 
 	var key = reqBody.key;
 	if (key === Netlify.env.get('VITE_OPENAI_API_KEY_ALIAS')) {
-		key === Netlify.env.get('VITE_OPENAI_API_KEY');
+		key = Netlify.env.get('VITE_OPENAI_API_KEY');
 	}
 
 	let url = 'https://api.openai.com/v1/chat/completions';
