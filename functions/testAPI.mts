@@ -1,4 +1,4 @@
-import { Context } from '@netlify/functions';
+import { Context, Config } from '@netlify/functions';
 import { buildAxiosResponse } from '../src/utils';
 
 export default async (req: Request) => {
@@ -15,4 +15,8 @@ export default async (req: Request) => {
 	};
 
 	return await buildAxiosResponse(config);
+};
+
+export const config: Config = {
+	method: 'POST',
 };
