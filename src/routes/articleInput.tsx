@@ -87,7 +87,7 @@ var StyledForm = styled.form`
 	textarea {
 		padding: 2rem;
 		width: 100%;
-		height: 100%;
+		max-height: 100%;
 		white-space: pre-wrap;
 		font-family: Arial, Helvetica, sans-serif;
 

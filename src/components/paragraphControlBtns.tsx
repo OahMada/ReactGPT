@@ -69,7 +69,7 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 					paragraph={currentParagraph.paragraphAfterGrammarFix}
 				/>
 			),
-			containerId: 'paragraphDeletion',
+			containerId: 'articleDeletion',
 			options: { hideProgressBar: false },
 		});
 	};

@@ -356,7 +356,7 @@ let articleSlice = createSlice({
 		removeArticle: (state, { payload: { articleId, mode } }: PayloadAction<{ articleId: string; mode: 'explicit' | 'implicit' }>) => {
 			let articleIsInFavorites: boolean = false;
 			let index = state.articleQueue.normal.indexOf(articleId);
-			if (index !== -1) {
+			if (index === -1) {
 				articleIsInFavorites = true;
 				index = state.articleQueue.favorites.indexOf(articleId);
 			}
@@ -384,7 +384,7 @@ let articleSlice = createSlice({
 		addArticleToDeletionQueue: (state, { payload }) => {
 			state.articleRemoveQueue.push(payload);
 		},
-		undoArticleDeletion: (state, { payload }) => {
+		removeArticleFromDeletionQueue: (state, { payload }) => {
 			state.articleRemoveQueue = state.articleRemoveQueue.filter((articleId) => articleId !== payload);
 		},
 		pinArticle: ({ articleQueue }, { payload }) => {
@@ -443,7 +443,7 @@ export var {
 	toggleTranslation,
 	removeArticle,
 	addArticleToDeletionQueue,
-	undoArticleDeletion,
+	removeArticleFromDeletionQueue,
 	pinArticle,
 	unPinArticle,
 } = articleSlice.actions;

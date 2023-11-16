@@ -81,7 +81,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 			<Provider store={store}>
 				<PersistGate loading={null} persistor={persistor}>
 					<RouterProvider router={router} />
-					<ToastContainer enableMultiContainer containerId={'paragraphDeletion'} closeOnClick={false} closeButton={false} />
+					<ToastContainer enableMultiContainer containerId={'articleDeletion'} closeOnClick={false} closeButton={false} />
 					<ToastContainer limit={3} enableMultiContainer />
 				</PersistGate>
 			</Provider>

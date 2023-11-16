@@ -33,7 +33,7 @@ export var Config = () => {
 		},
 	});
 
-	let { isError, isFetched, isFetching } = useQuery({
+	let { isError, isFetched, isFetching, error } = useQuery({
 		queryKey: testQueryKeys(key),
 		queryFn: testQuery,
 		enabled: isSubmitSuccessful,
@@ -59,7 +59,7 @@ export var Config = () => {
 		// only run when done fetching. ifFetched is for the beginning state, or the else logic is going to run
 		if (!isFetching && isFetched) {
 			if (isError) {
-				createToast({ type: 'error', content: 'Invalid API Key.', toastId: 'Invalid API Key' });
+				createToast({ type: 'error', content: error?.message, toastId: error?.message });
 			} else {
 				secureLocalStorage.setItem('string', key);
 				if (APIKeyInEdit) {
@@ -71,13 +71,18 @@ export var Config = () => {
 			}
 			reset(); // reset form after process done
 		}
-	}, [isError, isFetching, isFetched, key, APIKeyInEdit, navigate, reset, dispatch]);
+	}, [isError, isFetching, isFetched, key, APIKeyInEdit, navigate, reset, dispatch, error]);
 
 	return (
 		<section>
 			{secureLocalStorageAPIKey ? (
 				<h1>
-					Your API Key is: {`${secureLocalStorageAPIKey.split('').slice(0, 3).join('')}***${secureLocalStorageAPIKey.split('').slice(-4).join('')}`}
+					Your API Key is:
+					{` ${
+						secureLocalStorageAPIKey === import.meta.env.VITE_OPENAI_API_KEY_ALIAS
+							? 'DEFAULT'
+							: secureLocalStorageAPIKey.split('').slice(0, 3).join('') + '***' + secureLocalStorageAPIKey.split('').slice(-4).join('')
+					}`}
 				</h1>
 			) : (
 				<h1>Please set your API key first</h1>
