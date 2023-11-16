@@ -3,7 +3,14 @@ import { useLocalStorage } from 'react-use';
 import { useForm } from 'react-hook-form';
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import { selectArticle, removeArticle, addArticleToDeletionQueue, unPinArticle, pinArticle } from '../features/articleSlice';
+import {
+	selectArticle,
+	removeArticle,
+	addArticleToDeletionQueue,
+	unPinArticle,
+	pinArticle,
+	removeArticleFromDeletionQueue,
+} from '../features/articleSlice';
 import { performFuseSearch } from '../utils';
 
 interface SearchForm {
@@ -116,11 +123,12 @@ export var SharedLayout = () => {
 									<button
 										onClick={() => {
 											dispatch(addArticleToDeletionQueue(article.articleId));
-											dispatch(removeArticle({ articleId: article.articleId, mode: 'explicit' }));
+											dispatch(removeArticle(article.articleId));
 											// only navigate when the displaying article is deleted
 											if (article.articleId === currentArticle) {
 												navigate('/');
 											}
+											dispatch(removeArticleFromDeletionQueue(article.articleId));
 										}}
 									>
 										Delete

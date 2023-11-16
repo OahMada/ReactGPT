@@ -47,15 +47,6 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 	let handleParagraphDeletion = () => {
 		dispatch(addParagraphToDeletionQueue(paragraphId));
 
-		toast.onChange((toastItem) => {
-			if (toastItem.status === 'removed' && toastItem.id === toastId.current) {
-				// If the toastId check isn't included, changes to any toast would trigger the following.
-				dispatch(finishParagraphDeletion(paragraphId));
-				// remove article reference if none paragraphs left
-				dispatch(removeArticle({ articleId, mode: 'implicit' }));
-			}
-		});
-
 		toastId.current = createToast({
 			type: 'error',
 			content: (
@@ -73,6 +64,13 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 			options: { hideProgressBar: false },
 		});
 	};
+
+	toast.onChange((toastItem) => {
+		if (toastItem.status === 'removed' && toastItem.id === toastId.current) {
+			// If the toastId check isn't included, changes to any toast would trigger the following.
+			dispatch(finishParagraphDeletion({ paragraphId, articleId }));
+		}
+	});
 
 	return (
 		<div>

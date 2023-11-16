@@ -3,7 +3,14 @@ import { toast, Id, ToastContentProps } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { removeArticle, addArticleToDeletionQueue, undoArticleDeletion, selectArticle, pinArticle, unPinArticle } from '../features/articleSlice';
+import {
+	removeArticle,
+	addArticleToDeletionQueue,
+	removeArticleFromDeletionQueue,
+	selectArticle,
+	pinArticle,
+	unPinArticle,
+} from '../features/articleSlice';
 import { createToast } from '../utils';
 
 interface UndoProps extends Partial<ToastContentProps> {
@@ -25,40 +32,40 @@ var Undo = ({ closeToast, onUndo }: UndoProps) => {
 };
 
 export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
-	let { articleRemoveQueue, articleQueue } = useAppSelector(selectArticle);
+	let { articleQueue } = useAppSelector(selectArticle);
 	let toastId = useRef<Id>();
 	let dispatch = useAppDispatch();
 	let navigate = useNavigate();
 
 	let handleArticleDeletion = () => {
 		dispatch(addArticleToDeletionQueue(articleId));
-
-		toast.onChange((toastItem) => {
-			if (toastItem.status === 'removed' && toastItem.id === toastId.current) {
-				dispatch(removeArticle({ articleId, mode: 'explicit' }));
-				if (articleRemoveQueue.includes(articleId)) {
-					// only navigate when the article did get deleted
-					navigate('/');
-				}
-			}
-		});
+		navigate('/');
 
 		toastId.current = createToast({
 			type: 'error',
 			content: (
 				<Undo
 					onUndo={() => {
-						dispatch(undoArticleDeletion(articleId));
+						dispatch(removeArticleFromDeletionQueue(articleId));
+						navigate(`/article/${articleId}`);
 					}}
 					closeToast={() => {
 						toast.dismiss(toastId.current);
 					}}
 				/>
 			),
-			containerId: 'paragraphDeletion',
+			containerId: 'articleDeletion',
 			options: { hideProgressBar: false },
 		});
 	};
+
+	toast.onChange((toastItem) => {
+		if (toastItem.status === 'removed' && toastItem.id === toastId.current) {
+			// only navigate when the article did get deleted
+			dispatch(removeArticle(articleId));
+			dispatch(removeArticleFromDeletionQueue(articleId));
+		}
+	});
 
 	let articleIsInFavorites = articleQueue.favorites.indexOf(articleId) !== -1 ? true : false;
 

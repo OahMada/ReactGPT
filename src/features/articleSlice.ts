@@ -292,11 +292,28 @@ let articleSlice = createSlice({
 			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === payload);
 			paragraphs.splice(currentParagraphIndex, 1);
 		},
-		finishParagraphDeletion: (state, { payload }) => {
-			if (state.paragraphRemoveQueue.includes(payload)) {
-				let currentParagraphIndex = state.paragraphs.findIndex((item) => item.id === payload);
+		finishParagraphDeletion: (state, { payload: { articleId, paragraphId } }: PayloadAction<{ articleId: string; paragraphId: string }>) => {
+			if (state.paragraphRemoveQueue.includes(paragraphId)) {
+				let currentParagraphIndex = state.paragraphs.findIndex((item) => item.id === paragraphId);
 				state.paragraphs.splice(currentParagraphIndex, 1);
-				state.paragraphRemoveQueue = state.paragraphRemoveQueue.filter((id) => id !== payload);
+				state.paragraphRemoveQueue = state.paragraphRemoveQueue.filter((id) => id !== paragraphId);
+			}
+
+			// calculate if the article should be deleted as well
+			let articleIsInFavorites: boolean = false;
+			let index = state.articleQueue.normal.indexOf(articleId);
+			if (index === -1) {
+				articleIsInFavorites = true;
+				index = state.articleQueue.favorites.indexOf(articleId);
+			}
+
+			let articleParagraphCount = state.paragraphs.filter((paragraph) => paragraph.articleId === articleId).length;
+			if (articleParagraphCount === 0) {
+				if (articleIsInFavorites) {
+					state.articleQueue.favorites.splice(index, 1);
+				} else {
+					state.articleQueue.normal.splice(index, 1);
+				}
 			}
 		},
 		addParagraphToDeletionQueue: ({ paragraphRemoveQueue }, { payload }) => {
@@ -353,31 +370,20 @@ let articleSlice = createSlice({
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 			currentParagraph.showTranslation = !currentParagraph.showTranslation;
 		},
-		removeArticle: (state, { payload: { articleId, mode } }: PayloadAction<{ articleId: string; mode: 'explicit' | 'implicit' }>) => {
+		removeArticle: (state, { payload }) => {
 			let articleIsInFavorites: boolean = false;
-			let index = state.articleQueue.normal.indexOf(articleId);
+			let index = state.articleQueue.normal.indexOf(payload);
 			if (index === -1) {
 				articleIsInFavorites = true;
-				index = state.articleQueue.favorites.indexOf(articleId);
+				index = state.articleQueue.favorites.indexOf(payload);
 			}
-			if (mode === 'implicit') {
-				// by removing paragraphs one by one
-				let articleParagraphCount = state.paragraphs.filter((paragraph) => paragraph.articleId === articleId).length;
-				if (articleParagraphCount === 0) {
-					if (articleIsInFavorites) {
-						state.articleQueue.favorites.splice(index, 1);
-					} else {
-						state.articleQueue.normal.splice(index, 1);
-					}
-				}
-			} else if (mode === 'explicit') {
-				if (state.articleRemoveQueue.includes(articleId)) {
-					state.paragraphs = state.paragraphs.filter((paragraph) => paragraph.articleId !== articleId);
-					if (articleIsInFavorites) {
-						state.articleQueue.favorites.splice(index, 1);
-					} else {
-						state.articleQueue.normal.splice(index, 1);
-					}
+
+			if (state.articleRemoveQueue.includes(payload)) {
+				state.paragraphs = state.paragraphs.filter((paragraph) => paragraph.articleId !== payload);
+				if (articleIsInFavorites) {
+					state.articleQueue.favorites.splice(index, 1);
+				} else {
+					state.articleQueue.normal.splice(index, 1);
 				}
 			}
 		},
