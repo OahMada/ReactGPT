@@ -10,7 +10,6 @@ import {
 	undoParagraphDeletion,
 	selectArticle,
 	Paragraph,
-	removeArticle,
 } from '../features/articleSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { createToast, throwIfUndefined } from '../utils';
