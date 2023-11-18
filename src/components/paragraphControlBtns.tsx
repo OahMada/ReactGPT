@@ -76,8 +76,8 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 			<button onClick={handleParagraphDeletion}>Delete Paragraph</button>
 			<div>
 				<button>Insert New Paragraph</button>
-				<button onClick={() => dispatch(insertAboveParagraph(paragraphId))}>Insert Above</button>
-				<button onClick={() => dispatch(insertBelowParagraph({ paragraphId }))}>Insert Bellow</button>
+				<button onClick={() => dispatch(insertAboveParagraph({ paragraphId, articleId }))}>Insert Above</button>
+				<button onClick={() => dispatch(insertBelowParagraph({ paragraphId, articleId }))}>Insert Bellow</button>
 			</div>
 		</div>
 	);

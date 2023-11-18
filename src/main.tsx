@@ -91,7 +91,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 );
 
 /**
- * fix drag and drop and paragraph inserting
  * is the persisted data right when I delete article?
  *
  * ## features

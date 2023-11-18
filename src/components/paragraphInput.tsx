@@ -5,6 +5,7 @@ import { FallbackProps } from 'react-error-boundary';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useLocalStorage } from 'react-use';
 import { compress, decompress } from 'lz-string';
+import { useParams } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
@@ -16,7 +17,7 @@ import {
 	insertBelowParagraph,
 } from '../features/articleSlice';
 
-import { createToast, sanitizeUserInput } from '../utils/index';
+import { createToast, sanitizeUserInput, throwIfUndefined } from '../utils/index';
 
 interface ParagraphInputType {
 	paragraph: string;
@@ -30,6 +31,8 @@ export var ParagraphInput = ({
 	paragraphId: string;
 	resetErrorBoundary?: FallbackProps['resetErrorBoundary'];
 }) => {
+	const { articleId } = useParams();
+	throwIfUndefined(articleId);
 	let textareaRef = useRef<HTMLTextAreaElement>(null);
 	let dispatch = useAppDispatch();
 
@@ -139,7 +142,7 @@ export var ParagraphInput = ({
 					let payloadId = paragraphId;
 					for (let index = 0; index < splitCombinedTextArr.length; index++) {
 						let splitText = splitCombinedTextArr[index];
-						dispatch(insertBelowParagraph({ paragraphId: payloadId, newParagraphText: splitText, indexOffset: index }));
+						dispatch(insertBelowParagraph({ paragraphId: payloadId, newParagraphText: splitText, indexOffset: index, articleId }));
 						// payloadId = getNewlyCreatedParagraphId(splitText);
 					}
 				}}

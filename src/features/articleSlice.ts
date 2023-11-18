@@ -322,9 +322,9 @@ let articleSlice = createSlice({
 		undoParagraphDeletion: (state, { payload }) => {
 			state.paragraphRemoveQueue = state.paragraphRemoveQueue.filter((id) => id !== payload);
 		},
-		insertAboveParagraph: ({ paragraphs }, { payload }: PayloadAction<string>) => {
-			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === payload);
-			let newParagraph = Object.assign({}, initialParagraphState);
+		insertAboveParagraph: ({ paragraphs }, { payload: { paragraphId, articleId } }: PayloadAction<{ paragraphId: string; articleId: string }>) => {
+			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === paragraphId);
+			let newParagraph = Object.assign({}, initialParagraphState, { articleId });
 			newParagraph.paragraphStatus = 'editing';
 			newParagraph.id = uuidv4();
 			paragraphs.splice(currentParagraphIndex, 0, newParagraph);
@@ -332,11 +332,11 @@ let articleSlice = createSlice({
 		insertBelowParagraph: (
 			{ paragraphs },
 			{
-				payload: { paragraphId, newParagraphText, indexOffset },
-			}: PayloadAction<{ paragraphId: string; newParagraphText?: string; indexOffset?: number }>
+				payload: { paragraphId, newParagraphText, indexOffset, articleId },
+			}: PayloadAction<{ paragraphId: string; newParagraphText?: string; indexOffset?: number; articleId: string }>
 		) => {
 			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === paragraphId);
-			let newParagraph = Object.assign({}, initialParagraphState);
+			let newParagraph = Object.assign({}, initialParagraphState, { articleId });
 			newParagraph.paragraphStatus = 'editing';
 			newParagraph.id = uuidv4();
 			if (newParagraphText) {
@@ -349,11 +349,12 @@ let articleSlice = createSlice({
 		},
 		handleParagraphOrderChange: (
 			{ paragraphs },
-			{ payload: { destinationIndex, sourceIndex } }: PayloadAction<{ destinationIndex: number; sourceIndex: number }>
+			{ payload: { destinationIndex, sourceIndex, articleId } }: PayloadAction<{ destinationIndex: number; sourceIndex: number; articleId: string }>
 		) => {
 			// put dargTarget before drop target
-			let [dragTargetParagraph] = paragraphs.splice(sourceIndex, 1);
-			paragraphs.splice(destinationIndex, 0, dragTargetParagraph);
+			let articleFirstIndex = paragraphs.findIndex((para) => para.articleId === articleId);
+			let [dragTargetParagraph] = paragraphs.splice(sourceIndex + articleFirstIndex, 1);
+			paragraphs.splice(destinationIndex + articleFirstIndex, 0, dragTargetParagraph);
 		},
 		disableCancelQueryState: ({ paragraphs }, { payload }) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;

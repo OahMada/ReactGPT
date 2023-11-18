@@ -57,7 +57,7 @@ export var Article = () => {
 		if (!destination) return;
 		if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
-		dispatch(handleParagraphOrderChange({ destinationIndex: destination.index, sourceIndex: source.index }));
+		dispatch(handleParagraphOrderChange({ destinationIndex: destination.index, sourceIndex: source.index, articleId }));
 	};
 
 	let { reset } = useQueryErrorResetBoundary();
