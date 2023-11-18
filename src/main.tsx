@@ -94,7 +94,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  * ## features
  * preview result
  *
+ * include translates
+ *
  * export as pdf doc etc, send to mail
+ * reactPDF, redocx, copy to clipboard, react email
  *
  * react-hotkeys
  *
