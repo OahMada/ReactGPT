@@ -57,15 +57,15 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 			containerId: 'articleDeletion',
 			options: { hideProgressBar: false },
 		});
-	};
 
-	toast.onChange((toastItem) => {
-		if (toastItem.status === 'removed' && toastItem.id === toastId.current) {
-			// only navigate when the article did get deleted
-			dispatch(removeArticle(articleId));
-			dispatch(removeArticleFromDeletionQueue(articleId));
-		}
-	});
+		toast.onChange((toastItem) => {
+			if (toastItem.status === 'removed' && toastItem.id === toastId.current) {
+				// only navigate when the article did get deleted
+				dispatch(removeArticle(articleId));
+				dispatch(removeArticleFromDeletionQueue(articleId));
+			}
+		});
+	};
 
 	let articleIsInFavorites = articleQueue.favorites.indexOf(articleId) !== -1 ? true : false;
 

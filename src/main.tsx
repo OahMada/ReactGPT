@@ -91,11 +91,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 );
 
 /**
- * is the persisted data right when I delete article?
- *
  * ## features
- * article creation date
- *
  * preview result
  *
  * export as pdf doc etc, send to mail

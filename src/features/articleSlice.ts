@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArticle, createToast } from '../utils';
 import { refactoredChange, paragraphStatus } from '../types';
 import { RootState, AppThunk } from '../redux/store';
+import { Paragraph } from '../components';
 
 export type EditHistoryMode = 'paragraphCreation' | 'paragraphLastEdit';
 
@@ -21,6 +22,7 @@ export interface Paragraph {
 	cancelQuery: boolean;
 	editHistoryMode: EditHistoryMode;
 	showTranslation: boolean;
+	editDate: number;
 }
 
 let initialParagraphState: Paragraph = {
@@ -37,6 +39,7 @@ let initialParagraphState: Paragraph = {
 	cancelQuery: false,
 	editHistoryMode: 'paragraphCreation',
 	showTranslation: false,
+	editDate: Date.now(),
 };
 
 interface Article {
@@ -83,13 +86,14 @@ let articleSlice = createSlice({
 				currentParagraph.updatedInitialParagraph = sanitizeUserInput(paragraphInput);
 				// prevent state change if no edits made, or react query's isLoading is gonna be true
 				currentParagraph.paragraphBeforeGrammarFix = sanitizeUserInput(paragraphInput);
+				currentParagraph.editDate = Date.now();
 			}
 			// when you add a new paragraph to the list
 			if (currentParagraph.initialParagraph === '') {
 				currentParagraph.initialParagraph = currentParagraph.paragraphBeforeGrammarFix;
 			}
 			// cancelQuery is in sync with isDirty react-hook-form state
-			// second part of the condition is for bypass the unwanted modifying state
+			// second part of the condition is for bypassing the unwanted modifying state
 			if (currentParagraph.adjustmentObjectArr.length === 0 && currentParagraph.cancelQuery === true) {
 				currentParagraph.paragraphStatus = 'doneModification';
 			} else {
@@ -404,6 +408,16 @@ let articleSlice = createSlice({
 			articleQueue.normal.unshift(payload);
 			articleQueue.favorites.splice(index, 1);
 		},
+		updateParagraphEditDate: ({ paragraphs }, { payload }) => {
+			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
+			currentParagraph.editDate = Date.now();
+		},
+		updateArticleFirstParagraphEditDate: ({ paragraphs }, { payload }) => {
+			let currentParagraphFirstArticle = paragraphs.find((item) => item.articleId === payload);
+			if (currentParagraphFirstArticle) {
+				currentParagraphFirstArticle.editDate = Date.now();
+			}
+		},
 	},
 });
 
@@ -453,6 +467,8 @@ export var {
 	removeArticleFromDeletionQueue,
 	pinArticle,
 	unPinArticle,
+	updateParagraphEditDate,
+	updateArticleFirstParagraphEditDate,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;

@@ -1,6 +1,8 @@
 import { NavLink, useNavigate, useParams, useSearchParams, useSubmit, useLocation, createSearchParams } from 'react-router-dom';
 import { useLocalStorage } from 'react-use';
 import { useForm } from 'react-hook-form';
+import * as dayjs from 'dayjs';
+import 'dayjs/locale/zh-cn'; // import locale
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import {
@@ -16,6 +18,8 @@ import { performFuseSearch } from '../utils';
 interface SearchForm {
 	search: string;
 }
+
+dayjs.locale('zh-cn');
 
 export var SharedLayout = () => {
 	let dispatch = useAppDispatch();
@@ -51,12 +55,30 @@ export var SharedLayout = () => {
 		}, '');
 	};
 
-	let combinedArticleQueue = [...articleQueue.favorites, ...articleQueue.normal];
+	let buildArticleEditDate = (articleId: string) => {
+		return paragraphs.reduce<number>((acc, cur) => {
+			if (cur.articleId === articleId) {
+				if (cur.editDate > acc) {
+					acc = cur.editDate;
+				}
+			}
+			return acc;
+		}, 0);
+	};
 
 	// build articles array and run filters on it
-	let articles = combinedArticleQueue.map((articleId) => {
-		return { articleId, articleText: buildArticle(articleId) };
-	});
+	let articles = [
+		...articleQueue.favorites
+			.map((articleId) => {
+				return { articleId, articleText: buildArticle(articleId), editDate: buildArticleEditDate(articleId) };
+			})
+			.sort((a, b) => b.editDate - a.editDate),
+		...articleQueue.normal
+			.map((articleId) => {
+				return { articleId, articleText: buildArticle(articleId), editDate: buildArticleEditDate(articleId) };
+			})
+			.sort((a, b) => b.editDate - a.editDate),
+	];
 
 	// filter articles based on search params
 	if (query) {
@@ -117,6 +139,7 @@ export var SharedLayout = () => {
 								{/* need border for this*/}
 								<div onClick={() => handleNavigate(`article/${article.articleId}`)}>
 									<p>{article.articleText.slice(0, 20)}</p>
+									<p>{dayjs(article.editDate).format('YYYY-MM-DD THH:mm')}</p>
 								</div>
 								<div>
 									{/* TODO hover to show */}

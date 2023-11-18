@@ -10,6 +10,7 @@ import {
 	undoParagraphDeletion,
 	selectArticle,
 	Paragraph,
+	updateArticleFirstParagraphEditDate,
 } from '../features/articleSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { createToast, throwIfUndefined } from '../utils';
@@ -62,14 +63,15 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 			containerId: 'articleDeletion',
 			options: { hideProgressBar: false },
 		});
-	};
 
-	toast.onChange((toastItem) => {
-		if (toastItem.status === 'removed' && toastItem.id === toastId.current) {
-			// If the toastId check isn't included, changes to any toast would trigger the following.
-			dispatch(finishParagraphDeletion({ paragraphId, articleId }));
-		}
-	});
+		toast.onChange((toastItem) => {
+			if (toastItem.status === 'removed' && toastItem.id === toastId.current) {
+				// If the toastId check isn't included, changes to any toast would trigger the following.
+				dispatch(finishParagraphDeletion({ paragraphId, articleId }));
+				dispatch(updateArticleFirstParagraphEditDate(articleId));
+			}
+		});
+	};
 
 	return (
 		<div>

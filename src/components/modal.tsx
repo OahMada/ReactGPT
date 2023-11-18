@@ -3,7 +3,7 @@ import styled from 'styled-components';
 // redux
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { showModal, hideModal, selectModal } from '../features/modalSlice';
-import { acceptSingleAdjustment, ignoreSingleAdjustment } from '../features/articleSlice';
+import { acceptSingleAdjustment, ignoreSingleAdjustment, updateParagraphEditDate } from '../features/articleSlice';
 
 // for the purpose of https://styled-components.com/docs/faqs#shouldforwardprop-is-no-longer-provided-by-default
 // the warning said: Warning: React does not recognize the `positionTop` prop on a DOM element...
@@ -38,6 +38,7 @@ var Modal = () => {
 						className='accept-btn btn'
 						onClick={() => {
 							dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
+							dispatch(updateParagraphEditDate(paragraphId));
 							dispatch(hideModal());
 						}}
 					>
@@ -49,6 +50,7 @@ var Modal = () => {
 							className='accept-btn btn'
 							onClick={() => {
 								dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
+								dispatch(updateParagraphEditDate(paragraphId));
 								dispatch(hideModal());
 							}}
 						>

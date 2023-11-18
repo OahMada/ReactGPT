@@ -20,6 +20,7 @@ import {
 	alterCheckEditHistoryMode,
 	EditHistoryMode,
 	toggleTranslation,
+	updateParagraphEditDate,
 } from '../features/articleSlice';
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
 
@@ -182,6 +183,7 @@ export var Paragraph = ({
 				<button
 					onClick={() => {
 						dispatch(acceptAllAdjustments(id));
+						dispatch(updateParagraphEditDate(id));
 					}}
 					disabled={allAdjustmentsCount === 0 || isGrammarFixesPending || isGrammarFixesFetching}
 				>
@@ -221,6 +223,7 @@ export var Paragraph = ({
 					<button
 						onClick={() => {
 							dispatch(revertToBeginning(id));
+							dispatch(updateParagraphEditDate(id));
 						}}
 						disabled={paragraphAfterGrammarFix === initialParagraph}
 					>

@@ -9,6 +9,7 @@ var FuseOptions = {
 type Articles = {
 	articleId: string;
 	articleText: string;
+	editDate: number;
 }[];
 
 export function performFuseSearch(searchTarget: Articles, searchPattern: string) {
