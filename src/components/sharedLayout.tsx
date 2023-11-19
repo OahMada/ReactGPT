@@ -1,7 +1,7 @@
 import { NavLink, useNavigate, useParams, useSearchParams, useSubmit, useLocation, createSearchParams } from 'react-router-dom';
 import { useLocalStorage } from 'react-use';
 import { useForm } from 'react-hook-form';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn'; // import locale
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
@@ -138,7 +138,7 @@ export var SharedLayout = () => {
 								{/* need border for this*/}
 								<div onClick={() => handleNavigate(`article/${article.articleId}`)}>
 									<p>{article.articleText.slice(0, 20)}</p>
-									{/* <p>{dayjs(article.editDate).format('YYYY-MM-DD THH:mm')}</p> */}
+									<p>{dayjs(article.editDate).format('YYYY-MM-DD THH:mm')}</p>
 								</div>
 								<div>
 									{/* TODO hover to show */}
