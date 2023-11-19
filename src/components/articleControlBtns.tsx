@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { toast, Id, ToastContentProps } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
@@ -89,7 +89,9 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 				</button>
 			)}
 			<button onClick={handleArticleDeletion}>Delete Article</button>
-			<button>Preview Article</button>
+			<button>
+				<Link to={`/article/${articleId}/preview`}>Preview Article</Link>
+			</button>
 			{/* TODO */}
 		</div>
 	);

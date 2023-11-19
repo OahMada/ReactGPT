@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 // console would still log the error, see https://github.com/facebook/react/issues/15069
 import { ErrorBoundary } from 'react-error-boundary';
 import { useQueryErrorResetBoundary } from '@tanstack/react-query'; // https://www.thisdot.co/blog/common-patterns-and-nuances-using-react-query/#handling-errors-with-error-boundaries
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useParams, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
 
@@ -120,6 +120,7 @@ export var Article = () => {
 					)}
 				</StrictModeDroppable>
 			</DragDropContext>
+			<Outlet context={filteredParagraphs} />
 		</>
 	);
 };

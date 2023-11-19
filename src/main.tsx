@@ -26,7 +26,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 // components
-import { Root, Article, ArticleInput, Config, ErrorPage } from './routes';
+import { Root, Article, ArticleInput, Config, ErrorPage, Preview } from './routes';
 
 import './index.css';
 
@@ -62,6 +62,12 @@ var router = createBrowserRouter([
 							{
 								path: 'article/:articleId',
 								element: <Article />,
+								children: [
+									{
+										path: 'preview',
+										element: <Preview />,
+									},
+								],
 							},
 						],
 					},
@@ -92,14 +98,16 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 /**
  * ## features
- * preview result
+ *
+ * retry all on error
  *
  * include translates
  *
  * export as pdf doc etc, send to mail
  * reactPDF, redocx, copy to clipboard, react email
+ * https://stackoverflow.com/questions/39501289/in-reactjs-how-to-copy-text-to-clipboard
  *
- * react-hotkeys
+ * react-hotkeys-hook
  *
  * ## test
  * test

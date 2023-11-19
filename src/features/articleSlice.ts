@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArticle, createToast } from '../utils';
 import { refactoredChange, paragraphStatus } from '../types';
 import { RootState, AppThunk } from '../redux/store';
-import { Paragraph } from '../components';
 
 export type EditHistoryMode = 'paragraphCreation' | 'paragraphLastEdit';
 
@@ -137,7 +136,7 @@ let articleSlice = createSlice({
 			}
 			currentParagraph.appliedAdjustments += 1;
 			currentParagraph.cancelQuery = true;
-
+			currentParagraph.paragraphAfterGrammarFix = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr);
 			if (currentParagraph.allAdjustmentsCount === currentParagraph.appliedAdjustments) {
 				// reset states to keep things consistent
 				if (currentParagraph.paragraphStatus === 'reviving') {
@@ -150,8 +149,6 @@ let articleSlice = createSlice({
 				}
 
 				currentParagraph.paragraphStatus = 'doneModification';
-				currentParagraph.paragraphAfterGrammarFix = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr); // required when manually accept all adjustments
-
 				// reset state properties that is staled
 				currentParagraph.adjustmentObjectArr = [];
 				currentParagraph.appliedAdjustments = 0;
@@ -171,10 +168,10 @@ let articleSlice = createSlice({
 				currentParagraph.adjustmentObjectArr.splice(indexInParagraph, 1);
 			}
 			currentParagraph.allAdjustmentsCount -= 1;
+			currentParagraph.paragraphAfterGrammarFix = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr);
+
 			if (currentParagraph.allAdjustmentsCount === 0) {
 				currentParagraph.paragraphStatus = 'doneModification';
-				currentParagraph.paragraphAfterGrammarFix = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr); // required when manually ignore all adjustments
-
 				// reset currentParagraph properties that is staled
 				currentParagraph.adjustmentObjectArr = [];
 				currentParagraph.appliedAdjustments = 0;
@@ -217,15 +214,6 @@ let articleSlice = createSlice({
 		// also used for finish reviewing edit history
 		doneWithCurrentParagraphState: ({ paragraphs }, { payload }: PayloadAction<string>) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
-			currentParagraph.adjustmentObjectArr = currentParagraph.adjustmentObjectArr.reduce<refactoredChange[]>((acc, cur) => {
-				if (cur.value) {
-					acc.push(cur);
-				} else if (cur.removed) {
-					cur.value = cur.removedValue;
-					acc.push(cur);
-				}
-				return acc;
-			}, []);
 
 			currentParagraph.paragraphStatus = 'doneModification';
 			currentParagraph.paragraphAfterGrammarFix = updateGrammarFixedArticle(currentParagraph.adjustmentObjectArr);

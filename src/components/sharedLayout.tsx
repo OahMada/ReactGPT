@@ -19,9 +19,8 @@ interface SearchForm {
 	search: string;
 }
 
-dayjs.locale('zh-cn');
-
 export var SharedLayout = () => {
+	dayjs.locale('zh-cn');
 	let dispatch = useAppDispatch();
 	let { articleQueue, paragraphs } = useAppSelector(selectArticle);
 
