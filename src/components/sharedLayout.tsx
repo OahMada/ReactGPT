@@ -138,7 +138,7 @@ export var SharedLayout = () => {
 								{/* need border for this*/}
 								<div onClick={() => handleNavigate(`article/${article.articleId}`)}>
 									<p>{article.articleText.slice(0, 20)}</p>
-									<p>{dayjs(article.editDate).format('YYYY-MM-DD THH:mm')}</p>
+									{/* <p>{dayjs(article.editDate).format('YYYY-MM-DD THH:mm')}</p> */}
 								</div>
 								<div>
 									{/* TODO hover to show */}
