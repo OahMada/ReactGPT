@@ -37,16 +37,12 @@ export function useTranslationQuery(paragraph: string, paragraphId: string) {
 	return result;
 }
 
-export function useTranslationQueries(paragraphs: { paragraphText: string; paragraphId: string }[], includeTranslation: boolean) {
-	let results = useQueries({
-		queries: paragraphs.map((paragraph) => {
-			return {
-				queryKey: translationQueryKeys(paragraph.paragraphText, paragraph.paragraphId),
-				queryFn: queryTranslation,
-				throwOnError: true,
-				enabled: includeTranslation,
-			};
-		}),
+export function useTranslationQueryVariant(paragraph: { paragraphText: string; paragraphId: string }, includeTranslation: boolean) {
+	let results = useQuery({
+		queryKey: translationQueryKeys(paragraph.paragraphText, paragraph.paragraphId),
+		queryFn: queryTranslation,
+		throwOnError: true,
+		enabled: includeTranslation,
 	});
 
 	return results;

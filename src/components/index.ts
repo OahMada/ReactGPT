@@ -6,3 +6,4 @@ export * from './paragraphControlBtns';
 export * from './paragraphInput';
 export * from './sharedLayout';
 export * from './articlePreviewControlBtns';
+export * from './previewTranslation';

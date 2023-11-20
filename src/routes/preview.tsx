@@ -1,32 +1,31 @@
 import styled from 'styled-components';
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { useState } from 'react';
+import { useQueryErrorResetBoundary } from '@tanstack/react-query';
+import { ErrorBoundary } from 'react-error-boundary';
 
 import { throwIfUndefined } from '../utils';
 import { Paragraph } from '../features/articleSlice';
-import { useTranslationQueries } from '../query/translationQuery';
+import { PreviewTranslation } from '../components';
+
+export interface PartialParagraph {
+	paragraphText: string;
+	paragraphId: string;
+}
 
 export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);
+
 	let filteredParagraphs = useOutletContext<Paragraph[]>();
 	let navigate = useNavigate();
 	let { articleId } = useParams();
 	throwIfUndefined(articleId);
 
-	let paragraphQueries = filteredParagraphs.map((paragraph) => {
+	let { reset } = useQueryErrorResetBoundary();
+
+	let paragraphs: PartialParagraph[] = filteredParagraphs.map((paragraph) => {
 		return { paragraphText: paragraph.paragraphAfterGrammarFix || paragraph.paragraphBeforeGrammarFix, paragraphId: paragraph.id };
 	});
-
-	let result = useTranslationQueries(paragraphQueries, includeTranslation);
-
-	let translationText = result.reduce<string[]>((acc, queryResult) => {
-		if (queryResult.isFetching) {
-			acc.push('Loading...');
-		} else if (queryResult.data) {
-			acc.push(queryResult.data);
-		}
-		return acc;
-	}, []);
 
 	return (
 		<ModalWrapper
@@ -42,11 +41,25 @@ export var Preview = () => {
 					<button onClick={() => navigate(-1)}>Close</button>
 				</div>
 
-				{filteredParagraphs.map((paragraph, index) => {
+				{paragraphs.map((paragraph) => {
 					return (
-						<article key={paragraph.id}>
-							<p>{paragraph.paragraphAfterGrammarFix || paragraph.paragraphBeforeGrammarFix}</p>
-							{includeTranslation && <p>{translationText[index]}</p>}
+						<article key={paragraph.paragraphId}>
+							<p>{paragraph.paragraphText}</p>
+							{
+								<ErrorBoundary
+									onReset={reset}
+									fallbackRender={({ resetErrorBoundary }) => {
+										return (
+											<>
+												<p>Error Occurred</p>
+												<button onClick={() => resetErrorBoundary()}>Retry</button>
+											</>
+										);
+									}}
+								>
+									<PreviewTranslation includeTranslation={includeTranslation} paragraph={paragraph} />
+								</ErrorBoundary>
+							}
 						</article>
 					);
 				})}

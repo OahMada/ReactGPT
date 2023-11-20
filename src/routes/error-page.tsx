@@ -1,7 +1,8 @@
-import { useRouteError, isRouteErrorResponse } from 'react-router-dom';
+import { useRouteError, isRouteErrorResponse, useNavigate } from 'react-router-dom';
 
 export function ErrorPage() {
 	let error = useRouteError();
+	let navigate = useNavigate();
 
 	return (
 		<div id='error-page'>
@@ -10,6 +11,7 @@ export function ErrorPage() {
 			<p>
 				<i>{(isRouteErrorResponse(error) && error.statusText) || (error instanceof Error && error.message)}</i>
 			</p>
+			<button onClick={() => navigate('/')}>Back to home page.</button>
 		</div>
 	);
 }
