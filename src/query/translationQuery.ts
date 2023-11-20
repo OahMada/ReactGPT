@@ -1,5 +1,5 @@
 // react query
-import { QueryFunctionContext, useQuery } from '@tanstack/react-query';
+import { QueryFunctionContext, useQueries, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import secureLocalStorage from 'react-secure-storage';
 
@@ -35,4 +35,19 @@ export function useTranslationQuery(paragraph: string, paragraphId: string) {
 	});
 
 	return result;
+}
+
+export function useTranslationQueries(paragraphs: { paragraphText: string; paragraphId: string }[], includeTranslation: boolean) {
+	let results = useQueries({
+		queries: paragraphs.map((paragraph) => {
+			return {
+				queryKey: translationQueryKeys(paragraph.paragraphText, paragraph.paragraphId),
+				queryFn: queryTranslation,
+				throwOnError: true,
+				enabled: includeTranslation,
+			};
+		}),
+	});
+
+	return results;
 }

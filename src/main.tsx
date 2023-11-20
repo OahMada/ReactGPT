@@ -100,8 +100,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  * ## features
  *
  * retry all on error
- *
- * include translates
+ * error boundary for translation queries
  *
  * export as pdf doc etc, send to mail
  * reactPDF, redocx, copy to clipboard, react email

@@ -1,15 +1,32 @@
 import styled from 'styled-components';
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
+import { useState } from 'react';
 
 import { throwIfUndefined } from '../utils';
 import { Paragraph } from '../features/articleSlice';
-import { ArticlePreviewControlBtns } from '../components';
+import { useTranslationQueries } from '../query/translationQuery';
 
 export var Preview = () => {
+	let [includeTranslation, setIncludeTranslation] = useState(false);
 	let filteredParagraphs = useOutletContext<Paragraph[]>();
 	let navigate = useNavigate();
 	let { articleId } = useParams();
 	throwIfUndefined(articleId);
+
+	let paragraphQueries = filteredParagraphs.map((paragraph) => {
+		return { paragraphText: paragraph.paragraphAfterGrammarFix || paragraph.paragraphBeforeGrammarFix, paragraphId: paragraph.id };
+	});
+
+	let result = useTranslationQueries(paragraphQueries, includeTranslation);
+
+	let translationText = result.reduce<string[]>((acc, queryResult) => {
+		if (queryResult.isFetching) {
+			acc.push('Loading...');
+		} else if (queryResult.data) {
+			acc.push(queryResult.data);
+		}
+		return acc;
+	}, []);
 
 	return (
 		<ModalWrapper
@@ -18,10 +35,20 @@ export var Preview = () => {
 			}}
 		>
 			<div onClick={(e) => e.stopPropagation()} className='paragraphs'>
-				<ArticlePreviewControlBtns />
+				<div className='btn-container'>
+					<button onClick={() => setIncludeTranslation(!includeTranslation)}>
+						{!includeTranslation ? 'Include Translation' : 'Remove Translation'}
+					</button>
+					<button onClick={() => navigate(-1)}>Close</button>
+				</div>
 
-				{filteredParagraphs.map((paragraph) => {
-					return <p key={paragraph.id}>{paragraph.paragraphAfterGrammarFix || paragraph.paragraphBeforeGrammarFix}</p>;
+				{filteredParagraphs.map((paragraph, index) => {
+					return (
+						<article key={paragraph.id}>
+							<p>{paragraph.paragraphAfterGrammarFix || paragraph.paragraphBeforeGrammarFix}</p>
+							{includeTranslation && <p>{translationText[index]}</p>}
+						</article>
+					);
 				})}
 			</div>
 		</ModalWrapper>
@@ -54,13 +81,20 @@ var ModalWrapper = styled.section`
 		transition: all 0.4s 0.2s;
 		padding: 3rem;
 
-		p {
-			font-size: 1.6rem;
+		article:not(:last-child) {
 			margin-bottom: 2rem;
 		}
 
-		p:last-child {
-			margin-bottom: 0;
+		p {
+			font-size: 1.6rem;
+		}
+
+		p:not(:last-child) {
+			margin-bottom: 0.8rem;
+		}
+
+		.btn-container {
+			margin-bottom: 1rem;
 		}
 	}
 `;
