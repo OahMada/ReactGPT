@@ -99,6 +99,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 /**
  * ## features
  *
+ * a way to reset error boundary from outside
  * retry all on error
  * error boundary for translation queries
  *

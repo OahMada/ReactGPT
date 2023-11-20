@@ -1,5 +1,5 @@
 // react query
-import { QueryFunctionContext, useQueries, useQuery } from '@tanstack/react-query';
+import { QueryFunctionContext, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import secureLocalStorage from 'react-secure-storage';
 
