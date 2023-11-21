@@ -11,3 +11,8 @@ export interface refactoredChange extends ModifiedObj {
 }
 
 export type paragraphStatus = 'editing' | 'modifying' | 'doneModification' | 'reviving' | null;
+
+export interface PartialParagraph {
+	paragraphText: string;
+	paragraphId: string;
+}

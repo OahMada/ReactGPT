@@ -5,11 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { Paragraph } from '../features/articleSlice';
 import { PreviewContent } from '../components';
-
-export interface PartialParagraph {
-	paragraphText: string;
-	paragraphId: string;
-}
+import { PartialParagraph } from '../types';
 
 export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);

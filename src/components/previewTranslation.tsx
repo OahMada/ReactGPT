@@ -1,5 +1,5 @@
 import { useTranslationQueryVariant } from '../query/translationQuery';
-import { PartialParagraph } from '../routes/preview';
+import { PartialParagraph } from '../types';
 
 export var PreviewTranslation = ({ includeTranslation, paragraph }: { includeTranslation: boolean; paragraph: PartialParagraph }) => {
 	let result = useTranslationQueryVariant(paragraph, includeTranslation);

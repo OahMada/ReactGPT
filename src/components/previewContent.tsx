@@ -1,7 +1,7 @@
 import { ErrorBoundary } from 'react-error-boundary';
 import { useQueryErrorResetBoundary } from '@tanstack/react-query';
 
-import { PartialParagraph } from '../routes/preview';
+import { PartialParagraph } from '../types';
 import { PreviewTranslation } from './previewTranslation';
 
 export var PreviewContent = ({ paragraph, includeTranslation }: { paragraph: PartialParagraph; includeTranslation: boolean }) => {
