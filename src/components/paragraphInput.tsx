@@ -8,16 +8,10 @@ import { compress, decompress } from 'lz-string';
 import { useParams } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import {
-	selectArticle,
-	saveParagraphInput,
-	Paragraph,
-	disableCancelQueryState,
-	deleteParagraphRightAway,
-	insertBelowParagraph,
-} from '../features/articleSlice';
+import { selectArticle, saveParagraphInput, disableCancelQueryState, deleteParagraphRightAway, insertBelowParagraph } from '../features/articleSlice';
 
 import { createToast, sanitizeUserInput, throwIfUndefined } from '../utils/index';
+import { Paragraph } from '../types';
 
 interface ParagraphInputType {
 	paragraph: string;

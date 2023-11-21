@@ -8,8 +8,9 @@ import axios from 'axios';
 import secureLocalStorage from 'react-secure-storage';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { Paragraph, populateParagraphLocalState, selectArticle } from '../features/articleSlice';
+import { populateParagraphLocalState, selectArticle } from '../features/articleSlice';
 import { findTheDiffsBetweenTwoStrings } from '../utils';
+import { Paragraph } from '../types';
 
 export var grammarQueryKeys = (paragraph: string, paragraphId: string) => {
 	return ['grammar', paragraph, paragraphId] as const;

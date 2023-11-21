@@ -9,11 +9,11 @@ import {
 	addParagraphToDeletionQueue,
 	undoParagraphDeletion,
 	selectArticle,
-	Paragraph,
 	updateArticleFirstParagraphEditDate,
 } from '../features/articleSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { createToast, throwIfUndefined } from '../utils';
+import { Paragraph } from '../types';
 
 // https://github.com/fkhadra/react-toastify/issues/568#issuecomment-779847274
 interface UndoProps extends Partial<ToastContentProps> {

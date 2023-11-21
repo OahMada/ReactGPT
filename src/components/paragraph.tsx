@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { useRef } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { refactoredChange } from '../types';
+import { refactoredChange, Paragraph as ParagraphType, EditHistoryMode } from '../types';
 
 import { useGrammarQuery, grammarQueryKeys } from '../query/grammarQuery';
 import { translationQueryKeys } from '../query/translationQuery';
@@ -17,9 +17,7 @@ import {
 	revertToBeginning,
 	reFetchGrammarMistakes,
 	updateUserInput,
-	Paragraph as ParagraphType,
 	alterCheckEditHistoryMode,
-	EditHistoryMode,
 	toggleTranslation,
 	updateParagraphEditDate,
 } from '../features/articleSlice';

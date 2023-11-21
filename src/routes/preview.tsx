@@ -3,9 +3,8 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { Paragraph } from '../features/articleSlice';
 import { PreviewContent } from '../components';
-import { PartialParagraph } from '../types';
+import { PartialParagraph, Paragraph } from '../types';
 
 export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);

@@ -100,7 +100,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  * ## features
  *
  * retry all on error: for grammar fix queries
- * error boundary for translation queries
+ * error boundary for translation queries, implement react context to avoid prop drilling
  *
  * export as pdf doc etc, send to mail
  * reactPDF, redocx, copy to clipboard, react email

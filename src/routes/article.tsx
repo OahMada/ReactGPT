@@ -9,13 +9,15 @@ import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } fro
 
 // redux
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import { selectArticle, handleParagraphOrderChange, Paragraph as ParagraphType, updateUserInput } from '../features/articleSlice';
+import { selectArticle, handleParagraphOrderChange, updateUserInput } from '../features/articleSlice';
 
 // components
 import { StyledParagraph, ParagraphInput, Paragraph, ParagraphControlBtns, EmptyParagraphList, ArticleControlBtns } from '../components';
 
 // utils
 import { createToast, throwIfUndefined } from '../utils';
+
+import { Paragraph as ParagraphType } from '../types';
 
 // Credits to https://github.com/GiovanniACamacho and https://github.com/Meligy for the TypeScript version
 // Original post: https://github.com/atlassian/react-beautiful-dnd/issues/2399#issuecomment-1175638194

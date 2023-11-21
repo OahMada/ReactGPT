@@ -2,27 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
 import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArticle, createToast } from '../utils';
-import { refactoredChange, paragraphStatus } from '../types';
+import { refactoredChange, Paragraph, EditHistoryMode } from '../types';
 import { RootState, AppThunk } from '../redux/store';
-
-export type EditHistoryMode = 'paragraphCreation' | 'paragraphLastEdit';
-
-export interface Paragraph {
-	id: string;
-	articleId: string;
-	paragraphStatus: paragraphStatus;
-	initialParagraph: string;
-	updatedInitialParagraph: string;
-	paragraphBeforeGrammarFix: string;
-	paragraphAfterGrammarFix: string;
-	adjustmentObjectArr: refactoredChange[];
-	allAdjustmentsCount: number;
-	appliedAdjustments: number;
-	cancelQuery: boolean;
-	editHistoryMode: EditHistoryMode;
-	showTranslation: boolean;
-	editDate: number;
-}
 
 let initialParagraphState: Paragraph = {
 	id: '',

@@ -4,7 +4,8 @@ import axios from 'axios';
 import secureLocalStorage from 'react-secure-storage';
 
 import { useAppSelector } from '../redux/hooks';
-import { Paragraph, selectArticle } from '../features/articleSlice';
+import { selectArticle } from '../features/articleSlice';
+import { Paragraph } from '../types';
 
 export var translationQueryKeys = (paragraphText: string, paragraphId: string) => {
 	return ['translation', paragraphText, paragraphId] as const;
