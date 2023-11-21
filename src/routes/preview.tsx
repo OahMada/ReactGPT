@@ -1,12 +1,10 @@
 import styled from 'styled-components';
-import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useState } from 'react';
-import { useQueryErrorResetBoundary } from '@tanstack/react-query';
-import { ErrorBoundary } from 'react-error-boundary';
+import { useQueryClient } from '@tanstack/react-query';
 
-import { throwIfUndefined } from '../utils';
 import { Paragraph } from '../features/articleSlice';
-import { PreviewTranslation } from '../components';
+import { PreviewContent } from '../components';
 
 export interface PartialParagraph {
 	paragraphText: string;
@@ -18,10 +16,8 @@ export var Preview = () => {
 
 	let filteredParagraphs = useOutletContext<Paragraph[]>();
 	let navigate = useNavigate();
-	let { articleId } = useParams();
-	throwIfUndefined(articleId);
 
-	let { reset } = useQueryErrorResetBoundary();
+	let queryClient = useQueryClient();
 
 	let paragraphs: PartialParagraph[] = filteredParagraphs.map((paragraph) => {
 		return { paragraphText: paragraph.paragraphAfterGrammarFix || paragraph.paragraphBeforeGrammarFix, paragraphId: paragraph.id };
@@ -35,33 +31,26 @@ export var Preview = () => {
 		>
 			<div onClick={(e) => e.stopPropagation()} className='paragraphs'>
 				<div className='btn-container'>
-					<button onClick={() => setIncludeTranslation(!includeTranslation)}>
+					<button
+						onClick={() => {
+							setIncludeTranslation(!includeTranslation);
+							queryClient.cancelQueries({ queryKey: ['translation'] });
+						}}
+					>
 						{!includeTranslation ? 'Include Translation' : 'Remove Translation'}
 					</button>
-					<button onClick={() => navigate(-1)}>Close</button>
+					<button
+						onClick={() => {
+							navigate(-1);
+							queryClient.cancelQueries({ queryKey: ['translation'] });
+						}}
+					>
+						Close
+					</button>
 				</div>
 
 				{paragraphs.map((paragraph) => {
-					return (
-						<article key={paragraph.paragraphId}>
-							<p>{paragraph.paragraphText}</p>
-							{
-								<ErrorBoundary
-									onReset={reset}
-									fallbackRender={({ resetErrorBoundary }) => {
-										return (
-											<>
-												<p>Error Occurred</p>
-												<button onClick={() => resetErrorBoundary()}>Retry</button>
-											</>
-										);
-									}}
-								>
-									<PreviewTranslation includeTranslation={includeTranslation} paragraph={paragraph} />
-								</ErrorBoundary>
-							}
-						</article>
-					);
+					return <PreviewContent key={paragraph.paragraphId} paragraph={paragraph} includeTranslation={includeTranslation} />;
 				})}
 			</div>
 		</ModalWrapper>

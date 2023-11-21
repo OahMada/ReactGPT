@@ -99,13 +99,14 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 /**
  * ## features
  *
- * a way to reset error boundary from outside
- * retry all on error
+ * retry all on error: for grammar fix queries
  * error boundary for translation queries
  *
  * export as pdf doc etc, send to mail
  * reactPDF, redocx, copy to clipboard, react email
  * https://stackoverflow.com/questions/39501289/in-reactjs-how-to-copy-text-to-clipboard
+ * https://react-pdf.org/advanced#on-the-fly-rendering
+ * https://dev.to/omarmorales/create-docx-files-with-vue-js-3701
  *
  * react-hotkeys-hook
  *

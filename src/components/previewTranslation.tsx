@@ -11,5 +11,9 @@ export var PreviewTranslation = ({ includeTranslation, paragraph }: { includeTra
 		translationText = result.data;
 	}
 
-	return <> {includeTranslation && <p>{translationText}</p>}</>;
+	return (
+		<>
+			<p>{translationText}</p>
+		</>
+	);
 };
