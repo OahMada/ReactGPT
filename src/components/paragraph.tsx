@@ -1,12 +1,13 @@
 import styled from 'styled-components';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQueryErrorResetBoundary } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { useRef } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 
 import { refactoredChange } from '../types';
 
 import { useGrammarQuery, grammarQueryKeys } from '../query/grammarQuery';
-import { useTranslationQuery } from '../query/translationQuery';
+import { translationQueryKeys } from '../query/translationQuery';
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import {
@@ -26,6 +27,7 @@ import { updateModalContent, showModal, hideModal, selectModal } from '../featur
 
 import Modal from './modal';
 import { ParagraphInput } from './paragraphInput';
+import { ParagraphTranslation } from './paragraphTranslation';
 
 export var Paragraph = ({
 	paragraph: {
@@ -50,14 +52,10 @@ export var Paragraph = ({
 	// fetch API
 	// isGrammarFixesFetching is for action initiated by click the fix grammar mistakes button
 	let { isPending: isGrammarFixesPending, isFetching: isGrammarFixesFetching } = useGrammarQuery(paragraphBeforeGrammarFix, id);
-	let {
-		isPending: isTranslationPending,
-		isFetching: isTranslationFetching,
-		data: translationText,
-	} = useTranslationQuery(paragraphAfterGrammarFix, id);
 
 	// query client
 	let QueryClient = useQueryClient();
+	let { reset } = useQueryErrorResetBoundary();
 
 	// state values
 	let modal = useAppSelector(selectModal);
@@ -215,7 +213,19 @@ export var Paragraph = ({
 			<>
 				<h4>Click Paragraph to Edit</h4>
 				<StyledParagraph onClick={() => dispatch(updateUserInput(id))}>{paragraphAfterGrammarFix}</StyledParagraph>
-				{showTranslation && <StyledParagraph>{isTranslationPending ? 'Loading...' : translationText}</StyledParagraph>}
+				{showTranslation && (
+					<ErrorBoundary
+						onReset={reset}
+						fallbackRender={({ resetErrorBoundary }) => (
+							<div>
+								<StyledParagraph>There was an error!</StyledParagraph>
+								<button onClick={() => resetErrorBoundary()}>Try again</button>
+							</div>
+						)}
+					>
+						<ParagraphTranslation paragraph={{ paragraphText: paragraphAfterGrammarFix, paragraphId: id }} />
+					</ErrorBoundary>
+				)}
 				<div>
 					<button onClick={() => dispatch(checkEditHistory(id))} disabled={paragraphAfterGrammarFix === initialParagraph}>
 						Show Edit History
@@ -240,8 +250,19 @@ export var Paragraph = ({
 					>
 						Find Grammar Mistakes
 					</button>
-					<button onClick={() => dispatch(toggleTranslation(id))} disabled={isTranslationFetching}>
-						{isTranslationFetching || !showTranslation ? 'Show Translation' : 'Hide Translation'}
+					<button
+						onClick={() => {
+							if (showTranslation) {
+								QueryClient.cancelQueries({ queryKey: translationQueryKeys(paragraphAfterGrammarFix, id) });
+							}
+							dispatch(toggleTranslation(id));
+							reset();
+						}}
+					>
+						{
+							// TODO a tricky bug here, maybe consider use local state
+							!showTranslation ? 'Show Translation' : 'Hide Translation'
+						}
 					</button>
 				</div>
 			</>
