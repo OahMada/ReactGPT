@@ -10,7 +10,7 @@ import { acceptSingleAdjustment, ignoreSingleAdjustment, updateParagraphEditDate
 import isPropValid from '@emotion/is-prop-valid';
 import { StyleSheetManager } from 'styled-components';
 
-var Modal = () => {
+export var Modal = () => {
 	let dispatch = useAppDispatch();
 	let { title, content, dimension, color, indexInParagraph, paragraphStatus, paragraphId } = useAppSelector(selectModal);
 
@@ -71,8 +71,6 @@ var Modal = () => {
 		</StyleSheetManager>
 	);
 };
-
-export default Modal;
 
 var Wrapper = styled.div<{ titleColor: string; positionLeft: number; positionTop: number }>`
 	padding: 0.8rem;

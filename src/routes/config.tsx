@@ -5,10 +5,9 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { testQuery, testQueryKeys } from '../query/testQuery';
-
-import { createToast } from '../utils';
 import { selectConfig, toggleAPIKeyInEdit } from '../features/configSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { createToast } from '../utils';
 
 interface APIKey {
 	key: string;

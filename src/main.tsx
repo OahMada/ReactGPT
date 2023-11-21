@@ -28,6 +28,7 @@ import 'react-toastify/dist/ReactToastify.min.css';
 // components
 import { Root, Article, ArticleInput, Config, ErrorPage, Preview } from './routes';
 
+// style
 import './index.css';
 
 var queryClient = new QueryClient({
@@ -101,6 +102,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  *
  * retry all on error: for grammar fix queries
  * error boundary for translation queries, implement react context to avoid prop drilling
+ * a tricky bug
+ * stop background scroll
  *
  * export as pdf doc etc, send to mail
  * reactPDF, redocx, copy to clipboard, react email

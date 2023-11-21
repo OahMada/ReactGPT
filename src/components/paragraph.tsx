@@ -23,9 +23,7 @@ import {
 } from '../features/articleSlice';
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
 
-import Modal from './modal';
-import { ParagraphInput } from './paragraphInput';
-import { ParagraphTranslation } from './paragraphTranslation';
+import { Modal, ParagraphInput, ParagraphTranslation } from '.';
 
 export var Paragraph = ({
 	paragraph: {

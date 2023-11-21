@@ -12,11 +12,6 @@ export interface refactoredChange extends ModifiedObj {
 
 export type paragraphStatus = 'editing' | 'modifying' | 'doneModification' | 'reviving' | null;
 
-export interface PartialParagraph {
-	paragraphText: string;
-	paragraphId: string;
-}
-
 export type EditHistoryMode = 'paragraphCreation' | 'paragraphLastEdit';
 
 export interface Paragraph {
@@ -34,4 +29,9 @@ export interface Paragraph {
 	editHistoryMode: EditHistoryMode;
 	showTranslation: boolean;
 	editDate: number;
+}
+
+export interface PartialParagraph {
+	paragraphText: string;
+	paragraphId: string;
 }

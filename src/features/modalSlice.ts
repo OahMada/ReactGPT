@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { ModifiedObj, paragraphStatus } from '../types';
 import { RootState } from '../redux/store';
 

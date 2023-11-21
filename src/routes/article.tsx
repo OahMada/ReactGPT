@@ -17,6 +17,7 @@ import { StyledParagraph, ParagraphInput, Paragraph, ParagraphControlBtns, Empty
 // utils
 import { createToast, throwIfUndefined } from '../utils';
 
+// types
 import { Paragraph as ParagraphType } from '../types';
 
 // Credits to https://github.com/GiovanniACamacho and https://github.com/Meligy for the TypeScript version

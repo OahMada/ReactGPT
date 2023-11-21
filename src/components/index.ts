@@ -7,3 +7,5 @@ export * from './paragraphInput';
 export * from './sharedLayout';
 export * from './articlePreviewControlBtns';
 export * from './previewContent';
+export * from './paragraphTranslation';
+export * from './modal';
