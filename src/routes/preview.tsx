@@ -1,22 +1,40 @@
 import styled from 'styled-components';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQueryErrorResetBoundary } from '@tanstack/react-query';
 
 import { PreviewContent } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
+import { useAppDispatch } from '../redux/hooks';
+import { toggleTranslation } from '../features/articleSlice';
+import { translationQueryKeys } from '../query/translationQuery';
 
 export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);
+
+	let dispatch = useAppDispatch();
 
 	let filteredParagraphs = useOutletContext<Paragraph[]>();
 	let navigate = useNavigate();
 
 	let queryClient = useQueryClient();
+	let { reset } = useQueryErrorResetBoundary();
 
-	let paragraphs: PartialParagraph[] = filteredParagraphs.map((paragraph) => {
+	let currentArticleParagraphs: PartialParagraph[] = filteredParagraphs.map((paragraph) => {
 		return { paragraphText: paragraph.paragraphAfterGrammarFix || paragraph.paragraphBeforeGrammarFix, paragraphId: paragraph.id };
 	});
+
+	// with this, when canceling translation queries,paragraph translations that are ongoing fetching on article page will be set to hide
+	let toggleShownParagraphTranslation = () => {
+		filteredParagraphs.forEach((paragraph) => {
+			if (
+				paragraph.showTranslation &&
+				queryClient.isFetching({ queryKey: translationQueryKeys(paragraph.paragraphAfterGrammarFix, paragraph.id) }) > 0
+			) {
+				dispatch(toggleTranslation(paragraph.id));
+			}
+		});
+	};
 
 	return (
 		<ModalWrapper
@@ -29,7 +47,12 @@ export var Preview = () => {
 					<button
 						onClick={() => {
 							setIncludeTranslation(!includeTranslation);
-							queryClient.cancelQueries({ queryKey: ['translation'] });
+							if (includeTranslation) {
+								toggleShownParagraphTranslation();
+								// only run when hide preview translation
+								queryClient.cancelQueries({ queryKey: ['translation'] });
+								reset();
+							}
 						}}
 					>
 						{!includeTranslation ? 'Include Translation' : 'Remove Translation'}
@@ -37,14 +60,18 @@ export var Preview = () => {
 					<button
 						onClick={() => {
 							navigate(-1);
-							queryClient.cancelQueries({ queryKey: ['translation'] });
+							if (includeTranslation) {
+								toggleShownParagraphTranslation();
+								queryClient.cancelQueries({ queryKey: ['translation'] });
+								reset();
+							}
 						}}
 					>
 						Close
 					</button>
 				</div>
 
-				{paragraphs.map((paragraph) => {
+				{currentArticleParagraphs.map((paragraph) => {
 					return <PreviewContent key={paragraph.paragraphId} paragraph={paragraph} includeTranslation={includeTranslation} />;
 				})}
 			</div>

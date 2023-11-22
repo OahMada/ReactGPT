@@ -5,7 +5,7 @@ import secureLocalStorage from 'react-secure-storage';
 
 import { useAppSelector } from '../redux/hooks';
 import { selectArticle } from '../features/articleSlice';
-import { Paragraph } from '../types';
+import { Paragraph, PartialParagraph } from '../types';
 
 export var translationQueryKeys = (paragraphText: string, paragraphId: string) => {
 	return ['translation', paragraphText, paragraphId] as const;
@@ -38,7 +38,7 @@ export function useTranslationQuery(paragraph: string, paragraphId: string) {
 	return result;
 }
 
-export function useTranslationQueryVariant(paragraph: { paragraphText: string; paragraphId: string }, includeTranslation: boolean) {
+export function useTranslationQueryVariant(paragraph: PartialParagraph, includeTranslation: boolean) {
 	let results = useQuery({
 		queryKey: translationQueryKeys(paragraph.paragraphText, paragraph.paragraphId),
 		queryFn: queryTranslation,

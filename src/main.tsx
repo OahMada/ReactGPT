@@ -101,8 +101,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  * ## features
  *
  * retry all on error: for grammar fix queries
- * error boundary for translation queries, implement react context to avoid prop drilling
- * a tricky bug
  * stop background scroll
  *
  * export as pdf doc etc, send to mail
