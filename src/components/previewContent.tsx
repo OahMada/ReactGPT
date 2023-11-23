@@ -1,10 +1,18 @@
+import { forwardRef } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useQueryErrorResetBoundary } from '@tanstack/react-query';
 
 import { PartialParagraph } from '../types';
 import { PreviewTranslation } from './previewTranslation';
 
-export var PreviewContent = ({ paragraph, includeTranslation }: { paragraph: PartialParagraph; includeTranslation: boolean }) => {
+interface Props {
+	paragraph: PartialParagraph;
+	includeTranslation: boolean;
+}
+
+type Ref = HTMLDivElement;
+
+export var PreviewContent = forwardRef<Ref, Props>(({ paragraph, includeTranslation }, ref) => {
 	let { reset } = useQueryErrorResetBoundary();
 
 	return (
@@ -15,10 +23,10 @@ export var PreviewContent = ({ paragraph, includeTranslation }: { paragraph: Par
 					onReset={reset}
 					fallbackRender={({ resetErrorBoundary }) => {
 						return (
-							<>
+							<div ref={ref}>
 								<p>Error Occurred</p>
 								<button onClick={() => resetErrorBoundary()}>Retry</button>
-							</>
+							</div>
 						);
 					}}
 				>
@@ -27,4 +35,4 @@ export var PreviewContent = ({ paragraph, includeTranslation }: { paragraph: Par
 			)}
 		</>
 	);
-};
+});

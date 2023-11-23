@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import { useState } from 'react';
-import { useQueryClient, useQueryErrorResetBoundary } from '@tanstack/react-query';
+import { useState, useRef, useEffect } from 'react';
+import { useQueryClient, useQueryErrorResetBoundary, useIsFetching } from '@tanstack/react-query';
+import { useLocalStorage } from 'react-use';
 
 import { PreviewContent } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
@@ -19,6 +20,22 @@ export var Preview = () => {
 
 	let queryClient = useQueryClient();
 	let { reset } = useQueryErrorResetBoundary();
+
+	let errorBoundaryFallbackElementCount = useRef(0);
+	let [refValue, setRefValue] = useLocalStorage('refValue', errorBoundaryFallbackElementCount.current); // to preserve Retry All button presence on page refresh
+	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
+
+	// to add a retry all button when there's more than one sentences failed to request grammar fixes
+	let translationFetchingCount = useIsFetching({ queryKey: ['translation'] });
+	useEffect(() => {
+		if (translationFetchingCount === 0) {
+			if (refValue! > 1) {
+				setShowRetryAllButton(true);
+			} else if (refValue! <= 1) {
+				setShowRetryAllButton(false);
+			}
+		}
+	}, [translationFetchingCount, refValue, setRefValue]);
 
 	let currentArticleParagraphs: PartialParagraph[] = filteredParagraphs.map((paragraph) => {
 		return { paragraphText: paragraph.paragraphAfterGrammarFix || paragraph.paragraphBeforeGrammarFix, paragraphId: paragraph.id };
@@ -57,6 +74,16 @@ export var Preview = () => {
 					>
 						{!includeTranslation ? 'Include Translation' : 'Remove Translation'}
 					</button>
+					{showRetryAllButton && (
+						<button
+							onClick={() => {
+								console.log('Retry All');
+								// TODO don't know how to do is yet
+							}}
+						>
+							Retry All
+						</button>
+					)}
 					<button
 						onClick={() => {
 							navigate(-1);
@@ -72,7 +99,22 @@ export var Preview = () => {
 				</div>
 
 				{currentArticleParagraphs.map((paragraph) => {
-					return <PreviewContent key={paragraph.paragraphId} paragraph={paragraph} includeTranslation={includeTranslation} />;
+					return (
+						<PreviewContent
+							key={paragraph.paragraphId}
+							paragraph={paragraph}
+							includeTranslation={includeTranslation}
+							ref={(node) => {
+								if (node) {
+									errorBoundaryFallbackElementCount.current += 1;
+									setRefValue(errorBoundaryFallbackElementCount.current);
+								} else {
+									errorBoundaryFallbackElementCount.current -= 1;
+									setRefValue(errorBoundaryFallbackElementCount.current);
+								}
+							}}
+						/>
+					);
 				})}
 			</div>
 		</ModalWrapper>

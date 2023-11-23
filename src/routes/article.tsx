@@ -93,7 +93,14 @@ export var Article = () => {
 			{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
 			{showRetryAllButton && (
 				<div className='retry-all'>
-					<button onClick={() => console.log('resetting')}>Retry All</button>
+					<button
+						onClick={() =>
+							// TODO retry all logic
+							console.log('resetting')
+						}
+					>
+						Retry All
+					</button>
 				</div>
 			)}
 			<DragDropContext onDragEnd={handleOnDragEnd}>
