@@ -3,6 +3,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { useQueryClient, useQueryErrorResetBoundary, useIsFetching } from '@tanstack/react-query';
 import { useLocalStorage } from 'react-use';
+import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 import { PreviewContent } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
@@ -37,6 +38,21 @@ export var Preview = () => {
 		}
 	}, [translationFetchingCount, refValue, setRefValue]);
 
+	// for disabling scrolling beneath the modal
+	// https://blog.logrocket.com/building-react-modal-module-with-react-router/#preventing-scroll-underneath-modal
+	let modalRef = useRef(null);
+	useEffect(() => {
+		let observerRefValue = modalRef.current;
+		if (observerRefValue) {
+			disableBodyScroll(observerRefValue);
+		}
+		return () => {
+			if (observerRefValue) {
+				enableBodyScroll(observerRefValue);
+			}
+		};
+	}, []);
+
 	let currentArticleParagraphs: PartialParagraph[] = filteredParagraphs.map((paragraph) => {
 		return { paragraphText: paragraph.paragraphAfterGrammarFix || paragraph.paragraphBeforeGrammarFix, paragraphId: paragraph.id };
 	});
@@ -58,6 +74,7 @@ export var Preview = () => {
 			onClick={() => {
 				navigate(-1);
 			}}
+			ref={modalRef}
 		>
 			<div onClick={(e) => e.stopPropagation()} className='paragraphs'>
 				<div className='btn-container'>
@@ -138,6 +155,7 @@ var ModalWrapper = styled.section`
 		position: relative;
 		width: 60%;
 		min-height: 60%;
+		max-height: 80%;
 		background-color: #fff;
 		box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.2);
 		display: flex;

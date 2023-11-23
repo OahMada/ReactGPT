@@ -102,7 +102,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  * disable one option if not edited
  *
  * actual retry all logic
- * stop background scroll https://blog.logrocket.com/building-react-modal-module-with-react-router/#preventing-scroll-underneath-modal
  *
  * export as pdf doc etc, send to mail
  * reactPDF, redocx, copy to clipboard, react email
