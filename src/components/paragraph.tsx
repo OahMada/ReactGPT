@@ -29,6 +29,7 @@ export var Paragraph = ({
 	paragraph: {
 		id,
 		initialParagraph,
+		updatedInitialParagraph,
 		paragraphBeforeGrammarFix,
 		paragraphAfterGrammarFix,
 		adjustmentObjectArr,
@@ -117,6 +118,7 @@ export var Paragraph = ({
 								value='paragraphLastEdit'
 								checked={editHistoryMode === 'paragraphLastEdit'}
 								onChange={handleEditHistoryMode}
+								disabled={initialParagraph === updatedInitialParagraph}
 							/>
 							<label htmlFor={`${id}LastEdit`}>Since Paragraph Last Edit</label>
 						</div>
