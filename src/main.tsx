@@ -99,9 +99,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 /**
  * ## features
+ * disable one option if not edited
  *
- * retry all on error: for grammar fix queries
- * stop background scroll
+ * retry all on error: for grammar fix queries https://react.dev/learn/manipulating-the-dom-with-refs#when-react-attaches-the-refs
+ * stop background scroll https://blog.logrocket.com/building-react-modal-module-with-react-router/#preventing-scroll-underneath-modal
  *
  * export as pdf doc etc, send to mail
  * reactPDF, redocx, copy to clipboard, react email

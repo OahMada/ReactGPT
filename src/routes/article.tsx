@@ -1,11 +1,12 @@
 // libraries
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 // console would still log the error, see https://github.com/facebook/react/issues/15069
 import { ErrorBoundary } from 'react-error-boundary';
-import { useQueryErrorResetBoundary } from '@tanstack/react-query'; // https://www.thisdot.co/blog/common-patterns-and-nuances-using-react-query/#handling-errors-with-error-boundaries
+import { useQueryErrorResetBoundary, useIsFetching } from '@tanstack/react-query'; // https://www.thisdot.co/blog/common-patterns-and-nuances-using-react-query/#handling-errors-with-error-boundaries
 import { Navigate, useParams, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
+import { useLocalStorage } from 'react-use';
 
 // redux
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
@@ -42,13 +43,14 @@ export var StrictModeDroppable = ({ children, ...props }: DroppableProps) => {
 };
 
 export var Article = () => {
-	// state values
-	let dispatch = useAppDispatch();
-	let article = useAppSelector(selectArticle);
-	let combinedArticleQueue = [...article.articleQueue.favorites, ...article.articleQueue.normal];
-
 	const { articleId } = useParams();
 	throwIfUndefined(articleId);
+
+	// redux
+	let dispatch = useAppDispatch();
+	let article = useAppSelector(selectArticle);
+
+	let combinedArticleQueue = [...article.articleQueue.favorites, ...article.articleQueue.normal];
 	let filteredParagraphs = article.paragraphs
 		// filter paragraphs by articleId
 		.filter((paragraph) => paragraph.articleId === articleId)
@@ -63,7 +65,23 @@ export var Article = () => {
 		dispatch(handleParagraphOrderChange({ destinationIndex: destination.index, sourceIndex: source.index, articleId }));
 	};
 
+	// Error Boundary related
 	let { reset } = useQueryErrorResetBoundary();
+	let errorBoundaryFallbackElementCount = useRef(0);
+	let [refValue, setRefValue] = useLocalStorage('refValue', errorBoundaryFallbackElementCount.current); // to preserve Retry All button presence on page refresh
+	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
+
+	// to add a retry all button when there's more than one sentences failed to request grammar fixes
+	let grammarFixFetchingCount = useIsFetching({ queryKey: ['grammar'] });
+	useEffect(() => {
+		if (grammarFixFetchingCount === 0) {
+			if (refValue! > 1) {
+				setShowRetryAllButton(true);
+			} else if (refValue! <= 1) {
+				setShowRetryAllButton(false);
+			}
+		}
+	}, [grammarFixFetchingCount, refValue, setRefValue]);
 
 	// handle not found routes
 	if (combinedArticleQueue.indexOf(articleId) === -1) {
@@ -73,6 +91,11 @@ export var Article = () => {
 	return (
 		<>
 			{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
+			{showRetryAllButton && (
+				<div className='retry-all'>
+					<button onClick={() => console.log('resetting')}>Retry All</button>
+				</div>
+			)}
 			<DragDropContext onDragEnd={handleOnDragEnd}>
 				<StrictModeDroppable droppableId='paragraphs'>
 					{(provided) => (
@@ -90,7 +113,18 @@ export var Article = () => {
 															return <ParagraphInput paragraphId={paragraph.id} resetErrorBoundary={resetErrorBoundary} />;
 														}
 														return (
-															<>
+															<div
+																// reference https://react.dev/learn/manipulating-the-dom-with-refs#how-to-manage-a-list-of-refs-using-a-ref-callback
+																ref={(node) => {
+																	if (node) {
+																		errorBoundaryFallbackElementCount.current += 1;
+																		setRefValue(errorBoundaryFallbackElementCount.current);
+																	} else {
+																		errorBoundaryFallbackElementCount.current -= 1;
+																		setRefValue(errorBoundaryFallbackElementCount.current);
+																	}
+																}}
+															>
 																<StyledParagraph onClick={() => dispatch(updateUserInput(paragraph.id))}>
 																	{paragraph.paragraphBeforeGrammarFix}
 																</StyledParagraph>
@@ -101,7 +135,7 @@ export var Article = () => {
 																>
 																	Retry
 																</button>
-															</>
+															</div>
 														);
 													}}
 													onError={(error) => {
@@ -109,7 +143,9 @@ export var Article = () => {
 													}}
 													onReset={reset}
 												>
-													<Paragraph paragraph={paragraph} />
+													<div>
+														<Paragraph paragraph={paragraph} />
+													</div>
 												</ErrorBoundary>
 												<ParagraphControlBtns paragraphId={paragraph.id} />
 											</Wrapper>
