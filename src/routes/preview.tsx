@@ -23,7 +23,7 @@ export var Preview = () => {
 	let { reset } = useQueryErrorResetBoundary();
 
 	let errorBoundaryFallbackElementCount = useRef(0);
-	let [refValue, setRefValue] = useLocalStorage('refValue', errorBoundaryFallbackElementCount.current); // to preserve Retry All button presence on page refresh
+	let [refValue, setRefValue, removeRefValue] = useLocalStorage('refValue', errorBoundaryFallbackElementCount.current); // to preserve Retry All button presence on page refresh
 	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
 
 	// to add a retry all button when there's more than one sentences failed to request grammar fixes
@@ -36,7 +36,10 @@ export var Preview = () => {
 				setShowRetryAllButton(false);
 			}
 		}
-	}, [translationFetchingCount, refValue, setRefValue]);
+		return () => {
+			removeRefValue();
+		};
+	}, [translationFetchingCount, refValue, setRefValue, removeRefValue]);
 
 	// for disabling scrolling beneath the modal
 	// https://blog.logrocket.com/building-react-modal-module-with-react-router/#preventing-scroll-underneath-modal

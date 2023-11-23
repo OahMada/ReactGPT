@@ -68,7 +68,7 @@ export var Article = () => {
 	// Error Boundary related
 	let { reset } = useQueryErrorResetBoundary();
 	let errorBoundaryFallbackElementCount = useRef(0);
-	let [refValue, setRefValue] = useLocalStorage('refValue', errorBoundaryFallbackElementCount.current); // to preserve Retry All button presence on page refresh
+	let [refValue, setRefValue, removeRefValue] = useLocalStorage('refValue', errorBoundaryFallbackElementCount.current); // to preserve Retry All button presence on page refresh
 	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
 
 	// to add a retry all button when there's more than one sentences failed to request grammar fixes
@@ -81,7 +81,10 @@ export var Article = () => {
 				setShowRetryAllButton(false);
 			}
 		}
-	}, [grammarFixFetchingCount, refValue, setRefValue]);
+		return () => {
+			removeRefValue();
+		};
+	}, [grammarFixFetchingCount, refValue, removeRefValue, setRefValue]);
 
 	// handle not found routes
 	if (combinedArticleQueue.indexOf(articleId) === -1) {
