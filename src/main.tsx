@@ -99,9 +99,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 /**
  * ## features
- * disable one option if not edited
  *
- * actual retry all logic
+ * actual retry all logic https://github.com/TanStack/query/blob/3d1e0a0d84724ab7abfcd707a94e344e865d79ea/packages/react-query/src/QueryErrorResetBoundary.tsx#L31
+ * maybe extract show retry button logic to a custom hook
  *
  * export as pdf doc etc, send to mail
  * reactPDF, redocx, copy to clipboard, react email

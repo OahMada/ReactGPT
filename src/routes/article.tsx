@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef } from 'react';
 // console would still log the error, see https://github.com/facebook/react/issues/15069
 import { ErrorBoundary } from 'react-error-boundary';
-import { useQueryErrorResetBoundary, useIsFetching } from '@tanstack/react-query'; // https://www.thisdot.co/blog/common-patterns-and-nuances-using-react-query/#handling-errors-with-error-boundaries
+import { QueryErrorResetBoundary, useIsFetching } from '@tanstack/react-query'; // https://www.thisdot.co/blog/common-patterns-and-nuances-using-react-query/#handling-errors-with-error-boundaries
 import { Navigate, useParams, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
@@ -66,7 +66,6 @@ export var Article = () => {
 	};
 
 	// Error Boundary related
-	let { reset } = useQueryErrorResetBoundary();
 	let errorBoundaryFallbackElementCount = useRef(0);
 	let [refValue, setRefValue, removeRefValue] = useLocalStorage('refValue', errorBoundaryFallbackElementCount.current); // to preserve Retry All button presence on page refresh
 	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
@@ -117,46 +116,50 @@ export var Article = () => {
 										{(provided) => (
 											<Wrapper ref={provided.innerRef} {...provided.draggableProps}>
 												<div className='grabber' {...provided.dragHandleProps}></div>
-												<ErrorBoundary
-													fallbackRender={({ resetErrorBoundary }) => {
-														if (paragraph.paragraphStatus === 'editing') {
-															return <ParagraphInput paragraphId={paragraph.id} resetErrorBoundary={resetErrorBoundary} />;
-														}
-														return (
-															<div
-																// reference https://react.dev/learn/manipulating-the-dom-with-refs#how-to-manage-a-list-of-refs-using-a-ref-callback
-																ref={(node) => {
-																	if (node) {
-																		errorBoundaryFallbackElementCount.current += 1;
-																		setRefValue(errorBoundaryFallbackElementCount.current);
-																	} else {
-																		errorBoundaryFallbackElementCount.current -= 1;
-																		setRefValue(errorBoundaryFallbackElementCount.current);
-																	}
-																}}
-															>
-																<StyledParagraph onClick={() => dispatch(updateUserInput(paragraph.id))}>
-																	{paragraph.paragraphBeforeGrammarFix}
-																</StyledParagraph>
-																<button
-																	onClick={async () => {
-																		resetErrorBoundary();
-																	}}
-																>
-																	Retry
-																</button>
+												<QueryErrorResetBoundary>
+													{({ reset }) => (
+														<ErrorBoundary
+															fallbackRender={({ resetErrorBoundary }) => {
+																if (paragraph.paragraphStatus === 'editing') {
+																	return <ParagraphInput paragraphId={paragraph.id} resetErrorBoundary={resetErrorBoundary} />;
+																}
+																return (
+																	<div
+																		// reference https://react.dev/learn/manipulating-the-dom-with-refs#how-to-manage-a-list-of-refs-using-a-ref-callback
+																		ref={(node) => {
+																			if (node) {
+																				errorBoundaryFallbackElementCount.current += 1;
+																				setRefValue(errorBoundaryFallbackElementCount.current);
+																			} else {
+																				errorBoundaryFallbackElementCount.current -= 1;
+																				setRefValue(errorBoundaryFallbackElementCount.current);
+																			}
+																		}}
+																	>
+																		<StyledParagraph onClick={() => dispatch(updateUserInput(paragraph.id))}>
+																			{paragraph.paragraphBeforeGrammarFix}
+																		</StyledParagraph>
+																		<button
+																			onClick={async () => {
+																				resetErrorBoundary();
+																			}}
+																		>
+																			Retry
+																		</button>
+																	</div>
+																);
+															}}
+															onError={(error) => {
+																createToast({ type: 'error', content: error.message, toastId: error.message });
+															}}
+															onReset={reset}
+														>
+															<div>
+																<Paragraph paragraph={paragraph} />
 															</div>
-														);
-													}}
-													onError={(error) => {
-														createToast({ type: 'error', content: error.message, toastId: error.message });
-													}}
-													onReset={reset}
-												>
-													<div>
-														<Paragraph paragraph={paragraph} />
-													</div>
-												</ErrorBoundary>
+														</ErrorBoundary>
+													)}
+												</QueryErrorResetBoundary>
 												<ParagraphControlBtns paragraphId={paragraph.id} />
 											</Wrapper>
 										)}
