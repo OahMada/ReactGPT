@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
-import { useQueryClient, useQueryErrorResetBoundary, useIsFetching } from '@tanstack/react-query';
+import { useQueryClient, useIsFetching } from '@tanstack/react-query';
 import { useLocalStorage } from 'react-use';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
@@ -20,7 +20,6 @@ export var Preview = () => {
 	let navigate = useNavigate();
 
 	let queryClient = useQueryClient();
-	let { reset } = useQueryErrorResetBoundary();
 
 	let errorBoundaryFallbackElementCount = useRef(0);
 	let [refValue, setRefValue, removeRefValue] = useLocalStorage('refValue', errorBoundaryFallbackElementCount.current); // to preserve Retry All button presence on page refresh
@@ -88,7 +87,7 @@ export var Preview = () => {
 								toggleShownParagraphTranslation();
 								// only run when hide preview translation
 								queryClient.cancelQueries({ queryKey: ['translation'] });
-								reset();
+								// reset();
 							}
 						}}
 					>
@@ -110,7 +109,7 @@ export var Preview = () => {
 							if (includeTranslation) {
 								toggleShownParagraphTranslation();
 								queryClient.cancelQueries({ queryKey: ['translation'] });
-								reset();
+								// reset();
 							}
 						}}
 					>

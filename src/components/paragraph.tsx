@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useQueryClient, useQueryErrorResetBoundary } from '@tanstack/react-query';
+import { useQueryClient, QueryErrorResetBoundary } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { useRef } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -52,7 +52,6 @@ export var Paragraph = ({
 
 	// query client
 	let QueryClient = useQueryClient();
-	let { reset } = useQueryErrorResetBoundary();
 
 	// state values
 	let modal = useAppSelector(selectModal);
@@ -212,17 +211,21 @@ export var Paragraph = ({
 				<h4>Click Paragraph to Edit</h4>
 				<StyledParagraph onClick={() => dispatch(updateUserInput(id))}>{paragraphAfterGrammarFix}</StyledParagraph>
 				{showTranslation && (
-					<ErrorBoundary
-						onReset={reset}
-						fallbackRender={({ resetErrorBoundary }) => (
-							<div>
-								<StyledParagraph>There was an error!</StyledParagraph>
-								<button onClick={() => resetErrorBoundary()}>Try again</button>
-							</div>
+					<QueryErrorResetBoundary>
+						{({ reset }) => (
+							<ErrorBoundary
+								onReset={reset}
+								fallbackRender={({ resetErrorBoundary }) => (
+									<div>
+										<StyledParagraph>There was an error!</StyledParagraph>
+										<button onClick={() => resetErrorBoundary()}>Try again</button>
+									</div>
+								)}
+							>
+								<ParagraphTranslation paragraph={{ paragraphText: paragraphAfterGrammarFix, paragraphId: id }} />
+							</ErrorBoundary>
 						)}
-					>
-						<ParagraphTranslation paragraph={{ paragraphText: paragraphAfterGrammarFix, paragraphId: id }} />
-					</ErrorBoundary>
+					</QueryErrorResetBoundary>
 				)}
 				<div>
 					<button onClick={() => dispatch(checkEditHistory(id))} disabled={paragraphAfterGrammarFix === initialParagraph}>
@@ -254,13 +257,10 @@ export var Paragraph = ({
 								QueryClient.cancelQueries({ queryKey: translationQueryKeys(paragraphAfterGrammarFix, id) });
 							}
 							dispatch(toggleTranslation(id));
-							reset();
+							// reset(); TODO
 						}}
 					>
-						{
-							// TODO a tricky bug here, maybe consider use local state
-							!showTranslation ? 'Show Translation' : 'Hide Translation'
-						}
+						{!showTranslation ? 'Show Translation' : 'Hide Translation'}
 					</button>
 				</div>
 			</>
