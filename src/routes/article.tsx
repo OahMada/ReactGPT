@@ -91,7 +91,9 @@ export var Article = () => {
 			{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
 			{showRetryAllButton && (
 				<div>
-					<button onClick={() => resetErrorBoundariesRef.current.forEach((resetter) => resetter())}>Retry All</button>
+					<button onClick={() => resetErrorBoundariesRef.current.forEach((resetter) => resetter())} disabled={grammarFixFetchingCount > 0}>
+						Retry All
+					</button>
 				</div>
 			)}
 			<DragDropContext onDragEnd={handleOnDragEnd}>

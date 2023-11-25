@@ -22,6 +22,7 @@ export var Preview = () => {
 
 	let { reset } = useQueryErrorResetBoundary();
 	let errorBoundaryFallbackElementCount = useRef(0);
+	let resetErrorBoundariesMapRef = useRef(new Map());
 
 	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
 
@@ -81,6 +82,7 @@ export var Preview = () => {
 						onClick={() => {
 							setIncludeTranslation(!includeTranslation);
 							if (includeTranslation) {
+								// setShowRetryAllButton(false);
 								toggleShownParagraphTranslation();
 								// only run when hide preview translation
 								queryClient.cancelQueries({ queryKey: ['translation'] });
@@ -93,9 +95,13 @@ export var Preview = () => {
 					{showRetryAllButton && (
 						<button
 							onClick={() => {
-								console.log('Retry All');
-								// TODO don't know how to do is yet
+								// order matters, you have to first `reset()`
+								reset();
+								resetErrorBoundariesMapRef.current.forEach((resetter) => {
+									resetter();
+								});
 							}}
+							disabled={translationFetchingCount > 0}
 						>
 							Retry All
 						</button>
@@ -120,6 +126,7 @@ export var Preview = () => {
 							key={paragraph.paragraphId}
 							paragraph={paragraph}
 							includeTranslation={includeTranslation}
+							resetErrorBoundariesMapRef={resetErrorBoundariesMapRef.current} // to pass date from Child component https://medium.com/@bhuvan.gandhi/pass-data-from-child-component-to-parent-component-without-using-state-hook-b301a319b174#f7d6
 							ref={(node) => {
 								if (node) {
 									errorBoundaryFallbackElementCount.current += 1;
