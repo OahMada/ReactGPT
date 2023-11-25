@@ -1,7 +1,7 @@
 // libraries
 import { useEffect, useState, useRef } from 'react';
 // console would still log the error, see https://github.com/facebook/react/issues/15069
-import { ErrorBoundary } from 'react-error-boundary';
+import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { QueryErrorResetBoundary, useIsFetching } from '@tanstack/react-query'; // https://www.thisdot.co/blog/common-patterns-and-nuances-using-react-query/#handling-errors-with-error-boundaries
 import { Navigate, useParams, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
@@ -67,6 +67,7 @@ export var Article = () => {
 
 	// Error Boundary related
 	let errorBoundaryFallbackElementCount = useRef(0);
+	let resetErrorBoundariesRef = useRef(new Map<string, FallbackProps['resetErrorBoundary']>());
 	let [refValue, setRefValue, removeRefValue] = useLocalStorage('refValue', errorBoundaryFallbackElementCount.current); // to preserve Retry All button presence on page refresh
 	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
 
@@ -95,14 +96,7 @@ export var Article = () => {
 			{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
 			{showRetryAllButton && (
 				<div className='retry-all'>
-					<button
-						onClick={() =>
-							// TODO retry all logic
-							console.log('resetting')
-						}
-					>
-						Retry All
-					</button>
+					<button onClick={() => resetErrorBoundariesRef.current.forEach((resetter) => resetter())}>Retry All</button>
 				</div>
 			)}
 			<DragDropContext onDragEnd={handleOnDragEnd}>
@@ -128,9 +122,11 @@ export var Article = () => {
 																		// reference https://react.dev/learn/manipulating-the-dom-with-refs#how-to-manage-a-list-of-refs-using-a-ref-callback
 																		ref={(node) => {
 																			if (node) {
+																				resetErrorBoundariesRef.current.set(paragraph.id, resetErrorBoundary);
 																				errorBoundaryFallbackElementCount.current += 1;
 																				setRefValue(errorBoundaryFallbackElementCount.current);
 																			} else {
+																				resetErrorBoundariesRef.current.delete(paragraph.id);
 																				errorBoundaryFallbackElementCount.current -= 1;
 																				setRefValue(errorBoundaryFallbackElementCount.current);
 																			}
