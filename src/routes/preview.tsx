@@ -82,7 +82,7 @@ export var Preview = () => {
 						onClick={() => {
 							setIncludeTranslation(!includeTranslation);
 							if (includeTranslation) {
-								// setShowRetryAllButton(false);
+								setShowRetryAllButton(false);
 								toggleShownParagraphTranslation();
 								// only run when hide preview translation
 								queryClient.cancelQueries({ queryKey: ['translation'] });
