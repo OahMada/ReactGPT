@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useQueryClient, QueryErrorResetBoundary } from '@tanstack/react-query';
+import { useQueryClient, useQueryErrorResetBoundary } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { useRef } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -55,6 +55,8 @@ export var Paragraph = ({
 
 	// state values
 	let modal = useAppSelector(selectModal);
+
+	let { reset } = useQueryErrorResetBoundary();
 
 	// handlers
 	let onMouseEnterHandler = (e: React.MouseEvent<HTMLElement>, item: refactoredChange, index: number) => {
@@ -211,21 +213,17 @@ export var Paragraph = ({
 				<h4>Click Paragraph to Edit</h4>
 				<StyledParagraph onClick={() => dispatch(updateUserInput(id))}>{paragraphAfterGrammarFix}</StyledParagraph>
 				{showTranslation && (
-					<QueryErrorResetBoundary>
-						{({ reset }) => (
-							<ErrorBoundary
-								onReset={reset}
-								fallbackRender={({ resetErrorBoundary }) => (
-									<div>
-										<StyledParagraph>There was an error!</StyledParagraph>
-										<button onClick={() => resetErrorBoundary()}>Try again</button>
-									</div>
-								)}
-							>
-								<ParagraphTranslation paragraph={{ paragraphText: paragraphAfterGrammarFix, paragraphId: id }} />
-							</ErrorBoundary>
+					<ErrorBoundary
+						onReset={reset}
+						fallbackRender={({ resetErrorBoundary }) => (
+							<div>
+								<StyledParagraph>There was an error!</StyledParagraph>
+								<button onClick={() => resetErrorBoundary()}>Try again</button>
+							</div>
 						)}
-					</QueryErrorResetBoundary>
+					>
+						<ParagraphTranslation paragraph={{ paragraphText: paragraphAfterGrammarFix, paragraphId: id }} />
+					</ErrorBoundary>
 				)}
 				<div>
 					<button onClick={() => dispatch(checkEditHistory(id))} disabled={paragraphAfterGrammarFix === initialParagraph}>
@@ -257,7 +255,7 @@ export var Paragraph = ({
 								QueryClient.cancelQueries({ queryKey: translationQueryKeys(paragraphAfterGrammarFix, id) });
 							}
 							dispatch(toggleTranslation(id));
-							// reset(); TODO
+							reset();
 						}}
 					>
 						{!showTranslation ? 'Show Translation' : 'Hide Translation'}

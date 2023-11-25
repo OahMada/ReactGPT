@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
-import { useQueryClient, useIsFetching } from '@tanstack/react-query';
-import { useLocalStorage } from 'react-use';
+import { useQueryClient, useIsFetching, useQueryErrorResetBoundary } from '@tanstack/react-query';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 import { PreviewContent } from '../components';
@@ -21,24 +20,22 @@ export var Preview = () => {
 
 	let queryClient = useQueryClient();
 
+	let { reset } = useQueryErrorResetBoundary();
 	let errorBoundaryFallbackElementCount = useRef(0);
-	let [refValue, setRefValue, removeRefValue] = useLocalStorage('refValue', errorBoundaryFallbackElementCount.current); // to preserve Retry All button presence on page refresh
+
 	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
 
 	// to add a retry all button when there's more than one sentences failed to request grammar fixes
 	let translationFetchingCount = useIsFetching({ queryKey: ['translation'] });
 	useEffect(() => {
 		if (translationFetchingCount === 0) {
-			if (refValue! > 1) {
+			if (errorBoundaryFallbackElementCount.current! > 1) {
 				setShowRetryAllButton(true);
-			} else if (refValue! <= 1) {
+			} else if (errorBoundaryFallbackElementCount.current! <= 1) {
 				setShowRetryAllButton(false);
 			}
 		}
-		return () => {
-			removeRefValue();
-		};
-	}, [translationFetchingCount, refValue, setRefValue, removeRefValue]);
+	}, [translationFetchingCount]);
 
 	// for disabling scrolling beneath the modal
 	// https://blog.logrocket.com/building-react-modal-module-with-react-router/#preventing-scroll-underneath-modal
@@ -87,7 +84,7 @@ export var Preview = () => {
 								toggleShownParagraphTranslation();
 								// only run when hide preview translation
 								queryClient.cancelQueries({ queryKey: ['translation'] });
-								// reset();
+								reset();
 							}
 						}}
 					>
@@ -109,7 +106,7 @@ export var Preview = () => {
 							if (includeTranslation) {
 								toggleShownParagraphTranslation();
 								queryClient.cancelQueries({ queryKey: ['translation'] });
-								// reset();
+								reset();
 							}
 						}}
 					>
@@ -126,10 +123,8 @@ export var Preview = () => {
 							ref={(node) => {
 								if (node) {
 									errorBoundaryFallbackElementCount.current += 1;
-									setRefValue(errorBoundaryFallbackElementCount.current);
 								} else {
 									errorBoundaryFallbackElementCount.current -= 1;
-									setRefValue(errorBoundaryFallbackElementCount.current);
 								}
 							}}
 						/>

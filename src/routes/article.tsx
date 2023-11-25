@@ -6,7 +6,6 @@ import { QueryErrorResetBoundary, useIsFetching } from '@tanstack/react-query'; 
 import { Navigate, useParams, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
-import { useLocalStorage } from 'react-use';
 
 // redux
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
@@ -68,23 +67,19 @@ export var Article = () => {
 	// Error Boundary related
 	let errorBoundaryFallbackElementCount = useRef(0);
 	let resetErrorBoundariesRef = useRef(new Map<string, FallbackProps['resetErrorBoundary']>());
-	let [refValue, setRefValue, removeRefValue] = useLocalStorage('refValue', errorBoundaryFallbackElementCount.current); // to preserve Retry All button presence on page refresh
 	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
 
 	// to add a retry all button when there's more than one sentences failed to request grammar fixes
 	let grammarFixFetchingCount = useIsFetching({ queryKey: ['grammar'] });
 	useEffect(() => {
 		if (grammarFixFetchingCount === 0) {
-			if (refValue! > 1) {
+			if (errorBoundaryFallbackElementCount.current! > 1) {
 				setShowRetryAllButton(true);
-			} else if (refValue! <= 1) {
+			} else if (errorBoundaryFallbackElementCount.current! <= 1) {
 				setShowRetryAllButton(false);
 			}
 		}
-		return () => {
-			removeRefValue();
-		};
-	}, [grammarFixFetchingCount, refValue, removeRefValue, setRefValue]);
+	}, [grammarFixFetchingCount]);
 
 	// handle not found routes
 	if (combinedArticleQueue.indexOf(articleId) === -1) {
@@ -95,7 +90,7 @@ export var Article = () => {
 		<>
 			{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
 			{showRetryAllButton && (
-				<div className='retry-all'>
+				<div>
 					<button onClick={() => resetErrorBoundariesRef.current.forEach((resetter) => resetter())}>Retry All</button>
 				</div>
 			)}
@@ -124,11 +119,9 @@ export var Article = () => {
 																			if (node) {
 																				resetErrorBoundariesRef.current.set(paragraph.id, resetErrorBoundary);
 																				errorBoundaryFallbackElementCount.current += 1;
-																				setRefValue(errorBoundaryFallbackElementCount.current);
 																			} else {
 																				resetErrorBoundariesRef.current.delete(paragraph.id);
 																				errorBoundaryFallbackElementCount.current -= 1;
-																				setRefValue(errorBoundaryFallbackElementCount.current);
 																			}
 																		}}
 																	>
