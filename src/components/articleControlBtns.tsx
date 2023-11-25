@@ -56,6 +56,7 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 			),
 			containerId: 'articleDeletion',
 			options: { hideProgressBar: false },
+			toastId: `articleDeletion${articleId}`,
 		});
 
 		toast.onChange((toastItem) => {

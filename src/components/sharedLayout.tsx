@@ -3,6 +3,7 @@ import { useLocalStorage } from 'react-use';
 import { useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn'; // import locale
+import { toast } from 'react-toastify';
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import {
@@ -151,6 +152,7 @@ export var SharedLayout = () => {
 												navigate('/');
 											}
 											dispatch(removeArticleFromDeletionQueue(article.articleId));
+											toast.dismiss(`articleDeletion${article.articleId}`);
 										}}
 									>
 										Delete
