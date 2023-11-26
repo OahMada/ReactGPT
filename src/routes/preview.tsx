@@ -3,23 +3,24 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { useQueryClient, useIsFetching, useQueryErrorResetBoundary } from '@tanstack/react-query';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import { usePDF } from '@react-pdf/renderer';
 
-import { PreviewContent } from '../components';
+import { PreviewContent, ArticlePDF } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
 
 export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);
+	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
 
 	let filteredParagraphs = useOutletContext<Paragraph[]>();
 	let navigate = useNavigate();
 
 	let queryClient = useQueryClient();
-
 	let { reset } = useQueryErrorResetBoundary();
 	let errorBoundaryFallbackElementCount = useRef(0);
 	let resetErrorBoundariesMapRef = useRef(new Map());
 
-	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
+	let [instance, updateInstance] = usePDF({ document: ArticlePDF });
 
 	// to add a retry all button when there's more than one sentences failed to request grammar fixes
 	let translationFetchingCount = useIsFetching({ queryKey: ['translation'] });
@@ -99,6 +100,15 @@ export var Preview = () => {
 					>
 						Close
 					</button>
+				</div>
+				<div>
+					{!instance.loading && (
+						<button>
+							<a href={instance.url!} download='test.pdf'>
+								Download
+							</a>
+						</button>
+					)}
 				</div>
 
 				{currentArticleParagraphs.map((paragraph) => {

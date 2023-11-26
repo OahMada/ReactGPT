@@ -98,6 +98,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 );
 
 /**
+ * two things not right with react query: error boundary reset; resetQueries error
+ *
  * ## features
  *
  * export as pdf doc etc, send to mail
