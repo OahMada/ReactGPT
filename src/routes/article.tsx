@@ -9,7 +9,7 @@ import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } fro
 
 // redux
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import { selectArticle, handleParagraphOrderChange, updateUserInput } from '../features/articleSlice';
+import { selectArticle, handleParagraphOrderChange, updateUserInput, toggleTranslation } from '../features/articleSlice';
 
 // components
 import { StyledParagraph, ParagraphInput, Paragraph, ParagraphControlBtns, EmptyParagraphList, ArticleControlBtns } from '../components';
@@ -20,7 +20,8 @@ import { createToast, throwIfUndefined } from '../utils';
 // types
 import { Paragraph as ParagraphType } from '../types';
 
-import { grammarQueryKeys, queryGrammarMistakes } from '../query/grammarQuery';
+import { grammarQueryKeys } from '../query/grammarQuery';
+import { translationQueryKeys } from '../query/translationQuery';
 
 // Credits to https://github.com/GiovanniACamacho and https://github.com/Meligy for the TypeScript version
 // Original post: https://github.com/atlassian/react-beautiful-dnd/issues/2399#issuecomment-1175638194
@@ -89,6 +90,15 @@ export var Article = () => {
 		// cancel queries when navigate away
 		if (/preview$/.test(location.pathname)) {
 			queryClient.cancelQueries({ queryKey: ['grammar'] });
+			filteredParagraphs.forEach((paragraph) => {
+				// cancel ongoing translation queries when navigate away
+				if (
+					paragraph.showTranslation &&
+					queryClient.isFetching({ queryKey: translationQueryKeys(paragraph.paragraphAfterGrammarFix, paragraph.id) }) > 0
+				) {
+					dispatch(toggleTranslation(paragraph.id));
+				}
+			});
 		} else {
 			// refetch queries when navigate back
 			filteredParagraphs.forEach((paragraph) => {
@@ -103,7 +113,7 @@ export var Article = () => {
 				}
 			});
 		}
-	}, [filteredParagraphs, location.pathname, queryClient]);
+	}, [dispatch, filteredParagraphs, location.pathname, queryClient]);
 
 	// handle not found routes
 	if (combinedArticleQueue.indexOf(articleId) === -1) {

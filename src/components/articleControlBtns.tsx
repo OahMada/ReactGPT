@@ -93,7 +93,6 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 			<button>
 				<Link to={`/article/${articleId}/preview`}>Preview Article</Link>
 			</button>
-			{/* TODO */}
 		</div>
 	);
 };

@@ -6,14 +6,9 @@ import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 import { PreviewContent } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
-import { useAppDispatch } from '../redux/hooks';
-import { toggleTranslation } from '../features/articleSlice';
-import { translationQueryKeys } from '../query/translationQuery';
 
 export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);
-
-	let dispatch = useAppDispatch();
 
 	let filteredParagraphs = useOutletContext<Paragraph[]>();
 	let navigate = useNavigate();
@@ -57,18 +52,6 @@ export var Preview = () => {
 		return { paragraphText: paragraph.paragraphAfterGrammarFix || paragraph.paragraphBeforeGrammarFix, paragraphId: paragraph.id };
 	});
 
-	// with this, when canceling translation queries,paragraph translations that are ongoing fetching on article page will be set to hide
-	let toggleShownParagraphTranslation = () => {
-		filteredParagraphs.forEach((paragraph) => {
-			if (
-				paragraph.showTranslation &&
-				queryClient.isFetching({ queryKey: translationQueryKeys(paragraph.paragraphAfterGrammarFix, paragraph.id) }) > 0
-			) {
-				dispatch(toggleTranslation(paragraph.id));
-			}
-		});
-	};
-
 	return (
 		<ModalWrapper
 			onClick={() => {
@@ -83,7 +66,6 @@ export var Preview = () => {
 							setIncludeTranslation(!includeTranslation);
 							if (includeTranslation) {
 								setShowRetryAllButton(false);
-								toggleShownParagraphTranslation();
 								// only run when hide preview translation
 								queryClient.cancelQueries({ queryKey: ['translation'] });
 								reset();
@@ -110,7 +92,6 @@ export var Preview = () => {
 						onClick={() => {
 							navigate(-1);
 							if (includeTranslation) {
-								toggleShownParagraphTranslation();
 								queryClient.cancelQueries({ queryKey: ['translation'] });
 								reset();
 							}
