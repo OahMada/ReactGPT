@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { QueryFunctionContext } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-
 import secureLocalStorage from 'react-secure-storage';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';

@@ -100,9 +100,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 /**
  * ## features
  *
- * cancel queries when navigate away
- * disable toast when articled deleted right away
- *
  * export as pdf doc etc, send to mail
  * reactPDF, redocx, copy to clipboard, react email
  * https://stackoverflow.com/questions/39501289/in-reactjs-how-to-copy-text-to-clipboard

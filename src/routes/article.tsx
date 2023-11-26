@@ -2,8 +2,8 @@
 import { useEffect, useState, useRef } from 'react';
 // console would still log the error, see https://github.com/facebook/react/issues/15069
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
-import { QueryErrorResetBoundary, useIsFetching } from '@tanstack/react-query'; // https://www.thisdot.co/blog/common-patterns-and-nuances-using-react-query/#handling-errors-with-error-boundaries
-import { Navigate, useParams, Outlet } from 'react-router-dom';
+import { QueryErrorResetBoundary, useIsFetching, useQueryClient } from '@tanstack/react-query'; // https://www.thisdot.co/blog/common-patterns-and-nuances-using-react-query/#handling-errors-with-error-boundaries
+import { Navigate, useParams, Outlet, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
 
@@ -19,6 +19,8 @@ import { createToast, throwIfUndefined } from '../utils';
 
 // types
 import { Paragraph as ParagraphType } from '../types';
+
+import { grammarQueryKeys, queryGrammarMistakes } from '../query/grammarQuery';
 
 // Credits to https://github.com/GiovanniACamacho and https://github.com/Meligy for the TypeScript version
 // Original post: https://github.com/atlassian/react-beautiful-dnd/issues/2399#issuecomment-1175638194
@@ -44,6 +46,7 @@ export var StrictModeDroppable = ({ children, ...props }: DroppableProps) => {
 export var Article = () => {
 	const { articleId } = useParams();
 	throwIfUndefined(articleId);
+	let location = useLocation();
 
 	// redux
 	let dispatch = useAppDispatch();
@@ -80,6 +83,27 @@ export var Article = () => {
 			}
 		}
 	}, [grammarFixFetchingCount]);
+
+	let queryClient = useQueryClient();
+	useEffect(() => {
+		// cancel queries when navigate away
+		if (/preview$/.test(location.pathname)) {
+			queryClient.cancelQueries({ queryKey: ['grammar'] });
+		} else {
+			// refetch queries when navigate back
+			filteredParagraphs.forEach((paragraph) => {
+				if (!queryClient.getQueryData(grammarQueryKeys(paragraph.paragraphBeforeGrammarFix, paragraph.id))) {
+					queryClient.resetQueries(
+						{
+							queryKey: grammarQueryKeys(paragraph.paragraphBeforeGrammarFix, paragraph.id),
+						}
+						// somehow this throws CancelledError {revert: true, silent: undefined}
+						// { throwOnError: true }
+					);
+				}
+			});
+		}
+	}, [filteredParagraphs, location.pathname, queryClient]);
 
 	// handle not found routes
 	if (combinedArticleQueue.indexOf(articleId) === -1) {
