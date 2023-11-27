@@ -4,9 +4,12 @@ import { useState, useRef, useEffect } from 'react';
 import { useQueryClient, useIsFetching, useQueryErrorResetBoundary } from '@tanstack/react-query';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { usePDF } from '@react-pdf/renderer';
+import dayjs from 'dayjs';
+import 'dayjs/locale/zh-cn'; // import locale
 
 import { PreviewContent, ArticlePDF } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
+import { translationQueryKeys } from '../query/translationQuery';
 
 export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);
@@ -20,7 +23,18 @@ export var Preview = () => {
 	let errorBoundaryFallbackElementCount = useRef(0);
 	let resetErrorBoundariesMapRef = useRef(new Map());
 
-	let [instance, updateInstance] = usePDF({ document: ArticlePDF });
+	let currentArticleParagraphs: PartialParagraph[] = filteredParagraphs.map((paragraph) => {
+		return { paragraphText: paragraph.paragraphAfterGrammarFix || paragraph.paragraphBeforeGrammarFix, paragraphId: paragraph.id };
+	});
+
+	// include translation into data for PDF generation
+	let currentArticleParagraphsWithTranslation = currentArticleParagraphs.map((paragraph) => {
+		let translation = queryClient.getQueryData<string>(translationQueryKeys(paragraph.paragraphText, paragraph.paragraphId));
+		return Object.assign({}, paragraph, { translationText: translation ?? '' });
+	});
+
+	// initially generate PDF with only source article text
+	let [PDFInstance, updatePDFInstance] = usePDF({ document: ArticlePDF({ article: currentArticleParagraphsWithTranslation, includeTranslation }) });
 
 	// to add a retry all button when there's more than one sentences failed to request grammar fixes
 	let translationFetchingCount = useIsFetching({ queryKey: ['translation'] });
@@ -49,9 +63,12 @@ export var Preview = () => {
 		};
 	}, []);
 
-	let currentArticleParagraphs: PartialParagraph[] = filteredParagraphs.map((paragraph) => {
-		return { paragraphText: paragraph.paragraphAfterGrammarFix || paragraph.paragraphBeforeGrammarFix, paragraphId: paragraph.id };
-	});
+	// include translation into PDF when available
+	useEffect(() => {
+		if (translationFetchingCount === 0) {
+			updatePDFInstance(ArticlePDF({ article: currentArticleParagraphsWithTranslation, includeTranslation }));
+		}
+	}, [updatePDFInstance, includeTranslation, translationFetchingCount, currentArticleParagraphsWithTranslation]);
 
 	return (
 		<ModalWrapper
@@ -102,13 +119,16 @@ export var Preview = () => {
 					</button>
 				</div>
 				<div>
-					{!instance.loading && (
-						<button>
-							<a href={instance.url!} download='test.pdf'>
-								Download
+					<button disabled={translationFetchingCount !== 0}>
+						{translationFetchingCount === 0 ? (
+							// since a tag doesn't have a disabled attribute
+							<a href={PDFInstance.url!} download={`${dayjs(Date.now()).format('YYYY-MM-DDTHHmmss')}.pdf`}>
+								Download PDF
 							</a>
-						</button>
-					)}
+						) : (
+							'Download PDF'
+						)}
+					</button>
 				</div>
 
 				{currentArticleParagraphs.map((paragraph) => {
