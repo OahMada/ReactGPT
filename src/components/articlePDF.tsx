@@ -7,8 +7,8 @@ type PartialParagraphWithTranslation = PartialParagraph & {
 };
 
 Font.register({
-	family: 'Noto Serif SC',
-	src: 'https://fonts.gstatic.com/s/notoserifsc/v22/H4chBXePl9DZ0Xe7gG9cyOj7oqCcbzhqDtg.otf',
+	family: 'Microsoft Yahei',
+	src: 'https://github.com/chenqing/ng-mini/blob/master/font/msyh.ttf',
 });
 
 export var ArticlePDF = ({ article, includeTranslation }: { article: PartialParagraphWithTranslation[]; includeTranslation: boolean }) => {
@@ -30,13 +30,13 @@ export var ArticlePDF = ({ article, includeTranslation }: { article: PartialPara
 
 var styles = StyleSheet.create({
 	translation: {
-		fontFamily: 'Noto Serif SC',
+		fontFamily: 'Microsoft Yahei',
 	},
 });
 
 /**
 TODO
-font
+
 title
 page number
  */

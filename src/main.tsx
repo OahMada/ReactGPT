@@ -102,8 +102,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  *
  * ## features
  *
- * export as pdf doc etc, send to mail
- * reactPDF, redocx, copy to clipboard, react email
+ * export as pdf doc etc
+ * reactPDF, redocx, copy to clipboard
  * https://stackoverflow.com/questions/39501289/in-reactjs-how-to-copy-text-to-clipboard
  * https://react-pdf.org/advanced#on-the-fly-rendering
  * https://dev.to/omarmorales/create-docx-files-with-vue-js-3701
