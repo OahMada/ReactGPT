@@ -21,9 +21,7 @@ Font.registerHyphenationCallback((word) => [word]);
 export var ArticlePDF = ({ article, includeTranslation }: { article: PartialParagraphWithTranslation[]; includeTranslation: boolean }) => {
 	return (
 		<Document>
-			<Page
-			// style={styles.body}
-			>
+			<Page style={styles.body}>
 				{article.map((paragraph) => {
 					return (
 						<View key={paragraph.paragraphId}>

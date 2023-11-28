@@ -6,8 +6,10 @@ import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { usePDF } from '@react-pdf/renderer';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn'; // import locale
+import { Packer } from 'docx';
+import { saveAs } from 'file-saver';
 
-import { PreviewContent, ArticlePDF } from '../components';
+import { PreviewContent, ArticlePDF, articleDocx } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
 import { translationQueryKeys } from '../query/translationQuery';
 
@@ -19,25 +21,22 @@ export var Preview = () => {
 	let navigate = useNavigate();
 
 	let queryClient = useQueryClient();
-	let { reset } = useQueryErrorResetBoundary();
-	let errorBoundaryFallbackElementCount = useRef(0);
-	let resetErrorBoundariesMapRef = useRef(new Map());
 
 	let currentArticleParagraphs: PartialParagraph[] = filteredParagraphs.map((paragraph) => {
 		return { paragraphText: paragraph.paragraphAfterGrammarFix || paragraph.paragraphBeforeGrammarFix, paragraphId: paragraph.id };
 	});
 
-	// include translation into data for PDF generation
+	let fileName = dayjs(Date.now()).format('YYYY-MM-DDTHHmmss');
+	// include translation into data for file generation
 	let currentArticleParagraphsWithTranslation = currentArticleParagraphs.map((paragraph) => {
 		let translation = queryClient.getQueryData<string>(translationQueryKeys(paragraph.paragraphText, paragraph.paragraphId));
 		return Object.assign({}, paragraph, { translationText: translation ?? '' });
 	});
 
-	// initially generate PDF with only source article text
-	let [PDFInstance, updatePDFInstance] = usePDF({
-		document: ArticlePDF({ article: currentArticleParagraphsWithTranslation, includeTranslation }),
-	});
-
+	/* Retry Logic */
+	let { reset } = useQueryErrorResetBoundary();
+	let errorBoundaryFallbackElementCount = useRef(0);
+	let resetErrorBoundariesMapRef = useRef(new Map());
 	// to add a retry all button when there's more than one sentences failed to request grammar fixes
 	let translationFetchingCount = useIsFetching({ queryKey: ['translation'] });
 	useEffect(() => {
@@ -50,7 +49,7 @@ export var Preview = () => {
 		}
 	}, [translationFetchingCount]);
 
-	// for disabling scrolling beneath the modal
+	/* for disabling scrolling beneath the modal */
 	// https://blog.logrocket.com/building-react-modal-module-with-react-router/#preventing-scroll-underneath-modal
 	let modalRef = useRef(null);
 	useEffect(() => {
@@ -65,12 +64,25 @@ export var Preview = () => {
 		};
 	}, []);
 
+	/* PDF Generation */
+	// initially generate PDF with only source article text
+	let [PDFInstance, updatePDFInstance] = usePDF({
+		document: ArticlePDF({ article: currentArticleParagraphsWithTranslation, includeTranslation }),
+	});
+
 	// include translation into PDF when available
 	useEffect(() => {
 		if (translationFetchingCount === 0 && !PDFInstance.loading) {
 			updatePDFInstance(ArticlePDF({ article: currentArticleParagraphsWithTranslation, includeTranslation }));
 		}
 	}, [updatePDFInstance, includeTranslation, translationFetchingCount, currentArticleParagraphsWithTranslation, PDFInstance.loading]);
+
+	/* DOCX Generation */
+	let downloadDocx = () => {
+		Packer.toBlob(articleDocx()).then((blob) => {
+			saveAs(blob, 'detailed_report.docx');
+		});
+	};
 
 	return (
 		<ModalWrapper
@@ -124,12 +136,15 @@ export var Preview = () => {
 					<button disabled={translationFetchingCount !== 0 || !PDFInstance.url}>
 						{translationFetchingCount === 0 && PDFInstance.url ? (
 							// since a tag doesn't have a disabled attribute
-							<a href={PDFInstance.url} download={`${dayjs(Date.now()).format('YYYY-MM-DDTHHmmss')}.pdf`}>
+							<a href={PDFInstance.url} download={`${fileName}.pdf`}>
 								Download PDF
 							</a>
 						) : (
 							'Download PDF'
 						)}
+					</button>
+					<button disabled={translationFetchingCount !== 0} onClick={downloadDocx}>
+						Download Docx
 					</button>
 				</div>
 
