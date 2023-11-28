@@ -6,6 +6,11 @@ type PartialParagraphWithTranslation = PartialParagraph & {
 	translationText: string;
 };
 
+// https://juejin.cn/post/7101581383545552910
+function insertSpace(word: string) {
+	return word.replace(/./g, (word) => word + ' ');
+}
+
 Font.register({
 	family: 'Noto Serif SC',
 	src: 'https://fonts.gstatic.com/s/notoserifsc/v22/H4chBXePl9DZ0Xe7gG9cyOj7oqCcbzhqDtg.otf',
@@ -23,7 +28,7 @@ export var ArticlePDF = ({ article, includeTranslation }: { article: PartialPara
 					return (
 						<View key={paragraph.paragraphId}>
 							<Text style={styles.text}>{paragraph.paragraphText}</Text>
-							{includeTranslation && <Text style={styles.text}>{paragraph.translationText}</Text>}
+							{includeTranslation && <Text style={[styles.text, styles.translation]}>{insertSpace(paragraph.translationText)}</Text>}
 						</View>
 					);
 				})}
@@ -42,10 +47,12 @@ var styles = StyleSheet.create({
 	text: {
 		margin: 12,
 		textAlign: 'left',
-		fontSize: '9pt',
+		fontSize: 14,
 		fontFamily: 'Noto Serif SC',
 	},
-
+	translation: {
+		letterSpacing: -1,
+	},
 	pageNumber: {
 		position: 'absolute',
 		fontSize: 12,
