@@ -34,7 +34,9 @@ export var Preview = () => {
 	});
 
 	// initially generate PDF with only source article text
-	let [PDFInstance, updatePDFInstance] = usePDF({ document: ArticlePDF({ article: currentArticleParagraphsWithTranslation, includeTranslation }) });
+	let [PDFInstance, updatePDFInstance] = usePDF({
+		document: ArticlePDF({ article: currentArticleParagraphsWithTranslation, includeTranslation }),
+	});
 
 	// to add a retry all button when there's more than one sentences failed to request grammar fixes
 	let translationFetchingCount = useIsFetching({ queryKey: ['translation'] });
@@ -65,10 +67,10 @@ export var Preview = () => {
 
 	// include translation into PDF when available
 	useEffect(() => {
-		if (translationFetchingCount === 0) {
+		if (translationFetchingCount === 0 && !PDFInstance.loading) {
 			updatePDFInstance(ArticlePDF({ article: currentArticleParagraphsWithTranslation, includeTranslation }));
 		}
-	}, [updatePDFInstance, includeTranslation, translationFetchingCount, currentArticleParagraphsWithTranslation]);
+	}, [updatePDFInstance, includeTranslation, translationFetchingCount, currentArticleParagraphsWithTranslation, PDFInstance.loading]);
 
 	return (
 		<ModalWrapper
@@ -119,10 +121,10 @@ export var Preview = () => {
 					</button>
 				</div>
 				<div>
-					<button disabled={translationFetchingCount !== 0}>
-						{translationFetchingCount === 0 ? (
+					<button disabled={translationFetchingCount !== 0 || !PDFInstance.url}>
+						{translationFetchingCount === 0 && PDFInstance.url ? (
 							// since a tag doesn't have a disabled attribute
-							<a href={PDFInstance.url!} download={`${dayjs(Date.now()).format('YYYY-MM-DDTHHmmss')}.pdf`}>
+							<a href={PDFInstance.url} download={`${dayjs(Date.now()).format('YYYY-MM-DDTHHmmss')}.pdf`}>
 								Download PDF
 							</a>
 						) : (
