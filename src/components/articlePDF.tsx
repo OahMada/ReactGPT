@@ -18,11 +18,11 @@ export var ArticlePDF = ({ article, includeTranslation }: { article: PartialPara
 	return (
 		<Document>
 			<Page style={styles.body}>
-				{article.map((paragraph) => {
+				{...article.map((paragraph) => {
 					return (
 						<View key={paragraph.paragraphId}>
 							<Text style={styles.text}>{paragraph.paragraphText}</Text>
-							{includeTranslation && paragraph.paragraphText && (
+							{includeTranslation && Boolean(paragraph.paragraphText) && (
 								<Text style={[styles.text, styles.translation]}>{insertSpace(paragraph.translationText)}</Text>
 							)}
 						</View>

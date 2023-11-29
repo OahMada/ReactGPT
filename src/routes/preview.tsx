@@ -69,12 +69,20 @@ export var Preview = () => {
 	let [PDFInstance, updatePDFInstance] = usePDF({
 		document: ArticlePDF({ article: currentArticleParagraphsWithTranslation, includeTranslation }),
 	});
+
 	// include translation into PDF when available
 	useEffect(() => {
-		if (translationFetchingCount === 0 && !PDFInstance.loading) {
+		if (translationFetchingCount === 0 && !PDFInstance.loading && !PDFInstance.error) {
 			updatePDFInstance(ArticlePDF({ article: currentArticleParagraphsWithTranslation, includeTranslation }));
 		}
-	}, [updatePDFInstance, includeTranslation, translationFetchingCount, currentArticleParagraphsWithTranslation, PDFInstance.loading]);
+	}, [
+		updatePDFInstance,
+		includeTranslation,
+		translationFetchingCount,
+		currentArticleParagraphsWithTranslation,
+		PDFInstance.loading,
+		PDFInstance.error,
+	]);
 
 	/* DOCX Generation */
 	let downloadDocx = () => {

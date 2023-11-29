@@ -1,4 +1,4 @@
-import { Document, Paragraph, Footer, AlignmentType, TextRun, PageNumber, LineRuleType } from 'docx';
+import { Document, Paragraph, Footer, AlignmentType, TextRun, PageNumber } from 'docx';
 import { PartialParagraphWithTranslation } from '../types';
 
 export var articleDocx = ({ article, includeTranslation }: { article: PartialParagraphWithTranslation[]; includeTranslation: boolean }) => {
@@ -29,7 +29,7 @@ export var articleDocx = ({ article, includeTranslation }: { article: PartialPar
 								text: paragraph.paragraphText,
 							})
 						);
-						if (includeTranslation && paragraph.translationText) {
+						if (includeTranslation && Boolean(paragraph.translationText)) {
 							acc.push(
 								new Paragraph({
 									spacing: {
