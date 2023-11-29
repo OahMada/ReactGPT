@@ -35,3 +35,7 @@ export interface PartialParagraph {
 	paragraphText: string;
 	paragraphId: string;
 }
+
+export type PartialParagraphWithTranslation = PartialParagraph & {
+	translationText: string;
+};

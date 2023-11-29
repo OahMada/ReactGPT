@@ -33,7 +33,7 @@ export var Preview = () => {
 		return Object.assign({}, paragraph, { translationText: translation ?? '' });
 	});
 
-	/* Retry Logic */
+	/* Translation Retry Logic */
 	let { reset } = useQueryErrorResetBoundary();
 	let errorBoundaryFallbackElementCount = useRef(0);
 	let resetErrorBoundariesMapRef = useRef(new Map());
@@ -69,7 +69,6 @@ export var Preview = () => {
 	let [PDFInstance, updatePDFInstance] = usePDF({
 		document: ArticlePDF({ article: currentArticleParagraphsWithTranslation, includeTranslation }),
 	});
-
 	// include translation into PDF when available
 	useEffect(() => {
 		if (translationFetchingCount === 0 && !PDFInstance.loading) {
@@ -79,8 +78,8 @@ export var Preview = () => {
 
 	/* DOCX Generation */
 	let downloadDocx = () => {
-		Packer.toBlob(articleDocx()).then((blob) => {
-			saveAs(blob, 'detailed_report.docx');
+		Packer.toBlob(articleDocx({ article: currentArticleParagraphsWithTranslation, includeTranslation })).then((blob) => {
+			saveAs(blob, `${fileName}.docx`);
 		});
 	};
 

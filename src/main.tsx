@@ -103,11 +103,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  * ## features
  *
  * an export menu, click to show options
- * export as doc etc
  * copy to clipboard, export as image?
  *
  * https://stackoverflow.com/questions/39501289/in-reactjs-how-to-copy-text-to-clipboard
- * https://dev.to/omarmorales/create-docx-files-with-vue-js-3701
+ * https://medium.com/@kaushikrishabh/creating-a-custom-text-to-image-generator-with-react-3b171bbbd72e
  *
  * react-hotkeys-hook
  *

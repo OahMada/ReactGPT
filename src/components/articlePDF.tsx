@@ -1,10 +1,6 @@
 import { Document, Page, Text, Font, View, StyleSheet } from '@react-pdf/renderer';
 
-import { PartialParagraph } from '../types';
-
-type PartialParagraphWithTranslation = PartialParagraph & {
-	translationText: string;
-};
+import { PartialParagraphWithTranslation } from '../types';
 
 // https://juejin.cn/post/7101581383545552910
 function insertSpace(word: string) {
@@ -26,7 +22,9 @@ export var ArticlePDF = ({ article, includeTranslation }: { article: PartialPara
 					return (
 						<View key={paragraph.paragraphId}>
 							<Text style={styles.text}>{paragraph.paragraphText}</Text>
-							{includeTranslation && <Text style={[styles.text, styles.translation]}>{insertSpace(paragraph.translationText)}</Text>}
+							{includeTranslation && paragraph.paragraphText && (
+								<Text style={[styles.text, styles.translation]}>{insertSpace(paragraph.translationText)}</Text>
+							)}
 						</View>
 					);
 				})}
