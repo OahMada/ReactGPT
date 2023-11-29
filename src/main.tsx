@@ -102,11 +102,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  *
  * ## features
  *
+ * ReactPDF: extra new line; retry downloading font file
  * an export menu, click to show options
- * copy to clipboard, export as image?
- *
- * https://stackoverflow.com/questions/39501289/in-reactjs-how-to-copy-text-to-clipboard
- * https://medium.com/@kaushikrishabh/creating-a-custom-text-to-image-generator-with-react-3b171bbbd72e
+ * add toast to export buttons: react-hot-toast
  *
  * react-hotkeys-hook
  *

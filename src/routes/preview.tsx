@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn'; // import locale
 import { Packer } from 'docx';
 import { saveAs } from 'file-saver';
+import { toBlob } from 'html-to-image';
 
 import { PreviewContent, ArticlePDF, articleDocx } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
@@ -91,6 +92,8 @@ export var Preview = () => {
 		});
 	};
 
+	let articleWrapperRef = useRef(null);
+
 	return (
 		<ModalWrapper
 			onClick={() => {
@@ -140,6 +143,24 @@ export var Preview = () => {
 					</button>
 				</div>
 				<div>
+					<button
+						disabled={translationFetchingCount !== 0}
+						onClick={() => {
+							let clipboardText = currentArticleParagraphsWithTranslation.reduce<string>((acc, paragraph) => {
+								acc += paragraph.paragraphText;
+								acc += '\n\n';
+								if (paragraph.translationText) {
+									acc += paragraph.translationText;
+									acc += '\n\n';
+								}
+								return acc;
+							}, '');
+							// https://stackoverflow.com/questions/39501289/in-reactjs-how-to-copy-text-to-clipboard
+							navigator.clipboard.writeText(clipboardText);
+						}}
+					>
+						Copy To Clipboard
+					</button>
 					<button disabled={translationFetchingCount !== 0 || !PDFInstance.url}>
 						{translationFetchingCount === 0 && PDFInstance.url ? (
 							// since a tag doesn't have a disabled attribute
@@ -153,25 +174,41 @@ export var Preview = () => {
 					<button disabled={translationFetchingCount !== 0} onClick={downloadDocx}>
 						Download Docx
 					</button>
-				</div>
-
-				{currentArticleParagraphs.map((paragraph) => {
-					return (
-						<PreviewContent
-							key={paragraph.paragraphId}
-							paragraph={paragraph}
-							includeTranslation={includeTranslation}
-							resetErrorBoundariesMapRef={resetErrorBoundariesMapRef.current} // to pass date from Child component https://medium.com/@bhuvan.gandhi/pass-data-from-child-component-to-parent-component-without-using-state-hook-b301a319b174#f7d6
-							ref={(node) => {
-								if (node) {
-									errorBoundaryFallbackElementCount.current += 1;
+					<button
+						disabled={translationFetchingCount !== 0}
+						onClick={() => {
+							toBlob(articleWrapperRef.current!, { backgroundColor: 'white' }).then(function (blob) {
+								let b = blob as Blob;
+								if (window.saveAs) {
+									window.saveAs(b, `${fileName}.png`);
 								} else {
-									errorBoundaryFallbackElementCount.current -= 1;
+									saveAs(b, `${fileName}.png`);
 								}
-							}}
-						/>
-					);
-				})}
+							});
+						}}
+					>
+						Download Image
+					</button>
+				</div>
+				<div ref={articleWrapperRef} className='article-display'>
+					{currentArticleParagraphs.map((paragraph) => {
+						return (
+							<PreviewContent
+								key={paragraph.paragraphId}
+								paragraph={paragraph}
+								includeTranslation={includeTranslation}
+								resetErrorBoundariesMapRef={resetErrorBoundariesMapRef.current} // to pass date from Child component https://medium.com/@bhuvan.gandhi/pass-data-from-child-component-to-parent-component-without-using-state-hook-b301a319b174#f7d6
+								ref={(node) => {
+									if (node) {
+										errorBoundaryFallbackElementCount.current += 1;
+									} else {
+										errorBoundaryFallbackElementCount.current -= 1;
+									}
+								}}
+							/>
+						);
+					})}
+				</div>
 			</div>
 		</ModalWrapper>
 	);
@@ -218,6 +255,10 @@ var ModalWrapper = styled.section`
 
 		.btn-container {
 			margin-bottom: 1rem;
+		}
+
+		.article-display {
+			padding: 2rem;
 		}
 	}
 `;
