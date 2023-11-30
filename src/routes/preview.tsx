@@ -33,8 +33,6 @@ export var Preview = () => {
 		return Object.assign({}, paragraph, { translationText: translation ?? '' });
 	});
 
-	console.log(currentArticleParagraphsWithTranslation);
-
 	/* Translation Retry Logic */
 	let { reset } = useQueryErrorResetBoundary();
 	let errorBoundaryFallbackElementCount = useRef(0);
