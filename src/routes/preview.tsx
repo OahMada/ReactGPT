@@ -65,9 +65,7 @@ export var Preview = () => {
 	}, []);
 
 	/* PDF Generation */
-	// initially generate PDF with only source article text
-
-	// include translation into PDF when available
+	let downloadPDF = () => {};
 
 	/* DOCX Generation */
 	let downloadDocx = () => {
@@ -145,7 +143,9 @@ export var Preview = () => {
 					>
 						Copy To Clipboard
 					</button>
-					<button disabled={translationFetchingCount !== 0}>Download PDF</button>
+					<button disabled={translationFetchingCount !== 0} onClick={downloadPDF}>
+						Download PDF
+					</button>
 					<button disabled={translationFetchingCount !== 0} onClick={downloadDocx}>
 						Download Docx
 					</button>
