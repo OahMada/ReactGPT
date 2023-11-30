@@ -3,14 +3,13 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { useQueryClient, useIsFetching, useQueryErrorResetBoundary } from '@tanstack/react-query';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
-import { usePDF } from '@react-pdf/renderer';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn'; // import locale
 import { Packer } from 'docx';
 import { saveAs } from 'file-saver';
 import { toBlob } from 'html-to-image';
 
-import { PreviewContent, ArticlePDF, articleDocx } from '../components';
+import { PreviewContent, articleDocx } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
 import { translationQueryKeys } from '../query/translationQuery';
 
@@ -33,6 +32,8 @@ export var Preview = () => {
 		let translation = queryClient.getQueryData<string>(translationQueryKeys(paragraph.paragraphText, paragraph.paragraphId));
 		return Object.assign({}, paragraph, { translationText: translation ?? '' });
 	});
+
+	console.log(currentArticleParagraphsWithTranslation);
 
 	/* Translation Retry Logic */
 	let { reset } = useQueryErrorResetBoundary();
@@ -67,23 +68,8 @@ export var Preview = () => {
 
 	/* PDF Generation */
 	// initially generate PDF with only source article text
-	let [PDFInstance, updatePDFInstance] = usePDF({
-		document: ArticlePDF({ article: currentArticleParagraphsWithTranslation, includeTranslation }),
-	});
 
 	// include translation into PDF when available
-	useEffect(() => {
-		if (translationFetchingCount === 0 && !PDFInstance.loading && !PDFInstance.error) {
-			updatePDFInstance(ArticlePDF({ article: currentArticleParagraphsWithTranslation, includeTranslation }));
-		}
-	}, [
-		updatePDFInstance,
-		includeTranslation,
-		translationFetchingCount,
-		currentArticleParagraphsWithTranslation,
-		PDFInstance.loading,
-		PDFInstance.error,
-	]);
 
 	/* DOCX Generation */
 	let downloadDocx = () => {
@@ -161,16 +147,7 @@ export var Preview = () => {
 					>
 						Copy To Clipboard
 					</button>
-					<button disabled={translationFetchingCount !== 0 || !PDFInstance.url}>
-						{translationFetchingCount === 0 && PDFInstance.url ? (
-							// since a tag doesn't have a disabled attribute
-							<a href={PDFInstance.url} download={`${fileName}.pdf`}>
-								Download PDF
-							</a>
-						) : (
-							'Download PDF'
-						)}
-					</button>
+					<button disabled={translationFetchingCount !== 0}>Download PDF</button>
 					<button disabled={translationFetchingCount !== 0} onClick={downloadDocx}>
 						Download Docx
 					</button>

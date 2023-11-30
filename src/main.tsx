@@ -105,6 +105,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  * ReactPDF: extra new line; retry downloading font file
  * an export menu, click to show options
  * add toast to export buttons: react-hot-toast
+ * lodash.js debounce prevent preview button multiple click
  *
  * react-hotkeys-hook
  *
