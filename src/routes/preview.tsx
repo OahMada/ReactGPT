@@ -8,14 +8,19 @@ import 'dayjs/locale/zh-cn'; // import locale
 import { Packer } from 'docx';
 import { saveAs } from 'file-saver';
 import { toBlob } from 'html-to-image';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
+import { debounce } from 'lodash';
 
 import { PreviewContent, articleDocx } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
 import { translationQueryKeys } from '../query/translationQuery';
+import { createToast } from '../utils';
 
 export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);
 	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
+	let [showExportOptions, setShowExportOptions] = useState(false);
 
 	let filteredParagraphs = useOutletContext<Paragraph[]>();
 	let navigate = useNavigate();
@@ -64,17 +69,72 @@ export var Preview = () => {
 		};
 	}, []);
 
+	let articleWrapperRef = useRef(null);
+
+	/* Image Generation */
+	let downloadImg = () => {
+		// a bug from the library: Error inlining remote css file DOMException: Failed to read the 'cssRules' property from 'CSSStyleSheet': Cannot access rules
+		toBlob(articleWrapperRef.current!, { backgroundColor: 'white' }).then(function (blob) {
+			let b = blob as Blob;
+			if (window.saveAs) {
+				window.saveAs(b, `${fileName}.png`);
+			} else {
+				saveAs(b, `${fileName}.png`);
+			}
+		});
+		createToast({ type: 'info', content: 'Downloading Image...', toastId: 'downloadImg', options: { autoClose: 1000, closeButton: false } });
+	};
+
 	/* PDF Generation */
-	let downloadPDF = () => {};
+	let downloadPDF = () => {
+		// https://dev.to/jringeisen/using-jspdf-html2canvas-and-vue-to-generate-pdfs-1f8l
+		let doc = new jsPDF({
+			orientation: 'p',
+			unit: 'px',
+			format: 'a4',
+			hotfixes: ['px_scaling'],
+		});
+
+		html2canvas(articleWrapperRef.current!, {
+			width: doc.internal.pageSize.getWidth(),
+			height: doc.internal.pageSize.getHeight(),
+		}).then((canvas) => {
+			let img = canvas.toDataURL('image/png');
+			doc.addImage(img, 'PNG', 70, 10, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight());
+			doc.save(`${fileName}.pdf`);
+		});
+
+		createToast({ type: 'info', content: 'Downloading PDF...', toastId: 'downloadPDF', options: { autoClose: 1000, closeButton: false } });
+	};
 
 	/* DOCX Generation */
 	let downloadDocx = () => {
 		Packer.toBlob(articleDocx({ article: currentArticleParagraphsWithTranslation, includeTranslation })).then((blob) => {
-			saveAs(blob, `${fileName}.docx`);
+			if (window.saveAs) {
+				window.saveAs(blob, `${fileName}.docx`);
+			} else {
+				saveAs(blob, `${fileName}.docx`);
+			}
 		});
+		createToast({ type: 'info', content: 'Downloading DOCX...', toastId: 'downloadDOCX', options: { autoClose: 1000, closeButton: false } });
 	};
 
-	let articleWrapperRef = useRef(null);
+	/* Copy to Clipboard */
+	let copyToClipboard = () => {
+		let clipboardText = currentArticleParagraphsWithTranslation.reduce<string>((acc, paragraph) => {
+			acc += paragraph.paragraphText;
+			acc += '\n\n';
+			if (paragraph.translationText) {
+				acc += paragraph.translationText;
+				acc += '\n\n';
+			}
+			return acc;
+		}, '');
+		// https://stackoverflow.com/questions/39501289/in-reactjs-how-to-copy-text-to-clipboard
+		navigator.clipboard.writeText(clipboardText);
+
+		createToast({ type: 'info', content: 'Copied to Clipboard', toastId: 'copyToClipboard', options: { autoClose: 1000, closeButton: false } });
+	};
 
 	return (
 		<ModalWrapper
@@ -125,45 +185,24 @@ export var Preview = () => {
 					</button>
 				</div>
 				<div>
-					<button
-						disabled={translationFetchingCount !== 0}
-						onClick={() => {
-							let clipboardText = currentArticleParagraphsWithTranslation.reduce<string>((acc, paragraph) => {
-								acc += paragraph.paragraphText;
-								acc += '\n\n';
-								if (paragraph.translationText) {
-									acc += paragraph.translationText;
-									acc += '\n\n';
-								}
-								return acc;
-							}, '');
-							// https://stackoverflow.com/questions/39501289/in-reactjs-how-to-copy-text-to-clipboard
-							navigator.clipboard.writeText(clipboardText);
-						}}
-					>
+					<button disabled={translationFetchingCount !== 0} onClick={() => debounce(copyToClipboard, 1000, { leading: false, trailing: true })()}>
 						Copy To Clipboard
 					</button>
-					<button disabled={translationFetchingCount !== 0} onClick={downloadPDF}>
-						Download PDF
-					</button>
-					<button disabled={translationFetchingCount !== 0} onClick={downloadDocx}>
-						Download Docx
-					</button>
-					<button
-						disabled={translationFetchingCount !== 0}
-						onClick={() => {
-							toBlob(articleWrapperRef.current!, { backgroundColor: 'white' }).then(function (blob) {
-								let b = blob as Blob;
-								if (window.saveAs) {
-									window.saveAs(b, `${fileName}.png`);
-								} else {
-									saveAs(b, `${fileName}.png`);
-								}
-							});
-						}}
-					>
-						Download Image
-					</button>
+					{showExportOptions ? (
+						<>
+							<button disabled={translationFetchingCount !== 0} onClick={() => debounce(downloadPDF, 1000, { leading: false, trailing: true })()}>
+								Download PDF
+							</button>
+							<button disabled={translationFetchingCount !== 0} onClick={() => debounce(downloadDocx, 1000, { leading: false, trailing: true })()}>
+								Download Docx
+							</button>
+							<button disabled={translationFetchingCount !== 0} onClick={() => debounce(downloadImg, 1000, { leading: false, trailing: true })()}>
+								Download Image
+							</button>
+						</>
+					) : (
+						<button onClick={() => setShowExportOptions(true)}>Export As File</button>
+					)}
 				</div>
 				<div ref={articleWrapperRef} className='article-display'>
 					{currentArticleParagraphs.map((paragraph) => {
