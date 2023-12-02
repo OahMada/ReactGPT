@@ -85,6 +85,8 @@ export var Preview = () => {
 		createToast({ type: 'info', content: 'Downloading Image...', toastId: 'downloadImg', options: { autoClose: 1000, closeButton: false } });
 	};
 
+	let debouncedDownloadImg = debounce(downloadImg, 1000, { leading: true, trailing: false });
+
 	/* PDF Generation */
 	let downloadPDF = () => {
 		// https://dev.to/jringeisen/using-jspdf-html2canvas-and-vue-to-generate-pdfs-1f8l
@@ -106,6 +108,7 @@ export var Preview = () => {
 
 		createToast({ type: 'info', content: 'Downloading PDF...', toastId: 'downloadPDF', options: { autoClose: 1000, closeButton: false } });
 	};
+	let debouncedDownloadPDF = debounce(downloadPDF, 1000, { leading: true, trailing: false });
 
 	/* DOCX Generation */
 	let downloadDocx = () => {
@@ -118,6 +121,8 @@ export var Preview = () => {
 		});
 		createToast({ type: 'info', content: 'Downloading DOCX...', toastId: 'downloadDOCX', options: { autoClose: 1000, closeButton: false } });
 	};
+
+	let debouncedDownloadDocx = debounce(downloadDocx, 1000, { leading: true, trailing: false });
 
 	/* Copy to Clipboard */
 	let copyToClipboard = () => {
@@ -135,6 +140,8 @@ export var Preview = () => {
 
 		createToast({ type: 'info', content: 'Copied to Clipboard', toastId: 'copyToClipboard', options: { autoClose: 1000, closeButton: false } });
 	};
+
+	let debouncedCopyToClipboard = debounce(copyToClipboard, 1000, { leading: true, trailing: false });
 
 	return (
 		<ModalWrapper
@@ -185,18 +192,18 @@ export var Preview = () => {
 					</button>
 				</div>
 				<div>
-					<button disabled={translationFetchingCount !== 0} onClick={() => debounce(copyToClipboard, 1000, { leading: false, trailing: true })()}>
+					<button disabled={translationFetchingCount !== 0} onClick={() => debouncedCopyToClipboard}>
 						Copy To Clipboard
 					</button>
 					{showExportOptions ? (
 						<>
-							<button disabled={translationFetchingCount !== 0} onClick={() => debounce(downloadPDF, 1000, { leading: false, trailing: true })()}>
+							<button disabled={translationFetchingCount !== 0} onClick={debouncedDownloadPDF}>
 								Download PDF
 							</button>
-							<button disabled={translationFetchingCount !== 0} onClick={() => debounce(downloadDocx, 1000, { leading: false, trailing: true })()}>
+							<button disabled={translationFetchingCount !== 0} onClick={debouncedDownloadDocx}>
 								Download Docx
 							</button>
-							<button disabled={translationFetchingCount !== 0} onClick={() => debounce(downloadImg, 1000, { leading: false, trailing: true })()}>
+							<button disabled={translationFetchingCount !== 0} onClick={debouncedDownloadImg}>
 								Download Image
 							</button>
 						</>
