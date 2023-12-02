@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { useAppDispatch } from '../redux/hooks';
 import { saveArticleInput } from '../features/articleSlice';
-import { createToast, defaultArticleInput } from '../utils';
+import { createToast, defaultArticleInput, useKeys, generateButtonName } from '../utils';
 
 interface ArticleInputType {
 	article: string;
@@ -49,6 +49,13 @@ export var ArticleInput = () => {
 		navigate(`article/${articleId}`);
 	};
 
+	useKeys({
+		keyBinding: 'mod+d',
+		callback: () => {
+			handleSubmit(onsubmit)();
+		},
+	});
+
 	return (
 		<StyledForm onSubmit={handleSubmit(onsubmit)}>
 			{/* {
@@ -77,7 +84,7 @@ export var ArticleInput = () => {
 				})}
 				spellCheck='true'
 			/>
-			<button type='submit'>Done</button>
+			<button type='submit'>{generateButtonName('Done', 'D')}</button>
 		</StyledForm>
 	);
 };

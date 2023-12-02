@@ -6,3 +6,5 @@ export * from './createToast';
 export * from './throwIfUndefined';
 export * from './performArticleSearch';
 export * from './buildAxiosResponse';
+export * from './useKeys';
+export * from './generateButtonNameWithHotkeyHint';

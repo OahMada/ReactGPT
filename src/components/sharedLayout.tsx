@@ -14,7 +14,7 @@ import {
 	pinArticle,
 	removeArticleFromDeletionQueue,
 } from '../features/articleSlice';
-import { performFuseSearch } from '../utils';
+import { performFuseSearch, useKeys, generateButtonName } from '../utils';
 
 interface SearchForm {
 	search: string;
@@ -106,10 +106,26 @@ export var SharedLayout = () => {
 		return articleQueue.favorites.indexOf(articleId) !== -1 ? true : false;
 	};
 
+	// hotkey for entering new article page
+	useKeys({
+		keyBinding: 'mod+a',
+		callback: () => {
+			navigate('/');
+		},
+	});
+
+	// hotkey for entering config page
+	useKeys({
+		keyBinding: 'mod+c',
+		callback: () => {
+			navigate('/config');
+		},
+	});
+
 	return (
 		<>
 			<div>
-				<button onClick={() => navigate('/config')}>CONFIG</button>
+				<button onClick={() => navigate('/config')}>{generateButtonName('CONFIG', 'C')}</button>
 				<form role='search' onSubmit={handleSubmit(onSubmit)}>
 					<input
 						aria-label='Search articles'
@@ -132,7 +148,7 @@ export var SharedLayout = () => {
 			</div>
 			<nav>
 				<ul>
-					<NavLink to='/'>New Article</NavLink>
+					<NavLink to='/'>{generateButtonName('New Article', 'A')}</NavLink>
 					{articles.map((article) => {
 						return (
 							<li key={article.articleId}>
