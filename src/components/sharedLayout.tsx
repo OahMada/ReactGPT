@@ -1,6 +1,7 @@
 import { NavLink, useNavigate, useParams, useSearchParams, useSubmit, useLocation, createSearchParams } from 'react-router-dom';
 import { useLocalStorage } from 'react-use';
 import { useForm } from 'react-hook-form';
+import { useRef, useImperativeHandle } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn'; // import locale
 import { toast } from 'react-toastify';
@@ -14,7 +15,7 @@ import {
 	pinArticle,
 	removeArticleFromDeletionQueue,
 } from '../features/articleSlice';
-import { performFuseSearch, useKeys, generateButtonName } from '../utils';
+import { performFuseSearch, useKeys, generateButtonName, generateStringButtonName } from '../utils';
 
 interface SearchForm {
 	search: string;
@@ -40,6 +41,19 @@ export var SharedLayout = () => {
 			search: localQuery ?? '', // preserve the search on page refresh
 		},
 	}); // https://react-hook-form.com/ts#SubmitHandler
+
+	let { ref, ...rest } = register('search', {
+		onChange: (e) => {
+			setLocalQuery(e.target.value);
+			// use location.pathname to add search params to the same url
+			let isFirstSearch = query == null;
+			submit(e.currentTarget.form, {
+				method: 'get',
+				action: location.pathname,
+				replace: !isFirstSearch,
+			});
+		},
+	});
 
 	let buildArticle = (articleId: string) => {
 		return paragraphs.reduce<string>((acc, cur) => {
@@ -122,33 +136,28 @@ export var SharedLayout = () => {
 		},
 	});
 
+	let searchInputRef = useRef<HTMLInputElement>(null);
+	useImperativeHandle(ref, () => searchInputRef.current);
+
+	// hotkey for focusing search field
+	useKeys({
+		keyBinding: 'mod+k',
+		callback: () => {
+			searchInputRef.current!.focus();
+		},
+	});
+
 	return (
 		<>
 			<div>
-				<button onClick={() => navigate('/config')}>{generateButtonName('CONFIG', 'C')}</button>
+				<button onClick={() => navigate('/config')}>{generateButtonName('CONFIG', 'c')}</button>
 				<form role='search' onSubmit={handleSubmit(onSubmit)}>
-					<input
-						aria-label='Search articles'
-						type='search'
-						placeholder='Search'
-						{...register('search', {
-							onChange: (e) => {
-								setLocalQuery(e.target.value);
-								// use location.pathname to add search params to the same url
-								let isFirstSearch = query == null;
-								submit(e.currentTarget.form, {
-									method: 'get',
-									action: location.pathname,
-									replace: !isFirstSearch,
-								});
-							},
-						})}
-					/>
+					<input aria-label='Search articles' type='search' placeholder={generateStringButtonName('Search', 'k')} ref={searchInputRef} {...rest} />
 				</form>
 			</div>
 			<nav>
 				<ul>
-					<NavLink to='/'>{generateButtonName('New Article', 'A')}</NavLink>
+					<NavLink to='/'>{generateButtonName('New Article', 'a')}</NavLink>
 					{articles.map((article) => {
 						return (
 							<li key={article.articleId}>

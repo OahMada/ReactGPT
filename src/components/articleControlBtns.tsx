@@ -11,7 +11,7 @@ import {
 	pinArticle,
 	unPinArticle,
 } from '../features/articleSlice';
-import { createToast } from '../utils';
+import { createToast, useKeys, generateButtonName } from '../utils';
 
 interface UndoProps extends Partial<ToastContentProps> {
 	onUndo: () => void;
@@ -69,29 +69,37 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 	};
 
 	let articleIsInFavorites = articleQueue.favorites.indexOf(articleId) !== -1 ? true : false;
+	let handlePinArticle = () => {
+		if (articleIsInFavorites) {
+			dispatch(unPinArticle(articleId));
+		} else {
+			dispatch(pinArticle(articleId));
+		}
+	};
+
+	// delete article hotkey
+	useKeys({ keyBinding: 'mod+d', callback: handleArticleDeletion });
+
+	// preview article hotkey
+	useKeys({
+		keyBinding: 'mod+v',
+		callback: () => {
+			navigate(`/article/${articleId}/preview`);
+		},
+	});
+
+	// pin article hotkey
+	useKeys({
+		keyBinding: 'mod+p',
+		callback: handlePinArticle,
+	});
 
 	return (
 		<div>
-			{articleIsInFavorites ? (
-				<button
-					onClick={() => {
-						dispatch(unPinArticle(articleId));
-					}}
-				>
-					Unpin
-				</button>
-			) : (
-				<button
-					onClick={() => {
-						dispatch(pinArticle(articleId));
-					}}
-				>
-					Pin
-				</button>
-			)}
-			<button onClick={handleArticleDeletion}>Delete Article</button>
+			<button onClick={handlePinArticle}>{articleIsInFavorites ? generateButtonName('Unpin', 'p') : generateButtonName('Pin', 'p')}</button>
+			<button onClick={handleArticleDeletion}>{generateButtonName('Delete Article', 'd')}</button>
 			<button>
-				<Link to={`/article/${articleId}/preview`}>Preview Article</Link>
+				<Link to={`/article/${articleId}/preview`}>{generateButtonName('Preview Article', 'v')}</Link>
 			</button>
 		</div>
 	);

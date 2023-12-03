@@ -102,7 +102,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  *
  * ## features
  *
- * react-hotkeys-hook
+ * hotkeys: export actions
+ * show, hide hotkey hints
+ * a config page bug
  *
  * ## test
  * test

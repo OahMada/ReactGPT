@@ -84,7 +84,7 @@ export var ArticleInput = () => {
 				})}
 				spellCheck='true'
 			/>
-			<button type='submit'>{generateButtonName('Done', 'D')}</button>
+			<button type='submit'>{generateButtonName('Done', 'd')}</button>
 		</StyledForm>
 	);
 };
