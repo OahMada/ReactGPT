@@ -24,9 +24,14 @@ var Undo = ({ closeToast, onUndo }: UndoProps) => {
 		closeToast();
 	};
 
+	useKeys({ keyBinding: 'mod+u', callback: handleClick });
+
 	return (
 		<div>
-			Deleting Current Article <button onClick={handleClick}>UNDO</button>
+			Deleting Current Article{' '}
+			<button onClick={handleClick} data-tooltip-id='hotkey' data-tooltip-content={generateHotkeyToolTipContent('u')}>
+				UNDO
+			</button>
 		</div>
 	);
 };

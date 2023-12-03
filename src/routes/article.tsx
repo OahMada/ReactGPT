@@ -15,7 +15,7 @@ import { selectArticle, handleParagraphOrderChange, updateUserInput, toggleTrans
 import { StyledParagraph, ParagraphInput, Paragraph, ParagraphControlBtns, EmptyParagraphList, ArticleControlBtns } from '../components';
 
 // utils
-import { createToast, throwIfUndefined } from '../utils';
+import { createToast, throwIfUndefined, generateHotkeyToolTipContent, useKeys } from '../utils';
 
 // types
 import { Paragraph as ParagraphType } from '../types';
@@ -75,6 +75,9 @@ export var Article = () => {
 
 	// to add a retry all button when there's more than one sentences failed to request grammar fixes
 	let grammarFixFetchingCount = useIsFetching({ queryKey: ['grammar'] });
+	let handleRetryAll = () => resetErrorBoundariesRef.current.forEach((resetter) => resetter());
+	useKeys({ keyBinding: 'mod+y', callback: handleRetryAll });
+
 	useEffect(() => {
 		if (grammarFixFetchingCount === 0) {
 			if (errorBoundaryFallbackElementCount.current! > 1) {
@@ -125,7 +128,12 @@ export var Article = () => {
 			{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
 			{showRetryAllButton && (
 				<div>
-					<button onClick={() => resetErrorBoundariesRef.current.forEach((resetter) => resetter())} disabled={grammarFixFetchingCount > 0}>
+					<button
+						onClick={handleRetryAll}
+						disabled={grammarFixFetchingCount > 0}
+						data-tooltip-id='hotkey'
+						data-tooltip-content={generateHotkeyToolTipContent('y')}
+					>
 						Retry All
 					</button>
 				</div>

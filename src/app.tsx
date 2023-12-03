@@ -51,7 +51,7 @@ export var App = () => {
 			<RouterProvider router={router} />
 			<ToastContainer enableMultiContainer containerId={'articleDeletion'} closeOnClick={false} closeButton={false} />
 			<ToastContainer limit={3} enableMultiContainer />
-			<Tooltip id='hotkey' delayShow={1000} role='tooltip' style={{ zIndex: 999 }} />
+			<Tooltip id='hotkey' delayShow={1000} delayHide={150} role='tooltip' style={{ zIndex: 999 }} />
 		</>
 	);
 };

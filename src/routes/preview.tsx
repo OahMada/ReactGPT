@@ -45,6 +45,14 @@ export var Preview = () => {
 	// to add a retry all button when there's more than one sentences failed to request grammar fixes
 	let translationFetchingCount = useIsFetching({ queryKey: ['translation'] });
 
+	let handleRetryAll = () => {
+		// order matters, you have to first `reset()`
+		reset();
+		resetErrorBoundariesMapRef.current.forEach((resetter) => {
+			resetter();
+		});
+	};
+
 	let handleTranslation = () => {
 		setIncludeTranslation(!includeTranslation);
 		if (includeTranslation) {
@@ -175,6 +183,7 @@ export var Preview = () => {
 	useKeys({ keyBinding: 'p', callback: debouncedDownloadPDF });
 	useKeys({ keyBinding: 'd', callback: debouncedDownloadDocx });
 	useKeys({ keyBinding: 'i', callback: debouncedDownloadImg });
+	useKeys({ keyBinding: 'mod+y', callback: handleRetryAll });
 
 	return (
 		<ModalWrapper
@@ -190,14 +199,10 @@ export var Preview = () => {
 					</button>
 					{showRetryAllButton && (
 						<button
-							onClick={() => {
-								// order matters, you have to first `reset()`
-								reset();
-								resetErrorBoundariesMapRef.current.forEach((resetter) => {
-									resetter();
-								});
-							}}
+							onClick={handleRetryAll}
 							disabled={translationFetchingCount > 0}
+							data-tooltip-id='hotkey'
+							data-tooltip-content={generateHotkeyToolTipContent('y')}
 						>
 							Retry All
 						</button>

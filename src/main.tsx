@@ -58,7 +58,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  *
  * ## features
  *
+ * how beautiful dnd handles hotkey
+ *
+ * ## bugs
+ *
  * a config page bug
+ * preview bug: translation failure, then close and reopen preview -> translate
+ * retry all button hotkey scoping bug https://react-hotkeys-hook.vercel.app/docs/documentation/useHotkeys/scoping-hotkeys#scoping-with-non-focusable-components
  *
  * ## test
  * test
