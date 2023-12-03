@@ -11,7 +11,7 @@ import {
 	pinArticle,
 	unPinArticle,
 } from '../features/articleSlice';
-import { createToast, useKeys, generateButtonName } from '../utils';
+import { createToast, useKeys, generateHotkeyToolTipContent } from '../utils';
 
 interface UndoProps extends Partial<ToastContentProps> {
 	onUndo: () => void;
@@ -82,7 +82,7 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 
 	// preview article hotkey
 	useKeys({
-		keyBinding: 'mod+v',
+		keyBinding: 'mod+r',
 		callback: () => {
 			navigate(`/article/${articleId}/preview`);
 		},
@@ -96,10 +96,16 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 
 	return (
 		<div>
-			<button onClick={handlePinArticle}>{articleIsInFavorites ? generateButtonName('Unpin', 'p') : generateButtonName('Pin', 'p')}</button>
-			<button onClick={handleArticleDeletion}>{generateButtonName('Delete Article', 'd')}</button>
+			<button onClick={handlePinArticle} data-tooltip-id='hotkey' data-tooltip-content={generateHotkeyToolTipContent('p')}>
+				{articleIsInFavorites ? 'Unpin' : 'Pin'}
+			</button>
+			<button onClick={handleArticleDeletion} data-tooltip-id='hotkey' data-tooltip-content={generateHotkeyToolTipContent('d')}>
+				Delete Article
+			</button>
 			<button>
-				<Link to={`/article/${articleId}/preview`}>{generateButtonName('Preview Article', 'v')}</Link>
+				<Link to={`/article/${articleId}/preview`} data-tooltip-id='hotkey' data-tooltip-content={generateHotkeyToolTipContent('r')}>
+					Preview Article
+				</Link>
 			</button>
 		</div>
 	);

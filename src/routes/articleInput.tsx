@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { useAppDispatch } from '../redux/hooks';
 import { saveArticleInput } from '../features/articleSlice';
-import { createToast, defaultArticleInput, useKeys, generateButtonName } from '../utils';
+import { createToast, defaultArticleInput, useKeys, generateHotkeyToolTipContent } from '../utils';
 
 interface ArticleInputType {
 	article: string;
@@ -84,7 +84,9 @@ export var ArticleInput = () => {
 				})}
 				spellCheck='true'
 			/>
-			<button type='submit'>{generateButtonName('Done', 'd')}</button>
+			<button type='submit' data-tooltip-id='hotkey' data-tooltip-content={generateHotkeyToolTipContent('d')}>
+				Done
+			</button>
 		</StyledForm>
 	);
 };

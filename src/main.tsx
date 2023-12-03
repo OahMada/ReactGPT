@@ -9,9 +9,6 @@ import { persistor, store } from './redux/store';
 // redux persist
 import { PersistGate } from 'redux-persist/integration/react';
 
-// react router
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
 // react query and persister
 import { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -21,12 +18,7 @@ import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persist
 // data compressing
 import { compress, decompress } from 'lz-string';
 
-// toast
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css';
-
-// components
-import { Root, Article, ArticleInput, Config, ErrorPage, Preview } from './routes';
+import { App } from './app';
 
 // style
 import './index.css';
@@ -48,48 +40,12 @@ var persister = createSyncStoragePersister({
 	retry: removeOldestQuery,
 });
 
-var router = createBrowserRouter([
-	{
-		errorElement: <ErrorPage />,
-		children: [
-			{
-				path: '/',
-				element: <Root />,
-				children: [
-					{
-						errorElement: <ErrorPage />,
-						children: [
-							{ index: true, element: <ArticleInput /> },
-							{
-								path: 'article/:articleId',
-								element: <Article />,
-								children: [
-									{
-										path: 'preview',
-										element: <Preview />,
-									},
-								],
-							},
-						],
-					},
-				],
-			},
-			{
-				path: 'config',
-				element: <Config />,
-			},
-		],
-	},
-]);
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
 		<PersistQueryClientProvider client={queryClient} persistOptions={{ persister, maxAge: Infinity, buster: '' }}>
 			<Provider store={store}>
 				<PersistGate loading={null} persistor={persistor}>
-					<RouterProvider router={router} />
-					<ToastContainer enableMultiContainer containerId={'articleDeletion'} closeOnClick={false} closeButton={false} />
-					<ToastContainer limit={3} enableMultiContainer />
+					<App />
 				</PersistGate>
 			</Provider>
 			<ReactQueryDevtools initialIsOpen={true} position='right' />
@@ -102,8 +58,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  *
  * ## features
  *
- * hotkeys: export actions
- * show, hide hotkey hints
  * a config page bug
  *
  * ## test

@@ -15,7 +15,7 @@ import { debounce } from 'lodash';
 import { PreviewContent, articleDocx } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
 import { translationQueryKeys } from '../query/translationQuery';
-import { createToast } from '../utils';
+import { createToast, useKeys, generateHotkeyToolTipContent } from '../utils';
 
 export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);
@@ -44,6 +44,25 @@ export var Preview = () => {
 	let resetErrorBoundariesMapRef = useRef(new Map());
 	// to add a retry all button when there's more than one sentences failed to request grammar fixes
 	let translationFetchingCount = useIsFetching({ queryKey: ['translation'] });
+
+	let handleTranslation = () => {
+		setIncludeTranslation(!includeTranslation);
+		if (includeTranslation) {
+			setShowRetryAllButton(false);
+			// only run when hide preview translation
+			queryClient.cancelQueries({ queryKey: ['translation'] });
+			reset();
+		}
+	};
+
+	let handleClosePreview = () => {
+		navigate(-1);
+		if (includeTranslation) {
+			queryClient.cancelQueries({ queryKey: ['translation'] });
+			reset();
+		}
+	};
+
 	useEffect(() => {
 		if (translationFetchingCount === 0) {
 			if (errorBoundaryFallbackElementCount.current! > 1) {
@@ -82,10 +101,10 @@ export var Preview = () => {
 				saveAs(b, `${fileName}.png`);
 			}
 		});
-		createToast({ type: 'info', content: 'Downloading Image...', toastId: 'downloadImg', options: { autoClose: 1000, closeButton: false } });
+		createToast({ type: 'info', content: 'Downloading Image...', toastId: 'downloadImg', options: { autoClose: 800, closeButton: false } });
 	};
 
-	let debouncedDownloadImg = debounce(downloadImg, 1000, { leading: true, trailing: false });
+	let debouncedDownloadImg = debounce(downloadImg, 800, { leading: true, trailing: false });
 
 	/* PDF Generation */
 	let downloadPDF = () => {
@@ -106,9 +125,9 @@ export var Preview = () => {
 			doc.save(`${fileName}.pdf`);
 		});
 
-		createToast({ type: 'info', content: 'Downloading PDF...', toastId: 'downloadPDF', options: { autoClose: 1000, closeButton: false } });
+		createToast({ type: 'info', content: 'Downloading PDF...', toastId: 'downloadPDF', options: { autoClose: 800, closeButton: false } });
 	};
-	let debouncedDownloadPDF = debounce(downloadPDF, 1000, { leading: true, trailing: false });
+	let debouncedDownloadPDF = debounce(downloadPDF, 800, { leading: true, trailing: false });
 
 	/* DOCX Generation */
 	let downloadDocx = () => {
@@ -119,10 +138,10 @@ export var Preview = () => {
 				saveAs(blob, `${fileName}.docx`);
 			}
 		});
-		createToast({ type: 'info', content: 'Downloading DOCX...', toastId: 'downloadDOCX', options: { autoClose: 1000, closeButton: false } });
+		createToast({ type: 'info', content: 'Downloading DOCX...', toastId: 'downloadDOCX', options: { autoClose: 800, closeButton: false } });
 	};
 
-	let debouncedDownloadDocx = debounce(downloadDocx, 1000, { leading: true, trailing: false });
+	let debouncedDownloadDocx = debounce(downloadDocx, 800, { leading: true, trailing: false });
 
 	/* Copy to Clipboard */
 	let copyToClipboard = () => {
@@ -138,10 +157,24 @@ export var Preview = () => {
 		// https://stackoverflow.com/questions/39501289/in-reactjs-how-to-copy-text-to-clipboard
 		navigator.clipboard.writeText(clipboardText);
 
-		createToast({ type: 'info', content: 'Copied to Clipboard', toastId: 'copyToClipboard', options: { autoClose: 1000, closeButton: false } });
+		createToast({ type: 'info', content: 'Copied to Clipboard', toastId: 'copyToClipboard', options: { autoClose: 800, closeButton: false } });
 	};
 
-	let debouncedCopyToClipboard = debounce(copyToClipboard, 1000, { leading: true, trailing: false });
+	let debouncedCopyToClipboard = debounce(copyToClipboard, 800, { leading: true, trailing: false });
+
+	/* Hotkeys */
+	useKeys({ keyBinding: 'mod+i', callback: handleTranslation });
+	useKeys({ keyBinding: 'mod+x', callback: handleClosePreview });
+	useKeys({ keyBinding: 'c', callback: debouncedCopyToClipboard });
+	useKeys({
+		keyBinding: 'mod+e',
+		callback: () => {
+			setShowExportOptions(true);
+		},
+	});
+	useKeys({ keyBinding: 'p', callback: debouncedDownloadPDF });
+	useKeys({ keyBinding: 'd', callback: debouncedDownloadDocx });
+	useKeys({ keyBinding: 'i', callback: debouncedDownloadImg });
 
 	return (
 		<ModalWrapper
@@ -152,17 +185,7 @@ export var Preview = () => {
 		>
 			<div onClick={(e) => e.stopPropagation()} className='paragraphs'>
 				<div className='btn-container'>
-					<button
-						onClick={() => {
-							setIncludeTranslation(!includeTranslation);
-							if (includeTranslation) {
-								setShowRetryAllButton(false);
-								// only run when hide preview translation
-								queryClient.cancelQueries({ queryKey: ['translation'] });
-								reset();
-							}
-						}}
-					>
+					<button onClick={handleTranslation} data-tooltip-id='hotkey' data-tooltip-content={generateHotkeyToolTipContent('i')}>
 						{!includeTranslation ? 'Include Translation' : 'Remove Translation'}
 					</button>
 					{showRetryAllButton && (
@@ -179,36 +202,50 @@ export var Preview = () => {
 							Retry All
 						</button>
 					)}
-					<button
-						onClick={() => {
-							navigate(-1);
-							if (includeTranslation) {
-								queryClient.cancelQueries({ queryKey: ['translation'] });
-								reset();
-							}
-						}}
-					>
+					<button onClick={handleClosePreview} data-tooltip-id='hotkey' data-tooltip-content={generateHotkeyToolTipContent('x')}>
 						Close
 					</button>
 				</div>
 				<div>
-					<button disabled={translationFetchingCount !== 0} onClick={() => debouncedCopyToClipboard}>
+					<button
+						disabled={translationFetchingCount !== 0}
+						onClick={debouncedCopyToClipboard}
+						data-tooltip-id='hotkey'
+						data-tooltip-content={generateHotkeyToolTipContent('c', false)}
+					>
 						Copy To Clipboard
 					</button>
 					{showExportOptions ? (
 						<>
-							<button disabled={translationFetchingCount !== 0} onClick={debouncedDownloadPDF}>
+							<button
+								disabled={translationFetchingCount !== 0}
+								onClick={debouncedDownloadPDF}
+								data-tooltip-id='hotkey'
+								data-tooltip-content={generateHotkeyToolTipContent('p', false)}
+							>
 								Download PDF
 							</button>
-							<button disabled={translationFetchingCount !== 0} onClick={debouncedDownloadDocx}>
+							<button
+								disabled={translationFetchingCount !== 0}
+								onClick={debouncedDownloadDocx}
+								data-tooltip-id='hotkey'
+								data-tooltip-content={generateHotkeyToolTipContent('d', false)}
+							>
 								Download Docx
 							</button>
-							<button disabled={translationFetchingCount !== 0} onClick={debouncedDownloadImg}>
+							<button
+								disabled={translationFetchingCount !== 0}
+								onClick={debouncedDownloadImg}
+								data-tooltip-id='hotkey'
+								data-tooltip-content={generateHotkeyToolTipContent('i', false)}
+							>
 								Download Image
 							</button>
 						</>
 					) : (
-						<button onClick={() => setShowExportOptions(true)}>Export As File</button>
+						<button onClick={() => setShowExportOptions(true)} data-tooltip-id='hotkey' data-tooltip-content={generateHotkeyToolTipContent('e')}>
+							Export As File
+						</button>
 					)}
 				</div>
 				<div ref={articleWrapperRef} className='article-display'>

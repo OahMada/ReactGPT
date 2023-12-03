@@ -15,7 +15,7 @@ import {
 	pinArticle,
 	removeArticleFromDeletionQueue,
 } from '../features/articleSlice';
-import { performFuseSearch, useKeys, generateButtonName, generateStringButtonName } from '../utils';
+import { performFuseSearch, useKeys, generateHotkeyToolTipContent } from '../utils';
 
 interface SearchForm {
 	search: string;
@@ -130,7 +130,7 @@ export var SharedLayout = () => {
 
 	// hotkey for entering config page
 	useKeys({
-		keyBinding: 'mod+c',
+		keyBinding: 'mod+f',
 		callback: () => {
 			navigate('/config');
 		},
@@ -150,14 +150,26 @@ export var SharedLayout = () => {
 	return (
 		<>
 			<div>
-				<button onClick={() => navigate('/config')}>{generateButtonName('CONFIG', 'c')}</button>
+				<button onClick={() => navigate('/config')} data-tooltip-id='hotkey' data-tooltip-content={generateHotkeyToolTipContent('f')}>
+					CONFIG
+				</button>
 				<form role='search' onSubmit={handleSubmit(onSubmit)}>
-					<input aria-label='Search articles' type='search' placeholder={generateStringButtonName('Search', 'k')} ref={searchInputRef} {...rest} />
+					<input
+						aria-label='Search articles'
+						type='search'
+						placeholder='Search'
+						ref={searchInputRef}
+						{...rest}
+						data-tooltip-id='hotkey'
+						data-tooltip-content={generateHotkeyToolTipContent('k')}
+					/>
 				</form>
 			</div>
 			<nav>
 				<ul>
-					<NavLink to='/'>{generateButtonName('New Article', 'a')}</NavLink>
+					<NavLink to='/' data-tooltip-id='hotkey' data-tooltip-content={generateHotkeyToolTipContent('a')}>
+						New Article
+					</NavLink>
 					{articles.map((article) => {
 						return (
 							<li key={article.articleId}>

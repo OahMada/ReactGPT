@@ -7,4 +7,4 @@ export * from './throwIfUndefined';
 export * from './performArticleSearch';
 export * from './buildAxiosResponse';
 export * from './useKeys';
-export * from './generateButtonNameWithHotkeyHint';
+export * from './generateHotkeyTooltip';
