@@ -76,7 +76,8 @@ export var Article = () => {
 	// to add a retry all button when there's more than one sentences failed to request grammar fixes
 	let grammarFixFetchingCount = useIsFetching({ queryKey: ['grammar'] });
 	let handleRetryAll = () => resetErrorBoundariesRef.current.forEach((resetter) => resetter());
-	useKeys({ keyBinding: 'mod+y', callback: handleRetryAll });
+
+	useKeys({ keyBinding: 'mod+y', callback: handleRetryAll, enabled: !/preview$/.test(location.pathname) }); // enabled only when on the article page
 
 	useEffect(() => {
 		if (grammarFixFetchingCount === 0) {
