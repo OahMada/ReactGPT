@@ -11,6 +11,7 @@ import { toBlob } from 'html-to-image';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { debounce } from 'lodash';
+import { proxy } from 'comlink';
 
 import { PreviewContent, articleDocx } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
@@ -101,61 +102,67 @@ export var Preview = () => {
 	/* Image Generation */
 	let downloadImg = () => {
 		// a bug from the library: Error inlining remote css file DOMException: Failed to read the 'cssRules' property from 'CSSStyleSheet': Cannot access rules
-		workerInstance.exportFile(() => {
-			toBlob(articleWrapperRef.current!, { backgroundColor: 'white' }).then(function (blob) {
-				let b = blob as Blob;
-				if (window.saveAs) {
-					window.saveAs(b, `${fileName}.png`);
-				} else {
-					saveAs(b, `${fileName}.png`);
-				}
-			});
-		});
-		createToast({ type: 'info', content: 'Downloading Image...', toastId: 'downloadImg', options: { autoClose: 800, closeButton: false } });
+		workerInstance.exportFile(
+			proxy(() => {
+				toBlob(articleWrapperRef.current!, { backgroundColor: 'white' }).then(function (blob) {
+					let b = blob as Blob;
+					if (window.saveAs) {
+						window.saveAs(b, `${fileName}.png`);
+					} else {
+						saveAs(b, `${fileName}.png`);
+					}
+				});
+			})
+		);
+		createToast({ type: 'info', content: 'Downloading Image...', toastId: 'downloadImg', options: { autoClose: 500, closeButton: false } });
 	};
 
-	let debouncedDownloadImg = debounce(downloadImg, 800, { leading: true, trailing: false });
+	let debouncedDownloadImg = debounce(downloadImg, 500, { leading: true, trailing: false });
 
 	/* PDF Generation */
 	let downloadPDF = () => {
 		// https://dev.to/jringeisen/using-jspdf-html2canvas-and-vue-to-generate-pdfs-1f8l
-		workerInstance.exportFile(() => {
-			let doc = new jsPDF({
-				orientation: 'p',
-				unit: 'px',
-				format: 'a4',
-				hotfixes: ['px_scaling'],
-			});
+		workerInstance.exportFile(
+			proxy(() => {
+				let doc = new jsPDF({
+					orientation: 'p',
+					unit: 'px',
+					format: 'a4',
+					hotfixes: ['px_scaling'],
+				});
 
-			html2canvas(articleWrapperRef.current!, {
-				width: doc.internal.pageSize.getWidth(),
-				height: doc.internal.pageSize.getHeight(),
-			}).then((canvas) => {
-				let img = canvas.toDataURL('image/png');
-				doc.addImage(img, 'PNG', 70, 10, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight());
-				doc.save(`${fileName}.pdf`);
-			});
-		});
+				html2canvas(articleWrapperRef.current!, {
+					width: doc.internal.pageSize.getWidth(),
+					height: doc.internal.pageSize.getHeight(),
+				}).then((canvas) => {
+					let img = canvas.toDataURL('image/png');
+					doc.addImage(img, 'PNG', 70, 10, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight());
+					doc.save(`${fileName}.pdf`);
+				});
+			})
+		);
 
-		createToast({ type: 'info', content: 'Downloading PDF...', toastId: 'downloadPDF', options: { autoClose: 800, closeButton: false } });
+		createToast({ type: 'info', content: 'Downloading PDF...', toastId: 'downloadPDF', options: { autoClose: 500, closeButton: false } });
 	};
-	let debouncedDownloadPDF = debounce(downloadPDF, 800, { leading: true, trailing: false });
+	let debouncedDownloadPDF = debounce(downloadPDF, 500, { leading: true, trailing: false });
 
 	/* DOCX Generation */
 	let downloadDocx = () => {
-		workerInstance.exportFile(() => {
-			Packer.toBlob(articleDocx({ article: currentArticleParagraphsWithTranslation, includeTranslation })).then((blob) => {
-				if (window.saveAs) {
-					window.saveAs(blob, `${fileName}.docx`);
-				} else {
-					saveAs(blob, `${fileName}.docx`);
-				}
-			});
-		});
-		createToast({ type: 'info', content: 'Downloading DOCX...', toastId: 'downloadDOCX', options: { autoClose: 800, closeButton: false } });
+		workerInstance.exportFile(
+			proxy(() => {
+				Packer.toBlob(articleDocx({ article: currentArticleParagraphsWithTranslation, includeTranslation })).then((blob) => {
+					if (window.saveAs) {
+						window.saveAs(blob, `${fileName}.docx`);
+					} else {
+						saveAs(blob, `${fileName}.docx`);
+					}
+				});
+			})
+		);
+		createToast({ type: 'info', content: 'Downloading DOCX...', toastId: 'downloadDOCX', options: { autoClose: 500, closeButton: false } });
 	};
 
-	let debouncedDownloadDocx = debounce(downloadDocx, 800, { leading: true, trailing: false });
+	let debouncedDownloadDocx = debounce(downloadDocx, 500, { leading: true, trailing: false });
 
 	/* Copy to Clipboard */
 	let copyToClipboard = () => {
@@ -171,10 +178,10 @@ export var Preview = () => {
 		// https://stackoverflow.com/questions/39501289/in-reactjs-how-to-copy-text-to-clipboard
 		navigator.clipboard.writeText(clipboardText);
 
-		createToast({ type: 'info', content: 'Copied to Clipboard', toastId: 'copyToClipboard', options: { autoClose: 800, closeButton: false } });
+		createToast({ type: 'info', content: 'Copied to Clipboard', toastId: 'copyToClipboard', options: { autoClose: 500, closeButton: false } });
 	};
 
-	let debouncedCopyToClipboard = debounce(copyToClipboard, 800, { leading: true, trailing: false });
+	let debouncedCopyToClipboard = debounce(copyToClipboard, 500, { leading: true, trailing: false });
 
 	/* Hotkeys */
 	useKeys({ keyBinding: 'mod+i', callback: handleTranslation });
