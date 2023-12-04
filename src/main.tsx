@@ -58,9 +58,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  *
  * ## features
  *
- * hotkey map
  * full hotkey support
- * sometimes export options seems not working: may need to offload to worker
+ * hotkey map
  *
  * ## bugs
  *
