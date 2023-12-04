@@ -39,11 +39,7 @@ export var Config = () => {
 	});
 
 	let onSubmit: SubmitHandler<APIKey> = (data) => {
-		// if (data.key === import.meta.env.VITE_OPENAI_API_KEY_ALIAS) {
-		// 	setKey(import.meta.env.VITE_OPENAI_API_KEY);
-		// } else {
 		setKey(data.key);
-		// }
 	};
 
 	// create form error toast
@@ -126,7 +122,9 @@ export var Config = () => {
 					type='button'
 					onClick={() => {
 						navigate(-1);
-						dispatch(toggleAPIKeyInEdit());
+						if (APIKeyInEdit) {
+							dispatch(toggleAPIKeyInEdit());
+						}
 					}}
 				>
 					Cancel

@@ -60,12 +60,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  *
  * hotkey map
  * https://dev.to/kolot/building-hotkeys-in-react-apps-2p5d
+ * sometimes export options seems not working: may need to offload to worker
  *
  * ## bugs
- *
- * a config page bug
- * preview bug: translation failure, then close and reopen preview -> translate
- * sometimes export options seems not working: may need to offload to worker
  *
  * ## test
  * test
