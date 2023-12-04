@@ -8,3 +8,4 @@ export * from './performArticleSearch';
 export * from './buildAxiosResponse';
 export * from './useKeys';
 export * from './generateHotkeyTooltip';
+export * from './workerInstance';

@@ -59,7 +59,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  * ## features
  *
  * hotkey map
- * https://dev.to/kolot/building-hotkeys-in-react-apps-2p5d
+ * full hotkey support
  * sometimes export options seems not working: may need to offload to worker
  *
  * ## bugs
