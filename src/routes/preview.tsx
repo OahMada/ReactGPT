@@ -136,7 +136,7 @@ export var Preview = () => {
 					height: doc.internal.pageSize.getHeight(),
 				}).then((canvas) => {
 					let img = canvas.toDataURL('image/png');
-					doc.addImage(img, 'PNG', 70, 10, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight());
+					doc.addImage(img, 'PNG', 30, 10, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight());
 					doc.save(`${fileName}.pdf`);
 				});
 			})
