@@ -100,9 +100,9 @@ export var Preview = () => {
 	let articleWrapperRef = useRef(null);
 
 	/* Image Generation */
-	let downloadImg = () => {
+	let downloadImg = async () => {
 		// a bug from the library: Error inlining remote css file DOMException: Failed to read the 'cssRules' property from 'CSSStyleSheet': Cannot access rules
-		workerInstance.exportFile(
+		await workerInstance.exportFile(
 			proxy(() => {
 				toBlob(articleWrapperRef.current!, { backgroundColor: 'white' }).then(function (blob) {
 					let b = blob as Blob;
@@ -120,9 +120,9 @@ export var Preview = () => {
 	let debouncedDownloadImg = debounce(downloadImg, 500, { leading: true, trailing: false });
 
 	/* PDF Generation */
-	let downloadPDF = () => {
+	let downloadPDF = async () => {
 		// https://dev.to/jringeisen/using-jspdf-html2canvas-and-vue-to-generate-pdfs-1f8l
-		workerInstance.exportFile(
+		await workerInstance.exportFile(
 			proxy(() => {
 				let doc = new jsPDF({
 					orientation: 'p',
@@ -147,8 +147,8 @@ export var Preview = () => {
 	let debouncedDownloadPDF = debounce(downloadPDF, 500, { leading: true, trailing: false });
 
 	/* DOCX Generation */
-	let downloadDocx = () => {
-		workerInstance.exportFile(
+	let downloadDocx = async () => {
+		await workerInstance.exportFile(
 			proxy(() => {
 				Packer.toBlob(articleDocx({ article: currentArticleParagraphsWithTranslation, includeTranslation })).then((blob) => {
 					if (window.saveAs) {

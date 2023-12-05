@@ -1,3 +1,3 @@
 /// <reference lib="webworker" />
 
-export const exportFile = (func: () => void) => func();
+export var exportFile = (func: () => void) => func();
