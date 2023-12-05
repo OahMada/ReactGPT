@@ -8,11 +8,13 @@ This app helps you compose English essays better by leveraging the OpenAI API.
 
 Main functionality:
 
-- Find available grammar fixes in the article.
-- Search for articles.
-- Pin articles.
-- Preview the result and export it as a PDF, DOCX, or PNG file.
-- Configure the OpenAI API key.
+- Find and apply available grammar fixes in the article
+- Undo any adjustments made to the article
+- Translate the article
+- Search for articles
+- Pin/Bookmark articles
+- Preview the result and export it as a PDF, DOCX, or PNG file
+- Configure the OpenAI API key
 
 Main libraries used:
 
