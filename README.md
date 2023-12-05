@@ -1,27 +1,29 @@
-# vite-template-redux
+## Live Demo
 
-Uses [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/), and [React Testing Library](https://github.com/testing-library/react-testing-library) to create a modern [React](https://react.dev/) app compatible with [Create React App](https://create-react-app.dev/)
+https://gilded-bonbon-74b9b9.netlify.app/
 
-```sh
-npx degit reduxjs/redux-templates/packages/vite-template-redux my-app
-```
+## Main Feature
 
-## Goals
+This app helps you compose English essays better by leveraging the OpenAI API.
 
-- Easy migration from Create React App or Vite
-- As beginner friendly as Create React App
-- Optimized performance compared to Create React App
-- Customizable without ejecting
+Main functionality:
 
-## Scripts
+- Find available grammar fixes in the article.
+- Search for articles.
+- Pin articles.
+- Preview the result and export it as a PDF, DOCX, or PNG file.
+- Configure the OpenAI API key.
 
-- `dev`/`start` - start dev server and open browser
-- `build` - build for production
-- `preview` - locally preview production build
-- `test` - launch test runner
+Main libraries used:
+
+- Redux Toolkit for local state management
+- Tanstack Query for API queries
+- React Router for client-side routing
+- React Hook Form
+- React Hotkeys Hook for hotkey navigation
+- etc.
 
 ## Inspiration
 
-- [Create React App](https://github.com/facebook/create-react-app/tree/main/packages/cra-template)
 - [Vite](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react)
 - [Vitest](https://github.com/vitest-dev/vitest/tree/main/examples/react-testing-lib)
