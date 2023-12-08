@@ -15,11 +15,13 @@ import {
 	pinArticle,
 	removeArticleFromDeletionQueue,
 } from '../features/articleSlice';
-import { performFuseSearch, useKeys, generateHotkeyToolTipContent } from '../utils';
+import { performFuseSearch, useKeys, hotkeyMap } from '../utils';
 
 interface SearchForm {
 	search: string;
 }
+
+var { articlePage: articlePageHotkeys } = hotkeyMap;
 
 export var SharedLayout = () => {
 	dayjs.locale('zh-cn');
@@ -122,15 +124,16 @@ export var SharedLayout = () => {
 
 	// hotkey for entering new article page
 	useKeys({
-		keyBinding: 'mod+a',
+		keyBinding: articlePageHotkeys.createNewArticle.hotkey,
 		callback: () => {
 			navigate('/');
 		},
+		enabled: !/preview$/.test(location.pathname),
 	});
 
 	// hotkey for entering config page
 	useKeys({
-		keyBinding: 'mod+f',
+		keyBinding: articlePageHotkeys.enterConfig.hotkey,
 		callback: () => {
 			navigate('/config');
 		},
@@ -141,7 +144,7 @@ export var SharedLayout = () => {
 
 	// hotkey for focusing search field
 	useKeys({
-		keyBinding: 'mod+k',
+		keyBinding: articlePageHotkeys.enableSearch.hotkey,
 		callback: () => {
 			searchInputRef.current!.focus();
 		},
@@ -150,7 +153,7 @@ export var SharedLayout = () => {
 	return (
 		<>
 			<div>
-				<button onClick={() => navigate('/config')} data-tooltip-id='hotkey' data-tooltip-content={generateHotkeyToolTipContent('f')}>
+				<button onClick={() => navigate('/config')} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.enterConfig.label}>
 					CONFIG
 				</button>
 				<form role='search' onSubmit={handleSubmit(onSubmit)}>
@@ -161,13 +164,13 @@ export var SharedLayout = () => {
 						ref={searchInputRef}
 						{...rest}
 						data-tooltip-id='hotkey'
-						data-tooltip-content={generateHotkeyToolTipContent('k')}
+						data-tooltip-content={articlePageHotkeys.enableSearch.label}
 					/>
 				</form>
 			</div>
 			<nav>
 				<ul>
-					<NavLink to='/' data-tooltip-id='hotkey' data-tooltip-content={generateHotkeyToolTipContent('a')}>
+					<NavLink to='/' data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.createNewArticle.label}>
 						New Article
 					</NavLink>
 					{articles.map((article) => {

@@ -7,11 +7,13 @@ import { useQuery } from '@tanstack/react-query';
 import { testQuery, testQueryKeys } from '../query/testQuery';
 import { selectConfig, toggleAPIKeyInEdit } from '../features/configSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { createToast } from '../utils';
+import { createToast, useKeys, hotkeyMap } from '../utils';
 
 interface APIKey {
 	key: string;
 }
+
+var { configPage: configPageHotkeys } = hotkeyMap;
 
 export var Config = () => {
 	let navigate = useNavigate();
@@ -47,6 +49,26 @@ export var Config = () => {
 		createToast({ type: 'error', content: errors.key.message, toastId: errors.key.message });
 		reset(); // reset form state
 	}
+
+	let clickEditButton = () => {
+		dispatch(toggleAPIKeyInEdit());
+	};
+
+	let clickCancelButton = () => {
+		navigate(-1);
+		if (APIKeyInEdit) {
+			dispatch(toggleAPIKeyInEdit());
+		}
+	};
+
+	useKeys({ keyBinding: configPageHotkeys.edit.hotkey, callback: clickEditButton });
+	useKeys({ keyBinding: configPageHotkeys.cancel.hotkey, callback: clickCancelButton });
+	useKeys({
+		keyBinding: configPageHotkeys.done.hotkey,
+		callback: () => {
+			handleSubmit(onSubmit)();
+		},
+	});
 
 	let secureLocalStorageAPIKey = secureLocalStorage.getItem('string') as string | null;
 
@@ -103,30 +125,23 @@ export var Config = () => {
 								},
 							})}
 						/>
-						<button type='submit' disabled={errors?.key?.message ? true : false || isFetching}>
+						<button
+							type='submit'
+							disabled={errors?.key?.message ? true : false || isFetching}
+							data-tooltip-id='hotkey'
+							data-tooltip-content={configPageHotkeys.done.label}
+						>
 							Done
 						</button>
 					</form>
 				</>
 			) : (
-				<button
-					onClick={() => {
-						dispatch(toggleAPIKeyInEdit());
-					}}
-				>
+				<button onClick={clickEditButton} data-tooltip-id='hotkey' data-tooltip-content={configPageHotkeys.edit.label}>
 					Edit
 				</button>
 			)}
 			{secureLocalStorageAPIKey && (
-				<button
-					type='button'
-					onClick={() => {
-						navigate(-1);
-						if (APIKeyInEdit) {
-							dispatch(toggleAPIKeyInEdit());
-						}
-					}}
-				>
+				<button type='button' onClick={clickCancelButton} data-tooltip-id='hotkey' data-tooltip-content={configPageHotkeys.cancel.label}>
 					Cancel
 				</button>
 			)}

@@ -16,13 +16,17 @@ import { selectArticle, handleParagraphOrderChange, updateUserInput, toggleTrans
 import { StyledParagraph, ParagraphInput, Paragraph, ParagraphControlBtns, EmptyParagraphList, ArticleControlBtns } from '../components';
 
 // utils
-import { createToast, throwIfUndefined, generateHotkeyToolTipContent, useKeys } from '../utils';
+import { createToast, throwIfUndefined, useKeys, hotkeyMap } from '../utils';
 
 // types
 import { Paragraph as ParagraphType } from '../types';
 
 import { grammarQueryKeys } from '../query/grammarQuery';
 import { translationQueryKeys } from '../query/translationQuery';
+
+var {
+	articlePage: { retryAllErred },
+} = hotkeyMap;
 
 // Credits to https://github.com/GiovanniACamacho and https://github.com/Meligy for the TypeScript version
 // Original post: https://github.com/atlassian/react-beautiful-dnd/issues/2399#issuecomment-1175638194
@@ -81,7 +85,7 @@ export var Article = () => {
 	let grammarFixFetchingCount = useIsFetching({ queryKey: ['grammar'] });
 	let handleRetryAll = () => resetErrorBoundariesRef.current.forEach((resetter) => resetter());
 
-	useKeys({ keyBinding: 'mod+y', callback: handleRetryAll, enabled: !/preview$/.test(location.pathname) }); // enabled only when on the article page
+	useKeys({ keyBinding: retryAllErred.hotkey, callback: handleRetryAll, enabled: !/preview$/.test(location.pathname) }); // enabled only when on the article page
 
 	// traverse downwards through the paragraph list
 	useKeys({
@@ -173,12 +177,7 @@ export var Article = () => {
 			{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
 			{showRetryAllButton && (
 				<div>
-					<button
-						onClick={handleRetryAll}
-						disabled={grammarFixFetchingCount > 0}
-						data-tooltip-id='hotkey'
-						data-tooltip-content={generateHotkeyToolTipContent('y')}
-					>
+					<button onClick={handleRetryAll} disabled={grammarFixFetchingCount > 0} data-tooltip-id='hotkey' data-tooltip-content={retryAllErred.label}>
 						Retry All
 					</button>
 				</div>

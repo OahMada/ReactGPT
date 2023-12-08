@@ -16,9 +16,10 @@ import { proxy } from 'comlink';
 import { PreviewContent, articleDocx } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
 import { translationQueryKeys } from '../query/translationQuery';
-import { createToast, useKeys, generateHotkeyToolTipContent } from '../utils';
-
+import { createToast, useKeys, hotkeyMap } from '../utils';
 import { workerInstance } from '../utils/workerInstance';
+
+var { previewPage: previewPageHotkeys } = hotkeyMap;
 
 export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);
@@ -186,19 +187,19 @@ export var Preview = () => {
 	let debouncedCopyToClipboard = debounce(copyToClipboard, 500, { leading: true, trailing: false });
 
 	/* Hotkeys */
-	useKeys({ keyBinding: 'mod+i', callback: handleTranslation });
-	useKeys({ keyBinding: 'mod+x', callback: handleClosePreview });
-	useKeys({ keyBinding: 'c', callback: debouncedCopyToClipboard });
+	useKeys({ keyBinding: previewPageHotkeys.includeTranslation.hotkey, callback: handleTranslation });
+	useKeys({ keyBinding: previewPageHotkeys.exitPreview.hotkey, callback: handleClosePreview });
+	useKeys({ keyBinding: previewPageHotkeys.copyToClipboard.hotkey, callback: debouncedCopyToClipboard });
 	useKeys({
-		keyBinding: 'mod+e',
+		keyBinding: previewPageHotkeys.showExportOptions.hotkey,
 		callback: () => {
 			setShowExportOptions(true);
 		},
 	});
-	useKeys({ keyBinding: 'p', callback: debouncedDownloadPDF });
-	useKeys({ keyBinding: 'd', callback: debouncedDownloadDocx });
-	useKeys({ keyBinding: 'i', callback: debouncedDownloadImg });
-	useKeys({ keyBinding: 'mod+y', callback: handleRetryAll });
+	useKeys({ keyBinding: previewPageHotkeys.downloadPDF.hotkey, callback: debouncedDownloadPDF });
+	useKeys({ keyBinding: previewPageHotkeys.downloadDocx.hotkey, callback: debouncedDownloadDocx });
+	useKeys({ keyBinding: previewPageHotkeys.downloadImg.hotkey, callback: debouncedDownloadImg });
+	useKeys({ keyBinding: previewPageHotkeys.retryAllErred.hotkey, callback: handleRetryAll });
 
 	return (
 		<ModalWrapper
@@ -209,7 +210,7 @@ export var Preview = () => {
 		>
 			<div onClick={(e) => e.stopPropagation()} className='paragraphs'>
 				<div className='btn-container'>
-					<button onClick={handleTranslation} data-tooltip-id='hotkey' data-tooltip-content={generateHotkeyToolTipContent('i')}>
+					<button onClick={handleTranslation} data-tooltip-id='hotkey' data-tooltip-content={previewPageHotkeys.includeTranslation.label}>
 						{!includeTranslation ? 'Include Translation' : 'Remove Translation'}
 					</button>
 					{showRetryAllButton && (
@@ -217,12 +218,12 @@ export var Preview = () => {
 							onClick={handleRetryAll}
 							disabled={translationFetchingCount > 0}
 							data-tooltip-id='hotkey'
-							data-tooltip-content={generateHotkeyToolTipContent('y')}
+							data-tooltip-content={previewPageHotkeys.retryAllErred.label}
 						>
 							Retry All
 						</button>
 					)}
-					<button onClick={handleClosePreview} data-tooltip-id='hotkey' data-tooltip-content={generateHotkeyToolTipContent('x')}>
+					<button onClick={handleClosePreview} data-tooltip-id='hotkey' data-tooltip-content={previewPageHotkeys.exitPreview.label}>
 						Close
 					</button>
 				</div>
@@ -231,7 +232,7 @@ export var Preview = () => {
 						disabled={translationFetchingCount !== 0}
 						onClick={debouncedCopyToClipboard}
 						data-tooltip-id='hotkey'
-						data-tooltip-content={generateHotkeyToolTipContent('c', false)}
+						data-tooltip-content={previewPageHotkeys.copyToClipboard.label}
 					>
 						Copy To Clipboard
 					</button>
@@ -241,7 +242,7 @@ export var Preview = () => {
 								disabled={translationFetchingCount !== 0}
 								onClick={debouncedDownloadPDF}
 								data-tooltip-id='hotkey'
-								data-tooltip-content={generateHotkeyToolTipContent('p', false)}
+								data-tooltip-content={previewPageHotkeys.downloadPDF.label}
 							>
 								Download PDF
 							</button>
@@ -249,7 +250,7 @@ export var Preview = () => {
 								disabled={translationFetchingCount !== 0}
 								onClick={debouncedDownloadDocx}
 								data-tooltip-id='hotkey'
-								data-tooltip-content={generateHotkeyToolTipContent('d', false)}
+								data-tooltip-content={previewPageHotkeys.downloadDocx.label}
 							>
 								Download Docx
 							</button>
@@ -257,13 +258,17 @@ export var Preview = () => {
 								disabled={translationFetchingCount !== 0}
 								onClick={debouncedDownloadImg}
 								data-tooltip-id='hotkey'
-								data-tooltip-content={generateHotkeyToolTipContent('i', false)}
+								data-tooltip-content={previewPageHotkeys.downloadImg.label}
 							>
 								Download Image
 							</button>
 						</>
 					) : (
-						<button onClick={() => setShowExportOptions(true)} data-tooltip-id='hotkey' data-tooltip-content={generateHotkeyToolTipContent('e')}>
+						<button
+							onClick={() => setShowExportOptions(true)}
+							data-tooltip-id='hotkey'
+							data-tooltip-content={previewPageHotkeys.showExportOptions.label}
+						>
 							Export As File
 						</button>
 					)}

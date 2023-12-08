@@ -5,6 +5,6 @@ export * from './defaultArticleInput';
 export * from './createToast';
 export * from './throwIfUndefined';
 export * from './performArticleSearch';
-export * from './buildAxiosResponse';
 export * from './useKeys';
-export * from './generateHotkeyTooltip';
+export * from './generateHotkeyLabel';
+export * from './hotkeyMap';

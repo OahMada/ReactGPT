@@ -8,11 +8,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { useAppDispatch } from '../redux/hooks';
 import { saveArticleInput } from '../features/articleSlice';
-import { createToast, defaultArticleInput, useKeys, generateHotkeyToolTipContent } from '../utils';
+import { createToast, defaultArticleInput, useKeys, hotkeyMap } from '../utils';
 
 interface ArticleInputType {
 	article: string;
 }
+
+var { articleInputPage: articleInputPageHotkeys } = hotkeyMap;
 
 // log the last character inputted from previous render
 export var ArticleInput = () => {
@@ -49,8 +51,12 @@ export var ArticleInput = () => {
 		navigate(`article/${articleId}`);
 	};
 
+	let fillInText = () => {
+		setValue('article', defaultArticleInput);
+	};
+
 	useKeys({
-		keyBinding: 'mod+d',
+		keyBinding: articleInputPageHotkeys.done.hotkey,
 		callback: () => {
 			handleSubmit(onsubmit)();
 		},
@@ -61,12 +67,7 @@ export var ArticleInput = () => {
 			{/* {
 				errors.article && <p>{errors.article.message}</p> // replace with toast
 			} */}
-			<button
-				type='button'
-				onClick={() => {
-					setValue('article', defaultArticleInput);
-				}}
-			>
+			<button type='button' onClick={fillInText}>
 				Fill in Demonstration Text
 			</button>
 
@@ -84,7 +85,7 @@ export var ArticleInput = () => {
 				})}
 				spellCheck='true'
 			/>
-			<button type='submit' data-tooltip-id='hotkey' data-tooltip-content={generateHotkeyToolTipContent('d')}>
+			<button type='submit' data-tooltip-id='hotkey' data-tooltip-content={articleInputPageHotkeys.done.label}>
 				Done
 			</button>
 		</StyledForm>
