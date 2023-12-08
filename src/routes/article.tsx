@@ -6,6 +6,7 @@ import { QueryErrorResetBoundary, useIsFetching, useQueryClient } from '@tanstac
 import { Navigate, useParams, Outlet, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
+import { mergeRefs } from 'react-merge-refs';
 
 // redux
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
@@ -48,6 +49,9 @@ export var Article = () => {
 	const { articleId } = useParams();
 	throwIfUndefined(articleId);
 	let location = useLocation();
+	let articleElementsRef = useRef(new Map());
+	let focusedParagraphIndexRef = useRef(-1);
+	let traverseParagraphHotkeyClicked = useRef(false);
 
 	// redux
 	let dispatch = useAppDispatch();
@@ -78,6 +82,46 @@ export var Article = () => {
 	let handleRetryAll = () => resetErrorBoundariesRef.current.forEach((resetter) => resetter());
 
 	useKeys({ keyBinding: 'mod+y', callback: handleRetryAll, enabled: !/preview$/.test(location.pathname) }); // enabled only when on the article page
+
+	// traverse downwards through the paragraph list
+	useKeys({
+		keyBinding: 'down',
+		callback: () => {
+			let articleElements = Array.from(articleElementsRef.current, (item) => item[1]);
+			if (!traverseParagraphHotkeyClicked.current) {
+				traverseParagraphHotkeyClicked.current = true;
+			}
+			if (traverseParagraphHotkeyClicked.current) {
+				focusedParagraphIndexRef.current += 1;
+				if (focusedParagraphIndexRef.current > articleElements.length - 1) {
+					focusedParagraphIndexRef.current = 0;
+				}
+				articleElements[focusedParagraphIndexRef.current].focus();
+			} else {
+				articleElements[0].focus();
+			}
+		},
+	});
+
+	// traverse upwards through the paragraph list
+	useKeys({
+		keyBinding: 'up',
+		callback: () => {
+			let articleElements = Array.from(articleElementsRef.current, (item) => item[1]);
+			if (!traverseParagraphHotkeyClicked.current) {
+				traverseParagraphHotkeyClicked.current = true;
+			}
+			if (traverseParagraphHotkeyClicked.current) {
+				focusedParagraphIndexRef.current -= 1;
+				if (focusedParagraphIndexRef.current < 0) {
+					focusedParagraphIndexRef.current = articleElements.length - 1;
+				}
+				articleElements[focusedParagraphIndexRef.current].focus();
+			} else {
+				articleElements[-1].focus();
+			}
+		},
+	});
 
 	useEffect(() => {
 		if (grammarFixFetchingCount === 0) {
@@ -148,7 +192,28 @@ export var Article = () => {
 								return (
 									<Draggable key={paragraph.id} draggableId={paragraph.id} index={index}>
 										{(provided) => (
-											<Wrapper ref={provided.innerRef} {...provided.draggableProps}>
+											<Wrapper
+												// ref={provided.innerRef}
+												ref={mergeRefs([
+													provided.innerRef,
+													(node) => {
+														if (node) {
+															articleElementsRef.current.set(paragraph.id, node);
+														}
+													},
+												])}
+												{...provided.draggableProps}
+												tabIndex={-1}
+												onFocus={() => {
+													if (!traverseParagraphHotkeyClicked.current) {
+														traverseParagraphHotkeyClicked.current = true;
+													}
+													if (focusedParagraphIndexRef.current !== index) {
+														focusedParagraphIndexRef.current = index;
+													}
+													// enable hotkeys
+												}}
+											>
 												<div className='grabber' {...provided.dragHandleProps}></div>
 												<QueryErrorResetBoundary>
 													{({ reset }) => (
