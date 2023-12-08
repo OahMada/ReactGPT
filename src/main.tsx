@@ -58,7 +58,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  *
  * ## features
  *
- * full hotkey support
  * hotkey map
  *
  * ## bugs
@@ -66,7 +65,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  * ## test
  * test
  *
- * ## outlook and other
+ * ## outlook and others
  * update user flow
  *
  * rethought html layout and css

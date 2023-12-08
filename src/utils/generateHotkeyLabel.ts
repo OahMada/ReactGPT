@@ -22,6 +22,6 @@ export var generateHotkeyLabel = (hotkeyCharacter: string, modifyKey: string | f
 		return hotkeyCharacter.toUpperCase();
 	}
 	return navigator.userAgentData?.platform === 'Windows'
-		? `${winKeyName} + ${hotkeyCharacter.toUpperCase()}`
-		: `${macKeyName} + ${hotkeyCharacter.toUpperCase()}`;
+		? `${winKeyName} + ${hotkeyCharacter.charAt(0).toUpperCase() + hotkeyCharacter.slice(1)}`
+		: `${macKeyName} + ${hotkeyCharacter.charAt(0).toUpperCase() + hotkeyCharacter.slice(1)}`;
 };

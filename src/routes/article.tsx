@@ -55,7 +55,7 @@ export var Article = () => {
 	let location = useLocation();
 	let articleElementsRef = useRef(new Map());
 	let focusedParagraphIndexRef = useRef(-1);
-	let traverseParagraphHotkeyClicked = useRef(false);
+	// let traverseParagraphHotkeyClicked = useRef(false);
 
 	// redux
 	let dispatch = useAppDispatch();
@@ -92,17 +92,15 @@ export var Article = () => {
 		keyBinding: 'down',
 		callback: () => {
 			let articleElements = Array.from(articleElementsRef.current, (item) => item[1]);
-			if (!traverseParagraphHotkeyClicked.current) {
-				traverseParagraphHotkeyClicked.current = true;
-			}
-			if (traverseParagraphHotkeyClicked.current) {
+			if (focusedParagraphIndexRef.current === -1) {
+				articleElements[0].focus();
+				focusedParagraphIndexRef.current = 0;
+			} else {
 				focusedParagraphIndexRef.current += 1;
 				if (focusedParagraphIndexRef.current > articleElements.length - 1) {
 					focusedParagraphIndexRef.current = 0;
 				}
 				articleElements[focusedParagraphIndexRef.current].focus();
-			} else {
-				articleElements[0].focus();
 			}
 		},
 	});
@@ -112,17 +110,15 @@ export var Article = () => {
 		keyBinding: 'up',
 		callback: () => {
 			let articleElements = Array.from(articleElementsRef.current, (item) => item[1]);
-			if (!traverseParagraphHotkeyClicked.current) {
-				traverseParagraphHotkeyClicked.current = true;
-			}
-			if (traverseParagraphHotkeyClicked.current) {
+			if (focusedParagraphIndexRef.current === -1) {
+				articleElements[articleElements.length - 1].focus();
+				focusedParagraphIndexRef.current = articleElements.length - 1;
+			} else {
 				focusedParagraphIndexRef.current -= 1;
 				if (focusedParagraphIndexRef.current < 0) {
 					focusedParagraphIndexRef.current = articleElements.length - 1;
 				}
 				articleElements[focusedParagraphIndexRef.current].focus();
-			} else {
-				articleElements[-1].focus();
 			}
 		},
 	});
@@ -204,9 +200,6 @@ export var Article = () => {
 												{...provided.draggableProps}
 												tabIndex={-1}
 												onFocus={() => {
-													if (!traverseParagraphHotkeyClicked.current) {
-														traverseParagraphHotkeyClicked.current = true;
-													}
 													if (focusedParagraphIndexRef.current !== index) {
 														focusedParagraphIndexRef.current = index;
 													}
