@@ -67,7 +67,7 @@ export var ParagraphInput = ({
 	let onsubmit: SubmitHandler<ParagraphInputType> = (data) => {
 		if (data.paragraph === '') {
 			// empty paragraph get deleted right away
-			dispatch(deleteParagraphRightAway(paragraphId));
+			return dispatch(deleteParagraphRightAway(paragraphId));
 		}
 
 		// trailing whitespace or line feeds do not count

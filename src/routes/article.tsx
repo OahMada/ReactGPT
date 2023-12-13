@@ -7,7 +7,7 @@ import { Navigate, useParams, Outlet, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
 import { mergeRefs } from 'react-merge-refs';
-import { useHotkeysContext, HotkeysProvider } from 'react-hotkeys-hook';
+import { useHotkeysContext } from 'react-hotkeys-hook';
 
 // redux
 import { useAppSelector, useAppDispatch } from '../redux/hooks';

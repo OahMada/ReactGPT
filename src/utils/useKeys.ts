@@ -1,10 +1,8 @@
-import { useHotkeys, HotkeyCallback } from 'react-hotkeys-hook';
+import { useHotkeys, HotkeyCallback, Options } from 'react-hotkeys-hook';
 
-interface useKeysProps {
+interface useKeysProps extends Partial<Options> {
 	keyBinding: string;
 	callback: HotkeyCallback;
-	enabled?: boolean;
-	scopes?: string;
 }
 
 export var useKeys = ({ keyBinding, callback, enabled, scopes }: useKeysProps) => {

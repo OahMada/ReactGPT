@@ -34,7 +34,7 @@ export var hotkeyMap = {
 		traverseUpwardsParagraphList: { hotkey: 'up' },
 		deleteParagraph: { hotkey: 'd', label: generateHotkeyLabel('d', false) },
 		undoParagraphDeletion: { hotkey: 'u', label: generateHotkeyLabel('u', false) },
-		insertParagraphAbove: { hotkey: '+', label: generateHotkeyLabel('+', false) },
+		insertParagraphAbove: { hotkey: '=', label: generateHotkeyLabel('=', false) },
 		insertParagraphBelow: { hotkey: '-', label: generateHotkeyLabel('-', false) },
 	},
 	previewPage: {
