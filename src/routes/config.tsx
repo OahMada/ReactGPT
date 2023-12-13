@@ -1,7 +1,7 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import secureLocalStorage from 'react-secure-storage';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useImperativeHandle } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { testQuery, testQueryKeys } from '../query/testQuery';
@@ -34,6 +34,18 @@ export var Config = () => {
 		},
 	});
 
+	let { ref, ...rest } = register('key', {
+		required: 'Please enter your API key.',
+		pattern: {
+			value: new RegExp(`^sk-[a-zA-Z0-9]{32,}$|${import.meta.env.VITE_OPENAI_API_KEY_ALIAS}`),
+			message: 'Invalid API Key Format',
+		},
+		onChange: () => {
+			// clear errors after submitting https://stackoverflow.com/a/67659536/5800789 https://github.com/react-hook-form/react-hook-form/releases/tag/v7.16.0
+			clearErrors('key'); //It is needed when displaying the error message text, or the message would keep showing up.
+		},
+	});
+
 	let { isError, isFetched, isFetching, error } = useQuery({
 		queryKey: testQueryKeys(key),
 		queryFn: testQuery,
@@ -63,10 +75,13 @@ export var Config = () => {
 
 	useKeys({ keyBinding: configPageHotkeys.edit.hotkey, callback: clickEditButton });
 	useKeys({ keyBinding: configPageHotkeys.cancel.hotkey, callback: clickCancelButton });
+
+	let APIInput = useRef<HTMLInputElement>(null);
+	useImperativeHandle(ref, () => APIInput.current);
 	useKeys({
-		keyBinding: configPageHotkeys.done.hotkey,
+		keyBinding: configPageHotkeys.focusInput.hotkey,
 		callback: () => {
-			handleSubmit(onSubmit)();
+			APIInput.current!.focus();
 		},
 	});
 
@@ -113,24 +128,12 @@ export var Config = () => {
 						<input
 							type='password'
 							id='api-key'
-							{...register('key', {
-								required: 'Please enter your API key.',
-								pattern: {
-									value: new RegExp(`^sk-[a-zA-Z0-9]{32,}$|${import.meta.env.VITE_OPENAI_API_KEY_ALIAS}`),
-									message: 'Invalid API Key Format',
-								},
-								onChange: () => {
-									// clear errors after submitting https://stackoverflow.com/a/67659536/5800789 https://github.com/react-hook-form/react-hook-form/releases/tag/v7.16.0
-									clearErrors('key'); //It is needed when displaying the error message text, or the message would keep showing up.
-								},
-							})}
-						/>
-						<button
-							type='submit'
-							disabled={errors?.key?.message ? true : false || isFetching}
+							{...rest}
+							ref={APIInput}
 							data-tooltip-id='hotkey'
-							data-tooltip-content={configPageHotkeys.done.label}
-						>
+							data-tooltip-content={configPageHotkeys.focusInput.label}
+						/>
+						<button type='submit' disabled={errors?.key?.message ? true : false || isFetching}>
 							Done
 						</button>
 					</form>

@@ -10,9 +10,9 @@ export var hotkeyMap = {
 			hotkey: 'mod+x',
 			label: generateHotkeyLabel('x'),
 		},
-		done: {
-			hotkey: 'mod+enter',
-			label: generateHotkeyLabel('enter'),
+		focusInput: {
+			hotkey: 'mod+i',
+			label: generateHotkeyLabel('i'),
 		},
 	},
 	articleInputPage: {
