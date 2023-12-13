@@ -12,7 +12,7 @@ import {
 	updateArticleFirstParagraphEditDate,
 } from '../features/articleSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { createToast, throwIfUndefined } from '../utils';
+import { createToast, throwIfUndefined, useKeys, hotkeyMap } from '../utils';
 import { Paragraph } from '../types';
 
 // https://github.com/fkhadra/react-toastify/issues/568#issuecomment-779847274
@@ -20,13 +20,22 @@ interface UndoProps extends Partial<ToastContentProps> {
 	onUndo: () => void;
 	closeToast: () => void;
 	paragraph: string;
+	paragraphId: string;
 }
 
-var Undo = ({ closeToast, onUndo, paragraph }: UndoProps) => {
+var { articlePage: articlePageHotkeys } = hotkeyMap;
+
+var Undo = ({ closeToast, onUndo, paragraph, paragraphId }: UndoProps) => {
 	const handleClick = () => {
 		onUndo();
 		closeToast();
 	};
+
+	useKeys({
+		keyBinding: articlePageHotkeys.undoParagraphDeletion.hotkey,
+		callback: handleClick,
+		scopes: paragraphId,
+	});
 
 	return (
 		<div>
@@ -58,6 +67,7 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 						toast.dismiss(toastId.current);
 					}}
 					paragraph={currentParagraph.paragraphAfterGrammarFix}
+					paragraphId={paragraphId}
 				/>
 			),
 			containerId: 'articleDeletion',
@@ -73,13 +83,38 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 		});
 	};
 
+	let handleInsertParagraphAbove = () => dispatch(insertAboveParagraph({ paragraphId, articleId }));
+	let handleInsertParagraphBelow = () => dispatch(insertBelowParagraph({ paragraphId, articleId }));
+
+	useKeys({
+		keyBinding: articlePageHotkeys.deleteParagraph.hotkey,
+		callback: handleParagraphDeletion,
+		scopes: paragraphId,
+	});
+	useKeys({
+		keyBinding: articlePageHotkeys.insertParagraphAbove.hotkey,
+		callback: handleInsertParagraphAbove,
+		scopes: paragraphId,
+	});
+	useKeys({
+		keyBinding: articlePageHotkeys.insertParagraphBelow.hotkey,
+		callback: handleInsertParagraphBelow,
+		scopes: paragraphId,
+	});
+
 	return (
 		<div>
-			<button onClick={handleParagraphDeletion}>Delete Paragraph</button>
+			<button onClick={handleParagraphDeletion} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.deleteParagraph.label}>
+				Delete Paragraph
+			</button>
 			<div>
 				<button>Insert New Paragraph</button>
-				<button onClick={() => dispatch(insertAboveParagraph({ paragraphId, articleId }))}>Insert Above</button>
-				<button onClick={() => dispatch(insertBelowParagraph({ paragraphId, articleId }))}>Insert Bellow</button>
+				<button onClick={handleInsertParagraphAbove} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.insertParagraphAbove.label}>
+					Insert Above
+				</button>
+				<button onClick={handleInsertParagraphBelow} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.insertParagraphBelow.label}>
+					Insert Bellow
+				</button>
 			</div>
 		</div>
 	);

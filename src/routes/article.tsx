@@ -7,6 +7,7 @@ import { Navigate, useParams, Outlet, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
 import { mergeRefs } from 'react-merge-refs';
+import { useHotkeysContext, HotkeysProvider } from 'react-hotkeys-hook';
 
 // redux
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
@@ -25,7 +26,7 @@ import { grammarQueryKeys } from '../query/grammarQuery';
 import { translationQueryKeys } from '../query/translationQuery';
 
 var {
-	articlePage: { retryAllErred },
+	articlePage: { retryAllErred, traverseDownwardsParagraphList, traverseUpwardsParagraphList },
 } = hotkeyMap;
 
 // Credits to https://github.com/GiovanniACamacho and https://github.com/Meligy for the TypeScript version
@@ -87,9 +88,11 @@ export var Article = () => {
 
 	useKeys({ keyBinding: retryAllErred.hotkey, callback: handleRetryAll, enabled: !/preview$/.test(location.pathname) }); // enabled only when on the article page
 
+	let { enableScope, disableScope, enabledScopes } = useHotkeysContext();
+
 	// traverse downwards through the paragraph list
 	useKeys({
-		keyBinding: 'down',
+		keyBinding: traverseDownwardsParagraphList.hotkey,
 		callback: () => {
 			let articleElements = Array.from(articleElementsRef.current, (item) => item[1]);
 			if (focusedParagraphIndexRef.current === -1) {
@@ -107,7 +110,7 @@ export var Article = () => {
 
 	// traverse upwards through the paragraph list
 	useKeys({
-		keyBinding: 'up',
+		keyBinding: traverseUpwardsParagraphList.hotkey,
 		callback: () => {
 			let articleElements = Array.from(articleElementsRef.current, (item) => item[1]);
 			if (focusedParagraphIndexRef.current === -1) {
@@ -204,6 +207,11 @@ export var Article = () => {
 														focusedParagraphIndexRef.current = index;
 													}
 													// enable hotkeys
+													enabledScopes.forEach((scope) => {
+														disableScope(scope);
+													});
+													enableScope(paragraph.id);
+													console.log(enabledScopes);
 												}}
 											>
 												<div className='grabber' {...provided.dragHandleProps}></div>

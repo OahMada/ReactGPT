@@ -8,6 +8,8 @@ import 'react-toastify/dist/ReactToastify.min.css';
 // tooltip
 import { Tooltip } from 'react-tooltip';
 
+import { HotkeysProvider } from 'react-hotkeys-hook';
+
 // components
 import { Root, Article, ArticleInput, Config, ErrorPage, Preview } from './routes';
 
@@ -47,11 +49,11 @@ var router = createBrowserRouter([
 
 export var App = () => {
 	return (
-		<>
+		<HotkeysProvider>
 			<RouterProvider router={router} />
 			<ToastContainer enableMultiContainer containerId={'articleDeletion'} closeOnClick={false} closeButton={false} />
 			<ToastContainer limit={3} enableMultiContainer />
 			<Tooltip id='hotkey' delayShow={1000} delayHide={150} role='tooltip' style={{ zIndex: 999 }} />
-		</>
+		</HotkeysProvider>
 	);
 };
