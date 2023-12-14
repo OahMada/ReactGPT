@@ -54,9 +54,6 @@ export var Article = () => {
 	const { articleId } = useParams();
 	throwIfUndefined(articleId);
 	let location = useLocation();
-	let articleElementsRef = useRef(new Map());
-
-	let focusedParagraphIndexRef = useRef(-1);
 
 	// redux
 	let dispatch = useAppDispatch();
@@ -88,8 +85,9 @@ export var Article = () => {
 
 	useKeys({ keyBinding: retryAllErred.hotkey, callback: handleRetryAll, enabled: !/preview$/.test(location.pathname) }); // enabled only when on the article page
 
+	let articleElementsRef = useRef(new Map());
+	let focusedParagraphIndexRef = useRef(-1);
 	let { enableScope, disableScope, enabledScopes } = useHotkeysContext();
-	console.log(enabledScopes);
 
 	let performEnableScope = (scope: string) => {
 		enabledScopes.forEach((scope) => {
@@ -114,14 +112,14 @@ export var Article = () => {
 				focusedParagraphIndexRef.current = 0;
 				performEnableScope(articleElements[0].paragraphId);
 			} else {
-				// update focusedParagraphIndexRef to reflect the actual situation
+				// update focusedParagraphIndexRef to reflect the actual situation: new paragraphs get added
 				articleElements.forEach((item, index) => {
 					if (enabledScopes.includes(item.paragraphId)) {
 						focusedParagraphIndexRef.current = index;
 					}
 				});
 
-				// when the focused paragraph gets deleted
+				// when the focused paragraph gets deleted, this makes sure user still steps one paragraph forward
 				if (!articleElements.some((item) => enabledScopes.includes(item.paragraphId))) {
 					focusedParagraphIndexRef.current -= 1;
 				}
@@ -154,7 +152,7 @@ export var Article = () => {
 				focusedParagraphIndexRef.current = articleElements.length - 1;
 				performEnableScope(articleElements[articleElements.length - 1].paragraphId);
 			} else {
-				// update focusedParagraphIndexRef to reflect the actual situation
+				// update focusedParagraphIndexRef to reflect the actual situation: new paragraphs get added
 				articleElements.forEach((item, index) => {
 					if (enabledScopes.includes(item.paragraphId)) {
 						focusedParagraphIndexRef.current = index;
@@ -166,6 +164,8 @@ export var Article = () => {
 					focusedParagraphIndexRef.current = articleElements.length - 1;
 				}
 				articleElements[focusedParagraphIndexRef.current].element.focus();
+
+				// enable scope
 				performEnableScope(articleElements[focusedParagraphIndexRef.current].paragraphId);
 			}
 		},
