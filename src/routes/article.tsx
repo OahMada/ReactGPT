@@ -55,8 +55,10 @@ export var Article = () => {
 	throwIfUndefined(articleId);
 	let location = useLocation();
 	let articleElementsRef = useRef(new Map());
+	// To keep the ref reflects the current paragraph structure.
+	let articleElements = Array.from(articleElementsRef.current, (item) => ({ paragraphId: item[0], element: item[1] }));
+
 	let focusedParagraphIndexRef = useRef(-1);
-	// let traverseParagraphHotkeyClicked = useRef(false);
 
 	// redux
 	let dispatch = useAppDispatch();
@@ -90,20 +92,30 @@ export var Article = () => {
 
 	let { enableScope, disableScope, enabledScopes } = useHotkeysContext();
 
+	let performEnableScope = (scope: string) => {
+		enabledScopes.forEach((scope) => {
+			disableScope(scope);
+		});
+		enableScope(scope);
+	};
+
 	// traverse downwards through the paragraph list
 	useKeys({
 		keyBinding: traverseDownwardsParagraphList.hotkey,
 		callback: () => {
-			let articleElements = Array.from(articleElementsRef.current, (item) => item[1]);
 			if (focusedParagraphIndexRef.current === -1) {
-				articleElements[0].focus();
+				articleElements[0].element.focus();
 				focusedParagraphIndexRef.current = 0;
+				performEnableScope(articleElements[0].paragraphId);
 			} else {
 				focusedParagraphIndexRef.current += 1;
 				if (focusedParagraphIndexRef.current > articleElements.length - 1) {
 					focusedParagraphIndexRef.current = 0;
 				}
-				articleElements[focusedParagraphIndexRef.current].focus();
+				articleElements[focusedParagraphIndexRef.current].element.focus();
+
+				// enable scope
+				performEnableScope(articleElements[focusedParagraphIndexRef.current].paragraphId);
 			}
 		},
 	});
@@ -112,16 +124,17 @@ export var Article = () => {
 	useKeys({
 		keyBinding: traverseUpwardsParagraphList.hotkey,
 		callback: () => {
-			let articleElements = Array.from(articleElementsRef.current, (item) => item[1]);
 			if (focusedParagraphIndexRef.current === -1) {
-				articleElements[articleElements.length - 1].focus();
+				articleElements[articleElements.length - 1].element.focus();
 				focusedParagraphIndexRef.current = articleElements.length - 1;
+				performEnableScope(articleElements[articleElements.length - 1].paragraphId);
 			} else {
 				focusedParagraphIndexRef.current -= 1;
 				if (focusedParagraphIndexRef.current < 0) {
 					focusedParagraphIndexRef.current = articleElements.length - 1;
 				}
-				articleElements[focusedParagraphIndexRef.current].focus();
+				articleElements[focusedParagraphIndexRef.current].element.focus();
+				performEnableScope(articleElements[focusedParagraphIndexRef.current].paragraphId);
 			}
 		},
 	});
@@ -197,21 +210,19 @@ export var Article = () => {
 													(node) => {
 														if (node) {
 															articleElementsRef.current.set(paragraph.id, node);
+														} else {
+															// To keep the ref reflects the current paragraph structure.
+															articleElementsRef.current.delete(paragraph.id);
 														}
 													},
 												])}
 												{...provided.draggableProps}
 												tabIndex={-1}
 												onFocus={() => {
+													// For situations where a user manually clicks an element to gain focus
 													if (focusedParagraphIndexRef.current !== index) {
 														focusedParagraphIndexRef.current = index;
 													}
-													// enable hotkeys
-													enabledScopes.forEach((scope) => {
-														disableScope(scope);
-													});
-													enableScope(paragraph.id);
-													console.log(enabledScopes);
 												}}
 											>
 												<div className='grabber' {...provided.dragHandleProps}></div>

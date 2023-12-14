@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { toast, Id, ToastContentProps } from 'react-toastify';
 import { useParams } from 'react-router-dom';
+import { useHotkeysContext } from 'react-hotkeys-hook';
 
 import {
 	finishParagraphDeletion,
@@ -37,9 +38,20 @@ var Undo = ({ closeToast, onUndo, paragraph, paragraphId }: UndoProps) => {
 		scopes: paragraphId,
 	});
 
+	let { enabledScopes } = useHotkeysContext();
+	let toolTipHidden = !enabledScopes.includes(paragraphId);
+
 	return (
 		<div>
-			Paragraph {paragraph ? `"${paragraph.slice(0, 10)}..." ` : ''}Deleted <button onClick={handleClick}>UNDO</button>
+			Paragraph {paragraph ? `"${paragraph.slice(0, 10)}..." ` : ''}Deleted{' '}
+			<button
+				onClick={handleClick}
+				data-tooltip-id='hotkey'
+				data-tooltip-content={articlePageHotkeys.undoParagraphDeletion.label}
+				data-tooltip-hidden={toolTipHidden}
+			>
+				UNDO
+			</button>
 		</div>
 	);
 };
@@ -102,17 +114,35 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 		scopes: paragraphId,
 	});
 
+	let { enabledScopes } = useHotkeysContext();
+	let toolTipHidden = !enabledScopes.includes(paragraphId);
+
 	return (
 		<div>
-			<button onClick={handleParagraphDeletion} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.deleteParagraph.label}>
+			<button
+				onClick={handleParagraphDeletion}
+				data-tooltip-id='hotkey'
+				data-tooltip-content={articlePageHotkeys.deleteParagraph.label}
+				data-tooltip-hidden={toolTipHidden}
+			>
 				Delete Paragraph
 			</button>
 			<div>
 				<button>Insert New Paragraph</button>
-				<button onClick={handleInsertParagraphAbove} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.insertParagraphAbove.label}>
+				<button
+					onClick={handleInsertParagraphAbove}
+					data-tooltip-id='hotkey'
+					data-tooltip-content={articlePageHotkeys.insertParagraphAbove.label}
+					data-tooltip-hidden={toolTipHidden}
+				>
 					Insert Above
 				</button>
-				<button onClick={handleInsertParagraphBelow} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.insertParagraphBelow.label}>
+				<button
+					onClick={handleInsertParagraphBelow}
+					data-tooltip-id='hotkey'
+					data-tooltip-content={articlePageHotkeys.insertParagraphBelow.label}
+					data-tooltip-hidden={toolTipHidden}
+				>
 					Insert Bellow
 				</button>
 			</div>
