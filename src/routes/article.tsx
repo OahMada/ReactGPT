@@ -55,8 +55,6 @@ export var Article = () => {
 	throwIfUndefined(articleId);
 	let location = useLocation();
 	let articleElementsRef = useRef(new Map());
-	// To keep the ref reflects the current paragraph structure.
-	let articleElements = Array.from(articleElementsRef.current, (item) => ({ paragraphId: item[0], element: item[1] }));
 
 	let focusedParagraphIndexRef = useRef(-1);
 
@@ -91,6 +89,7 @@ export var Article = () => {
 	useKeys({ keyBinding: retryAllErred.hotkey, callback: handleRetryAll, enabled: !/preview$/.test(location.pathname) }); // enabled only when on the article page
 
 	let { enableScope, disableScope, enabledScopes } = useHotkeysContext();
+	console.log(enabledScopes);
 
 	let performEnableScope = (scope: string) => {
 		enabledScopes.forEach((scope) => {
@@ -103,15 +102,35 @@ export var Article = () => {
 	useKeys({
 		keyBinding: traverseDownwardsParagraphList.hotkey,
 		callback: () => {
+			let articleElements = Array.from(articleElementsRef.current, (item) => ({
+				paragraphId: item[1].paragraphId,
+				element: item[1].element,
+			}));
+
+			if (articleElements.length === 0) return;
+
 			if (focusedParagraphIndexRef.current === -1) {
 				articleElements[0].element.focus();
 				focusedParagraphIndexRef.current = 0;
 				performEnableScope(articleElements[0].paragraphId);
 			} else {
+				// update focusedParagraphIndexRef to reflect the actual situation
+				articleElements.forEach((item, index) => {
+					if (enabledScopes.includes(item.paragraphId)) {
+						focusedParagraphIndexRef.current = index;
+					}
+				});
+
+				// when the focused paragraph gets deleted
+				if (!articleElements.some((item) => enabledScopes.includes(item.paragraphId))) {
+					focusedParagraphIndexRef.current -= 1;
+				}
+
 				focusedParagraphIndexRef.current += 1;
 				if (focusedParagraphIndexRef.current > articleElements.length - 1) {
 					focusedParagraphIndexRef.current = 0;
 				}
+
 				articleElements[focusedParagraphIndexRef.current].element.focus();
 
 				// enable scope
@@ -124,11 +143,24 @@ export var Article = () => {
 	useKeys({
 		keyBinding: traverseUpwardsParagraphList.hotkey,
 		callback: () => {
+			let articleElements = Array.from(articleElementsRef.current, (item) => ({
+				paragraphId: item[1].paragraphId,
+				element: item[1].element,
+			}));
+			if (articleElements.length === 0) return;
+
 			if (focusedParagraphIndexRef.current === -1) {
 				articleElements[articleElements.length - 1].element.focus();
 				focusedParagraphIndexRef.current = articleElements.length - 1;
 				performEnableScope(articleElements[articleElements.length - 1].paragraphId);
 			} else {
+				// update focusedParagraphIndexRef to reflect the actual situation
+				articleElements.forEach((item, index) => {
+					if (enabledScopes.includes(item.paragraphId)) {
+						focusedParagraphIndexRef.current = index;
+					}
+				});
+
 				focusedParagraphIndexRef.current -= 1;
 				if (focusedParagraphIndexRef.current < 0) {
 					focusedParagraphIndexRef.current = articleElements.length - 1;
@@ -209,10 +241,10 @@ export var Article = () => {
 													provided.innerRef,
 													(node) => {
 														if (node) {
-															articleElementsRef.current.set(paragraph.id, node);
+															articleElementsRef.current.set(index, { element: node, paragraphId: paragraph.id });
 														} else {
 															// To keep the ref reflects the current paragraph structure.
-															articleElementsRef.current.delete(paragraph.id);
+															articleElementsRef.current.delete(index);
 														}
 													},
 												])}
