@@ -55,6 +55,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 /**
  * two things not right with react query: error boundary reset; resetQueries error
+ * https://medium.com/@sdolidze/react-hooks-memoization-99a9a91c8853
  *
  * ## features
  *
@@ -62,6 +63,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  * verify the persisted data
  *
  * ## bugs
+ *
+ * change up and down hotkey
+ * why ctr and cmd both work?
  *
  * ## test
  * test

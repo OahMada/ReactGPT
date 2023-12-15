@@ -250,10 +250,11 @@ export var Article = () => {
 												])}
 												{...provided.draggableProps}
 												tabIndex={-1}
-												onFocus={() => {
-													// For situations where a user manually clicks an element to gain focus
-													if (focusedParagraphIndexRef.current !== index) {
+												onClick={(e) => {
+													// prevent other interactions to change the focused element
+													if (e.target === e.currentTarget) {
 														focusedParagraphIndexRef.current = index;
+														performEnableScope(paragraph.id);
 													}
 												}}
 											>
