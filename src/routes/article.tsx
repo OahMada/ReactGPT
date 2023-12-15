@@ -22,6 +22,7 @@ import { createToast, throwIfUndefined, useKeys, hotkeyMap } from '../utils';
 // types
 import { Paragraph as ParagraphType } from '../types';
 
+// query
 import { grammarQueryKeys } from '../query/grammarQuery';
 import { translationQueryKeys } from '../query/translationQuery';
 
@@ -51,6 +52,7 @@ export var StrictModeDroppable = ({ children, ...props }: DroppableProps) => {
 };
 
 export var Article = () => {
+	// react router
 	const { articleId } = useParams();
 	throwIfUndefined(articleId);
 	let location = useLocation();
@@ -66,15 +68,7 @@ export var Article = () => {
 		// filter out removed paragraphs
 		.filter((paragraph) => !article.paragraphRemoveQueue.includes(paragraph.id));
 
-	let handleOnDragEnd = (result: DropResult) => {
-		let { destination, source } = result;
-		if (!destination) return;
-		if (destination.droppableId === source.droppableId && destination.index === source.index) return;
-
-		dispatch(handleParagraphOrderChange({ destinationIndex: destination.index, sourceIndex: source.index, articleId }));
-	};
-
-	// Error Boundary related
+	/* Error boundary related */
 	let errorBoundaryFallbackElementCount = useRef(0);
 	let resetErrorBoundariesRef = useRef(new Map<string, FallbackProps['resetErrorBoundary']>());
 	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
@@ -83,6 +77,17 @@ export var Article = () => {
 	let grammarFixFetchingCount = useIsFetching({ queryKey: ['grammar'] });
 	let handleRetryAll = () => resetErrorBoundariesRef.current.forEach((resetter) => resetter());
 
+	useEffect(() => {
+		if (grammarFixFetchingCount === 0) {
+			if (errorBoundaryFallbackElementCount.current! > 1) {
+				setShowRetryAllButton(true);
+			} else if (errorBoundaryFallbackElementCount.current! <= 1) {
+				setShowRetryAllButton(false);
+			}
+		}
+	}, [grammarFixFetchingCount]);
+
+	/* hotkey related */
 	useKeys({ keyBinding: retryAllErred.hotkey, callback: handleRetryAll, enabled: !/preview$/.test(location.pathname) }); // enabled only when on the article page
 
 	let articleElementsRef = useRef(new Map());
@@ -104,9 +109,7 @@ export var Article = () => {
 				paragraphId: item[1].paragraphId,
 				element: item[1].element,
 			}));
-
 			if (articleElements.length === 0) return;
-
 			if (focusedParagraphIndexRef.current === -1) {
 				articleElements[0].element.focus();
 				focusedParagraphIndexRef.current = 0;
@@ -118,19 +121,15 @@ export var Article = () => {
 						focusedParagraphIndexRef.current = index;
 					}
 				});
-
 				// when the focused paragraph gets deleted, this makes sure user still steps one paragraph forward
 				if (!articleElements.some((item) => enabledScopes.includes(item.paragraphId))) {
 					focusedParagraphIndexRef.current -= 1;
 				}
-
 				focusedParagraphIndexRef.current += 1;
 				if (focusedParagraphIndexRef.current > articleElements.length - 1) {
 					focusedParagraphIndexRef.current = 0;
 				}
-
 				articleElements[focusedParagraphIndexRef.current].element.focus();
-
 				// enable scope
 				performEnableScope(articleElements[focusedParagraphIndexRef.current].paragraphId);
 			}
@@ -146,7 +145,6 @@ export var Article = () => {
 				element: item[1].element,
 			}));
 			if (articleElements.length === 0) return;
-
 			if (focusedParagraphIndexRef.current === -1) {
 				articleElements[articleElements.length - 1].element.focus();
 				focusedParagraphIndexRef.current = articleElements.length - 1;
@@ -158,29 +156,27 @@ export var Article = () => {
 						focusedParagraphIndexRef.current = index;
 					}
 				});
-
 				focusedParagraphIndexRef.current -= 1;
 				if (focusedParagraphIndexRef.current < 0) {
 					focusedParagraphIndexRef.current = articleElements.length - 1;
 				}
 				articleElements[focusedParagraphIndexRef.current].element.focus();
-
 				// enable scope
 				performEnableScope(articleElements[focusedParagraphIndexRef.current].paragraphId);
 			}
 		},
 	});
 
-	useEffect(() => {
-		if (grammarFixFetchingCount === 0) {
-			if (errorBoundaryFallbackElementCount.current! > 1) {
-				setShowRetryAllButton(true);
-			} else if (errorBoundaryFallbackElementCount.current! <= 1) {
-				setShowRetryAllButton(false);
-			}
-		}
-	}, [grammarFixFetchingCount]);
+	/* react beautiful dnd */
+	let handleOnDragEnd = (result: DropResult) => {
+		let { destination, source } = result;
+		if (!destination) return;
+		if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
+		dispatch(handleParagraphOrderChange({ destinationIndex: destination.index, sourceIndex: source.index, articleId }));
+	};
+
+	/* other */
 	let queryClient = useQueryClient();
 	useEffect(() => {
 		// cancel queries when navigate away
@@ -249,7 +245,7 @@ export var Article = () => {
 													},
 												])}
 												{...provided.draggableProps}
-												tabIndex={-1}
+												tabIndex={-1} // make the element focusable
 												onClick={(e) => {
 													// prevent other interactions to change the focused element
 													if (e.target === e.currentTarget) {

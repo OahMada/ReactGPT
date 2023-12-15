@@ -16,11 +16,17 @@ interface APIKey {
 var { configPage: configPageHotkeys } = hotkeyMap;
 
 export var Config = () => {
+	let [key, setKey] = useState(''); // to access form submission data out of onSubmit handler
+	let secureLocalStorageAPIKey = secureLocalStorage.getItem('string') as string | null;
+
+	// react router
 	let navigate = useNavigate();
 
+	// redux
 	let { APIKeyInEdit } = useAppSelector(selectConfig);
 	let dispatch = useAppDispatch();
-	let [key, setKey] = useState(''); // to access form submission data out of onSubmit handler
+
+	/* react hook form */
 	let {
 		register,
 		handleSubmit,
@@ -34,6 +40,12 @@ export var Config = () => {
 		},
 	});
 
+	// create form error toast
+	if (errors?.key?.message) {
+		createToast({ type: 'error', content: errors.key.message, toastId: errors.key.message });
+		reset(); // reset form state
+	}
+
 	let { ref, ...rest } = register('key', {
 		required: 'Please enter your API key.',
 		pattern: {
@@ -46,22 +58,18 @@ export var Config = () => {
 		},
 	});
 
+	let onSubmit: SubmitHandler<APIKey> = (data) => {
+		setKey(data.key);
+	};
+
+	/* tanstack query */
 	let { isError, isFetched, isFetching, error } = useQuery({
 		queryKey: testQueryKeys(key),
 		queryFn: testQuery,
 		enabled: isSubmitSuccessful,
 	});
 
-	let onSubmit: SubmitHandler<APIKey> = (data) => {
-		setKey(data.key);
-	};
-
-	// create form error toast
-	if (errors?.key?.message) {
-		createToast({ type: 'error', content: errors.key.message, toastId: errors.key.message });
-		reset(); // reset form state
-	}
-
+	/* hotkey related */
 	let clickEditButton = () => {
 		dispatch(toggleAPIKeyInEdit());
 	};
@@ -85,8 +93,8 @@ export var Config = () => {
 		},
 	});
 
-	let secureLocalStorageAPIKey = secureLocalStorage.getItem('string') as string | null;
-
+	/* other */
+	// handle query result
 	useEffect(() => {
 		// only run when done fetching. ifFetched is for the beginning state, or the else logic is going to run
 		if (!isFetching && isFetched) {

@@ -25,12 +25,15 @@ export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);
 	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
 	let [showExportOptions, setShowExportOptions] = useState(false);
+	let articleWrapperRef = useRef(null);
 
+	// react router
 	let filteredParagraphs = useOutletContext<Paragraph[]>();
 	let navigate = useNavigate();
 
 	let queryClient = useQueryClient();
 
+	/* calculate necessary values */
 	let currentArticleParagraphs: PartialParagraph[] = filteredParagraphs.map((paragraph) => {
 		return { paragraphText: paragraph.paragraphAfterGrammarFix || paragraph.paragraphBeforeGrammarFix, paragraphId: paragraph.id };
 	});
@@ -99,8 +102,6 @@ export var Preview = () => {
 			}
 		};
 	}, []);
-
-	let articleWrapperRef = useRef(null);
 
 	/* Image Generation */
 	let downloadImg = async () => {
