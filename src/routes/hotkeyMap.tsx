@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useKeys, hotkeyMap } from '../utils';
+import styled from 'styled-components';
 
 var { 'Hotkey Map Page': hotkeyMapHotkeys } = hotkeyMap;
 
@@ -14,7 +15,7 @@ export var HotkeyMap = () => {
 	useKeys({ keyBinding: hotkeyMapHotkeys.exit.hotkey, callback: clickExitButton });
 
 	return (
-		<section>
+		<Section>
 			<button onClick={clickExitButton} data-tooltip-id='hotkey' data-tooltip-content={hotkeyMapHotkeys.exit.label}>
 				Exit
 			</button>
@@ -42,6 +43,10 @@ export var HotkeyMap = () => {
 					);
 				})}
 			</div>
-		</section>
+		</Section>
 	);
 };
+
+var Section = styled.section`
+	font-size: 1.2rem;
+`;
