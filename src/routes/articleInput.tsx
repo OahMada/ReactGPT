@@ -14,7 +14,7 @@ interface ArticleInputType {
 	article: string;
 }
 
-var { articleInputPage: articleInputPageHotkeys } = hotkeyMap;
+var { 'Article Input Page': articleInputPageHotkeys } = hotkeyMap;
 
 // log the last character inputted from previous render
 export var ArticleInput = () => {

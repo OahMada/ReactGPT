@@ -18,7 +18,7 @@ interface UndoProps extends Partial<ToastContentProps> {
 	closeToast: () => void;
 }
 
-var { articlePage: articlePageHotkeys } = hotkeyMap;
+var { 'Article Page': articlePageHotkeys } = hotkeyMap;
 
 var Undo = ({ closeToast, onUndo }: UndoProps) => {
 	const handleClick = () => {

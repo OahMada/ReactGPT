@@ -129,7 +129,7 @@ export var Paragraph = ({
 					<StyledParagraph>{paragraphBeforeGrammarFix}</StyledParagraph>
 				) : (
 					<StyledParagraph>
-						{...adjustmentObjectArr.reduce<React.ReactNode[]>((acc, item, index) => {
+						{adjustmentObjectArr.reduce<React.ReactNode[]>((acc, item, index) => {
 							if (item.value) {
 								acc.push(item.value);
 							} else if (item.removed || item.added) {

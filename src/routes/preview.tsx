@@ -19,7 +19,7 @@ import { translationQueryKeys } from '../query/translationQuery';
 import { createToast, useKeys, hotkeyMap } from '../utils';
 import { workerInstance } from '../utils/workerInstance';
 
-var { previewPage: previewPageHotkeys } = hotkeyMap;
+var { 'Preview Page': previewPageHotkeys } = hotkeyMap;
 
 export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);
@@ -253,7 +253,7 @@ export var Preview = () => {
 								data-tooltip-id='hotkey'
 								data-tooltip-content={previewPageHotkeys.downloadDocx.label}
 							>
-								Download Docx
+								Download DOCX
 							</button>
 							<button
 								disabled={translationFetchingCount !== 0}

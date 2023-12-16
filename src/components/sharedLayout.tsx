@@ -21,7 +21,7 @@ interface SearchForm {
 	search: string;
 }
 
-var { articlePage: articlePageHotkeys } = hotkeyMap;
+var { 'Article Page': articlePageHotkeys } = hotkeyMap;
 
 export var SharedLayout = () => {
 	dayjs.locale('zh-cn');
@@ -139,6 +139,14 @@ export var SharedLayout = () => {
 		},
 	});
 
+	// hotkey for entering hotkey map page
+	useKeys({
+		keyBinding: articlePageHotkeys.enterHotkeyMap.hotkey,
+		callback: () => {
+			navigate('/hotkey');
+		},
+	});
+
 	let searchInputRef = useRef<HTMLInputElement>(null);
 	useImperativeHandle(ref, () => searchInputRef.current);
 
@@ -155,6 +163,9 @@ export var SharedLayout = () => {
 			<div>
 				<button onClick={() => navigate('/config')} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.enterConfig.label}>
 					CONFIG
+				</button>
+				<button onClick={() => navigate('/hotkey')} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.enterHotkeyMap.label}>
+					Hotkey Map
 				</button>
 				<form role='search' onSubmit={handleSubmit(onSubmit)}>
 					<input

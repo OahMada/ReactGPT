@@ -27,7 +27,7 @@ import { grammarQueryKeys } from '../query/grammarQuery';
 import { translationQueryKeys } from '../query/translationQuery';
 
 var {
-	articlePage: { retryAllErred, traverseDownwardsParagraphList, traverseUpwardsParagraphList },
+	'Article Page': { retryAllErred, traverseDownwardsParagraphList, traverseUpwardsParagraphList },
 } = hotkeyMap;
 
 // Credits to https://github.com/GiovanniACamacho and https://github.com/Meligy for the TypeScript version

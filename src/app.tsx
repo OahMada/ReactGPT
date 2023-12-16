@@ -11,7 +11,7 @@ import { Tooltip } from 'react-tooltip';
 import { HotkeysProvider } from 'react-hotkeys-hook';
 
 // components
-import { Root, Article, ArticleInput, Config, ErrorPage, Preview } from './routes';
+import { Root, Article, ArticleInput, Config, ErrorPage, Preview, HotkeyMap } from './routes';
 
 var router = createBrowserRouter([
 	{
@@ -42,6 +42,10 @@ var router = createBrowserRouter([
 			{
 				path: 'config',
 				element: <Config />,
+			},
+			{
+				path: 'hotkey',
+				element: <HotkeyMap />,
 			},
 		],
 	},

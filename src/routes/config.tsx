@@ -13,7 +13,7 @@ interface APIKey {
 	key: string;
 }
 
-var { configPage: configPageHotkeys } = hotkeyMap;
+var { 'Config Page': configPageHotkeys } = hotkeyMap;
 
 export var Config = () => {
 	let [key, setKey] = useState(''); // to access form submission data out of onSubmit handler

@@ -1,7 +1,7 @@
 import { useRouteError, isRouteErrorResponse, useNavigate } from 'react-router-dom';
 import { useKeys, hotkeyMap } from '../utils';
 
-var { errorPage: errorPageHotkeys } = hotkeyMap;
+var { 'Error Page': errorPageHotkeys } = hotkeyMap;
 
 export function ErrorPage() {
 	let error = useRouteError();
