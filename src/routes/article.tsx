@@ -254,7 +254,13 @@ export var Article = () => {
 													}
 												}}
 											>
-												<div className='grabber' {...provided.dragHandleProps}></div>
+												<div
+													className='grabber'
+													{...provided.dragHandleProps}
+													onClick={
+														(e) => e.currentTarget.focus() // to make initiating drag and drop a bit easer
+													}
+												></div>
 												<QueryErrorResetBoundary>
 													{({ reset }) => (
 														<ErrorBoundary

@@ -64,9 +64,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  *
  * ## bugs
  *
- * change up and down hotkey
- * why ctr and cmd both work?
- *
  * ## test
  * test
  *
