@@ -1,27 +1,29 @@
-export var generateHotkeyLabel = (hotkeyCharacter: string, modifyKey: string | false = 'mod') => {
-	let macKeyName = '',
-		winKeyName = '';
-	switch (modifyKey) {
-		case 'mod':
-			macKeyName = 'Cmd';
-			winKeyName = 'Ctr';
-			break;
-		case 'alt':
-			macKeyName = 'Opt';
-			winKeyName = 'Alt';
-			break;
-		case 'ctrl':
-			winKeyName = macKeyName = 'Ctr';
-			break;
-		case 'shift':
-			winKeyName = macKeyName = 'Shift';
-			break;
-	}
-
-	if (!modifyKey) {
-		return hotkeyCharacter.toUpperCase();
-	}
-	return navigator.userAgentData?.platform === 'Windows'
-		? `${winKeyName} + ${hotkeyCharacter.charAt(0).toUpperCase() + hotkeyCharacter.slice(1)}`
-		: `${macKeyName} + ${hotkeyCharacter.charAt(0).toUpperCase() + hotkeyCharacter.slice(1)}`;
+export var generateHotkeyLabel = (hotkey: string) => {
+	let hotkeyParts = hotkey.split('+');
+	let labels = hotkeyParts.reduce<{ winLabel: string[]; macLabel: string[] }>(
+		(acc, cur) => {
+			let winKeyLabel = '',
+				macKeyLabel = '';
+			switch (cur) {
+				case 'mod':
+					macKeyLabel = 'Cmd';
+					winKeyLabel = 'Ctr';
+					break;
+				case 'alt':
+					macKeyLabel = 'Opt';
+					winKeyLabel = 'Alt';
+					break;
+				case 'ctrl':
+					winKeyLabel = macKeyLabel = 'Ctr';
+					break;
+				default:
+					winKeyLabel = macKeyLabel = cur.charAt(0).toUpperCase() + cur.slice(1);
+			}
+			acc.winLabel.push(winKeyLabel);
+			acc.macLabel.push(macKeyLabel);
+			return acc;
+		},
+		{ winLabel: [], macLabel: [] }
+	);
+	return navigator.userAgentData?.platform === 'Windows' ? labels.winLabel.join(' + ') : labels.macLabel.join(' + ');
 };
