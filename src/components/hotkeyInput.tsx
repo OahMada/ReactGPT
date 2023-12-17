@@ -1,5 +1,6 @@
-import { useForm } from 'react-hook-form';
 import { useRecordHotkeys } from 'react-hotkeys-hook';
+import { forwardRef, useImperativeHandle } from 'react';
+
 import { generateHotkeyLabel } from '../utils';
 import { LocalStorageHotkeys } from '../types';
 
@@ -10,42 +11,51 @@ interface Hotkey {
 	id: string;
 }
 
-interface Input {
-	input: string;
-}
-
-export var HotkeyInput = ({
-	keyBinding,
-	userDefinedHotkeys,
-	setUserDefinedHotkeys,
-}: {
+interface HotkeyInputProps {
 	keyBinding: Hotkey;
 	userDefinedHotkeys: LocalStorageHotkeys;
 	setUserDefinedHotkeys: React.Dispatch<React.SetStateAction<LocalStorageHotkeys>>;
-}) => {
+	stopOthers: (() => void) | undefined;
+}
+
+type Ref = (() => void) | undefined;
+
+export var HotkeyInput = forwardRef<Ref, HotkeyInputProps>(({ keyBinding, userDefinedHotkeys, setUserDefinedHotkeys, stopOthers }, ref) => {
 	let [keys, { start, stop, isRecording }] = useRecordHotkeys();
 
 	let newHotkey = Array.from(keys).join('+');
-	let { register, handleSubmit } = useForm<Input>({
-		values: {
-			input: generateHotkeyLabel(newHotkey),
-		},
-	});
 
-	let onsubmit = () => {
+	let submit = () => {
 		stop();
 		setUserDefinedHotkeys({ ...userDefinedHotkeys, [keyBinding.id]: newHotkey });
 	};
 
+	useImperativeHandle(ref, () => {
+		if (isRecording) {
+			return stop;
+		}
+	});
+
 	if (isRecording) {
 		return (
 			<td>
-				<form onSubmit={handleSubmit(onsubmit)}>
-					<input type='text' {...register('input')} />
-					<button>Done</button>
-				</form>
+				<span>{generateHotkeyLabel(newHotkey)}</span>
+				<button onClick={submit}>Done</button>
 			</td>
 		);
 	}
-	return <td onClick={() => start()}>{keyBinding.label}</td>;
-};
+	return (
+		<td
+			onClick={() => {
+				console.log(stopOthers);
+
+				if (stopOthers) {
+					stopOthers();
+				}
+				start();
+			}}
+		>
+			{keyBinding.label}
+		</td>
+	);
+});

@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLocalStorage } from 'react-use';
 import { compress, decompress } from 'lz-string';
+import { useRef } from 'react';
 
 import { useKeys, HotkeyMapData } from '../utils';
 import { LocalStorageHotkeys } from '../types';
@@ -9,6 +10,8 @@ import { LocalStorageHotkeys } from '../types';
 import { HotkeyInput } from '../components';
 
 export var HotkeyMap = () => {
+	let stopHotkeyRecordingRef = useRef<(() => void) | undefined>(undefined);
+
 	let navigate = useNavigate();
 	let hotkeyMapData = Object.entries(HotkeyMapData());
 	let [userDefinedHotkeys, setUserDefinedHotkeys] = useLocalStorage<LocalStorageHotkeys>(
@@ -47,7 +50,13 @@ export var HotkeyMap = () => {
 								{hotkeys.map((hotkey) => {
 									return (
 										<tr key={hotkey[0]}>
-											<HotkeyInput keyBinding={hotkey[1]} userDefinedHotkeys={userDefinedHotkeys} setUserDefinedHotkeys={setUserDefinedHotkeys} />
+											<HotkeyInput
+												keyBinding={hotkey[1]}
+												userDefinedHotkeys={userDefinedHotkeys}
+												setUserDefinedHotkeys={setUserDefinedHotkeys}
+												ref={stopHotkeyRecordingRef}
+												stopOthers={stopHotkeyRecordingRef.current}
+											/>
 											<td>{hotkey[1].purpose}</td>
 										</tr>
 									);
