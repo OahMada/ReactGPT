@@ -58,7 +58,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  *
  * ## features
  *
- * record hotkey
  * verify the persisted data
  *
  * ## bugs

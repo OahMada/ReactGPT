@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { useKeys, HotkeyMapData } from '../utils';
 import styled from 'styled-components';
 import { useLocalStorage } from 'react-use';
 import { compress, decompress } from 'lz-string';
 
+import { useKeys, HotkeyMapData } from '../utils';
 import { LocalStorageHotkeys } from '../types';
 
 import { HotkeyInput } from '../components';

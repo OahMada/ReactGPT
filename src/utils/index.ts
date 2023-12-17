@@ -7,4 +7,4 @@ export * from './throwIfUndefined';
 export * from './performArticleSearch';
 export * from './useKeys';
 export * from './generateHotkeyLabel';
-export * from './hotkeyMap';
+export * from './hotkeyMapData';
