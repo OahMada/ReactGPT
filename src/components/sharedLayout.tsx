@@ -15,13 +15,11 @@ import {
 	pinArticle,
 	removeArticleFromDeletionQueue,
 } from '../features/articleSlice';
-import { performFuseSearch, useKeys, hotkeyMap } from '../utils';
+import { performFuseSearch, useKeys, HotkeyMapData } from '../utils';
 
 interface SearchForm {
 	search: string;
 }
-
-var { 'Article Page': articlePageHotkeys } = hotkeyMap;
 
 export var SharedLayout = () => {
 	dayjs.locale('zh-cn');
@@ -121,6 +119,8 @@ export var SharedLayout = () => {
 	let articleIsInFavorites = (articleId: string) => {
 		return articleQueue.favorites.indexOf(articleId) !== -1 ? true : false;
 	};
+
+	let { 'Article Page': articlePageHotkeys } = HotkeyMapData();
 
 	// hotkey for entering new article page
 	useKeys({

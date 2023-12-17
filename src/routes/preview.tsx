@@ -16,10 +16,8 @@ import { proxy } from 'comlink';
 import { PreviewContent, articleDocx } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
 import { translationQueryKeys } from '../query/translationQuery';
-import { createToast, useKeys, hotkeyMap } from '../utils';
+import { createToast, useKeys, HotkeyMapData } from '../utils';
 import { workerInstance } from '../utils/workerInstance';
-
-var { 'Preview Page': previewPageHotkeys } = hotkeyMap;
 
 export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);
@@ -188,6 +186,8 @@ export var Preview = () => {
 	let debouncedCopyToClipboard = debounce(copyToClipboard, 500, { leading: true, trailing: false });
 
 	/* Hotkeys */
+	let { 'Preview Page': previewPageHotkeys } = HotkeyMapData();
+
 	useKeys({ keyBinding: previewPageHotkeys.includeTranslation.hotkey, callback: handleTranslation });
 	useKeys({ keyBinding: previewPageHotkeys.exitPreview.hotkey, callback: handleClosePreview });
 	useKeys({ keyBinding: previewPageHotkeys.copyToClipboard.hotkey, callback: debouncedCopyToClipboard });

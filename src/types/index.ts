@@ -39,3 +39,5 @@ export interface PartialParagraph {
 export type PartialParagraphWithTranslation = PartialParagraph & {
 	translationText: string;
 };
+
+export type LocalStorageHotkeys = { [index: string]: string } | undefined;

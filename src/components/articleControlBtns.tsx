@@ -11,20 +11,20 @@ import {
 	pinArticle,
 	unPinArticle,
 } from '../features/articleSlice';
-import { createToast, useKeys, hotkeyMap } from '../utils';
+import { createToast, useKeys, HotkeyMapData } from '../utils';
 
 interface UndoProps extends Partial<ToastContentProps> {
 	onUndo: () => void;
 	closeToast: () => void;
 }
 
-var { 'Article Page': articlePageHotkeys } = hotkeyMap;
-
 var Undo = ({ closeToast, onUndo }: UndoProps) => {
 	const handleClick = () => {
 		onUndo();
 		closeToast();
 	};
+
+	let { 'Article Page': articlePageHotkeys } = HotkeyMapData();
 
 	useKeys({ keyBinding: articlePageHotkeys.undoArticleDeletion.hotkey, callback: handleClick });
 
@@ -83,6 +83,8 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 			dispatch(pinArticle(articleId));
 		}
 	};
+
+	let { 'Article Page': articlePageHotkeys } = HotkeyMapData();
 
 	// delete article hotkey
 	useKeys({ keyBinding: articlePageHotkeys.deleteArticle.hotkey, callback: handleArticleDeletion });

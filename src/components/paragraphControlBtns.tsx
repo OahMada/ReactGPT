@@ -13,7 +13,7 @@ import {
 	updateArticleFirstParagraphEditDate,
 } from '../features/articleSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { createToast, throwIfUndefined, useKeys, hotkeyMap } from '../utils';
+import { createToast, throwIfUndefined, useKeys, HotkeyMapData } from '../utils';
 import { Paragraph } from '../types';
 
 // https://github.com/fkhadra/react-toastify/issues/568#issuecomment-779847274
@@ -24,13 +24,13 @@ interface UndoProps extends Partial<ToastContentProps> {
 	paragraphId: string;
 }
 
-var { 'Article Page': articlePageHotkeys } = hotkeyMap;
-
 var Undo = ({ closeToast, onUndo, paragraph, paragraphId }: UndoProps) => {
 	const handleClick = () => {
 		onUndo();
 		closeToast();
 	};
+
+	let { 'Article Page': articlePageHotkeys } = HotkeyMapData();
 
 	useKeys({
 		keyBinding: articlePageHotkeys.undoParagraphDeletion.hotkey,
@@ -97,6 +97,8 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 
 	let handleInsertParagraphAbove = () => dispatch(insertAboveParagraph({ paragraphId, articleId }));
 	let handleInsertParagraphBelow = () => dispatch(insertBelowParagraph({ paragraphId, articleId }));
+
+	let { 'Article Page': articlePageHotkeys } = HotkeyMapData();
 
 	useKeys({
 		keyBinding: articlePageHotkeys.deleteParagraph.hotkey,

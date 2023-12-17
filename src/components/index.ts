@@ -9,3 +9,4 @@ export * from './previewContent';
 export * from './paragraphTranslation';
 export * from './modal';
 export * from './articleDocx';
+export * from './hotkeyInput';

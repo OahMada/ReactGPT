@@ -7,13 +7,11 @@ import { useQuery } from '@tanstack/react-query';
 import { testQuery, testQueryKeys } from '../query/testQuery';
 import { selectConfig, toggleAPIKeyInEdit } from '../features/configSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { createToast, useKeys, hotkeyMap } from '../utils';
+import { createToast, useKeys, HotkeyMapData } from '../utils';
 
 interface APIKey {
 	key: string;
 }
-
-var { 'Config Page': configPageHotkeys } = hotkeyMap;
 
 export var Config = () => {
 	let [key, setKey] = useState(''); // to access form submission data out of onSubmit handler
@@ -80,6 +78,8 @@ export var Config = () => {
 			dispatch(toggleAPIKeyInEdit());
 		}
 	};
+
+	let { 'Config Page': configPageHotkeys } = HotkeyMapData();
 
 	useKeys({ keyBinding: configPageHotkeys.edit.hotkey, callback: clickEditButton });
 	useKeys({ keyBinding: configPageHotkeys.cancel.hotkey, callback: clickCancelButton });

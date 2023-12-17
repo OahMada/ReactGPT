@@ -17,7 +17,7 @@ import { selectArticle, handleParagraphOrderChange, updateUserInput, toggleTrans
 import { StyledParagraph, ParagraphInput, Paragraph, ParagraphControlBtns, EmptyParagraphList, ArticleControlBtns } from '../components';
 
 // utils
-import { createToast, throwIfUndefined, useKeys, hotkeyMap } from '../utils';
+import { createToast, throwIfUndefined, useKeys, HotkeyMapData } from '../utils';
 
 // types
 import { Paragraph as ParagraphType } from '../types';
@@ -25,10 +25,6 @@ import { Paragraph as ParagraphType } from '../types';
 // query
 import { grammarQueryKeys } from '../query/grammarQuery';
 import { translationQueryKeys } from '../query/translationQuery';
-
-var {
-	'Article Page': { retryAllErred, traverseDownwardsParagraphList, traverseUpwardsParagraphList },
-} = hotkeyMap;
 
 // Credits to https://github.com/GiovanniACamacho and https://github.com/Meligy for the TypeScript version
 // Original post: https://github.com/atlassian/react-beautiful-dnd/issues/2399#issuecomment-1175638194
@@ -88,6 +84,9 @@ export var Article = () => {
 	}, [grammarFixFetchingCount]);
 
 	/* hotkey related */
+	let {
+		'Article Page': { retryAllErred, traverseDownwardsParagraphList, traverseUpwardsParagraphList },
+	} = HotkeyMapData();
 	useKeys({ keyBinding: retryAllErred.hotkey, callback: handleRetryAll, enabled: !/preview$/.test(location.pathname) }); // enabled only when on the article page
 
 	let articleElementsRef = useRef(new Map());

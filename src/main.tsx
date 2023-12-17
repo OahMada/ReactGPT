@@ -55,11 +55,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 /**
  * two things not right with react query: error boundary reset; resetQueries error
- * https://medium.com/@sdolidze/react-hooks-memoization-99a9a91c8853
  *
  * ## features
  *
- * hotkey map
+ * record hotkey
  * verify the persisted data
  *
  * ## bugs

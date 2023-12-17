@@ -1,17 +1,31 @@
 import { useNavigate } from 'react-router-dom';
-import { useKeys, hotkeyMap } from '../utils';
+import { useKeys, HotkeyMapData } from '../utils';
 import styled from 'styled-components';
+import { useLocalStorage } from 'react-use';
+import { compress, decompress } from 'lz-string';
 
-var { 'Hotkey Map Page': hotkeyMapHotkeys } = hotkeyMap;
+import { LocalStorageHotkeys } from '../types';
+
+import { HotkeyInput } from '../components';
 
 export var HotkeyMap = () => {
 	let navigate = useNavigate();
-	let hotkeyMapData = Object.entries(hotkeyMap);
+	let hotkeyMapData = Object.entries(HotkeyMapData());
+	let [userDefinedHotkeys, setUserDefinedHotkeys] = useLocalStorage<LocalStorageHotkeys>(
+		'userDefinedHotkeys',
+		{}
+		// {
+		// 	raw: false,
+		// 	serializer: (value) => compress(JSON.stringify(value)),
+		// 	deserializer: (value) => JSON.parse(decompress(value)),
+		// }
+	);
 
 	let clickExitButton = () => {
 		navigate(-1);
 	};
 
+	let { 'Hotkey Map Page': hotkeyMapHotkeys } = HotkeyMapData();
 	useKeys({ keyBinding: hotkeyMapHotkeys.exit.hotkey, callback: clickExitButton });
 
 	return (
@@ -33,7 +47,7 @@ export var HotkeyMap = () => {
 								{hotkeys.map((hotkey) => {
 									return (
 										<tr key={hotkey[0]}>
-											<td>{hotkey[1].label}</td>
+											<HotkeyInput keyBinding={hotkey[1]} userDefinedHotkeys={userDefinedHotkeys} setUserDefinedHotkeys={setUserDefinedHotkeys} />
 											<td>{hotkey[1].purpose}</td>
 										</tr>
 									);

@@ -8,13 +8,11 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { useAppDispatch } from '../redux/hooks';
 import { saveArticleInput } from '../features/articleSlice';
-import { createToast, defaultArticleInput, useKeys, hotkeyMap } from '../utils';
+import { createToast, defaultArticleInput, useKeys, HotkeyMapData } from '../utils';
 
 interface ArticleInputType {
 	article: string;
 }
-
-var { 'Article Input Page': articleInputPageHotkeys } = hotkeyMap;
 
 // log the last character inputted from previous render
 export var ArticleInput = () => {
@@ -54,6 +52,8 @@ export var ArticleInput = () => {
 	let fillInText = () => {
 		setValue('article', defaultArticleInput);
 	};
+
+	let { 'Article Input Page': articleInputPageHotkeys } = HotkeyMapData();
 
 	useKeys({
 		keyBinding: articleInputPageHotkeys.done.hotkey,

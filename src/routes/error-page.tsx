@@ -1,11 +1,11 @@
 import { useRouteError, isRouteErrorResponse, useNavigate } from 'react-router-dom';
-import { useKeys, hotkeyMap } from '../utils';
-
-var { 'Error Page': errorPageHotkeys } = hotkeyMap;
+import { useKeys, HotkeyMapData } from '../utils';
 
 export function ErrorPage() {
 	let error = useRouteError();
 	let navigate = useNavigate();
+
+	let { 'Error Page': errorPageHotkeys } = HotkeyMapData();
 
 	useKeys({
 		keyBinding: errorPageHotkeys.back.hotkey,
