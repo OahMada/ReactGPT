@@ -13,12 +13,12 @@ export var HotkeyMap = () => {
 	let hotkeyMapData = Object.entries(HotkeyMapData());
 	let [userDefinedHotkeys, setUserDefinedHotkeys] = useLocalStorage<LocalStorageHotkeys>(
 		'userDefinedHotkeys',
-		{}
-		// {
-		// 	raw: false,
-		// 	serializer: (value) => compress(JSON.stringify(value)),
-		// 	deserializer: (value) => JSON.parse(decompress(value)),
-		// }
+		{},
+		{
+			raw: false,
+			serializer: (value) => compress(JSON.stringify(value)),
+			deserializer: (value) => JSON.parse(decompress(value)),
+		}
 	);
 
 	let clickExitButton = () => {
