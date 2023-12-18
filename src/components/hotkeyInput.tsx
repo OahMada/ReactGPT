@@ -1,5 +1,5 @@
 import { useRecordHotkeys } from 'react-hotkeys-hook';
-import { forwardRef, useImperativeHandle } from 'react';
+import { useEffect } from 'react';
 
 import { generateHotkeyLabel } from '../utils';
 import { LocalStorageHotkeys, RecordingStopper } from '../types';
@@ -15,45 +15,45 @@ interface HotkeyInputProps {
 	keyBinding: Hotkey;
 	userDefinedHotkeys: LocalStorageHotkeys;
 	setUserDefinedHotkeys: React.Dispatch<React.SetStateAction<LocalStorageHotkeys>>;
-	stopOthers: RecordingStopper;
+	hotkeyRecordingStopperRef: Map<'stopper', RecordingStopper>;
 }
 
-export var HotkeyInput = forwardRef<RecordingStopper, HotkeyInputProps>(
-	({ keyBinding, userDefinedHotkeys, setUserDefinedHotkeys, stopOthers }, ref) => {
-		let [keys, { start, stop, isRecording }] = useRecordHotkeys();
-		let newHotkey = Array.from(keys).join('+');
+export var HotkeyInput = ({ keyBinding, userDefinedHotkeys, setUserDefinedHotkeys, hotkeyRecordingStopperRef }: HotkeyInputProps) => {
+	let [keys, { start, stop, isRecording }] = useRecordHotkeys();
+	let newHotkey = Array.from(keys).join('+');
 
-		let submit = () => {
-			stop();
-			setUserDefinedHotkeys({ ...userDefinedHotkeys, [keyBinding.id]: newHotkey });
-		};
+	let submit = () => {
+		stop();
+		setUserDefinedHotkeys({ ...userDefinedHotkeys, [keyBinding.id]: newHotkey });
+	};
 
-		useImperativeHandle(ref, () => {
-			if (isRecording) {
-				return stop;
-			}
-		});
-
+	// save stop utility for later use
+	useEffect(() => {
 		if (isRecording) {
-			return (
-				<td>
-					<span>{generateHotkeyLabel(newHotkey)}</span>
-					<button onClick={submit}>Done</button>
-				</td>
-			);
+			hotkeyRecordingStopperRef.set('stopper', stop);
 		}
+	}, [hotkeyRecordingStopperRef, isRecording, stop]);
+
+	if (isRecording) {
 		return (
-			<td
-				onClick={() => {
-					console.log(stopOthers);
-					if (stopOthers) {
-						stopOthers();
-					}
-					start();
-				}}
-			>
-				{keyBinding.label}
+			<td>
+				<span>{generateHotkeyLabel(newHotkey)}</span>
+				<button onClick={submit}>Done</button>
 			</td>
 		);
 	}
-);
+	return (
+		<td
+			onClick={() => {
+				let stopper = hotkeyRecordingStopperRef.get('stopper');
+				if (stopper) {
+					stopper();
+					hotkeyRecordingStopperRef.clear();
+				}
+				start();
+			}}
+		>
+			{keyBinding.label}
+		</td>
+	);
+};
