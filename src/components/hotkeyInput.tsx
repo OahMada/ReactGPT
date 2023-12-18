@@ -48,7 +48,6 @@ export var HotkeyInput = ({ keyBinding, userDefinedHotkeys, setUserDefinedHotkey
 				let stopper = hotkeyRecordingStopperRef.get('stopper');
 				if (stopper) {
 					stopper();
-					hotkeyRecordingStopperRef.clear();
 				}
 				start();
 			}}

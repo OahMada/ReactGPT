@@ -42,4 +42,4 @@ export type PartialParagraphWithTranslation = PartialParagraph & {
 
 export type LocalStorageHotkeys = { [index: string]: string } | undefined;
 
-export type RecordingStopper = (() => void) | undefined;
+export type RecordingStopper = () => void;
