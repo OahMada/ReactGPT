@@ -129,51 +129,54 @@ export var Paragraph = ({
 					<StyledParagraph>{paragraphBeforeGrammarFix}</StyledParagraph>
 				) : (
 					<StyledParagraph>
-						{adjustmentObjectArr.reduce<React.ReactNode[]>((acc, item, index) => {
-							if (item.value) {
-								acc.push(item.value);
-							} else if (item.removed || item.added) {
-								if (item.added && !item.removed) {
-									let element =
-										paragraphStatus === 'modifying' ? (
-											<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
-												<ins className='insert'>{item.addedValue}</ins>
-											</span>
-										) : (
-											<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
-												<del className='deletion'>{item.addedValue}</del>
-											</span>
-										);
-									acc.push(element);
-								} else if (item.added && item.removed) {
-									let element =
-										paragraphStatus === 'modifying' ? (
-											<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
-												<del className='replacement'>{item.addedValue}</del>
-											</span>
-										) : (
-											<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
-												<del className='replacement'>{item.removedValue}</del>
-											</span>
-										);
+						{
+							// the three dots indicate that these are not a list
+							...adjustmentObjectArr.reduce<React.ReactNode[]>((acc, item, index) => {
+								if (item.value) {
+									acc.push(item.value);
+								} else if (item.removed || item.added) {
+									if (item.added && !item.removed) {
+										let element =
+											paragraphStatus === 'modifying' ? (
+												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
+													<ins className='insert'>{item.addedValue}</ins>
+												</span>
+											) : (
+												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
+													<del className='deletion'>{item.addedValue}</del>
+												</span>
+											);
+										acc.push(element);
+									} else if (item.added && item.removed) {
+										let element =
+											paragraphStatus === 'modifying' ? (
+												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
+													<del className='replacement'>{item.addedValue}</del>
+												</span>
+											) : (
+												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
+													<del className='replacement'>{item.removedValue}</del>
+												</span>
+											);
 
-									acc.push(element);
-								} else if (!item.added && item.removed) {
-									let element =
-										paragraphStatus === 'modifying' ? (
-											<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
-												<del className='deletion'>{item.removedValue}</del>
-											</span>
-										) : (
-											<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
-												<ins className='insert'>{item.removedValue}</ins>
-											</span>
-										);
-									acc.push(element);
+										acc.push(element);
+									} else if (!item.added && item.removed) {
+										let element =
+											paragraphStatus === 'modifying' ? (
+												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
+													<del className='deletion'>{item.removedValue}</del>
+												</span>
+											) : (
+												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
+													<ins className='insert'>{item.removedValue}</ins>
+												</span>
+											);
+										acc.push(element);
+									}
 								}
-							}
-							return acc;
-						}, [])}
+								return acc;
+							}, [])
+						}
 					</StyledParagraph>
 				)}
 
