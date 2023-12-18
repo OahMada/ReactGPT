@@ -62,9 +62,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  *
  * ## bugs
  *
- * a stop recoding bug
- *
  * ## test
+ *
  * test https://testing-library.com/docs/
  *
  * ## outlook and others

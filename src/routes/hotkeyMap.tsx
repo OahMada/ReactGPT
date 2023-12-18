@@ -10,7 +10,7 @@ import { LocalStorageHotkeys, RecordingStopper } from '../types';
 import { HotkeyInput } from '../components';
 
 export var HotkeyMap = () => {
-	let hotkeyRecordingStopperRef = useRef<Map<'stopper', RecordingStopper>>(new Map());
+	let hotkeyRecordingStopperRef = useRef<Map<'stopper', RecordingStopper>>(new Map()); // the initial value needs to be an object(or array, map) to properly save the `stop` util. https://stackoverflow.com/a/56444537/5800789
 
 	let navigate = useNavigate();
 	let hotkeyMapData = Object.entries(HotkeyMapData());
@@ -54,7 +54,7 @@ export var HotkeyMap = () => {
 												keyBinding={hotkey[1]}
 												userDefinedHotkeys={userDefinedHotkeys}
 												setUserDefinedHotkeys={setUserDefinedHotkeys}
-												hotkeyRecordingStopperRef={hotkeyRecordingStopperRef.current}
+												hotkeyRecordingStopperRef={hotkeyRecordingStopperRef.current} // pass the ref value down to be altered
 											/>
 											<td>{hotkey[1].purpose}</td>
 										</tr>

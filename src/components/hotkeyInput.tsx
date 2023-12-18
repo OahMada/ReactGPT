@@ -45,6 +45,7 @@ export var HotkeyInput = ({ keyBinding, userDefinedHotkeys, setUserDefinedHotkey
 	return (
 		<td
 			onClick={() => {
+				// run other hotkey's stop utility first
 				let stopper = hotkeyRecordingStopperRef.get('stopper');
 				if (stopper) {
 					stopper();
