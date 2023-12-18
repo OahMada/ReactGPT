@@ -2,7 +2,7 @@ import { useRecordHotkeys } from 'react-hotkeys-hook';
 import { forwardRef, useImperativeHandle } from 'react';
 
 import { generateHotkeyLabel } from '../utils';
-import { LocalStorageHotkeys } from '../types';
+import { LocalStorageHotkeys, RecordingStopper } from '../types';
 
 interface Hotkey {
 	label: string;
@@ -15,47 +15,45 @@ interface HotkeyInputProps {
 	keyBinding: Hotkey;
 	userDefinedHotkeys: LocalStorageHotkeys;
 	setUserDefinedHotkeys: React.Dispatch<React.SetStateAction<LocalStorageHotkeys>>;
-	stopOthers: (() => void) | undefined;
+	stopOthers: RecordingStopper;
 }
 
-type Ref = (() => void) | undefined;
+export var HotkeyInput = forwardRef<RecordingStopper, HotkeyInputProps>(
+	({ keyBinding, userDefinedHotkeys, setUserDefinedHotkeys, stopOthers }, ref) => {
+		let [keys, { start, stop, isRecording }] = useRecordHotkeys();
+		let newHotkey = Array.from(keys).join('+');
 
-export var HotkeyInput = forwardRef<Ref, HotkeyInputProps>(({ keyBinding, userDefinedHotkeys, setUserDefinedHotkeys, stopOthers }, ref) => {
-	let [keys, { start, stop, isRecording }] = useRecordHotkeys();
+		let submit = () => {
+			stop();
+			setUserDefinedHotkeys({ ...userDefinedHotkeys, [keyBinding.id]: newHotkey });
+		};
 
-	let newHotkey = Array.from(keys).join('+');
+		useImperativeHandle(ref, () => {
+			if (isRecording) {
+				return stop;
+			}
+		});
 
-	let submit = () => {
-		stop();
-		setUserDefinedHotkeys({ ...userDefinedHotkeys, [keyBinding.id]: newHotkey });
-	};
-
-	useImperativeHandle(ref, () => {
 		if (isRecording) {
-			return stop;
+			return (
+				<td>
+					<span>{generateHotkeyLabel(newHotkey)}</span>
+					<button onClick={submit}>Done</button>
+				</td>
+			);
 		}
-	});
-
-	if (isRecording) {
 		return (
-			<td>
-				<span>{generateHotkeyLabel(newHotkey)}</span>
-				<button onClick={submit}>Done</button>
+			<td
+				onClick={() => {
+					console.log(stopOthers);
+					if (stopOthers) {
+						stopOthers();
+					}
+					start();
+				}}
+			>
+				{keyBinding.label}
 			</td>
 		);
 	}
-	return (
-		<td
-			onClick={() => {
-				console.log(stopOthers);
-
-				if (stopOthers) {
-					stopOthers();
-				}
-				start();
-			}}
-		>
-			{keyBinding.label}
-		</td>
-	);
-});
+);

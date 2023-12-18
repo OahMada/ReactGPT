@@ -5,12 +5,13 @@ import { compress, decompress } from 'lz-string';
 import { useRef } from 'react';
 
 import { useKeys, HotkeyMapData } from '../utils';
-import { LocalStorageHotkeys } from '../types';
+import { LocalStorageHotkeys, RecordingStopper } from '../types';
 
 import { HotkeyInput } from '../components';
 
 export var HotkeyMap = () => {
-	let stopHotkeyRecordingRef = useRef<(() => void) | undefined>(undefined);
+	let hotkeyRecordingStopperRef = useRef<RecordingStopper>(undefined);
+	console.log(hotkeyRecordingStopperRef.current);
 
 	let navigate = useNavigate();
 	let hotkeyMapData = Object.entries(HotkeyMapData());
@@ -54,8 +55,8 @@ export var HotkeyMap = () => {
 												keyBinding={hotkey[1]}
 												userDefinedHotkeys={userDefinedHotkeys}
 												setUserDefinedHotkeys={setUserDefinedHotkeys}
-												ref={stopHotkeyRecordingRef}
-												stopOthers={stopHotkeyRecordingRef.current}
+												stopOthers={hotkeyRecordingStopperRef.current}
+												ref={hotkeyRecordingStopperRef}
 											/>
 											<td>{hotkey[1].purpose}</td>
 										</tr>
