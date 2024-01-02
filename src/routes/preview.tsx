@@ -17,7 +17,7 @@ import { PreviewContent, articleDocx } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
 import { translationQueryKeys } from '../query/translationQuery';
 import { createToast, useKeys, HotkeyMapData } from '../utils';
-import { workerInstance } from '../utils/workerInstance';
+import { workerInstance } from '../worker/workerInstance';
 
 export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);

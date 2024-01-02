@@ -40,18 +40,33 @@ var persister = createSyncStoragePersister({
 	retry: removeOldestQuery,
 });
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-	<React.StrictMode>
-		<PersistQueryClientProvider client={queryClient} persistOptions={{ persister, maxAge: Infinity, buster: '' }}>
-			<Provider store={store}>
-				<PersistGate loading={null} persistor={persistor}>
-					<App />
-				</PersistGate>
-			</Provider>
-			<ReactQueryDevtools initialIsOpen={true} position='right' />
-		</PersistQueryClientProvider>
-	</React.StrictMode>
-);
+// https://mswjs.io/docs/integrations/browser
+async function enableMocking() {
+	if (import.meta.env.MODE !== 'development') {
+		return;
+	}
+
+	let { worker } = await import('./worker/mockServiceWorker');
+
+	// `worker.start()` returns a Promise that resolves
+	// once the Service Worker is up and ready to intercept requests.
+	return worker.start();
+}
+
+enableMocking().then(() => {
+	ReactDOM.createRoot(document.getElementById('root')!).render(
+		<React.StrictMode>
+			<PersistQueryClientProvider client={queryClient} persistOptions={{ persister, maxAge: Infinity, buster: '' }}>
+				<Provider store={store}>
+					<PersistGate loading={null} persistor={persistor}>
+						<App />
+					</PersistGate>
+				</Provider>
+				<ReactQueryDevtools initialIsOpen={true} position='right' />
+			</PersistQueryClientProvider>
+		</React.StrictMode>
+	);
+});
 
 /**
  * two things not right with react query: error boundary reset; resetQueries error
@@ -62,6 +77,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
  * cmd + z article input
  *
  * ## bugs
+ *
+ * why so many canceled request?
  *
  * ## test
  *
