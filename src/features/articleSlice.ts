@@ -1,9 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
-import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, updateGrammarFixedArticle, createToast } from '../utils';
+import { findTheDiffsBetweenTwoStrings, sanitizeUserInput, createToast } from '../utils';
 import { refactoredChange, Paragraph, EditHistoryMode } from '../types';
 import { RootState, AppThunk } from '../redux/store';
+
+var updateGrammarFixedArticle = (arr: refactoredChange[]) => {
+	return arr.reduce<string>((acc, cur) => {
+		if (cur.value) {
+			acc += cur.value;
+		} else if (cur.removed) {
+			acc += cur.removedValue;
+		}
+		return acc;
+	}, '');
+};
 
 let initialParagraphState: Paragraph = {
 	id: '',

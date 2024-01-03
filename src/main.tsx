@@ -46,7 +46,7 @@ async function enableMocking() {
 		return;
 	}
 
-	let { worker } = await import('./worker/mockServiceWorker');
+	let { worker } = await import('./worker/mockExternalAPIWorker');
 
 	// `worker.start()` returns a Promise that resolves
 	// once the Service Worker is up and ready to intercept requests.

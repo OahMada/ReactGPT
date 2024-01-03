@@ -4,7 +4,8 @@ import axios, { AxiosError, AxiosRequestConfig, isAxiosError } from 'axios';
 export var buildAxiosResponse = async (config: AxiosRequestConfig) => {
 	try {
 		let { data, status, statusText } = await axios(config);
-		return new Response(JSON.stringify(data), { status, statusText });
+
+		return new Response(JSON.stringify(data['choices'][0]['message']['content']), { status, statusText });
 	} catch (err) {
 		let error = err as Error | AxiosError;
 		// https://axios-http.com/docs/handling_errors

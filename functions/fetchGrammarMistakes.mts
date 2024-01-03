@@ -1,5 +1,5 @@
 import { Context, Config } from '@netlify/functions';
-import { buildAxiosResponse } from '../src/utils/buildAxiosResponse';
+import { buildAxiosResponse } from './buildAxiosResponse';
 
 export default async (req: Request) => {
 	let reqBody = await req.json();

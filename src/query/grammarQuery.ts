@@ -24,8 +24,7 @@ export var queryGrammarMistakes = async ({ queryKey, signal }: QueryFunctionCont
 		},
 		{ signal }
 	);
-
-	return response.data['choices'][0]['message']['content'];
+	return response.data;
 };
 
 export function useGrammarQuery(paragraph: string, paragraphId: string) {
