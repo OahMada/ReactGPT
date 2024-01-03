@@ -5,7 +5,7 @@ import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { QueryErrorResetBoundary, useIsFetching, useQueryClient } from '@tanstack/react-query'; // https://www.thisdot.co/blog/common-patterns-and-nuances-using-react-query/#handling-errors-with-error-boundaries
 import { Navigate, useParams, Outlet, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from '@hello-pangea/dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
+import { DragDropContext, Draggable, Droppable, DropResult } from '@hello-pangea/dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
 import { mergeRefs } from 'react-merge-refs';
 import { useHotkeysContext } from 'react-hotkeys-hook';
 
@@ -172,13 +172,17 @@ export var Article = () => {
 		} else {
 			// refetch queries when navigate back
 			filteredParagraphs.forEach((paragraph) => {
-				if (!queryClient.getQueryData(grammarQueryKeys(paragraph.paragraphBeforeGrammarFix, paragraph.id))) {
+				if (
+					!queryClient.getQueryData(grammarQueryKeys(paragraph.paragraphBeforeGrammarFix, paragraph.id)) &&
+					// add below condition to only reset queries when there are none ongoing, otherwise there would be multiple canceled queries during the initial loading
+					queryClient.isFetching({ queryKey: grammarQueryKeys(paragraph.paragraphBeforeGrammarFix, paragraph.id) }) === 0
+				) {
 					queryClient.resetQueries(
 						{
 							queryKey: grammarQueryKeys(paragraph.paragraphBeforeGrammarFix, paragraph.id),
-						}
+						},
 						// somehow this throws CancelledError {revert: true, silent: undefined}
-						// { throwOnError: true }
+						{ throwOnError: true }
 					);
 				}
 			});
@@ -278,7 +282,7 @@ export var Article = () => {
 															onReset={reset}
 														>
 															<div>
-																<Paragraph paragraph={paragraph} />
+																<Paragraph paragraphId={paragraph.id} />
 															</div>
 														</ErrorBoundary>
 													)}

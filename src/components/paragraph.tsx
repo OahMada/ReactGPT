@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { useRef } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { refactoredChange, Paragraph as ParagraphType, EditHistoryMode } from '../types';
+import { refactoredChange, EditHistoryMode, Paragraph as ParagraphType } from '../types';
 
 import { useGrammarQuery, grammarQueryKeys } from '../query/grammarQuery';
 import { translationQueryKeys } from '../query/translationQuery';
@@ -20,14 +20,15 @@ import {
 	alterCheckEditHistoryMode,
 	toggleTranslation,
 	updateParagraphEditDate,
+	selectArticle,
 } from '../features/articleSlice';
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
 
 import { Modal, ParagraphInput, ParagraphTranslation } from '.';
 
-export var Paragraph = ({
-	paragraph: {
-		id,
+export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
+	let { paragraphs } = useAppSelector(selectArticle);
+	let {
 		initialParagraph,
 		updatedInitialParagraph,
 		paragraphBeforeGrammarFix,
@@ -37,10 +38,8 @@ export var Paragraph = ({
 		paragraphStatus,
 		editHistoryMode,
 		showTranslation,
-	},
-}: {
-	paragraph: ParagraphType;
-}) => {
+	} = paragraphs.find((item) => paragraphId === item.id) as ParagraphType;
+
 	let doneButtonRef = useRef<HTMLButtonElement>(null);
 
 	// dispatch
@@ -48,7 +47,7 @@ export var Paragraph = ({
 
 	// fetch API
 	// isGrammarFixesFetching is for action initiated by click the fix grammar mistakes button
-	let { isPending: isGrammarFixesPending, isFetching: isGrammarFixesFetching } = useGrammarQuery(paragraphBeforeGrammarFix, id);
+	let { isPending: isGrammarFixesPending, isFetching: isGrammarFixesFetching } = useGrammarQuery(paragraphBeforeGrammarFix, paragraphId);
 
 	// query client
 	let QueryClient = useQueryClient();
@@ -64,7 +63,7 @@ export var Paragraph = ({
 		// target is whatever you actually clicked on. It can vary, as this can be within an element that the event was bound to.
 		// currentTarget is the element you actually bound the event to. This will never change.
 		let color = e.currentTarget.dataset.color!;
-		dispatch(updateModalContent({ modifiedObj: item, dimension: { left, top }, color, indexInParagraph: index, paragraphStatus, paragraphId: id }));
+		dispatch(updateModalContent({ modifiedObj: item, dimension: { left, top }, color, indexInParagraph: index, paragraphStatus, paragraphId }));
 		dispatch(showModal());
 	};
 
@@ -73,13 +72,13 @@ export var Paragraph = ({
 	};
 
 	let handleEditHistoryMode = (e: React.ChangeEvent<HTMLInputElement>) => {
-		dispatch(alterCheckEditHistoryMode({ paragraphId: id, mode: e.target.value as EditHistoryMode }));
-		dispatch(checkEditHistory(id));
+		dispatch(alterCheckEditHistoryMode({ paragraphId, mode: e.target.value as EditHistoryMode }));
+		dispatch(checkEditHistory(paragraphId));
 	};
 
 	// automatically click the done button a certain condition
 	toast.onChange((toastItem) => {
-		if (toastItem.status === 'removed' && toastItem.id === id + 'NoGrammarMistakes' && paragraphStatus === 'modifying') {
+		if (toastItem.status === 'removed' && toastItem.id === paragraphId + 'NoGrammarMistakes' && paragraphStatus === 'modifying') {
 			// If the toastId check isn't included, changes to any toast would trigger the following.
 			if (doneButtonRef.current) {
 				doneButtonRef.current!.click();
@@ -90,7 +89,7 @@ export var Paragraph = ({
 	// -------------- Editing--------------
 
 	if (paragraphStatus === 'editing') {
-		return <ParagraphInput paragraphId={id} />;
+		return <ParagraphInput paragraphId={paragraphId} />;
 	}
 
 	// -------------- Modifying / Reviving --------------
@@ -103,25 +102,25 @@ export var Paragraph = ({
 						<div>
 							<input
 								type='radio'
-								id={`${id}Creation`}
-								name={id}
+								id={`${paragraphId}Creation`}
+								name={paragraphId}
 								value='paragraphCreation'
 								checked={editHistoryMode === 'paragraphCreation'}
 								onChange={handleEditHistoryMode}
 							/>
-							<label htmlFor={`${id}Creation`}>Since Paragraph Creation</label>
+							<label htmlFor={`${paragraphId}Creation`}>Since Paragraph Creation</label>
 						</div>
 						<div>
 							<input
 								type='radio'
-								id={`${id}LastEdit`}
-								name={id}
+								id={`${paragraphId}LastEdit`}
+								name={paragraphId}
 								value='paragraphLastEdit'
 								checked={editHistoryMode === 'paragraphLastEdit'}
 								onChange={handleEditHistoryMode}
 								disabled={initialParagraph === updatedInitialParagraph}
 							/>
-							<label htmlFor={`${id}LastEdit`}>Since Paragraph Last Edit</label>
+							<label htmlFor={`${paragraphId}LastEdit`}>Since Paragraph Last Edit</label>
 						</div>
 					</fieldset>
 				)}
@@ -182,8 +181,8 @@ export var Paragraph = ({
 
 				<button
 					onClick={() => {
-						dispatch(acceptAllAdjustments(id));
-						dispatch(updateParagraphEditDate(id));
+						dispatch(acceptAllAdjustments(paragraphId));
+						dispatch(updateParagraphEditDate(paragraphId));
 					}}
 					disabled={allAdjustmentsCount === 0 || isGrammarFixesPending || isGrammarFixesFetching}
 				>
@@ -194,11 +193,11 @@ export var Paragraph = ({
 					onClick={() => {
 						// to make sure the next time, paragraph changed back to old content, there will be a refetch
 						QueryClient.invalidateQueries({
-							queryKey: grammarQueryKeys(paragraphBeforeGrammarFix, id),
+							queryKey: grammarQueryKeys(paragraphBeforeGrammarFix, paragraphId),
 							exact: true,
 							refetchType: 'none',
 						});
-						dispatch(doneWithCurrentParagraphState(id));
+						dispatch(doneWithCurrentParagraphState(paragraphId));
 					}}
 					disabled={isGrammarFixesPending || isGrammarFixesFetching}
 					ref={doneButtonRef}
@@ -214,7 +213,7 @@ export var Paragraph = ({
 		return (
 			<>
 				<h4>Click Paragraph to Edit</h4>
-				<StyledParagraph onClick={() => dispatch(updateUserInput(id))}>{paragraphAfterGrammarFix}</StyledParagraph>
+				<StyledParagraph onClick={() => dispatch(updateUserInput(paragraphId))}>{paragraphAfterGrammarFix}</StyledParagraph>
 				{showTranslation && (
 					<ErrorBoundary
 						onReset={reset}
@@ -225,17 +224,17 @@ export var Paragraph = ({
 							</div>
 						)}
 					>
-						<ParagraphTranslation paragraph={{ paragraphText: paragraphAfterGrammarFix, paragraphId: id }} />
+						<ParagraphTranslation paragraph={{ paragraphText: paragraphAfterGrammarFix, paragraphId }} />
 					</ErrorBoundary>
 				)}
 				<div>
-					<button onClick={() => dispatch(checkEditHistory(id))} disabled={paragraphAfterGrammarFix === initialParagraph}>
+					<button onClick={() => dispatch(checkEditHistory(paragraphId))} disabled={paragraphAfterGrammarFix === initialParagraph}>
 						Show Edit History
 					</button>
 					<button
 						onClick={() => {
-							dispatch(revertToBeginning(id));
-							dispatch(updateParagraphEditDate(id));
+							dispatch(revertToBeginning(paragraphId));
+							dispatch(updateParagraphEditDate(paragraphId));
 						}}
 						disabled={paragraphAfterGrammarFix === initialParagraph}
 					>
@@ -244,10 +243,10 @@ export var Paragraph = ({
 					<button
 						onClick={() => {
 							QueryClient.invalidateQueries({
-								queryKey: grammarQueryKeys(paragraphBeforeGrammarFix, id),
+								queryKey: grammarQueryKeys(paragraphBeforeGrammarFix, paragraphId),
 								exact: true,
 							});
-							dispatch(reFetchGrammarMistakes(id));
+							dispatch(reFetchGrammarMistakes(paragraphId));
 						}}
 					>
 						Find Grammar Mistakes
@@ -255,9 +254,9 @@ export var Paragraph = ({
 					<button
 						onClick={() => {
 							if (showTranslation) {
-								QueryClient.cancelQueries({ queryKey: translationQueryKeys(paragraphAfterGrammarFix, id) });
+								QueryClient.cancelQueries({ queryKey: translationQueryKeys(paragraphAfterGrammarFix, paragraphId) });
 							}
-							dispatch(toggleTranslation(id));
+							dispatch(toggleTranslation(paragraphId));
 							reset();
 						}}
 					>

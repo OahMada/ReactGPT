@@ -78,8 +78,6 @@ enableMocking().then(() => {
  *
  * ## bugs
  *
- * why so many canceled request?
- *
  * ## test
  *
  * test https://testing-library.com/docs/
