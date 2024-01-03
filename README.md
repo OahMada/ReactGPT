@@ -11,10 +11,11 @@ Main functionality:
 - Find and apply available grammar fixes in the article
 - Undo any adjustments made to the article
 - Translate the article
-- Search for articles
+- Search for existing articles
 - Pin/Bookmark articles
 - Preview the result and export it as a PDF, DOCX, or PNG file
-- Configure the OpenAI API key
+- Customize the OpenAI API key
+- Global hotkey support, view available hotkeys in hotkey map page
 
 Main libraries used:
 
@@ -27,5 +28,4 @@ Main libraries used:
 
 ## Inspiration
 
-- [Vite](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react)
-- [Vitest](https://github.com/vitest-dev/vitest/tree/main/examples/react-testing-lib)
+- [vite-template-redux](https://github.com/reduxjs/redux-templates/tree/master/packages/vite-template-redux)

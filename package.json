@@ -66,11 +66,12 @@
 		"@vitejs/plugin-react": "^4.2.1",
 		"eslint": "^8.55.0",
 		"eslint-config-react-app": "^7.0.1",
+		"eslint-plugin-jest-dom": "^5.1.0",
 		"eslint-plugin-prettier": "^5.0.1",
+		"eslint-plugin-testing-library": "^6.2.0",
 		"jsdom": "^23.0.1",
 		"msw": "^2.0.11",
 		"prettier": "^3.1.0",
-		"prettier-config-nick": "^1.0.8",
 		"typescript": "^5.2.2",
 		"user-agent-data-types": "^0.4.2",
 		"vite": "^5.0.10",
@@ -83,7 +84,9 @@
 			"react-app/jest"
 		],
 		"plugins": [
-			"prettier"
+			"prettier",
+			"jest-dom",
+			"testing-library"
 		],
 		"rules": {
 			"react/jsx-no-target-blank": "off"
