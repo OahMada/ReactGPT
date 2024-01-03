@@ -6,6 +6,11 @@ import { handlers } from './handlers';
 
 export var server = setupServer(...handlers);
 
+// https://mswjs.io/docs/integrations/node#confirmation
+server.events.on('request:start', ({ request }) => {
+	console.log('MSW intercepted:', request.method, request.url);
+});
+
 // Establish API mocking before all tests.
 beforeAll(() => server.listen());
 // Reset any request handlers that we may add during the tests,

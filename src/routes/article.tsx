@@ -5,7 +5,7 @@ import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { QueryErrorResetBoundary, useIsFetching, useQueryClient } from '@tanstack/react-query'; // https://www.thisdot.co/blog/common-patterns-and-nuances-using-react-query/#handling-errors-with-error-boundaries
 import { Navigate, useParams, Outlet, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from 'react-beautiful-dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
+import { DragDropContext, Draggable, Droppable, DropResult, DroppableProps } from '@hello-pangea/dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
 import { mergeRefs } from 'react-merge-refs';
 import { useHotkeysContext } from 'react-hotkeys-hook';
 
@@ -25,27 +25,6 @@ import { Paragraph as ParagraphType } from '../types';
 // query
 import { grammarQueryKeys } from '../query/grammarQuery';
 import { translationQueryKeys } from '../query/translationQuery';
-
-// Credits to https://github.com/GiovanniACamacho and https://github.com/Meligy for the TypeScript version
-// Original post: https://github.com/atlassian/react-beautiful-dnd/issues/2399#issuecomment-1175638194
-export var StrictModeDroppable = ({ children, ...props }: DroppableProps) => {
-	const [enabled, setEnabled] = useState(false);
-
-	useEffect(() => {
-		const animation = requestAnimationFrame(() => setEnabled(true));
-
-		return () => {
-			cancelAnimationFrame(animation);
-			setEnabled(false);
-		};
-	}, []);
-
-	if (!enabled) {
-		return null;
-	}
-
-	return <Droppable {...props}>{children}</Droppable>;
-};
 
 export var Article = () => {
 	// react router
@@ -222,7 +201,7 @@ export var Article = () => {
 				</div>
 			)}
 			<DragDropContext onDragEnd={handleOnDragEnd}>
-				<StrictModeDroppable droppableId='paragraphs'>
+				<Droppable droppableId='paragraphs'>
 					{(provided) => (
 						<div ref={provided.innerRef} {...provided.droppableProps}>
 							{filteredParagraphs.length === 0 && <EmptyParagraphList />}
@@ -314,7 +293,7 @@ export var Article = () => {
 							{/* For the `ParagraphControlBtns` element, if the toastContainer were within the element itself, then every element would render a separate toast. */}
 						</div>
 					)}
-				</StrictModeDroppable>
+				</Droppable>
 			</DragDropContext>
 			<Outlet context={filteredParagraphs} />
 		</>
