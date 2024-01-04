@@ -15,6 +15,9 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PersistQueryClientProvider, removeOldestQuery } from '@tanstack/react-query-persist-client';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 
+// react hotkeys hook
+import { HotkeysProvider } from 'react-hotkeys-hook';
+
 // data compressing
 import { compress, decompress } from 'lz-string';
 
@@ -59,7 +62,9 @@ enableMocking().then(() => {
 			<PersistQueryClientProvider client={queryClient} persistOptions={{ persister, maxAge: Infinity, buster: '' }}>
 				<Provider store={store}>
 					<PersistGate loading={null} persistor={persistor}>
-						<App />
+						<HotkeysProvider>
+							<App />
+						</HotkeysProvider>
 					</PersistGate>
 				</Provider>
 				<ReactQueryDevtools initialIsOpen={true} position='right' />
@@ -73,13 +78,16 @@ enableMocking().then(() => {
  * ## features
  *
  * verify the persisted data
- * cmd + z article input
  *
  * ## bugs
  *
  * ## test
  *
  * test https://testing-library.com/docs/
+ *
+ * pre-commit hook
+ * https://dev.to/shashwatnautiyal/complete-guide-to-eslint-prettier-husky-and-lint-staged-fh9
+ * https://duncanlew.medium.com/getting-started-with-husky-and-lint-staged-for-pre-commit-hooks-c2764d8c9ae
  *
  * ## outlook and others
  * update user flow

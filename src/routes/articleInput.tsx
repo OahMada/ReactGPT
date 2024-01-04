@@ -31,6 +31,8 @@ export var ArticleInput = () => {
 		clearErrors,
 		formState: { errors },
 		setValue,
+		setFocus,
+		getValues,
 	} = useForm({
 		defaultValues: {
 			article: localArticle ?? '',
@@ -50,7 +52,12 @@ export var ArticleInput = () => {
 	};
 
 	let fillInText = () => {
-		setValue('article', defaultArticleInput);
+		// to preserve user input value
+		let article = getValues('article');
+		let updatedArticle = article + '\n\n' + defaultArticleInput;
+		setValue('article', updatedArticle);
+		setLocalArticle(updatedArticle);
+		setFocus('article');
 	};
 
 	let { 'Article Input Page': articleInputPageHotkeys } = HotkeyMapData();
