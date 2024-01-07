@@ -32,22 +32,26 @@ var configPersistConfig = {
 	storage,
 };
 
-var rootReducer = combineReducers({
+export var rootReducer = combineReducers({
 	article: persistReducer<ReturnType<typeof articleReducer>>(articlePersistConfig, articleReducer), //https://github.com/rt2zz/redux-persist/issues/1368
 	modal: modalReducer,
 	config: persistReducer<ReturnType<typeof configReducer>>(configPersistConfig, configReducer),
 });
 
-export var store = configureStore({
-	reducer: rootReducer, //https://github.com/rt2zz/redux-persist/issues/1368
-	middleware: (getDefaultMiddleware) =>
-		getDefaultMiddleware({
-			serializableCheck: false,
-		}),
-});
+export function setupStore(preloadedState?: Partial<RootState>) {
+	return configureStore({
+		reducer: rootReducer, //https://github.com/rt2zz/redux-persist/issues/1368
+		middleware: (getDefaultMiddleware) =>
+			getDefaultMiddleware({
+				serializableCheck: false,
+			}),
+		preloadedState,
+	});
+}
 
-export const persistor = persistStore(store);
+export const persistor = persistStore(setupStore());
 
-export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof rootReducer>;
+export type AppStore = ReturnType<typeof setupStore>;
+export type AppDispatch = AppStore['dispatch'];
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action<string>>;

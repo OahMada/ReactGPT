@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client';
 
 // redux
 import { Provider } from 'react-redux';
-import { persistor, store } from './redux/store';
+import { persistor, setupStore } from './redux/store';
 
 // redux persist
 import { PersistGate } from 'redux-persist/integration/react';
@@ -60,7 +60,7 @@ enableMocking().then(() => {
 	ReactDOM.createRoot(document.getElementById('root')!).render(
 		<React.StrictMode>
 			<PersistQueryClientProvider client={queryClient} persistOptions={{ persister, maxAge: Infinity, buster: '' }}>
-				<Provider store={store}>
+				<Provider store={setupStore()}>
 					<PersistGate loading={null} persistor={persistor}>
 						<HotkeysProvider>
 							<App />

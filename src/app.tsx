@@ -11,7 +11,7 @@ import { Tooltip } from 'react-tooltip';
 // components
 import { Root, Article, ArticleInput, Config, ErrorPage, Preview, HotkeyMap } from './routes';
 
-var router = createBrowserRouter([
+export var router = createBrowserRouter([
 	{
 		errorElement: <ErrorPage />,
 		children: [
