@@ -15,7 +15,12 @@ import { handlers } from './handlers';
 import { setupStore, RootState, AppStore } from './redux/store';
 import { routesConfig } from './routesConfig';
 
-vi.mock('react-secure-storage');
+vi.mock('react-secure-storage', () => ({
+	default: {
+		getItem: vi.fn(() => import.meta.env.VITE_OPENAI_API_KEY_ALIAS),
+		setItem: vi.fn(),
+	},
+}));
 vi.mock('./worker/workerInstance.ts');
 
 // This type interface extends the default options for render from RTL, as well
