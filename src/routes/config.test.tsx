@@ -8,6 +8,7 @@ describe('config route tests', () => {
 	it('Enter API key to land on main page', async () => {
 		vi.mocked(secureLocalStorage.getItem).mockReturnValue(null);
 		let { router } = renderRouter();
+		// screen.debug();
 		expect(router.state.location.pathname).toEqual('/config');
 		let inputNode = screen.getByLabelText(/input your openAI API key/i);
 		expect(inputNode).toBeInTheDocument();
