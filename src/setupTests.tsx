@@ -15,6 +15,9 @@ import { handlers } from './handlers';
 import { setupStore, RootState, AppStore } from './redux/store';
 import { routesConfig } from './routesConfig';
 
+vi.mock('react-secure-storage');
+vi.mock('./worker/workerInstance.ts');
+
 // This type interface extends the default options for render from RTL, as well
 // as allows the user to specify other things such as initialState, store.
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'wrapper'> {
