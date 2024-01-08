@@ -5,13 +5,17 @@ import secureLocalStorage from 'react-secure-storage';
 import { renderRouter, server } from '../setupTests';
 
 describe('config route tests', () => {
-	it('Land on main page when there is API key provided', () => {
-		let { router } = renderRouter();
-		expect(router.state.location.pathname).toEqual('/'); // https://stackoverflow.com/a/73730116/5800789
-	});
-	it('Open the main page, but the app jumps to the Config page because no API key has been provided.', () => {
+	it('Enter API key to land on main page', async () => {
 		vi.mocked(secureLocalStorage.getItem).mockReturnValue(null);
 		let { router } = renderRouter();
 		expect(router.state.location.pathname).toEqual('/config');
+		let inputNode = screen.getByLabelText(/input your openAI API key/i);
+		expect(inputNode).toBeInTheDocument();
+		await userEvent.keyboard('{Meta>}i');
+		expect(inputNode).toHaveFocus();
+		await userEvent.type(inputNode, import.meta.env.VITE_OPENAI_API_KEY_ALIAS);
+		expect(inputNode).toHaveValue(import.meta.env.VITE_OPENAI_API_KEY_ALIAS);
+		await userEvent.click(screen.getByRole('button'));
+		expect(router.state.location.pathname).toEqual('/');
 	});
 });
