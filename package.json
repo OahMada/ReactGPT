@@ -102,6 +102,10 @@
 			"testing-library/prefer-wait-for": "error"
 		}
 	},
+	"eslintConfigComments": {
+		"parser-related": "https://stackoverflow.com/a/41190209/5800789",
+		"testing-library-related": "https://sapegin.me/til/react/ensuring-react-testing-library-best-practices-with-eslint/"
+	},
 	"msw": {
 		"workerDirectory": ""
 	},
