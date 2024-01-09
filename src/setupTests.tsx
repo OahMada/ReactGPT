@@ -17,6 +17,7 @@ import { handlers } from './handlers';
 import { setupStore, RootState, AppStore } from './redux/store';
 import { routesConfig } from './routesConfig';
 
+// mocks
 vi.mock('react-secure-storage', () => ({
 	default: {
 		getItem: vi.fn(() => import.meta.env.VITE_OPENAI_API_KEY_ALIAS),
@@ -90,6 +91,7 @@ afterEach(() => server.resetHandlers());
 // Clean up after the tests are finished.
 afterAll(() => server.close());
 
+// custom extractions
 export var clickButton = async (name?: ByRoleOptions['name']) => {
 	await userEvent.click(screen.getByRole('button', { name }));
 };
