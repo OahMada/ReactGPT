@@ -17,6 +17,6 @@ describe('config route tests', () => {
 		await userEvent.type(inputNode, import.meta.env.VITE_OPENAI_API_KEY_ALIAS);
 		expect(inputNode).toHaveValue(import.meta.env.VITE_OPENAI_API_KEY_ALIAS);
 		await userEvent.click(screen.getByRole('button'));
-		// expect(router.state.location.pathname).toEqual('/');
+		expect(router.state.location.pathname).toEqual('/');
 	});
 });
