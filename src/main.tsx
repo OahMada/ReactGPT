@@ -78,6 +78,7 @@ enableMocking().then(() => {
  * ## features
  *
  * verify the persisted data
+ * ci/cd https://blog.logrocket.com/ci-cd-pipelines-react-github-actions-heroku/
  *
  * ## bugs
  *
