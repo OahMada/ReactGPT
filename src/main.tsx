@@ -75,6 +75,7 @@ enableMocking().then(() => {
 
 /**
  * one thing not right with react query: error boundary reset;
+ *
  * ## features
  *
  * verify the persisted data
