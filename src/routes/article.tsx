@@ -181,7 +181,7 @@ export var Article = () => {
 						{
 							queryKey: grammarQueryKeys(paragraph.paragraphBeforeGrammarFix, paragraph.id),
 						},
-						// somehow this throws CancelledError {revert: true, silent: undefined}
+						// somehow this throws CancelledError {revert: true, silent: undefined}
 						{ throwOnError: true }
 					);
 				}

@@ -3,3 +3,5 @@ public
 build
 dist
 coverage
+
+/mockServiceWorker.js

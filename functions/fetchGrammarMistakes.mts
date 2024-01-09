@@ -1,4 +1,4 @@
-import { Context, Config } from '@netlify/functions';
+import { Config } from '@netlify/functions';
 import { buildAxiosResponse } from './buildAxiosResponse';
 
 export default async (req: Request) => {

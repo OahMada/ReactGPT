@@ -13,8 +13,10 @@
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"noEmit": true,
-		"jsx": "react-jsx"
+		"jsx": "react-jsx",
+		"outDir": "dist"
 	},
 	"include": ["src", "functions/buildAxiosResponse.ts"],
-	"references": [{ "path": "./tsconfig.node.json" }]
+	"references": [{ "path": "./tsconfig.node.json" }],
+	"exclude": ["node_modules"]
 }
