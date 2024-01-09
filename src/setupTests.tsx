@@ -10,6 +10,8 @@ import { HotkeysProvider } from 'react-hotkeys-hook';
 import { ToastContainer } from 'react-toastify';
 import { Tooltip } from 'react-tooltip';
 import { RouterProvider, createMemoryRouter, MemoryRouterProps } from 'react-router-dom';
+import { screen, ByRoleOptions } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { handlers } from './handlers';
 import { setupStore, RootState, AppStore } from './redux/store';
@@ -87,3 +89,7 @@ beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 // Clean up after the tests are finished.
 afterAll(() => server.close());
+
+export var clickButton = async (name?: ByRoleOptions['name']) => {
+	await userEvent.click(screen.getByRole('button', { name }));
+};
