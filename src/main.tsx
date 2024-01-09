@@ -69,7 +69,7 @@ enableMocking().then(() => {
 				</Provider>
 				<ReactQueryDevtools initialIsOpen={true} position='right' />
 			</PersistQueryClientProvider>
-		</React.StrictMode>,
+		</React.StrictMode>
 	);
 });
 

@@ -2,5 +2,6 @@
 	"useTabs": true,
 	"jsxSingleQuote": true,
 	"singleQuote": true,
-	"printWidth": 150
+	"printWidth": 150,
+	"trailingComma": "es5"
 }
