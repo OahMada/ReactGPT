@@ -85,7 +85,6 @@ enableMocking().then(() => {
  * ## test
  *
  * test https://testing-library.com/docs/
- * extract testing action; helper functions
  *
  * ## outlook and others
  *
