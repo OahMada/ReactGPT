@@ -69,7 +69,7 @@ enableMocking().then(() => {
 				</Provider>
 				<ReactQueryDevtools initialIsOpen={true} position='right' />
 			</PersistQueryClientProvider>
-		</React.StrictMode>
+		</React.StrictMode>,
 	);
 });
 
@@ -85,9 +85,6 @@ enableMocking().then(() => {
  *
  * test https://testing-library.com/docs/
  *
- * pre-commit hook
- * https://dev.to/shashwatnautiyal/complete-guide-to-eslint-prettier-husky-and-lint-staged-fh9
- * https://duncanlew.medium.com/getting-started-with-husky-and-lint-staged-for-pre-commit-hooks-c2764d8c9ae
  *
  * ## outlook and others
  * update user flow

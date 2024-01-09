@@ -11,7 +11,9 @@
 		"test": "vitest",
 		"format": "prettier --write .",
 		"lint": "eslint .",
-		"type-check": "tsc"
+		"type-check": "tsc",
+		"prepare": "husky install",
+		"lint-staged": "lint-staged"
 	},
 	"dependencies": {
 		"@hello-pangea/dnd": "^16.5.0",
@@ -69,7 +71,9 @@
 		"eslint-plugin-jest-dom": "^5.1.0",
 		"eslint-plugin-prettier": "^5.1.2",
 		"eslint-plugin-testing-library": "^6.2.0",
+		"husky": "^8.0.0",
 		"jsdom": "^23.0.1",
+		"lint-staged": "^15.2.0",
 		"msw": "^2.0.11",
 		"prettier": "^3.1.1",
 		"typescript": "^5.2.2",
@@ -94,5 +98,14 @@
 	},
 	"msw": {
 		"workerDirectory": ""
+	},
+	"lint-staged": {
+		"*.{js,jsx,ts,tsx}": [
+			"eslint --fix",
+			"prettier --write --ignore-unknown"
+		],
+		"*.{json,html,md,css}": [
+			"prettier --write --ignore-unknown"
+		]
 	}
 }
