@@ -16,6 +16,8 @@ import userEvent from '@testing-library/user-event';
 import { handlers } from './handlers';
 import { setupStore, RootState, AppStore } from './redux/store';
 import { routesConfig } from './routesConfig';
+import { saveArticleInput } from './features/articleSlice';
+import { defaultArticleInput } from './utils';
 
 // mocks
 vi.mock('react-secure-storage', () => ({
@@ -74,22 +76,26 @@ var renderWithContexts = (
 	return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
 };
 
+type renderRouterProps = Partial<MemoryRouterProps> & {
+	store?: AppStore;
+};
+
 // https://reactrouter.com/en/main/routers/create-memory-router
-export var renderRouter = ({ initialEntries = ['/'], initialIndex = 0 }: Partial<MemoryRouterProps> = {}) => {
+export var renderRouter = ({ initialEntries = ['/'], initialIndex = 0, store }: renderRouterProps = {}) => {
 	let router = createMemoryRouter(routesConfig, {
 		initialEntries,
 		initialIndex,
 	});
-	return { router, ...renderWithContexts(<RouterProvider router={router} />) };
+	return { router, ...renderWithContexts(<RouterProvider router={router} />, { store }) };
 };
 
 // msw server
 export var server = setupServer(...handlers);
 
 // https://mswjs.io/docs/integrations/node#confirmation
-server.events.on('request:start', ({ request }) => {
-	console.log('MSW intercepted:', request.method, request.url);
-});
+// server.events.on('request:start', ({ request }) => {
+// 	console.log('MSW intercepted:', request.method, request.url);
+// });
 
 // Establish API mocking before all tests.
 beforeAll(() => server.listen());
@@ -102,4 +108,12 @@ afterAll(() => server.close());
 // custom extractions
 export var clickButton = async (name?: ByRoleOptions['name']) => {
 	await userEvent.click(screen.getByRole('button', { name }));
+};
+
+// https://redux.js.org/usage/writing-tests#preparing-initial-test-state
+export var prepareStoreForArticlePageTests = () => {
+	let store = setupStore();
+	store.dispatch(saveArticleInput({ articleText: defaultArticleInput, articleId: 'article1' }));
+	store.dispatch(saveArticleInput({ articleText: 'Hello there.', articleId: 'article2' }));
+	return store;
 };
