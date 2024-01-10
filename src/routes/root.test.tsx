@@ -5,8 +5,11 @@ import { renderRouter, clickButton, prepareStoreForArticlePageTests } from '../s
 
 describe('Root route (shared layout) tests', () => {
 	it('Search articles', async () => {
-		let store = prepareStoreForArticlePageTests();
-		renderRouter({ store, initialEntries: ['/article/article1'] });
+		let {
+			store,
+			articleIdArr: [articleId],
+		} = prepareStoreForArticlePageTests();
+		renderRouter({ store, initialEntries: [`/article/${articleId}`] });
 		screen.debug();
 	});
 	it('Pin article', async () => {});

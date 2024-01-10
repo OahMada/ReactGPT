@@ -112,8 +112,9 @@ export var clickButton = async (name?: ByRoleOptions['name']) => {
 
 // https://redux.js.org/usage/writing-tests#preparing-initial-test-state
 export var prepareStoreForArticlePageTests = () => {
+	let articleIdArr = ['article1', 'article2'];
 	let store = setupStore();
-	store.dispatch(saveArticleInput({ articleText: defaultArticleInput, articleId: 'article1' }));
-	store.dispatch(saveArticleInput({ articleText: 'Hello there.', articleId: 'article2' }));
-	return store;
+	store.dispatch(saveArticleInput({ articleText: defaultArticleInput, articleId: articleIdArr[0] }));
+	store.dispatch(saveArticleInput({ articleText: 'Hello there.', articleId: articleIdArr[1] }));
+	return { store, articleIdArr };
 };
