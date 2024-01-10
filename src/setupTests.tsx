@@ -26,6 +26,14 @@ vi.mock('react-secure-storage', () => ({
 }));
 vi.mock('./worker/workerInstance.ts');
 
+// for React tooltip library
+var ResizeObserverMock = vi.fn(() => ({
+	observe: vi.fn(),
+	unobserve: vi.fn(),
+	disconnect: vi.fn(),
+}));
+vi.stubGlobal('ResizeObserver', ResizeObserverMock);
+
 // This type interface extends the default options for render from RTL, as well
 // as allows the user to specify other things such as initialState, store.
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'wrapper'> {
@@ -57,7 +65,7 @@ var renderWithContexts = (
 					<HotkeysProvider>
 						{children}
 						<ToastContainer />
-						<Tooltip />
+						<Tooltip id='hotkey' />
 					</HotkeysProvider>
 				</Provider>
 			</QueryClientProvider>

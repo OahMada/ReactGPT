@@ -79,12 +79,13 @@ enableMocking().then(() => {
  * ## features
  *
  * verify the persisted data
- * ci/cd https://blog.logrocket.com/ci-cd-pipelines-react-github-actions-heroku/
+ * ci/cd https://medium.com/@indusasikala93/deploying-a-react-application-using-a-jenkins-ci-cd-pipeline-4c2a7dcf1efb
+ * https://dev.to/lovepreetsingh/deploy-your-react-nodejs-apps-using-jenkins-pipeline-22pl
+ * https://www.freecodecamp.org/news/automate-mern-app-deployment-with-jenkins/
+ * https://www.jenkins.io/doc/pipeline/tour/getting-started/
  *
  * ## bugs
  * ## test
- *
- * test https://testing-library.com/docs/
  *
  * ## outlook and others
  *
