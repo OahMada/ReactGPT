@@ -52,9 +52,9 @@ export var ArticleInput = () => {
 	};
 
 	let fillInText = () => {
+		let articleText = getValues('article');
 		// to preserve user input value
-		let article = getValues('article');
-		let updatedArticle = article + '\n\n' + defaultArticleInput;
+		let updatedArticle = articleText ? articleText + '\n\n' + defaultArticleInput : defaultArticleInput;
 		setValue('article', updatedArticle);
 		setLocalArticle(updatedArticle);
 		setFocus('article');

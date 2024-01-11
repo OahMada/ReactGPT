@@ -49,7 +49,9 @@ export function setupStore(preloadedState?: Partial<RootState>) {
 	});
 }
 
-export const persistor = persistStore(setupStore());
+export var store = setupStore();
+
+export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppStore = ReturnType<typeof setupStore>;

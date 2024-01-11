@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import secureLocalStorage from 'react-secure-storage';
 import { http, HttpResponse } from 'msw';
 
-import { renderRouter, server, clickButton } from '../setupTests';
+import { renderRouter, server, clickElement } from '../setupTests';
 
 describe('config route tests', () => {
 	it('Enter API key to land on main page', async () => {
@@ -17,7 +17,7 @@ describe('config route tests', () => {
 		expect(inputNode).toHaveFocus();
 		await userEvent.type(inputNode, import.meta.env.VITE_OPENAI_API_KEY_ALIAS);
 		expect(inputNode).toHaveValue(import.meta.env.VITE_OPENAI_API_KEY_ALIAS);
-		await clickButton();
+		await clickElement();
 		expect(router.state.location.pathname).toEqual('/');
 	});
 
@@ -26,7 +26,7 @@ describe('config route tests', () => {
 		renderRouter();
 		let inputNode = screen.getByLabelText(/input your openAI API key/i);
 		await userEvent.type(inputNode, 'TESTING');
-		await clickButton();
+		await clickElement();
 		let errorMessageToast = await screen.findByRole('alert');
 		expect(errorMessageToast).toHaveTextContent(/Invalid API Key Format/);
 	});
@@ -34,12 +34,12 @@ describe('config route tests', () => {
 	it('Cancel editing API key and jump back to main page', async () => {
 		let { router } = renderRouter({ initialEntries: ['/', '/config'], initialIndex: 1 });
 		expect(screen.getByRole('heading')).toHaveTextContent(/default/i);
-		await clickButton(/edit/i);
+		await clickElement(/edit/i);
 		expect(screen.getByLabelText(/input your openAI API key/i)).toBeInTheDocument();
-		await clickButton(/cancel/i);
+		await clickElement(/cancel/i);
 		expect(router.state.location.pathname).toEqual('/');
 		// reenter config page always shows existing API key and edit button.
-		await clickButton(/config/i);
+		await clickElement(/config/i);
 		expect(screen.getByRole('button', { name: /edit/i })).toBeInTheDocument();
 	});
 
@@ -52,7 +52,7 @@ describe('config route tests', () => {
 		vi.mocked(secureLocalStorage.getItem).mockReturnValue(null);
 		renderRouter();
 		await userEvent.type(screen.getByLabelText(/input your openAI API key/i), import.meta.env.VITE_OPENAI_API_KEY_ALIAS);
-		await clickButton();
+		await clickElement();
 		expect(await screen.findByRole('alert')).toBeInTheDocument();
 	});
 });

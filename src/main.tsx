@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client';
 
 // redux
 import { Provider } from 'react-redux';
-import { persistor, setupStore } from './redux/store';
+import { persistor, store } from './redux/store';
 
 // redux persist
 import { PersistGate } from 'redux-persist/integration/react';
@@ -60,7 +60,7 @@ enableMocking().then(() => {
 	ReactDOM.createRoot(document.getElementById('root')!).render(
 		<React.StrictMode>
 			<PersistQueryClientProvider client={queryClient} persistOptions={{ persister, maxAge: Infinity, buster: '' }}>
-				<Provider store={setupStore()}>
+				<Provider store={store}>
 					<PersistGate loading={null} persistor={persistor}>
 						<HotkeysProvider>
 							<App />
@@ -85,6 +85,9 @@ enableMocking().then(() => {
  * https://www.jenkins.io/doc/pipeline/tour/getting-started/
  *
  * ## bugs
+ *
+ * type d in search box triggers hotkey //https://react-hotkeys-hook.vercel.app/docs/documentation/useHotkeys/scoping-hotkeys
+ *
  * ## test
  *
  * ## outlook and others

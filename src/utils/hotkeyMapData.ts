@@ -123,13 +123,13 @@ export var HotkeyMapData = () => {
 			},
 			insertParagraphAbove: {
 				id: 'article/insertAbove',
-				hotkey: getUserDefinedHotkey({ id: 'article/insertAbove', hotkey: '=' }),
+				hotkey: getUserDefinedHotkey({ id: 'article/insertAbove', hotkey: 'equal' }),
 				label: generateHotkeyLabel(getUserDefinedHotkey({ id: 'article/insertAbove', hotkey: '=' })),
 				purpose: 'Click the Insert Above button. Insert new paragraph above current one.',
 			},
 			insertParagraphBelow: {
 				id: 'article/insertBelow',
-				hotkey: getUserDefinedHotkey({ id: 'article/insertBelow', hotkey: '-' }),
+				hotkey: getUserDefinedHotkey({ id: 'article/insertBelow', hotkey: 'minus' }),
 				label: generateHotkeyLabel(getUserDefinedHotkey({ id: 'article/insertBelow', hotkey: '-' })),
 				purpose: 'Click the Insert Below button. Insert new paragraph below current one.',
 			},

@@ -106,15 +106,24 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 // custom extractions
-export var clickButton = async (name?: ByRoleOptions['name']) => {
-	await userEvent.click(screen.getByRole('button', { name }));
+
+type button = RegExp | string | undefined | HTMLElement;
+export var clickElement = async (button?: button) => {
+	if (button instanceof RegExp || typeof button === 'string' || !button) {
+		await userEvent.click(screen.getByRole('button', { name: button }));
+	} else {
+		await userEvent.click(button);
+	}
 };
 
 // https://redux.js.org/usage/writing-tests#preparing-initial-test-state
-export var prepareStoreForArticlePageTests = () => {
-	let articleIdArr = ['article1', 'article2'];
+export var renderAnExistingArticle = () => {
+	let articleArr = [
+		['article1', 'Hello there.'],
+		['article2', defaultArticleInput],
+	];
 	let store = setupStore();
-	store.dispatch(saveArticleInput({ articleText: defaultArticleInput, articleId: articleIdArr[0] }));
-	store.dispatch(saveArticleInput({ articleText: 'Hello there.', articleId: articleIdArr[1] }));
-	return { store, articleIdArr };
+	store.dispatch(saveArticleInput({ articleText: articleArr[0][1], articleId: articleArr[0][0] }));
+	store.dispatch(saveArticleInput({ articleText: articleArr[1][1], articleId: articleArr[1][0] }));
+	renderRouter({ store, initialEntries: [`/article/${articleArr[0][0]}`] });
 };
