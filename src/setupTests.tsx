@@ -10,7 +10,7 @@ import { HotkeysProvider } from 'react-hotkeys-hook';
 import { ToastContainer } from 'react-toastify';
 import { Tooltip } from 'react-tooltip';
 import { RouterProvider, createMemoryRouter, MemoryRouterProps } from 'react-router-dom';
-import { screen, ByRoleOptions } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { handlers } from './handlers';

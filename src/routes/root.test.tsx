@@ -34,8 +34,10 @@ describe('Root route (shared layout) tests', () => {
 		let deleteArticleButtons = screen.getAllByRole('button', { name: /delete$/i });
 		expect(deleteArticleButtons).toHaveLength(2);
 		await clickElement(deleteArticleButtons[0]);
-		let paragraphsOnThePage = screen.getAllByRole('paragraph');
-		expect(paragraphsOnThePage[0]).toHaveTextContent(/A voiced/i);
+		let deletedArticle = screen.queryByText((content, element) => {
+			return element!.tagName.toLowerCase() === 'p' && content.startsWith('Hello');
+		});
+		expect(deletedArticle).not.toBeInTheDocument();
 		deleteArticleButtons = screen.getAllByRole('button', { name: /delete$/i });
 		expect(deleteArticleButtons).toHaveLength(1);
 	});
@@ -43,7 +45,11 @@ describe('Root route (shared layout) tests', () => {
 		renderAnExistingArticle();
 		let articleParagraphs = screen.getAllByRole('article');
 		expect(articleParagraphs).toHaveLength(1);
-		await clickElement(screen.getAllByRole('paragraph')[1]);
+		await clickElement(
+			screen.getByText((content, element) => {
+				return element!.tagName.toLowerCase() === 'p' && content.startsWith('A voiced');
+			})
+		);
 		articleParagraphs = screen.getAllByRole('article');
 		expect(articleParagraphs).toHaveLength(2);
 	});
