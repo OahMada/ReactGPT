@@ -31,15 +31,15 @@ var Undo = ({ closeToast, onUndo, paragraph, paragraphId }: UndoProps) => {
 	};
 
 	let { 'Article Page': articlePageHotkeys } = HotkeyMapData();
+	let { enabledScopes } = useHotkeysContext();
+	let toolTipHidden = !enabledScopes.includes(paragraphId);
 
 	useKeys({
 		keyBinding: articlePageHotkeys.undoParagraphDeletion.hotkey,
 		callback: handleClick,
 		scopes: paragraphId,
+		enabled: enabledScopes.includes(paragraphId),
 	});
-
-	let { enabledScopes } = useHotkeysContext();
-	let toolTipHidden = !enabledScopes.includes(paragraphId);
 
 	return (
 		<div>
@@ -98,26 +98,28 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 	let handleInsertParagraphAbove = () => dispatch(insertAboveParagraph({ paragraphId, articleId }));
 	let handleInsertParagraphBelow = () => dispatch(insertBelowParagraph({ paragraphId, articleId }));
 
+	let { enabledScopes } = useHotkeysContext();
+	let toolTipHidden = !enabledScopes.includes(paragraphId);
 	let { 'Article Page': articlePageHotkeys } = HotkeyMapData();
 
 	useKeys({
 		keyBinding: articlePageHotkeys.deleteParagraph.hotkey,
 		callback: handleParagraphDeletion,
 		scopes: paragraphId,
+		enabled: enabledScopes.includes(paragraphId),
 	});
 	useKeys({
 		keyBinding: articlePageHotkeys.insertParagraphAbove.hotkey,
 		callback: handleInsertParagraphAbove,
 		scopes: paragraphId,
+		enabled: enabledScopes.includes(paragraphId),
 	});
 	useKeys({
 		keyBinding: articlePageHotkeys.insertParagraphBelow.hotkey,
 		callback: handleInsertParagraphBelow,
 		scopes: paragraphId,
+		enabled: enabledScopes.includes(paragraphId),
 	});
-
-	let { enabledScopes } = useHotkeysContext();
-	let toolTipHidden = !enabledScopes.includes(paragraphId);
 
 	return (
 		<div>
