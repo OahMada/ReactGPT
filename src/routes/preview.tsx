@@ -300,7 +300,7 @@ var Preview = () => {
 
 export default Preview;
 
-var ModalWrapper = styled.section`
+export var ModalWrapper = styled.section`
 	width: 100vw;
 	height: 100vh;
 	display: grid;

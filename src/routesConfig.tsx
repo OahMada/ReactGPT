@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react';
 
 // components
-import { Root, Article, ArticleInput, Config, ErrorPage } from './routes';
+import { Root, Article, ArticleInput, Config, ErrorPage, ModalWrapper } from './routes';
 import { Loading } from './components';
 
 var HotkeyMap = lazy(() => import('./routes/hotkeyMap'));
@@ -26,7 +26,13 @@ export var routesConfig = [
 									{
 										path: 'preview',
 										element: (
-											<Suspense fallback={<Loading />}>
+											<Suspense
+												fallback={
+													<ModalWrapper>
+														<Loading />
+													</ModalWrapper>
+												}
+											>
 												<Preview />,
 											</Suspense>
 										),
