@@ -1,19 +1,18 @@
 import { useTranslationQueryVariant } from '../query/translationQuery';
 import { PartialParagraph } from '../types';
 
-export var PreviewTranslation = ({ includeTranslation, paragraph }: { includeTranslation: boolean; paragraph: PartialParagraph }) => {
-	let result = useTranslationQueryVariant(paragraph, includeTranslation);
+var PreviewTranslation = ({ paragraph }: { paragraph: PartialParagraph }) => {
+	let result = useTranslationQueryVariant(paragraph);
 
-	let translationText: string = '';
-	if (result.isFetching) {
-		translationText = 'Loading...';
-	} else if (result.data) {
-		translationText = result.data;
+	if (result.error) {
+		throw result.error;
 	}
 
 	return (
 		<>
-			<p>{translationText}</p>
+			<p>{result.data}</p>
 		</>
 	);
 };
+
+export default PreviewTranslation;
