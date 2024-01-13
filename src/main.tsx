@@ -86,7 +86,7 @@ enableMocking().then(() => {
  *
  * ## bugs
  *
- * type d in search box triggers hotkey //https://react-hotkeys-hook.vercel.app/docs/documentation/useHotkeys/scoping-hotkeys
+ * type d in paragraph input triggers hotkey
  *
  * ## test
  *

@@ -9,7 +9,7 @@ import { LocalStorageHotkeys, RecordingStopper } from '../types';
 
 import { HotkeyInput } from '../components';
 
-export var HotkeyMap = () => {
+var HotkeyMap = () => {
 	let hotkeyRecordingStopperRef = useRef<Map<'stopper', RecordingStopper>>(new Map()); // the initial value needs to be an object(or array, map) to properly save the `stop` util. https://stackoverflow.com/a/56444537/5800789
 
 	let navigate = useNavigate();
@@ -68,6 +68,8 @@ export var HotkeyMap = () => {
 		</Section>
 	);
 };
+
+export default HotkeyMap;
 
 var Section = styled.section`
 	font-size: 1.2rem;

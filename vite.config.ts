@@ -14,6 +14,15 @@ export default defineConfig({
 	build: {
 		outDir: 'build',
 		sourcemap: true,
+		// suppress error messages relate to Rollup bug https://github.com/vitejs/vite/issues/15012
+		rollupOptions: {
+			onLog(level, log, handler) {
+				if (log.cause instanceof Error && log.cause.message === `Can't resolve original location of error.`) {
+					return;
+				}
+				handler(level, log);
+			},
+		},
 	},
 	test: {
 		globals: true,

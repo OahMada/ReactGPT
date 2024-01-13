@@ -19,7 +19,7 @@ import { translationQueryKeys } from '../query/translationQuery';
 import { createToast, useKeys, HotkeyMapData } from '../utils';
 import { workerInstance } from '../worker/workerInstance';
 
-export var Preview = () => {
+var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);
 	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
 	let [showExportOptions, setShowExportOptions] = useState(false);
@@ -297,6 +297,8 @@ export var Preview = () => {
 		</ModalWrapper>
 	);
 };
+
+export default Preview;
 
 var ModalWrapper = styled.section`
 	width: 100vw;

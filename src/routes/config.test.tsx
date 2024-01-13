@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import secureLocalStorage from 'react-secure-storage';
 import { http, HttpResponse } from 'msw';
@@ -17,8 +17,10 @@ describe('config route tests', () => {
 		expect(inputNode).toHaveFocus();
 		await userEvent.type(inputNode, import.meta.env.VITE_OPENAI_API_KEY_ALIAS);
 		expect(inputNode).toHaveValue(import.meta.env.VITE_OPENAI_API_KEY_ALIAS);
-		await clickElement();
-		expect(router.state.location.pathname).toEqual('/');
+		await clickElement(/done/i);
+		await waitFor(() => {
+			expect(router.state.location.pathname).toEqual('/');
+		});
 	});
 
 	it('Wrong API key format triggers error toast', async () => {
