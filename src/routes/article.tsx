@@ -70,6 +70,7 @@ export var Article = () => {
 
 	let articleElementsRef = useRef(new Map());
 	let focusedParagraphIndexRef = useRef(-1);
+
 	let { enableScope, disableScope, enabledScopes } = useHotkeysContext();
 
 	let performEnableScope = (scope: string) => {
@@ -93,12 +94,6 @@ export var Article = () => {
 				focusedParagraphIndexRef.current = 0;
 				performEnableScope(articleElements[0].paragraphId);
 			} else {
-				// update focusedParagraphIndexRef to reflect the actual situation: new paragraphs get added
-				articleElements.forEach((item, index) => {
-					if (enabledScopes.includes(item.paragraphId)) {
-						focusedParagraphIndexRef.current = index;
-					}
-				});
 				// when the focused paragraph gets deleted, this makes sure user still steps one paragraph forward
 				if (!articleElements.some((item) => enabledScopes.includes(item.paragraphId))) {
 					focusedParagraphIndexRef.current -= 1;
@@ -128,12 +123,6 @@ export var Article = () => {
 				focusedParagraphIndexRef.current = articleElements.length - 1;
 				performEnableScope(articleElements[articleElements.length - 1].paragraphId);
 			} else {
-				// update focusedParagraphIndexRef to reflect the actual situation: new paragraphs get added
-				articleElements.forEach((item, index) => {
-					if (enabledScopes.includes(item.paragraphId)) {
-						focusedParagraphIndexRef.current = index;
-					}
-				});
 				focusedParagraphIndexRef.current -= 1;
 				if (focusedParagraphIndexRef.current < 0) {
 					focusedParagraphIndexRef.current = articleElements.length - 1;
@@ -229,11 +218,16 @@ export var Article = () => {
 												{...provided.draggableProps}
 												tabIndex={-1} // make the element focusable
 												onClick={(e) => {
-													// prevent other interactions to change the focused element
 													if (e.target === e.currentTarget) {
+														// prevent other interactions to change the focused element
 														focusedParagraphIndexRef.current = index;
 														performEnableScope(paragraph.id);
 													}
+												}}
+												// Make the newly inserted empty paragraph the hotkey-enabled one. Thus, pressing d, =, or - won't trigger actions in other paragraphs.
+												onFocus={() => {
+													focusedParagraphIndexRef.current = index;
+													performEnableScope(paragraph.id);
 												}}
 											>
 												<div

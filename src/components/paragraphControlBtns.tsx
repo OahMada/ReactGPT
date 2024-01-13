@@ -106,19 +106,19 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 		keyBinding: articlePageHotkeys.deleteParagraph.hotkey,
 		callback: handleParagraphDeletion,
 		scopes: paragraphId,
-		enabled: enabledScopes.includes(paragraphId),
+		enabled: enabledScopes.includes(paragraphId) && currentParagraph.paragraphStatus !== 'editing',
 	});
 	useKeys({
 		keyBinding: articlePageHotkeys.insertParagraphAbove.hotkey,
 		callback: handleInsertParagraphAbove,
 		scopes: paragraphId,
-		enabled: enabledScopes.includes(paragraphId),
+		enabled: enabledScopes.includes(paragraphId) && currentParagraph.paragraphStatus !== 'editing',
 	});
 	useKeys({
 		keyBinding: articlePageHotkeys.insertParagraphBelow.hotkey,
 		callback: handleInsertParagraphBelow,
 		scopes: paragraphId,
-		enabled: enabledScopes.includes(paragraphId),
+		enabled: enabledScopes.includes(paragraphId) && currentParagraph.paragraphStatus !== 'editing',
 	});
 
 	return (
