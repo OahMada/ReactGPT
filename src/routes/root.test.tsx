@@ -35,7 +35,7 @@ describe('Root route (shared layout) tests', () => {
 		expect(deleteArticleButtons).toHaveLength(2);
 		await clickElement(deleteArticleButtons[0]);
 		let deletedArticle = screen.queryByText((content, element) => {
-			return element!.tagName.toLowerCase() === 'p' && content.startsWith('Hello');
+			return element?.tagName.toLowerCase() === 'p' && content.startsWith('Hello');
 		});
 		expect(deletedArticle).not.toBeInTheDocument();
 		deleteArticleButtons = screen.getAllByRole('button', { name: /delete$/i });
@@ -47,7 +47,7 @@ describe('Root route (shared layout) tests', () => {
 		expect(articleParagraphs).toHaveLength(1);
 		await clickElement(
 			screen.getByText((content, element) => {
-				return element!.tagName.toLowerCase() === 'p' && content.startsWith('A voiced');
+				return element?.tagName.toLowerCase() === 'p' && content.startsWith('A voiced');
 			})
 		);
 		articleParagraphs = screen.getAllByRole('article');
