@@ -1,8 +1,8 @@
 import { lazy, Suspense } from 'react';
 
 // components
-import { Root, Article, ArticleInput, Config, ErrorPage, ModalWrapper } from './routes';
-import { Loading } from './components';
+import { Root, Article, ArticleInput, Config, ErrorPage } from './routes';
+import { Loading, ModalWrapper } from './components';
 
 var HotkeyMap = lazy(() => import('./routes/hotkeyMap'));
 var Preview = lazy(() => import('./routes/preview'));

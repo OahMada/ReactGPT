@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { useQueryClient, useIsFetching, useQueryErrorResetBoundary } from '@tanstack/react-query';
@@ -13,7 +12,7 @@ import html2canvas from 'html2canvas';
 import { debounce } from 'lodash';
 import { proxy } from 'comlink';
 
-import { PreviewContent, articleDocx } from '../components';
+import { PreviewContent, articleDocx, ModalWrapper } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
 import { translationQueryKeys } from '../query/translationQuery';
 import { createToast, useKeys, HotkeyMapData } from '../utils';
@@ -299,52 +298,3 @@ var Preview = () => {
 };
 
 export default Preview;
-
-export var ModalWrapper = styled.section`
-	width: 100vw;
-	height: 100vh;
-	display: grid;
-	justify-items: center;
-	align-items: center;
-	background-color: rgba(0, 0, 0, 0.8);
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 250;
-	transition: all 0.3s;
-
-	.paragraphs {
-		position: relative;
-		width: 60%;
-		min-height: 60%;
-		max-height: 80%;
-		background-color: #fff;
-		box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.2);
-		display: flex;
-		flex-direction: column;
-		border-radius: 3px;
-		overflow-y: scroll;
-		transition: all 0.4s 0.2s;
-		padding: 3rem;
-
-		article:not(:last-child) {
-			margin-bottom: 2rem;
-		}
-
-		p {
-			font-size: 1.6rem;
-		}
-
-		p:not(:last-child) {
-			margin-bottom: 0.8rem;
-		}
-
-		.btn-container {
-			margin-bottom: 1rem;
-		}
-
-		.article-display {
-			padding: 2rem;
-		}
-	}
-`;

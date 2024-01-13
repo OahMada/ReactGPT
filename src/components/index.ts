@@ -11,3 +11,4 @@ export * from './modal';
 export * from './articleDocx';
 export * from './hotkeyInput';
 export * from './loading';
+export * from './previewModalWrapper';
