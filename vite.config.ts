@@ -5,7 +5,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [comlink(), react(), visualizer()],
+	plugins: [comlink(), react(), visualizer({ open: false, gzipSize: true, filename: 'chunks-report.html' })],
 	worker: {
 		plugins: () => [comlink()],
 	},
@@ -15,8 +15,8 @@ export default defineConfig({
 	build: {
 		outDir: 'build',
 		sourcemap: true,
-		// suppress error messages relate to Rollup bug https://github.com/vitejs/vite/issues/15012
 		rollupOptions: {
+			// suppress error messages relate to Rollup bug https://github.com/vitejs/vite/issues/15012
 			onLog(level, log, handler) {
 				if (log.cause instanceof Error && log.cause.message === `Can't resolve original location of error.`) {
 					return;
@@ -25,6 +25,7 @@ export default defineConfig({
 			},
 			output: {
 				manualChunks: {
+					// https://dev.to/tassiofront/splitting-vendor-chunk-with-vite-and-loading-them-async-15o3
 					lodash: ['lodash'],
 					html2canvas: ['html2canvas'],
 					docx: ['docx'],

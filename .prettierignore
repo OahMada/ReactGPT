@@ -5,4 +5,4 @@ dist
 coverage
 
 /mockServiceWorker.js
-/stats.html
+/chunks-report.html
