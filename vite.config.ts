@@ -1,10 +1,11 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { comlink } from 'vite-plugin-comlink';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [comlink(), react()],
+	plugins: [comlink(), react(), visualizer()],
 	worker: {
 		plugins: () => [comlink()],
 	},
@@ -21,6 +22,16 @@ export default defineConfig({
 					return;
 				}
 				handler(level, log);
+			},
+			output: {
+				manualChunks: {
+					lodash: ['lodash'],
+					html2canvas: ['html2canvas'],
+					docx: ['docx'],
+					jspdf: ['jspdf'],
+					dnd: ['@hello-pangea/dnd'],
+					reactRouter: ['react-router-dom', '@remix-run/router', 'react-router'],
+				},
 			},
 		},
 	},
