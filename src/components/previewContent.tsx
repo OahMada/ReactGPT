@@ -1,11 +1,10 @@
-import { forwardRef, useEffect, useRef, Suspense, lazy } from 'react';
+import { forwardRef, useEffect, useRef, Suspense } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { useQueryErrorResetBoundary, useIsFetching } from '@tanstack/react-query';
 import { mergeRefs } from 'react-merge-refs';
 
 import { PartialParagraph } from '../types';
-
-import { Loading } from '.';
+import { Loading, PreviewTranslation } from '.';
 
 interface Props {
 	paragraph: PartialParagraph;
@@ -14,8 +13,6 @@ interface Props {
 }
 
 type Ref = HTMLDivElement;
-
-var PreviewTranslation = lazy(() => import('./previewTranslation'));
 
 export var PreviewContent = forwardRef<Ref, Props>(({ paragraph, includeTranslation, resetErrorBoundariesMapRef }, ref) => {
 	let fetchCount = useIsFetching({ queryKey: ['translation'] });

@@ -1,11 +1,5 @@
-import { lazy, Suspense } from 'react';
-
 // components
-import { Root, Article, ArticleInput, Config, ErrorPage } from './routes';
-import { Loading, ModalWrapper } from './components';
-
-var HotkeyMap = lazy(() => import('./routes/hotkeyMap'));
-var Preview = lazy(() => import('./routes/preview'));
+import { Root, Article, ArticleInput, Config, ErrorPage, Preview, HotkeyMap } from './routes';
 
 export var routesConfig = [
 	{
@@ -25,17 +19,7 @@ export var routesConfig = [
 								children: [
 									{
 										path: 'preview',
-										element: (
-											<Suspense
-												fallback={
-													<ModalWrapper>
-														<Loading />
-													</ModalWrapper>
-												}
-											>
-												<Preview />,
-											</Suspense>
-										),
+										element: <Preview />,
 									},
 								],
 							},
@@ -49,11 +33,7 @@ export var routesConfig = [
 			},
 			{
 				path: 'hotkey',
-				element: (
-					<Suspense fallback={<Loading />}>
-						<HotkeyMap />,
-					</Suspense>
-				),
+				element: <HotkeyMap />,
 			},
 		],
 	},

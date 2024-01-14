@@ -1,7 +1,7 @@
 import { useTranslationQueryVariant } from '../query/translationQuery';
 import { PartialParagraph } from '../types';
 
-var PreviewTranslation = ({ paragraph }: { paragraph: PartialParagraph }) => {
+export var PreviewTranslation = ({ paragraph }: { paragraph: PartialParagraph }) => {
 	let result = useTranslationQueryVariant(paragraph);
 
 	if (result.error) {
@@ -14,5 +14,3 @@ var PreviewTranslation = ({ paragraph }: { paragraph: PartialParagraph }) => {
 		</>
 	);
 };
-
-export default PreviewTranslation;
