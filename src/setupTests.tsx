@@ -26,7 +26,11 @@ vi.mock('react-secure-storage', () => ({
 		setItem: vi.fn(),
 	},
 }));
-vi.mock('./worker/workerInstance.ts');
+vi.mock('./worker/workerInstance.ts', () => ({
+	workerInstance: {
+		exportFile: vi.fn(),
+	},
+}));
 
 // for React tooltip library
 var ResizeObserverMock = vi.fn(() => ({
@@ -66,7 +70,7 @@ var renderWithContexts = (
 				<Provider store={store}>
 					<HotkeysProvider>
 						{children}
-						<ToastContainer />
+						<ToastContainer autoClose={500} />
 						<Tooltip id='hotkey' />
 					</HotkeysProvider>
 				</Provider>
@@ -117,7 +121,7 @@ export var clickElement = async (button?: button) => {
 };
 
 // https://redux.js.org/usage/writing-tests#preparing-initial-test-state
-export var renderAnExistingArticle = () => {
+export var renderAnExistingArticle = (articleIndex: number = 0, enterPreview: boolean = false) => {
 	let articleArr = [
 		['article1', 'Hello there.'],
 		['article2', defaultArticleInput],
@@ -125,5 +129,8 @@ export var renderAnExistingArticle = () => {
 	let store = setupStore();
 	store.dispatch(saveArticleInput({ articleText: articleArr[0][1], articleId: articleArr[0][0] }));
 	store.dispatch(saveArticleInput({ articleText: articleArr[1][1], articleId: articleArr[1][0] }));
-	renderRouter({ store, initialEntries: [`/article/${articleArr[0][0]}`] });
+	if (enterPreview) {
+		return renderRouter({ store, initialEntries: [`/article/${articleArr[articleIndex][0]}/preview`] });
+	}
+	return renderRouter({ store, initialEntries: [`/article/${articleArr[articleIndex][0]}`] });
 };

@@ -270,7 +270,7 @@ export var Preview = () => {
 							data-tooltip-id='hotkey'
 							data-tooltip-content={previewPageHotkeys.showExportOptions.label}
 						>
-							Export As File
+							Export To File
 						</button>
 					)}
 				</div>
