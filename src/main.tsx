@@ -90,7 +90,7 @@ enableMocking().then(() => {
  *
  * ## test
  *
- * coverage report
+ * coverage report // errors need to be fixed
  *
  * ## outlook and others
  *

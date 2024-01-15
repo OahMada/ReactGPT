@@ -41,5 +41,8 @@ export default defineConfig({
 		environment: 'jsdom',
 		setupFiles: 'src/setupTests',
 		restoreMocks: true,
+		coverage: {
+			provider: 'istanbul', // or 'v8'
+		},
 	},
 });

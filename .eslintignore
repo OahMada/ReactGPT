@@ -4,3 +4,4 @@ build
 dist
 __mocks__
 /chunks-report.html
+coverage
