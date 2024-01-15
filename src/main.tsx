@@ -78,7 +78,6 @@ enableMocking().then(() => {
  *
  * ## features
  *
- * chunking https://rollupjs.org/configuration-options/#output-manualchunks
  * verify the persisted data
  * ci/cd https://medium.com/@indusasikala93/deploying-a-react-application-using-a-jenkins-ci-cd-pipeline-4c2a7dcf1efb
  * https://dev.to/lovepreetsingh/deploy-your-react-nodejs-apps-using-jenkins-pipeline-22pl
@@ -86,6 +85,8 @@ enableMocking().then(() => {
  * https://www.jenkins.io/doc/pipeline/tour/getting-started/
  *
  * ## bugs
+ *
+ * a pdf generation bug
  *
  * ## test
  *

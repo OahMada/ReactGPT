@@ -43,7 +43,7 @@ describe('Preview route tests', () => {
 	});
 
 	it('Click the export to file button to reveal available options, click on each export option', async () => {
-		// for mocking the navigator.clipboard.writeText
+		// for mocking the navigator.clipboard.writeText https://testing-library.com/docs/user-event/setup/#starting-a-session-per-setup
 		userEvent.setup();
 		renderAnExistingArticle(0, true);
 		await clickElement(/export to file/i);
@@ -63,6 +63,8 @@ describe('Preview route tests', () => {
 
 		await clickElement(/copy to clipboard/i);
 		expect(screen.getByText(/copied to clipboard/i)).toBeInTheDocument();
+
+		// somehow it is not possible to check if the react toastify toasts disappear.
 	});
 
 	it('The "Retry All" button appears when translation requests response with error', async () => {});
