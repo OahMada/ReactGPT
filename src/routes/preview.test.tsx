@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 
-import { renderAnExistingArticle, clickElement } from '../setupTests';
+import { renderAnExistingArticle, clickElement, server } from '../setupTests';
 
 describe('Preview route tests', () => {
 	it('Opening preview route will halt grammar fixing queries', async () => {
@@ -67,5 +67,21 @@ describe('Preview route tests', () => {
 		// somehow it is not possible to check if the react toastify toasts disappear.
 	});
 
-	it('The "Retry All" button appears when translation requests response with error', async () => {});
+	it('The "Retry All" button appears when translation requests response with error', async () => {
+		server.use(
+			http.post('/.netlify/functions/fetchTranslation', async () => {
+				return new HttpResponse(null, { status: 500 });
+			})
+		);
+		renderAnExistingArticle(1, true);
+		await clickElement(/include translation/i);
+		expect(await screen.findByRole('button', { name: /retry all/i })).toBeInTheDocument();
+		expect(screen.getAllByRole('button', { name: /retry$/i })).toHaveLength(2);
+		server.resetHandlers();
+		await clickElement(/retry all/i);
+		await waitFor(() => {
+			expect(screen.queryByRole('button', { name: /retry all/i })).not.toBeInTheDocument();
+		});
+		expect(screen.queryByRole('button', { name: /retry$/i })).not.toBeInTheDocument();
+	});
 });
