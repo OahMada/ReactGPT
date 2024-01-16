@@ -50,5 +50,9 @@ export default defineConfig({
 			skipFull: true,
 			reportsDirectory: 'test-report/coverage',
 		},
+		onConsoleLog(log) {
+			if (log.includes('AxiosError')) return false; // logs from react error boundary
+			if (log.includes('No routes matched')) return false; // a log from react router
+		},
 	},
 });
