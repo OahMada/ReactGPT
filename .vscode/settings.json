@@ -1,3 +1,17 @@
 {
-	"cSpell.words": ["autosize", "Comlink", "hotfixes", "jspdf", "OPENAI", "persistor", "redocx", "reduxjs", "tanstack", "uuidv", "DDTH", "Hmmss"]
+	"cSpell.words": [
+		"autosize",
+		"Comlink",
+		"DDTH",
+		"Hmmss",
+		"hotfixes",
+		"jspdf",
+		"OPENAI",
+		"persistor",
+		"redocx",
+		"reduxjs",
+		"subdir",
+		"tanstack",
+		"uuidv"
+	]
 }

@@ -35,5 +35,6 @@ build
 
 public
 dist
+test-report
 
 /chunks-report.html

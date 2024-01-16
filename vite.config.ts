@@ -41,11 +41,14 @@ export default defineConfig({
 		environment: 'jsdom',
 		setupFiles: 'src/setupTests',
 		restoreMocks: true,
+		outputFile: 'test-report/index.html',
+		reporters: ['default', 'html'],
 		coverage: {
 			provider: 'v8',
 			include: ['src/**'],
 			exclude: ['src/{types,worker}/**', 'src/*.{tsx,ts}'],
 			skipFull: true,
+			reportsDirectory: 'test-report/coverage',
 		},
 	},
 });

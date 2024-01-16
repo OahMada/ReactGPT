@@ -3,6 +3,7 @@ public
 build
 dist
 coverage
+test-report
 
 /mockServiceWorker.js
 /chunks-report.html
