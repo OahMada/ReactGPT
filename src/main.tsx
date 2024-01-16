@@ -79,6 +79,7 @@ enableMocking().then(() => {
  * ## features
  *
  * verify the persisted data
+ * add inputted api key into local state
  *
  * ## bugs
  *

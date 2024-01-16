@@ -7,11 +7,13 @@
 		"hotfixes",
 		"jspdf",
 		"OPENAI",
+		"pangea",
 		"persistor",
 		"redocx",
 		"reduxjs",
 		"subdir",
 		"tanstack",
+		"toastify",
 		"uuidv"
 	]
 }

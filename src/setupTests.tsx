@@ -70,7 +70,7 @@ var renderWithContexts = (
 				<Provider store={store}>
 					<HotkeysProvider>
 						{children}
-						<ToastContainer autoClose={500} />
+						<ToastContainer autoClose={50} />
 						<Tooltip id='hotkey' />
 					</HotkeysProvider>
 				</Provider>

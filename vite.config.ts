@@ -51,6 +51,7 @@ export default defineConfig({
 			reportsDirectory: 'test-report/coverage',
 		},
 		onConsoleLog(log) {
+			// https://github.com/vitest-dev/vitest/issues/1700#issuecomment-1353411597
 			if (log.includes('AxiosError')) return false; // logs from react error boundary
 			if (log.includes('No routes matched')) return false; // a log from react router
 		},

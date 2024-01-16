@@ -1,8 +1,13 @@
 import { http, HttpResponse, delay } from 'msw';
 
 export var handlers = [
-	http.post('/.netlify/functions/fetchGrammarMistakes', async () => {
-		await delay(1000);
+	http.post('/.netlify/functions/fetchGrammarMistakes', async ({ request }) => {
+		let { text } = (await request.json()) as { text: string; key: string };
+
+		await delay(500);
+		if (text === 'Hello there.') {
+			return HttpResponse.text(text);
+		}
 		return HttpResponse.text(
 			'A voiced consonant (or sound) means that it uses the vocal cords, and they produce a vibration or humming sound in the throat when they are pronounced. Put your finger on your throat and then pronounce the letter L. You will notice a slight vibration in your neck/throat. That is because it is a voiced sound.'
 		);
