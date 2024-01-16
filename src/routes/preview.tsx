@@ -126,20 +126,21 @@ export var Preview = () => {
 		// https://dev.to/jringeisen/using-jspdf-html2canvas-and-vue-to-generate-pdfs-1f8l
 		await workerInstance.exportFile(
 			proxy(() => {
-				let doc = new jsPDF({
+				let pdf = new jsPDF({
 					orientation: 'p',
 					unit: 'px',
 					format: 'a4',
 					hotfixes: ['px_scaling'],
 				});
 
-				html2canvas(articleWrapperRef.current!, {
-					width: doc.internal.pageSize.getWidth(),
-					height: doc.internal.pageSize.getHeight(),
-				}).then((canvas) => {
+				// credit https://stackoverflow.com/a/55497749/5800789
+				html2canvas(articleWrapperRef.current!).then((canvas) => {
 					let img = canvas.toDataURL('image/png');
-					doc.addImage(img, 'PNG', 30, 10, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight());
-					doc.save(`${fileName}.pdf`);
+					let imgProps = pdf.getImageProperties(img);
+					let imgWidth = pdf.internal.pageSize.getWidth() * 0.9;
+					let imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+					pdf.addImage(img, 'PNG', 20, 20, imgWidth, imgHeight);
+					pdf.save(`${fileName}.pdf`);
 				});
 			})
 		);
