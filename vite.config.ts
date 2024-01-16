@@ -42,7 +42,10 @@ export default defineConfig({
 		setupFiles: 'src/setupTests',
 		restoreMocks: true,
 		coverage: {
-			provider: 'istanbul', // or 'v8'
+			provider: 'v8',
+			include: ['src/**'],
+			exclude: ['src/{types,worker}/**', 'src/*.{tsx,ts}'],
+			skipFull: true,
 		},
 	},
 });

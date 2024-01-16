@@ -82,11 +82,7 @@ enableMocking().then(() => {
  *
  * ## bugs
  *
- * a pdf generation bug
- *
  * ## test
- *
- * coverage report // errors need to be fixed
  *
  * ## outlook and others
  *
