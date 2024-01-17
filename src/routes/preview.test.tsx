@@ -1,8 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 
-import { renderAnExistingArticle, clickElement, server } from '../setupTests';
+import { renderAnExistingArticle, clickElement, server, fetchButton } from '../setupTests';
 
 describe('Preview route tests', () => {
 	it('Opening preview route will halt grammar fixing queries', async () => {
@@ -13,7 +12,7 @@ describe('Preview route tests', () => {
 		await clickElement(screen.getByRole('link', { name: /preview article/i }));
 		expect(router.state.location.pathname).toMatch(/preview$/);
 		await new Promise((r) => setTimeout(r, 1000)); // the mocked API response has a 1000ms delay
-		await clickElement(screen.getByRole('button', { name: /close/i }));
+		await clickElement(fetchButton(/close/i));
 		acceptAllButtons = screen.getAllByRole('button', { name: /accept all/i });
 		expect(acceptAllButtons[1]).toBeDisabled();
 		await waitFor(() => {
@@ -45,9 +44,9 @@ describe('Preview route tests', () => {
 	it('Click the export to file button to reveal available options, click on each export option', async () => {
 		renderAnExistingArticle(0, true);
 		await clickElement(/export to file/i);
-		expect(screen.getByRole('button', { name: /download pdf/i })).toBeInTheDocument();
-		expect(screen.getByRole('button', { name: /download docx/i })).toBeInTheDocument();
-		expect(screen.getByRole('button', { name: /download image/i })).toBeInTheDocument();
+		expect(fetchButton(/download pdf/i)).toBeInTheDocument();
+		expect(fetchButton(/download docx/i)).toBeInTheDocument();
+		expect(fetchButton(/download image/i)).toBeInTheDocument();
 
 		await clickElement(/download pdf/i);
 		expect(screen.getByRole('alert')).toBeInTheDocument();
@@ -73,13 +72,13 @@ describe('Preview route tests', () => {
 		);
 		renderAnExistingArticle(1, true);
 		await clickElement(/include translation/i);
-		expect(await screen.findByRole('button', { name: /retry all/i })).toBeInTheDocument();
+		expect(await fetchButton({ type: 'find', name: /retry all/i })).toBeInTheDocument();
 		expect(screen.getAllByRole('button', { name: /retry$/i })).toHaveLength(2);
 		server.resetHandlers();
 		await clickElement(/retry all/i);
 		await waitFor(() => {
-			expect(screen.queryByRole('button', { name: /retry all/i })).not.toBeInTheDocument();
+			expect(fetchButton({ type: 'query', name: /retry all/i })).not.toBeInTheDocument();
 		});
-		expect(screen.queryByRole('button', { name: /retry$/i })).not.toBeInTheDocument();
+		expect(fetchButton({ type: 'query', name: /retry$/i })).not.toBeInTheDocument();
 	});
 });

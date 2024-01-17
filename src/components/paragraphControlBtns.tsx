@@ -147,7 +147,7 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 					data-tooltip-content={articlePageHotkeys.insertParagraphBelow.label}
 					data-tooltip-hidden={toolTipHidden}
 				>
-					Insert Bellow
+					Insert Below
 				</button>
 			</div>
 		</div>

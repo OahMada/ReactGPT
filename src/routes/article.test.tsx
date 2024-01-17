@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 
-import { renderAnExistingArticle, clickElement, server } from '../setupTests';
+import { renderAnExistingArticle, clickElement, server, fetchButton } from '../setupTests';
 
 describe('Article route tests', () => {
 	it('If no grammar fixes available, paragraphs would enter doneModification mode automatically', async () => {
@@ -10,8 +10,8 @@ describe('Article route tests', () => {
 		expect(await screen.findByRole('alert')).toBeInTheDocument();
 		let alertBody = await screen.findByText(/no grammar mistakes/i);
 		expect(alertBody).toBeInTheDocument();
-		expect(screen.getByRole('button', { name: /accept all/i })).toBeDisabled();
-		expect(screen.getByRole('button', { name: /done/i })).toBeEnabled();
+		expect(fetchButton(/accept all/i)).toBeDisabled();
+		expect(fetchButton(/done/i)).toBeEnabled();
 		// I couldn't make the blow assertion work
 		// await waitFor(() => {
 		// 	expect(screen.getByRole('button', { name: /show edit history/i })).toBeDisabled();
@@ -24,13 +24,13 @@ describe('Article route tests', () => {
 			})
 		);
 		renderAnExistingArticle(1);
-		expect(await screen.findByRole('button', { name: /retry all/i })).toBeInTheDocument();
+		expect(await fetchButton({ type: 'find', name: /retry all/i })).toBeInTheDocument();
 		expect(screen.getByRole('alert')).toBeInTheDocument();
 		server.resetHandlers();
 		let retryButtons = screen.getAllByRole('button', { name: /retry/i });
 		await clickElement(retryButtons[0]);
 		await waitFor(() => {
-			expect(screen.queryByRole('button', { name: /retry all/i })).not.toBeInTheDocument();
+			expect(fetchButton({ type: 'query', name: /retry all/i })).not.toBeInTheDocument();
 		});
 	});
 	it('Delete article and undo deletion', async () => {
@@ -38,14 +38,14 @@ describe('Article route tests', () => {
 		await clickElement(/delete article/i);
 		expect(screen.getByRole('textbox')).toBeInTheDocument();
 		await clickElement(/undo/i);
-		expect(screen.getByRole('button', { name: /delete article/i })).toBeInTheDocument();
+		expect(fetchButton(/delete article/i)).toBeInTheDocument();
 	});
 	it('Delete paragraph and undo deletion', async () => {
 		renderAnExistingArticle();
 		await clickElement(/delete paragraph/i);
-		expect(screen.getByRole('button', { name: /create/i })).toBeInTheDocument();
+		expect(fetchButton(/create/i)).toBeInTheDocument();
 		await clickElement(/undo/i);
-		expect(screen.getByRole('button', { name: /delete paragraph/i })).toBeInTheDocument();
+		expect(fetchButton(/delete paragraph/i)).toBeInTheDocument();
 	});
 	it('Pin and unpin article', async () => {
 		renderAnExistingArticle();
@@ -74,5 +74,60 @@ describe('Article route tests', () => {
 		await userEvent.hover(textInsertion[0]);
 		await clickElement(/ignore/i);
 		expect(screen.queryAllByRole('insertion')).toHaveLength(initialInsertionCount - 1);
+	});
+
+	it('Insert new paragraph above', async () => {
+		renderAnExistingArticle();
+		let paragraphsOnThePage = screen.getAllByText((content, element) => {
+			return element?.tagName.toLowerCase() === 'p';
+		});
+		let paragraphCount = paragraphsOnThePage.length;
+		await waitFor(() => {
+			expect(fetchButton(/done/i)).toBeEnabled();
+		});
+		await clickElement(/done/i);
+		await clickElement(/insert above/i);
+		let paragraphInputBox = screen.getByRole('textbox');
+		expect(paragraphInputBox).toBeInTheDocument();
+		await userEvent.type(paragraphInputBox, 'Insert above');
+		await clickElement(/done/i);
+
+		await waitFor(() => {
+			expect(fetchButton(/done/i)).toBeEnabled();
+		});
+		await clickElement(/done/i);
+
+		paragraphsOnThePage = screen.getAllByText((content, element) => {
+			return element?.tagName.toLowerCase() === 'p';
+		});
+		expect(paragraphsOnThePage.length).toEqual(paragraphCount + 1);
+		expect(paragraphsOnThePage[paragraphsOnThePage.length - 2]).toHaveTextContent('Insert above');
+	});
+	it('Insert new paragraph below', async () => {
+		renderAnExistingArticle();
+		let paragraphsOnThePage = screen.getAllByText((content, element) => {
+			return element?.tagName.toLowerCase() === 'p';
+		});
+		let paragraphCount = paragraphsOnThePage.length;
+		await waitFor(() => {
+			expect(fetchButton(/done/i)).toBeEnabled();
+		});
+		await clickElement(/done/i);
+		await clickElement(/insert below/i);
+		let paragraphInputBox = screen.getByRole('textbox');
+		expect(paragraphInputBox).toBeInTheDocument();
+		await userEvent.type(paragraphInputBox, 'Insert below');
+		await clickElement(/done/i);
+
+		await waitFor(() => {
+			expect(fetchButton(/done/i)).toBeEnabled();
+		});
+		await clickElement(/done/i);
+
+		paragraphsOnThePage = screen.getAllByText((content, element) => {
+			return element?.tagName.toLowerCase() === 'p';
+		});
+		expect(paragraphsOnThePage.length).toEqual(paragraphCount + 1);
+		expect(paragraphsOnThePage[paragraphsOnThePage.length - 1]).toHaveTextContent('Insert below');
 	});
 });

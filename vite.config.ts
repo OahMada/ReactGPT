@@ -46,7 +46,7 @@ export default defineConfig({
 		coverage: {
 			provider: 'v8',
 			include: ['src/**'],
-			exclude: ['src/{types,worker}/**', 'src/*.{tsx,ts}'],
+			exclude: ['src/{types,worker}/**', 'src/*.{tsx,ts}', 'src/components/articleDocx.ts'],
 			skipFull: true,
 			reportsDirectory: 'test-report/coverage',
 		},

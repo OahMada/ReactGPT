@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { renderRouter, clickElement } from '../setupTests';
+import { renderRouter, clickElement, fetchButton } from '../setupTests';
 
 describe('hotkeyMap route tests', () => {
 	it('Land on the hotkeyMap route then navigate back to main page', async () => {
@@ -27,7 +27,7 @@ describe('hotkeyMap route tests', () => {
 		await clickElement(buttonsOnThePage[2]);
 		expect(screen.getAllByRole('button', { name: /done/i })).toHaveLength(1);
 		await userEvent.keyboard('{Shift>}x');
-		await clickElement(screen.getByRole('button', { name: /done/i }));
+		await clickElement(fetchButton(/done/i));
 		expect(screen.getByText(/shift \+ x/i)).toBeInTheDocument();
 	});
 });

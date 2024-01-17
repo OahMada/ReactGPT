@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /// <reference types="vitest/globals" />
 import '@testing-library/jest-dom';
 
@@ -139,3 +140,34 @@ export var renderAnExistingArticle = (articleIndex: number = 0, enterPreview: bo
 	}
 	return renderRouter({ store, initialEntries: [`/article/${articleArr[articleIndex][0]}`] });
 };
+
+interface btnWithFetchType {
+	type?: 'find' | 'query';
+	name: string | RegExp;
+}
+type btnName = string | RegExp;
+
+export function fetchButton(args: btnWithFetchType): HTMLElement | null | Promise<HTMLElement>;
+export function fetchButton(btnName: btnName): HTMLElement;
+export function fetchButton(arg: btnWithFetchType | btnName) {
+	let button;
+	if (typeof arg === 'string' || arg instanceof RegExp) {
+		button = screen.getByRole('button', { name: arg });
+	} else {
+		let { type, name } = arg;
+		switch (type) {
+			case 'query':
+				button = screen.queryByRole('button', { name });
+				break;
+			case 'find':
+				// eslint-disable-next-line testing-library/await-async-queries
+				button = screen.findByRole('button', { name });
+				break;
+			default:
+				button = screen.getByRole('button', { name });
+				break;
+		}
+	}
+
+	return button;
+}

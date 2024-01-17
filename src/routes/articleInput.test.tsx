@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { renderRouter, clickElement } from '../setupTests';
+import { renderRouter, clickElement, fetchButton } from '../setupTests';
 
 describe('article input route tests', () => {
 	it('Create articles', async () => {
@@ -14,7 +14,7 @@ describe('article input route tests', () => {
 		let textArea = screen.getByRole('textbox');
 		expect(textArea).toBeInTheDocument();
 		await userEvent.type(textArea, 'hello world');
-		let doneEditingButton = screen.getByRole('button', { name: /done/i });
+		let doneEditingButton = fetchButton(/done/i);
 		await userEvent.hover(doneEditingButton);
 		expect(await screen.findByRole('tooltip')).toBeInTheDocument();
 		await clickElement(doneEditingButton);

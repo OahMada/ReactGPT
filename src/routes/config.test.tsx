@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import secureLocalStorage from 'react-secure-storage';
 import { http, HttpResponse } from 'msw';
 
-import { renderRouter, server, clickElement } from '../setupTests';
+import { renderRouter, server, clickElement, fetchButton } from '../setupTests';
 
 describe('config route tests', () => {
 	it('Enter API key to land on main page', async () => {
@@ -42,7 +42,7 @@ describe('config route tests', () => {
 		expect(router.state.location.pathname).toEqual('/');
 		// reenter config page always shows existing API key and edit button.
 		await clickElement(/config/i);
-		expect(screen.getByRole('button', { name: /edit/i })).toBeInTheDocument();
+		expect(fetchButton(/edit/i)).toBeInTheDocument();
 	});
 
 	it('In the case of server error, show error message in the toast', async () => {
