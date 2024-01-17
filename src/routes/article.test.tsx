@@ -12,8 +12,7 @@ describe('Article route tests', () => {
 		expect(alertBody).toBeInTheDocument();
 		expect(screen.getByRole('button', { name: /accept all/i })).toBeDisabled();
 		expect(screen.getByRole('button', { name: /done/i })).toBeEnabled();
-		await clickElement(alertBody);
-		screen.debug();
+		// I couldn't make the blow assertion work
 		// await waitFor(() => {
 		// 	expect(screen.getByRole('button', { name: /show edit history/i })).toBeDisabled();
 		// });

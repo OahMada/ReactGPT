@@ -70,7 +70,7 @@ var renderWithContexts = (
 				<Provider store={store}>
 					<HotkeysProvider>
 						{children}
-						<ToastContainer autoClose={50} />
+						<ToastContainer />
 						<Tooltip id='hotkey' />
 					</HotkeysProvider>
 				</Provider>
@@ -105,6 +105,9 @@ export var server = setupServer(...handlers);
 beforeAll(() => server.listen());
 // Reset any request handlers that we may add during the tests,
 // so they don't affect other tests.
+beforeEach(() => {
+	vi.useFakeTimers({ shouldAdvanceTime: true }); // https://github.com/testing-library/dom-testing-library/issues/987#issuecomment-1266266801
+});
 afterEach(() => server.resetHandlers());
 // Clean up after the tests are finished.
 afterAll(() => server.close());
