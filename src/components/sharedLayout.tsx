@@ -189,7 +189,7 @@ export var SharedLayout = () => {
 							<li key={article.articleId}>
 								{/* need border for this*/}
 								<div onClick={() => handleNavigate(`article/${article.articleId}`)}>
-									<p role='paragraph'>{article.articleText.slice(0, 20)}</p> {/* since paragraph role is not supported yet in RTL */}
+									<p>{article.articleText.slice(0, 20)}</p> {/* since paragraph role is not supported yet in RTL */}
 									<p>{dayjs(article.editDate).format('YYYY-MM-DD THH:mm')}</p>
 								</div>
 								<div>

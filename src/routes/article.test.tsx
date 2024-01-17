@@ -1,8 +1,9 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 
 import { renderAnExistingArticle, clickElement, server, fetchButton } from '../setupTests';
+import { defaultArticleInput } from '../utils';
 
 describe('Article route tests', () => {
 	it('If no grammar fixes available, paragraphs would enter doneModification mode automatically', async () => {
@@ -64,51 +65,23 @@ describe('Article route tests', () => {
 			expect(acceptAllButtons[0]).toBeEnabled();
 		});
 		await clickElement(acceptAllButtons[1]); // constrain the number of related elements
-		let textDeletion = screen.getAllByRole('deletion');
+		let textDeletion = screen.getAllByText((content, element) => element?.tagName.toLowerCase() === 'del');
 		let initialDeletionCount = textDeletion.length;
 		await userEvent.hover(textDeletion[0]);
 		await clickElement(/accept$/i);
-		expect(screen.getAllByRole('deletion')).toHaveLength(initialDeletionCount - 1);
-		let textInsertion = screen.getAllByRole('insertion');
+		expect(screen.getAllByText((content, element) => element?.tagName.toLowerCase() === 'del')).toHaveLength(initialDeletionCount - 1);
+		let textInsertion = screen.getAllByText((content, element) => element?.tagName.toLowerCase() === 'ins');
 		let initialInsertionCount = textInsertion.length;
 		await userEvent.hover(textInsertion[0]);
 		await clickElement(/ignore/i);
-		expect(screen.queryAllByRole('insertion')).toHaveLength(initialInsertionCount - 1);
-	});
-
-	it('Insert new paragraph above', async () => {
-		renderAnExistingArticle();
-		let paragraphsOnThePage = screen.getAllByText((content, element) => {
-			return element?.tagName.toLowerCase() === 'p';
-		});
-		let paragraphCount = paragraphsOnThePage.length;
-		await waitFor(() => {
-			expect(fetchButton(/done/i)).toBeEnabled();
-		});
-		await clickElement(/done/i);
-		await clickElement(/insert above/i);
-		let paragraphInputBox = screen.getByRole('textbox');
-		expect(paragraphInputBox).toBeInTheDocument();
-		await userEvent.type(paragraphInputBox, 'Insert above');
-		await clickElement(/done/i);
-
-		await waitFor(() => {
-			expect(fetchButton(/done/i)).toBeEnabled();
-		});
-		await clickElement(/done/i);
-
-		paragraphsOnThePage = screen.getAllByText((content, element) => {
-			return element?.tagName.toLowerCase() === 'p';
-		});
-		expect(paragraphsOnThePage.length).toEqual(paragraphCount + 1);
-		expect(paragraphsOnThePage[paragraphsOnThePage.length - 2]).toHaveTextContent('Insert above');
+		expect(screen.queryAllByText((content, element) => element?.tagName.toLowerCase() === 'ins')).toHaveLength(initialInsertionCount - 1);
 	});
 	it('Insert new paragraph below', async () => {
 		renderAnExistingArticle();
 		let paragraphsOnThePage = screen.getAllByText((content, element) => {
 			return element?.tagName.toLowerCase() === 'p';
 		});
-		let paragraphCount = paragraphsOnThePage.length;
+		let initialParagraphCount = paragraphsOnThePage.length;
 		await waitFor(() => {
 			expect(fetchButton(/done/i)).toBeEnabled();
 		});
@@ -127,7 +100,48 @@ describe('Article route tests', () => {
 		paragraphsOnThePage = screen.getAllByText((content, element) => {
 			return element?.tagName.toLowerCase() === 'p';
 		});
-		expect(paragraphsOnThePage.length).toEqual(paragraphCount + 1);
+		expect(paragraphsOnThePage.length).toEqual(initialParagraphCount + 1);
 		expect(paragraphsOnThePage[paragraphsOnThePage.length - 1]).toHaveTextContent('Insert below');
+	});
+
+	it('Saving an empty new paragraph would cause it to be deleted immediately', async () => {
+		renderAnExistingArticle();
+		let paragraphsOnThePage = screen.getAllByText((content, element) => {
+			return element?.tagName.toLowerCase() === 'p';
+		});
+		let initialParagraphCount = paragraphsOnThePage.length;
+		await waitFor(() => {
+			expect(fetchButton(/done/i)).toBeEnabled();
+		});
+		await clickElement(/done/i);
+		await clickElement(/insert above/i);
+		await clickElement(/done/i);
+		paragraphsOnThePage = screen.getAllByText((content, element) => {
+			return element?.tagName.toLowerCase() === 'p';
+		});
+		expect(paragraphsOnThePage.length).toEqual(initialParagraphCount);
+	});
+
+	it('Click grammar-modified paragraph to enter its editing state, then make edits', async () => {
+		renderAnExistingArticle(1);
+		let doneBtns: HTMLElement[] = [];
+		await waitFor(() => {
+			doneBtns = screen.getAllByRole('button', { name: /done/i });
+			expect(doneBtns[1]).toBeEnabled();
+		});
+		await clickElement(doneBtns[1]);
+		let paragraphsOnThePage = screen.getAllByText((content, element) => {
+			return element?.tagName.toLowerCase() === 'p';
+		});
+		let initialParagraphCount = screen.getAllByRole('article').length;
+
+		await clickElement(paragraphsOnThePage[paragraphsOnThePage.length - 1]);
+		let textInputBox = screen.getByRole('textbox');
+		expect(textInputBox).toBeInTheDocument();
+		await userEvent.keyboard('{Enter}{Enter}');
+		expect(screen.getByRole('alert')).toBeInTheDocument();
+		expect(screen.getByText(/consider adding a new paragraph/i)).toBeInTheDocument();
+		await userEvent.paste(defaultArticleInput);
+		expect(screen.getAllByRole('article').length).toEqual(initialParagraphCount + 1);
 	});
 });

@@ -17,16 +17,16 @@ describe('Root route (shared layout) tests', () => {
 	});
 	it('Pin article', async () => {
 		renderAnExistingArticle();
-		let paragraphsOnThePage = screen.getAllByRole('paragraph');
+		let paragraphsOnThePage = screen.getAllByText((content, element) => element?.tagName.toLowerCase() === 'p');
 		expect(paragraphsOnThePage[0]).toHaveTextContent(/hello/i);
 		let pinButtons = screen.getAllByRole('button', { name: /^pin/i });
 		expect(pinButtons).toHaveLength(3);
 		await clickElement(pinButtons[1]);
-		paragraphsOnThePage = screen.getAllByRole('paragraph');
+		paragraphsOnThePage = screen.getAllByText((content, element) => element?.tagName.toLowerCase() === 'p');
 		expect(paragraphsOnThePage[0]).toHaveTextContent(/A voiced/i);
 		expect(screen.getAllByRole('button', { name: /^pin/i })).toHaveLength(2);
 		clickElement('Unpin');
-		paragraphsOnThePage = screen.getAllByRole('paragraph');
+		paragraphsOnThePage = screen.getAllByText((content, element) => element?.tagName.toLowerCase() === 'p');
 		expect(paragraphsOnThePage[0]).toHaveTextContent(/A voiced/i);
 	});
 	it('Delete article', async () => {

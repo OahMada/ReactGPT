@@ -138,15 +138,11 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 										let element =
 											paragraphStatus === 'modifying' ? (
 												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
-													<ins className='insert' role='insertion'>
-														{item.addedValue}
-													</ins>
+													<ins className='insert'>{item.addedValue}</ins>
 												</span>
 											) : (
 												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
-													<del className='deletion' role='deletion'>
-														{item.addedValue}
-													</del>
+													<del className='deletion'>{item.addedValue}</del>
 												</span>
 											);
 										acc.push(element);
@@ -154,15 +150,11 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 										let element =
 											paragraphStatus === 'modifying' ? (
 												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
-													<del className='replacement' role='deletion'>
-														{item.addedValue}
-													</del>
+													<del className='replacement'>{item.addedValue}</del>
 												</span>
 											) : (
 												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
-													<del className='replacement' role='deletion'>
-														{item.removedValue}
-													</del>
+													<del className='replacement'>{item.removedValue}</del>
 												</span>
 											);
 
@@ -171,15 +163,11 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 										let element =
 											paragraphStatus === 'modifying' ? (
 												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
-													<del className='deletion' role='deletion'>
-														{item.removedValue}
-													</del>
+													<del className='deletion'>{item.removedValue}</del>
 												</span>
 											) : (
 												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
-													<ins className='insert' role='insertion'>
-														{item.removedValue}
-													</ins>
+													<ins className='insert'>{item.removedValue}</ins>
 												</span>
 											);
 										acc.push(element);

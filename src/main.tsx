@@ -83,7 +83,11 @@ enableMocking().then(() => {
  *
  * ## bugs
  *
+ * save a new line in new paragraph won't trigger paragraph deletion
+ *
  * ## test
+ *
+ * a act warning
  *
  * ## outlook and others
  *
