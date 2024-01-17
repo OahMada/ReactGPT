@@ -43,8 +43,6 @@ describe('Preview route tests', () => {
 	});
 
 	it('Click the export to file button to reveal available options, click on each export option', async () => {
-		// for mocking the navigator.clipboard.writeText https://testing-library.com/docs/user-event/setup/#starting-a-session-per-setup
-		userEvent.setup();
 		renderAnExistingArticle(0, true);
 		await clickElement(/export to file/i);
 		expect(screen.getByRole('button', { name: /download pdf/i })).toBeInTheDocument();

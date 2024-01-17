@@ -57,6 +57,8 @@ var renderWithContexts = (
 		...renderOptions
 	}: ExtendedRenderOptions = {}
 ) => {
+	// for mocking the navigator.clipboard.writeText https://testing-library.com/docs/user-event/setup/#starting-a-session-per-setup
+	userEvent.setup();
 	let queryClient = new QueryClient({
 		defaultOptions: {
 			queries: {

@@ -1,4 +1,5 @@
 import { http, HttpResponse, delay } from 'msw';
+import { defaultArticleInput } from './utils';
 
 export var handlers = [
 	http.post('/.netlify/functions/fetchGrammarMistakes', async ({ request }) => {
@@ -7,6 +8,11 @@ export var handlers = [
 		await delay(500);
 		if (text === 'Hello there.') {
 			return HttpResponse.text(text);
+		}
+		if (text === defaultArticleInput.split('\n\n')[1]) {
+			return HttpResponse.text(
+				'A voiceless sound (sometimes called an unvoiced sound) occurs when there is no vibration in your throat, and the sound originates from the mouth area. Pronounce the letter P. You will notice that it originates from your mouth, specifically near your lips at the front of your mouth. The P sound does not originate from your throat.'
+			);
 		}
 		return HttpResponse.text(
 			'A voiced consonant (or sound) means that it uses the vocal cords, and they produce a vibration or humming sound in the throat when they are pronounced. Put your finger on your throat and then pronounce the letter L. You will notice a slight vibration in your neck/throat. That is because it is a voiced sound.'
