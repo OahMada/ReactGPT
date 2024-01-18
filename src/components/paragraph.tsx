@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useQueryClient, useQueryErrorResetBoundary } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { useRef } from 'react';
+import { useRef, useState, useContext } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { refactoredChange, EditHistoryMode, Paragraph as ParagraphType } from '../types';
@@ -23,10 +23,12 @@ import {
 	selectArticle,
 } from '../features/articleSlice';
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
+import { useAutoFocusContext } from './autoFocus';
 
 import { Modal, ParagraphInput, ParagraphTranslation } from '.';
 
 export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
+	let { setAutoFocus } = useAutoFocusContext();
 	let { paragraphs } = useAppSelector(selectArticle);
 	let {
 		initialParagraph,
@@ -213,7 +215,14 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 		return (
 			<>
 				<h4>Click Paragraph to Edit</h4>
-				<StyledParagraph onClick={() => dispatch(updateUserInput(paragraphId))}>{paragraphAfterGrammarFix}</StyledParagraph>
+				<StyledParagraph
+					onClick={() => {
+						setAutoFocus(true);
+						dispatch(updateUserInput(paragraphId));
+					}}
+				>
+					{paragraphAfterGrammarFix}
+				</StyledParagraph>
 				{showTranslation && (
 					<ErrorBoundary
 						onReset={reset}

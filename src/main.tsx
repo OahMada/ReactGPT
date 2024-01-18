@@ -87,8 +87,6 @@ enableMocking().then(() => {
  *
  * ## test
  *
- * a act warning
- *
  * ## outlook and others
  *
  * update user flow

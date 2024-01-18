@@ -1,4 +1,4 @@
-import { screen, waitFor, act } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 
@@ -134,7 +134,6 @@ describe('Article route tests', () => {
 			return element?.tagName.toLowerCase() === 'p';
 		});
 		let initialParagraphCount = screen.getAllByRole('article').length;
-
 		await clickElement(paragraphsOnThePage[paragraphsOnThePage.length - 1]);
 		let textInputBox = screen.getByRole('textbox');
 		expect(textInputBox).toBeInTheDocument();

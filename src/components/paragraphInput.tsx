@@ -12,6 +12,7 @@ import { selectArticle, saveParagraphInput, disableCancelQueryState, deleteParag
 
 import { createToast, sanitizeUserInput, throwIfUndefined } from '../utils/index';
 import { Paragraph } from '../types';
+import { useAutoFocusContext } from './autoFocus';
 
 interface ParagraphInputType {
 	paragraph: string;
@@ -25,6 +26,7 @@ export var ParagraphInput = ({
 	paragraphId: string;
 	resetErrorBoundary?: FallbackProps['resetErrorBoundary'];
 }) => {
+	let { autoFocus, setAutoFocus } = useAutoFocusContext();
 	const { articleId } = useParams();
 	throwIfUndefined(articleId);
 	let textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -95,7 +97,7 @@ export var ParagraphInput = ({
 	return (
 		<StyledForm onSubmit={handleSubmit(onsubmit)}>
 			<TextareaAutosize
-				autoFocus
+				autoFocus={autoFocus}
 				{...rest}
 				ref={textareaRef}
 				spellCheck='true'
@@ -134,6 +136,7 @@ export var ParagraphInput = ({
 					splitCombinedTextArr.shift();
 
 					let payloadId = paragraphId;
+					setAutoFocus(false);
 					for (let index = 0; index < splitCombinedTextArr.length; index++) {
 						let splitText = splitCombinedTextArr[index];
 						dispatch(insertBelowParagraph({ paragraphId: payloadId, newParagraphText: splitText, indexOffset: index, articleId }));

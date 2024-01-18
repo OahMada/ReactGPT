@@ -67,7 +67,7 @@ var renderWithContexts = (
 			},
 		},
 	});
-	var Wrapper = ({ children }: PropsWithChildren<object>): JSX.Element => {
+	var Wrapper = ({ children }: { children: React.ReactNode }) => {
 		return (
 			<QueryClientProvider client={queryClient}>
 				<Provider store={store}>

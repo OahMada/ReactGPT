@@ -15,6 +15,7 @@ import { selectArticle, handleParagraphOrderChange, updateUserInput, toggleTrans
 
 // components
 import { StyledParagraph, ParagraphInput, Paragraph, ParagraphControlBtns, EmptyParagraphList, ArticleControlBtns } from '../components';
+import AutoFocusWrapper from '../components/autoFocus';
 
 // utils
 import { createToast, throwIfUndefined, useKeys, HotkeyMapData } from '../utils';
@@ -198,97 +199,99 @@ export var Article = () => {
 					{(provided) => (
 						<div ref={provided.innerRef} {...provided.droppableProps}>
 							{filteredParagraphs.length === 0 && <EmptyParagraphList />}
-							{filteredParagraphs.map((paragraph: ParagraphType, index) => {
-								return (
-									<Draggable key={paragraph.id} draggableId={paragraph.id} index={index}>
-										{(provided) => (
-											<Wrapper
-												// ref={provided.innerRef}
-												ref={mergeRefs([
-													provided.innerRef,
-													(node) => {
-														if (node) {
-															articleElementsRef.current.set(index, { element: node, paragraphId: paragraph.id });
-														} else {
-															// To keep the ref reflects the current paragraph structure.
-															articleElementsRef.current.delete(index);
+							<AutoFocusWrapper>
+								{filteredParagraphs.map((paragraph: ParagraphType, index) => {
+									return (
+										<Draggable key={paragraph.id} draggableId={paragraph.id} index={index}>
+											{(provided) => (
+												<Wrapper
+													// ref={provided.innerRef}
+													ref={mergeRefs([
+														provided.innerRef,
+														(node) => {
+															if (node) {
+																articleElementsRef.current.set(index, { element: node, paragraphId: paragraph.id });
+															} else {
+																// To keep the ref reflects the current paragraph structure.
+																articleElementsRef.current.delete(index);
+															}
+														},
+													])}
+													{...provided.draggableProps}
+													tabIndex={-1} // make the element focusable
+													onClick={(e) => {
+														if (e.target === e.currentTarget) {
+															// prevent other interactions to change the focused element
+															focusedParagraphIndexRef.current = index;
+															performEnableScope(paragraph.id);
 														}
-													},
-												])}
-												{...provided.draggableProps}
-												tabIndex={-1} // make the element focusable
-												onClick={(e) => {
-													if (e.target === e.currentTarget) {
-														// prevent other interactions to change the focused element
+													}}
+													// Make the newly inserted empty paragraph the hotkey-enabled one. Thus, pressing d, =, or - won't trigger actions in other paragraphs.
+													onFocus={() => {
 														focusedParagraphIndexRef.current = index;
 														performEnableScope(paragraph.id);
-													}
-												}}
-												// Make the newly inserted empty paragraph the hotkey-enabled one. Thus, pressing d, =, or - won't trigger actions in other paragraphs.
-												onFocus={() => {
-													focusedParagraphIndexRef.current = index;
-													performEnableScope(paragraph.id);
-												}}
-											>
-												<div
-													className='grabber'
-													{...provided.dragHandleProps}
-													onClick={
-														(e) => e.currentTarget.focus() // to make initiating drag and drop a bit easer
-													}
-												></div>
-												<QueryErrorResetBoundary>
-													{({ reset }) => (
-														<ErrorBoundary
-															fallbackRender={({ resetErrorBoundary }) => {
-																if (paragraph.paragraphStatus === 'editing') {
-																	return <ParagraphInput paragraphId={paragraph.id} resetErrorBoundary={resetErrorBoundary} />;
-																}
-																return (
-																	<div
-																		// reference https://react.dev/learn/manipulating-the-dom-with-refs#how-to-manage-a-list-of-refs-using-a-ref-callback
-																		ref={(node) => {
-																			if (node) {
-																				resetErrorBoundariesRef.current.set(paragraph.id, resetErrorBoundary);
-																				errorBoundaryFallbackElementCount.current += 1;
-																			} else {
-																				resetErrorBoundariesRef.current.delete(paragraph.id);
-																				errorBoundaryFallbackElementCount.current -= 1;
-																			}
-																		}}
-																	>
-																		<StyledParagraph onClick={() => dispatch(updateUserInput(paragraph.id))}>
-																			{paragraph.paragraphBeforeGrammarFix}
-																		</StyledParagraph>
-																		<button
-																			onClick={async () => {
-																				resetErrorBoundary();
+													}}
+												>
+													<div
+														className='grabber'
+														{...provided.dragHandleProps}
+														onClick={
+															(e) => e.currentTarget.focus() // to make initiating drag and drop a bit easer
+														}
+													></div>
+													<QueryErrorResetBoundary>
+														{({ reset }) => (
+															<ErrorBoundary
+																fallbackRender={({ resetErrorBoundary }) => {
+																	if (paragraph.paragraphStatus === 'editing') {
+																		return <ParagraphInput paragraphId={paragraph.id} resetErrorBoundary={resetErrorBoundary} />;
+																	}
+																	return (
+																		<div
+																			// reference https://react.dev/learn/manipulating-the-dom-with-refs#how-to-manage-a-list-of-refs-using-a-ref-callback
+																			ref={(node) => {
+																				if (node) {
+																					resetErrorBoundariesRef.current.set(paragraph.id, resetErrorBoundary);
+																					errorBoundaryFallbackElementCount.current += 1;
+																				} else {
+																					resetErrorBoundariesRef.current.delete(paragraph.id);
+																					errorBoundaryFallbackElementCount.current -= 1;
+																				}
 																			}}
 																		>
-																			Retry
-																		</button>
-																	</div>
-																);
-															}}
-															onError={(error) => {
-																createToast({ type: 'error', content: error.message, toastId: error.message });
-															}}
-															onReset={reset}
-														>
-															<div>
-																<Paragraph paragraphId={paragraph.id} />
-															</div>
-														</ErrorBoundary>
-													)}
-												</QueryErrorResetBoundary>
-												<ParagraphControlBtns paragraphId={paragraph.id} />
-											</Wrapper>
-										)}
-									</Draggable>
-								);
-							})}
-							{provided.placeholder}
-							{/* For the `ParagraphControlBtns` element, if the toastContainer were within the element itself, then every element would render a separate toast. */}
+																			<StyledParagraph onClick={() => dispatch(updateUserInput(paragraph.id))}>
+																				{paragraph.paragraphBeforeGrammarFix}
+																			</StyledParagraph>
+																			<button
+																				onClick={async () => {
+																					resetErrorBoundary();
+																				}}
+																			>
+																				Retry
+																			</button>
+																		</div>
+																	);
+																}}
+																onError={(error) => {
+																	createToast({ type: 'error', content: error.message, toastId: error.message });
+																}}
+																onReset={reset}
+															>
+																<div>
+																	<Paragraph paragraphId={paragraph.id} />
+																</div>
+															</ErrorBoundary>
+														)}
+													</QueryErrorResetBoundary>
+													<ParagraphControlBtns paragraphId={paragraph.id} />
+												</Wrapper>
+											)}
+										</Draggable>
+									);
+								})}
+								{provided.placeholder}
+								{/* For the `ParagraphControlBtns` element, if the toastContainer were within the element itself, then every element would render a separate toast. */}
+							</AutoFocusWrapper>
 						</div>
 					)}
 				</Droppable>

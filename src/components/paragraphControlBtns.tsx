@@ -15,6 +15,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { createToast, throwIfUndefined, useKeys, HotkeyMapData } from '../utils';
 import { Paragraph } from '../types';
+import { useAutoFocusContext } from './autoFocus';
 
 // https://github.com/fkhadra/react-toastify/issues/568#issuecomment-779847274
 interface UndoProps extends Partial<ToastContentProps> {
@@ -57,6 +58,7 @@ var Undo = ({ closeToast, onUndo, paragraph, paragraphId }: UndoProps) => {
 };
 
 export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
+	let { setAutoFocus } = useAutoFocusContext();
 	let dispatch = useAppDispatch();
 	let toastId = useRef<Id>();
 	const { articleId } = useParams();
@@ -95,8 +97,14 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 		});
 	};
 
-	let handleInsertParagraphAbove = () => dispatch(insertAboveParagraph({ paragraphId, articleId }));
-	let handleInsertParagraphBelow = () => dispatch(insertBelowParagraph({ paragraphId, articleId }));
+	let handleInsertParagraphAbove = () => {
+		setAutoFocus(true);
+		dispatch(insertAboveParagraph({ paragraphId, articleId }));
+	};
+	let handleInsertParagraphBelow = () => {
+		setAutoFocus(true);
+		dispatch(insertBelowParagraph({ paragraphId, articleId }));
+	};
 
 	let { enabledScopes } = useHotkeysContext();
 	let toolTipHidden = !enabledScopes.includes(paragraphId);
