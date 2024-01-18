@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useQueryClient, useQueryErrorResetBoundary } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { useRef, useState, useContext } from 'react';
+import { useRef } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { refactoredChange, EditHistoryMode, Paragraph as ParagraphType } from '../types';

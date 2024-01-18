@@ -67,7 +67,7 @@ export var ParagraphInput = ({
 	useImperativeHandle(ref, () => textareaRef.current);
 
 	let onsubmit: SubmitHandler<ParagraphInputType> = (data) => {
-		if (data.paragraph === '') {
+		if (sanitizeUserInput(data.paragraph) === '') {
 			// empty paragraph get deleted right away
 			return dispatch(deleteParagraphRightAway(paragraphId));
 		}

@@ -79,11 +79,9 @@ enableMocking().then(() => {
  * ## features
  *
  * verify the persisted data
- * add inputted api key into local state
+ * Why do I need to input the API key every once in a while?
  *
  * ## bugs
- *
- * save a new line in new paragraph won't trigger paragraph deletion
  *
  * ## test
  *
