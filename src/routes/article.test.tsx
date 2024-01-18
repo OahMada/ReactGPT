@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 
-import { renderAnExistingArticle, clickElement, server, fetchButton } from '../setupTests';
+import { renderAnExistingArticle, clickElement, server, fetchButton, renderAnExistingArticleAndWaitForGrammarQueriesToFinish } from '../setupTests';
 import { defaultArticleInput } from '../utils';
 
 describe('Article route tests', () => {
@@ -58,13 +58,7 @@ describe('Article route tests', () => {
 		expect(screen.queryAllByRole('button', { name: /unpin/i })).toHaveLength(0);
 	});
 	it('Modal manipulating', async () => {
-		renderAnExistingArticle(1);
-		let acceptAllButtons: HTMLElement[] = [];
-		await waitFor(() => {
-			acceptAllButtons = screen.getAllByRole('button', { name: /accept all/i });
-			expect(acceptAllButtons[0]).toBeEnabled();
-		});
-		await clickElement(acceptAllButtons[1]); // constrain the number of related elements
+		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish('one');
 		let textDeletion = screen.getAllByText((content, element) => element?.tagName.toLowerCase() === 'del');
 		let initialDeletionCount = textDeletion.length;
 		await userEvent.hover(textDeletion[0]);
@@ -106,13 +100,13 @@ describe('Article route tests', () => {
 
 	it('Saving an empty new paragraph would cause it to be deleted immediately', async () => {
 		renderAnExistingArticle();
+		await waitFor(() => {
+			expect(fetchButton(/done/i)).toBeEnabled();
+		});
 		let paragraphsOnThePage = screen.getAllByText((content, element) => {
 			return element?.tagName.toLowerCase() === 'p';
 		});
 		let initialParagraphCount = paragraphsOnThePage.length;
-		await waitFor(() => {
-			expect(fetchButton(/done/i)).toBeEnabled();
-		});
 		await clickElement(/done/i);
 		await clickElement(/insert above/i);
 		await clickElement(/done/i);
@@ -123,13 +117,7 @@ describe('Article route tests', () => {
 	});
 
 	it('Click grammar-modified paragraph to enter its editing state, then make edits', async () => {
-		renderAnExistingArticle(1);
-		let doneBtns: HTMLElement[] = [];
-		await waitFor(() => {
-			doneBtns = screen.getAllByRole('button', { name: /done/i });
-			expect(doneBtns[1]).toBeEnabled();
-		});
-		await clickElement(doneBtns[1]);
+		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish('one');
 		let paragraphsOnThePage = screen.getAllByText((content, element) => {
 			return element?.tagName.toLowerCase() === 'p';
 		});
@@ -142,5 +130,57 @@ describe('Article route tests', () => {
 		expect(screen.getByText(/consider adding a new paragraph/i)).toBeInTheDocument();
 		await userEvent.paste(defaultArticleInput);
 		expect(screen.getAllByRole('article').length).toEqual(initialParagraphCount + 1);
+	});
+	it('Re-fetch paragraph grammar mistakes', async () => {
+		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish('all');
+		expect(screen.queryByText((content, element) => element?.tagName.toLowerCase() === 'del')).not.toBeInTheDocument();
+		let findGrammarMistakesBtns = screen.getAllByRole('button', { name: /find grammar mistakes/i });
+		await clickElement(findGrammarMistakesBtns[0]);
+		await waitFor(() => {
+			let textDeletion = screen.getAllByText((content, element) => element?.tagName.toLowerCase() === 'del');
+			expect(textDeletion.length).not.toBe(0);
+		});
+	});
+	it('Fetch the paragraph translation and hide it; already fetched translations will not be refetched on the preview page.', async () => {
+		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish('one');
+		let paragraphsOnThePage = screen.getAllByText((content, element) => {
+			return element?.tagName.toLowerCase() === 'p';
+		});
+		let initialParagraphCount = paragraphsOnThePage.length;
+		await clickElement(/show translation/i);
+		await waitFor(() => {
+			paragraphsOnThePage = screen.getAllByText((content, element) => {
+				return element?.tagName.toLowerCase() === 'p';
+			});
+			expect(paragraphsOnThePage).toHaveLength(initialParagraphCount + 1);
+		});
+		await clickElement(/hide translation/i);
+		paragraphsOnThePage = screen.getAllByText((content, element) => {
+			return element?.tagName.toLowerCase() === 'p';
+		});
+		expect(paragraphsOnThePage).toHaveLength(initialParagraphCount);
+	});
+	it('Fetch for paragraph translation, but in the case of server responding error', async () => {
+		server.use(
+			http.post('/.netlify/functions/fetchTranslation', async () => {
+				return new HttpResponse(null, { status: 500 });
+			})
+		);
+		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish('one');
+		await clickElement(/show translation/i);
+		expect(await screen.findByText(/there was an error/i)).toBeInTheDocument();
+		server.resetHandlers();
+		await clickElement(/try again/i);
+		await waitFor(() => {
+			expect(screen.queryByText(/there was an error/i)).not.toBeInTheDocument();
+		});
+	});
+	it('Revert paragraph to its initial state', async () => {
+		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish('none');
+		let acceptAllBtns = screen.getAllByRole('button', { name: /accept all/i });
+		await clickElement(acceptAllBtns[0]);
+		expect(screen.queryByText(defaultArticleInput.split('\n\n')[0])).not.toBeInTheDocument();
+		await clickElement(/revert all changes/i);
+		expect(screen.getByText(defaultArticleInput.split('\n\n')[0])).toBeInTheDocument();
 	});
 });

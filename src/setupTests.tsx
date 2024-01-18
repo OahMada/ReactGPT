@@ -2,9 +2,8 @@
 /// <reference types="vitest/globals" />
 import '@testing-library/jest-dom';
 
-import { PropsWithChildren, ReactElement } from 'react';
 import { setupServer } from 'msw/node';
-import { render, RenderOptions } from '@testing-library/react';
+import { render, RenderOptions, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HotkeysProvider } from 'react-hotkeys-hook';
@@ -50,7 +49,7 @@ interface ExtendedRenderOptions extends Omit<RenderOptions, 'wrapper'> {
 
 // https://reactrouter.com/en/main/routers/create-memory-router
 var renderWithContexts = (
-	ui: ReactElement,
+	ui: React.ReactElement,
 	{
 		preloadedState = {},
 		store = setupStore(preloadedState),
@@ -170,4 +169,24 @@ export function fetchButton(arg: btnWithFetchType | btnName) {
 	}
 
 	return button;
+}
+
+export async function renderAnExistingArticleAndWaitForGrammarQueriesToFinish(clickAny: 'all' | 'one' | 'none') {
+	renderAnExistingArticle(1);
+	let doneBtns: HTMLElement[] = [];
+	await waitFor(() => {
+		doneBtns = screen.getAllByRole('button', { name: /done/i });
+		expect(doneBtns[0]).toBeEnabled();
+	});
+	if (clickAny === 'none') {
+		return;
+	}
+	if (clickAny === 'all') {
+		for (let index = 0; index < doneBtns.length; index++) {
+			let btn = doneBtns[index];
+			await clickElement(btn);
+		}
+	} else if (clickAny === 'one') {
+		await clickElement(doneBtns[1]); // it has to be 1
+	}
 }
