@@ -6,17 +6,15 @@ import { renderAnExistingArticle, clickElement, server, fetchButton } from '../s
 describe('Preview route tests', () => {
 	it('Opening preview route will halt grammar fixing queries', async () => {
 		let { router } = renderAnExistingArticle(1);
-		let acceptAllButtons = screen.getAllByRole('button', { name: /accept all/i });
-		expect(acceptAllButtons).toHaveLength(2);
-		expect(acceptAllButtons[0]).toBeDisabled();
+		expect(screen.getByRole('button', { name: /accept all/i })).toBeDisabled();
 		await clickElement(screen.getByRole('link', { name: /preview article/i }));
 		expect(router.state.location.pathname).toMatch(/preview$/);
 		await new Promise((r) => setTimeout(r, 1000)); // the mocked API response has a 1000ms delay
 		await clickElement(fetchButton(/close/i));
-		acceptAllButtons = screen.getAllByRole('button', { name: /accept all/i });
-		expect(acceptAllButtons[1]).toBeDisabled();
+		let acceptAllBtn = screen.getByRole('button', { name: /accept all/i });
+		expect(acceptAllBtn).toBeDisabled();
 		await waitFor(() => {
-			expect(acceptAllButtons[1]).toBeEnabled();
+			expect(acceptAllBtn).toBeEnabled();
 		});
 	});
 
@@ -70,7 +68,7 @@ describe('Preview route tests', () => {
 				return new HttpResponse(null, { status: 500 });
 			})
 		);
-		renderAnExistingArticle(1, true);
+		renderAnExistingArticle(2, true);
 		await clickElement(/include translation/i);
 		expect(await fetchButton({ type: 'find', name: /retry all/i })).toBeInTheDocument();
 		expect(screen.getAllByRole('button', { name: /retry$/i })).toHaveLength(2);

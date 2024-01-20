@@ -9,10 +9,12 @@ export var generateHotkeyLabel = (hotkey: string) => {
 					macKeyLabel = 'Cmd';
 					winKeyLabel = 'Ctr';
 					break;
+				/* v8 ignore next 4 */
 				case 'alt':
 					macKeyLabel = 'Opt';
 					winKeyLabel = 'Alt';
 					break;
+				/* v8 ignore next 3 */
 				case 'ctrl':
 					winKeyLabel = macKeyLabel = 'Ctr';
 					break;

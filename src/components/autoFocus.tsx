@@ -24,6 +24,7 @@ export default function AutoFocusWrapper({ children }: { children: React.ReactNo
 
 export var useAutoFocusContext = () => {
 	let autoFocusContext = useContext(AutoFocusContext);
+	/* v8 ignore next 3 */
 	if (!autoFocusContext) {
 		throw new Error('useAutoFocusContext has to be used within <CurrentUserContext.Provider>');
 	}

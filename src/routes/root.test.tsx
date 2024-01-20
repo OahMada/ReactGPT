@@ -6,7 +6,7 @@ import { clickElement, renderAnExistingArticle } from '../setupTests';
 describe('Root route (shared layout) tests', () => {
 	it('Search articles', async () => {
 		renderAnExistingArticle();
-		expect(screen.getAllByRole('listitem')).toHaveLength(2);
+		expect(screen.getAllByRole('listitem')).toHaveLength(3);
 		let searchBox = screen.getByRole('searchbox');
 		await userEvent.type(searchBox, 'hello');
 		expect(searchBox).toHaveValue('hello');
@@ -20,11 +20,11 @@ describe('Root route (shared layout) tests', () => {
 		let paragraphsOnThePage = screen.getAllByText((content, element) => element?.tagName.toLowerCase() === 'p');
 		expect(paragraphsOnThePage[0]).toHaveTextContent(/hello/i);
 		let pinButtons = screen.getAllByRole('button', { name: /^pin/i });
-		expect(pinButtons).toHaveLength(3);
+		expect(pinButtons).toHaveLength(4);
 		await clickElement(pinButtons[1]);
 		paragraphsOnThePage = screen.getAllByText((content, element) => element?.tagName.toLowerCase() === 'p');
 		expect(paragraphsOnThePage[0]).toHaveTextContent(/A voiced/i);
-		expect(screen.getAllByRole('button', { name: /^pin/i })).toHaveLength(2);
+		expect(screen.getAllByRole('button', { name: /^pin/i })).toHaveLength(3);
 		clickElement('Unpin');
 		paragraphsOnThePage = screen.getAllByText((content, element) => element?.tagName.toLowerCase() === 'p');
 		expect(paragraphsOnThePage[0]).toHaveTextContent(/A voiced/i);
@@ -32,23 +32,23 @@ describe('Root route (shared layout) tests', () => {
 	it('Delete article', async () => {
 		renderAnExistingArticle();
 		let deleteArticleButtons = screen.getAllByRole('button', { name: /delete$/i });
-		expect(deleteArticleButtons).toHaveLength(2);
+		expect(deleteArticleButtons).toHaveLength(3);
 		await clickElement(deleteArticleButtons[0]);
 		let deletedArticle = screen.queryByText((content, element) => {
 			return element?.tagName.toLowerCase() === 'p' && content.startsWith('Hello');
 		});
 		expect(deletedArticle).not.toBeInTheDocument();
 		deleteArticleButtons = screen.getAllByRole('button', { name: /delete$/i });
-		expect(deleteArticleButtons).toHaveLength(1);
+		expect(deleteArticleButtons).toHaveLength(2);
 	});
 	it('Click to render article', async () => {
 		renderAnExistingArticle();
 		let articleParagraphs = screen.getAllByRole('article');
 		expect(articleParagraphs).toHaveLength(1);
 		await clickElement(
-			screen.getByText((content, element) => {
+			screen.getAllByText((content, element) => {
 				return element?.tagName.toLowerCase() === 'p' && content.startsWith('A voiced');
-			})
+			})[1]
 		);
 		articleParagraphs = screen.getAllByRole('article');
 		expect(articleParagraphs).toHaveLength(2);

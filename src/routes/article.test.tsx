@@ -24,7 +24,7 @@ describe('Article route tests', () => {
 				return new HttpResponse(null, { status: 500 });
 			})
 		);
-		renderAnExistingArticle(1);
+		renderAnExistingArticle(2);
 		expect(await fetchButton({ type: 'find', name: /retry all/i })).toBeInTheDocument();
 		expect(screen.getByRole('alert')).toBeInTheDocument();
 		server.resetHandlers();
@@ -51,14 +51,14 @@ describe('Article route tests', () => {
 	it('Pin and unpin article', async () => {
 		renderAnExistingArticle();
 		let pinButtons = screen.getAllByRole('button', { name: /pin/i });
-		await clickElement(pinButtons[2]);
+		await clickElement(pinButtons[3]);
 		let unpinButtons = screen.getAllByRole('button', { name: /unpin/i });
 		expect(unpinButtons).toHaveLength(2);
 		await clickElement(unpinButtons[1]);
 		expect(screen.queryAllByRole('button', { name: /unpin/i })).toHaveLength(0);
 	});
 	it('Modal manipulating', async () => {
-		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish('one');
+		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish(false);
 		let textDeletion = screen.getAllByText((content, element) => element?.tagName.toLowerCase() === 'del');
 		let initialDeletionCount = textDeletion.length;
 		await userEvent.hover(textDeletion[0]);
@@ -117,7 +117,7 @@ describe('Article route tests', () => {
 	});
 
 	it('Click grammar-modified paragraph to enter its editing state, then make edits', async () => {
-		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish('one');
+		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish();
 		let paragraphsOnThePage = screen.getAllByText((content, element) => {
 			return element?.tagName.toLowerCase() === 'p';
 		});
@@ -132,17 +132,16 @@ describe('Article route tests', () => {
 		expect(screen.getAllByRole('article').length).toEqual(initialParagraphCount + 1);
 	});
 	it('Re-fetch paragraph grammar mistakes', async () => {
-		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish('all');
+		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish();
 		expect(screen.queryByText((content, element) => element?.tagName.toLowerCase() === 'del')).not.toBeInTheDocument();
-		let findGrammarMistakesBtns = screen.getAllByRole('button', { name: /find grammar mistakes/i });
-		await clickElement(findGrammarMistakesBtns[0]);
+		await clickElement(/find grammar mistakes/i);
 		await waitFor(() => {
 			let textDeletion = screen.getAllByText((content, element) => element?.tagName.toLowerCase() === 'del');
 			expect(textDeletion.length).not.toBe(0);
 		});
 	});
-	it('Fetch the paragraph translation and hide it; already fetched translations will not be refetched on the preview page.', async () => {
-		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish('one');
+	it('Fetch the paragraph translation and hide it', async () => {
+		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish();
 		let paragraphsOnThePage = screen.getAllByText((content, element) => {
 			return element?.tagName.toLowerCase() === 'p';
 		});
@@ -166,7 +165,7 @@ describe('Article route tests', () => {
 				return new HttpResponse(null, { status: 500 });
 			})
 		);
-		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish('one');
+		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish();
 		await clickElement(/show translation/i);
 		expect(await screen.findByText(/there was an error/i)).toBeInTheDocument();
 		server.resetHandlers();
@@ -176,9 +175,8 @@ describe('Article route tests', () => {
 		});
 	});
 	it('Revert paragraph to its initial state', async () => {
-		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish('none');
-		let acceptAllBtns = screen.getAllByRole('button', { name: /accept all/i });
-		await clickElement(acceptAllBtns[0]);
+		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish(false);
+		await clickElement(/accept all/i);
 		expect(screen.queryByText(defaultArticleInput.split('\n\n')[0])).not.toBeInTheDocument();
 		await clickElement(/revert all changes/i);
 		expect(screen.getByText(defaultArticleInput.split('\n\n')[0])).toBeInTheDocument();

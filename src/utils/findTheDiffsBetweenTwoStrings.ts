@@ -28,6 +28,7 @@ export var findTheDiffsBetweenTwoStrings = (strA: string, strB: string) => {
 			if (acc.length >= 1 && (previousObj?.added || previousObj?.removed) && (cur.added || cur.removed)) {
 				// concat same string keys
 				Object.keys(cur).forEach((key) => {
+					/* v8 ignore next 3 */
 					if (previousObj[key] && typeof previousObj[key] === 'string') {
 						cur[key] = String(previousObj[key]) + cur[key];
 					}

@@ -129,11 +129,14 @@ export var clickElement = async (button?: button) => {
 export var renderAnExistingArticle = (articleIndex: number = 0, enterPreview: boolean = false) => {
 	let articleArr = [
 		['article1', 'Hello there.'],
-		['article2', defaultArticleInput],
+		['article2', defaultArticleInput.split('\n\n')[0]],
+		['article3', defaultArticleInput],
 	];
 	let store = setupStore();
 	store.dispatch(saveArticleInput({ articleText: articleArr[0][1], articleId: articleArr[0][0] }));
 	store.dispatch(saveArticleInput({ articleText: articleArr[1][1], articleId: articleArr[1][0] }));
+	store.dispatch(saveArticleInput({ articleText: articleArr[2][1], articleId: articleArr[2][0] }));
+
 	if (enterPreview) {
 		return renderRouter({ store, initialEntries: [`/article/${articleArr[articleIndex][0]}/preview`] });
 	}
@@ -171,22 +174,13 @@ export function fetchButton(arg: btnWithFetchType | btnName) {
 	return button;
 }
 
-export async function renderAnExistingArticleAndWaitForGrammarQueriesToFinish(clickAny: 'all' | 'one' | 'none') {
+export async function renderAnExistingArticleAndWaitForGrammarQueriesToFinish(clickDoneButton: boolean = true) {
 	renderAnExistingArticle(1);
-	let doneBtns: HTMLElement[] = [];
 	await waitFor(() => {
-		doneBtns = screen.getAllByRole('button', { name: /done/i });
-		expect(doneBtns[0]).toBeEnabled();
+		expect(screen.getByRole('button', { name: /done/i })).toBeEnabled();
 	});
-	if (clickAny === 'none') {
+	if (!clickDoneButton) {
 		return;
 	}
-	if (clickAny === 'all') {
-		for (let index = 0; index < doneBtns.length; index++) {
-			let btn = doneBtns[index];
-			await clickElement(btn);
-		}
-	} else if (clickAny === 'one') {
-		await clickElement(doneBtns[1]); // it has to be 1
-	}
+	await clickElement(/done/i);
 }
