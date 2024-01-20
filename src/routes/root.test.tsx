@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { clickElement, renderAnExistingArticle } from '../setupTests';
+import { clickElement, renderAnExistingArticle, fetchElementsByTagName } from '../setupTests';
 
 describe('Root route (shared layout) tests', () => {
 	it('Search articles', async () => {
@@ -17,16 +17,16 @@ describe('Root route (shared layout) tests', () => {
 	});
 	it('Pin article', async () => {
 		renderAnExistingArticle();
-		let paragraphsOnThePage = screen.getAllByText((content, element) => element?.tagName.toLowerCase() === 'p');
+		let paragraphsOnThePage = await fetchElementsByTagName('p');
 		expect(paragraphsOnThePage[0]).toHaveTextContent(/hello/i);
 		let pinButtons = screen.getAllByRole('button', { name: /^pin/i });
 		expect(pinButtons).toHaveLength(4);
 		await clickElement(pinButtons[1]);
-		paragraphsOnThePage = screen.getAllByText((content, element) => element?.tagName.toLowerCase() === 'p');
+		paragraphsOnThePage = await fetchElementsByTagName('p');
 		expect(paragraphsOnThePage[0]).toHaveTextContent(/A voiced/i);
 		expect(screen.getAllByRole('button', { name: /^pin/i })).toHaveLength(3);
 		clickElement('Unpin');
-		paragraphsOnThePage = screen.getAllByText((content, element) => element?.tagName.toLowerCase() === 'p');
+		paragraphsOnThePage = await fetchElementsByTagName('p');
 		expect(paragraphsOnThePage[0]).toHaveTextContent(/A voiced/i);
 	});
 	it('Delete article', async () => {

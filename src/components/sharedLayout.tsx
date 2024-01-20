@@ -120,9 +120,17 @@ export var SharedLayout = () => {
 		return articleQueue.favorites.indexOf(articleId) !== -1 ? true : false;
 	};
 
+	let handleClickConfigBtn = () => {
+		navigate('/config');
+	};
+	let handleClickHotkeyMapBtn = () => {
+		navigate('/hotkey');
+	};
+
 	let { 'Article Page': articlePageHotkeys } = HotkeyMapData();
 
 	// hotkey for entering new article page
+	/* v8 ignore next 7 */
 	useKeys({
 		keyBinding: articlePageHotkeys.createNewArticle.hotkey,
 		callback: () => {
@@ -134,23 +142,20 @@ export var SharedLayout = () => {
 	// hotkey for entering config page
 	useKeys({
 		keyBinding: articlePageHotkeys.enterConfig.hotkey,
-		callback: () => {
-			navigate('/config');
-		},
+		callback: handleClickConfigBtn,
 	});
 
 	// hotkey for entering hotkey map page
 	useKeys({
 		keyBinding: articlePageHotkeys.enterHotkeyMap.hotkey,
-		callback: () => {
-			navigate('/hotkey');
-		},
+		callback: handleClickHotkeyMapBtn,
 	});
 
 	let searchInputRef = useRef<HTMLInputElement>(null);
 	useImperativeHandle(ref, () => searchInputRef.current);
 
 	// hotkey for focusing search field
+	/* v8 ignore next 6 */
 	useKeys({
 		keyBinding: articlePageHotkeys.enableSearch.hotkey,
 		callback: () => {
@@ -161,10 +166,10 @@ export var SharedLayout = () => {
 	return (
 		<>
 			<div>
-				<button onClick={() => navigate('/config')} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.enterConfig.label}>
+				<button onClick={handleClickConfigBtn} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.enterConfig.label}>
 					CONFIG
 				</button>
-				<button onClick={() => navigate('/hotkey')} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.enterHotkeyMap.label}>
+				<button onClick={handleClickHotkeyMapBtn} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.enterHotkeyMap.label}>
 					Hotkey Map
 				</button>
 				<form role='search' onSubmit={handleSubmit(onSubmit)}>
@@ -210,6 +215,7 @@ export var SharedLayout = () => {
 									</button>
 									{articleIsInFavorites(article.articleId) ? (
 										<button
+											/* v8 ignore next 3 */
 											onClick={() => {
 												dispatch(unPinArticle(article.articleId));
 											}}

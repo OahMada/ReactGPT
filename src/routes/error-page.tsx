@@ -7,11 +7,13 @@ export function ErrorPage() {
 
 	let { 'Error Page': errorPageHotkeys } = HotkeyMapData();
 
+	let handleClick = () => {
+		navigate('/');
+	};
+
 	useKeys({
 		keyBinding: errorPageHotkeys.back.hotkey,
-		callback: () => {
-			navigate('/');
-		},
+		callback: handleClick,
 	});
 
 	return (
@@ -21,7 +23,7 @@ export function ErrorPage() {
 			<p>
 				<i>{(isRouteErrorResponse(error) && error.statusText) || (error instanceof Error && error.message)}</i>
 			</p>
-			<button onClick={() => navigate('/')} data-tooltip-id='hotkey' data-tooltip-content={errorPageHotkeys.back.label}>
+			<button onClick={handleClick} data-tooltip-id='hotkey' data-tooltip-content={errorPageHotkeys.back.label}>
 				Back to home page.
 			</button>
 		</div>

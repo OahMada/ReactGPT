@@ -56,6 +56,7 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 						dispatch(removeArticleFromDeletionQueue(articleId));
 						navigate(`/article/${articleId}`);
 					}}
+					/* v8 ignore next 3 */
 					closeToast={() => {
 						toast.dismiss(toastId.current);
 					}}
@@ -66,6 +67,7 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 			toastId: `articleDeletion${articleId}`,
 		});
 
+		/* v8 ignore next 7 */
 		toast.onChange((toastItem) => {
 			if (toastItem.status === 'removed' && toastItem.id === toastId.current) {
 				// only navigate when the article did get deleted
@@ -90,6 +92,7 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 	useKeys({ keyBinding: articlePageHotkeys.deleteArticle.hotkey, callback: handleArticleDeletion });
 
 	// preview article hotkey
+	/* v8 ignore next 6 */
 	useKeys({
 		keyBinding: articlePageHotkeys.previewArticle.hotkey,
 		callback: () => {

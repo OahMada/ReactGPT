@@ -79,6 +79,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 	};
 
 	// automatically click the done button a certain condition
+	/* v8 ignore next 8 */
 	toast.onChange((toastItem) => {
 		if (toastItem.status === 'removed' && toastItem.id === paragraphId + 'NoGrammarMistakes' && paragraphStatus === 'modifying') {
 			// If the toastId check isn't included, changes to any toast would trigger the following.

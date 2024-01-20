@@ -144,7 +144,7 @@ export var renderAnExistingArticle = (articleIndex: number = 0, enterPreview: bo
 };
 
 interface btnWithFetchType {
-	type?: 'find' | 'query';
+	type?: 'find' | 'query' | 'get';
 	name: string | RegExp;
 }
 type btnName = string | RegExp;
@@ -157,20 +157,11 @@ export function fetchButton(arg: btnWithFetchType | btnName) {
 		button = screen.getByRole('button', { name: arg });
 	} else {
 		let { type, name } = arg;
-		switch (type) {
-			case 'query':
-				button = screen.queryByRole('button', { name });
-				break;
-			case 'find':
-				// eslint-disable-next-line testing-library/await-async-queries
-				button = screen.findByRole('button', { name });
-				break;
-			default:
-				button = screen.getByRole('button', { name });
-				break;
+		if (!type) {
+			type = 'get';
 		}
+		button = screen[`${type}ByRole`]('button', { name });
 	}
-
 	return button;
 }
 
@@ -183,4 +174,20 @@ export async function renderAnExistingArticleAndWaitForGrammarQueriesToFinish(cl
 		return;
 	}
 	await clickElement(/done/i);
+}
+
+interface fetchElementsByTagNameType {
+	tagName: string;
+	method: 'get' | 'find' | 'query';
+}
+
+export async function fetchElementsByTagName(fetchOptions: fetchElementsByTagNameType): Promise<HTMLElement | null>;
+export async function fetchElementsByTagName(tagName: string): Promise<HTMLElement[]>;
+export async function fetchElementsByTagName(arg: string | fetchElementsByTagNameType) {
+	if (typeof arg === 'string') {
+		return screen.getAllByText((content, element) => element?.tagName.toLowerCase() === arg);
+	} else {
+		let { tagName, method } = arg;
+		return await screen[`${method}ByText`]((content, element) => element?.tagName.toLowerCase() === tagName);
+	}
 }

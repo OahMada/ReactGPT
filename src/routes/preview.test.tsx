@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 
-import { renderAnExistingArticle, clickElement, server, fetchButton } from '../setupTests';
+import { renderAnExistingArticle, clickElement, server, fetchButton, fetchElementsByTagName } from '../setupTests';
 
 describe('Preview route tests', () => {
 	it('Opening preview route will halt grammar fixing queries', async () => {
@@ -20,23 +20,13 @@ describe('Preview route tests', () => {
 
 	it('Include and remove translation', async () => {
 		renderAnExistingArticle(0, true);
-		let pTagElementsLength = screen.getAllByText((content, element) => {
-			return element?.tagName.toLowerCase() === 'p';
-		}).length;
+		let pTagElementsLength = (await fetchElementsByTagName('p')).length;
 		await clickElement(/include translation/i);
-		await waitFor(() => {
-			expect(
-				screen.getAllByText((content, element) => {
-					return element?.tagName.toLowerCase() === 'p';
-				}).length
-			).toEqual(pTagElementsLength + 1);
+		await waitFor(async () => {
+			expect((await fetchElementsByTagName('p')).length).toEqual(pTagElementsLength + 1);
 		});
 		await clickElement(/remove translation/i);
-		expect(
-			screen.getAllByText((content, element) => {
-				return element?.tagName.toLowerCase() === 'p';
-			}).length
-		).toEqual(pTagElementsLength);
+		expect((await fetchElementsByTagName('p')).length).toEqual(pTagElementsLength);
 	});
 
 	it('Click the export to file button to reveal available options, click on each export option', async () => {

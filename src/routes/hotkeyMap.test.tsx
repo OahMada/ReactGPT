@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { renderRouter, clickElement, fetchButton } from '../setupTests';
+import { renderRouter, clickElement, fetchButton, fetchElementsByTagName } from '../setupTests';
 
 describe('hotkeyMap route tests', () => {
 	it('Land on the hotkeyMap route then navigate back to main page', async () => {

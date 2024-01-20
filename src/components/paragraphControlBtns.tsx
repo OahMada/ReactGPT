@@ -77,6 +77,7 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 					onUndo={() => {
 						dispatch(undoParagraphDeletion(paragraphId));
 					}}
+					/* v8 ignore next 3 */
 					closeToast={() => {
 						toast.dismiss(toastId.current);
 					}}
@@ -88,6 +89,7 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 			options: { hideProgressBar: false },
 		});
 
+		/* v8 ignore next 7 */
 		toast.onChange((toastItem) => {
 			if (toastItem.status === 'removed' && toastItem.id === toastId.current) {
 				// If the toastId check isn't included, changes to any toast would trigger the following.

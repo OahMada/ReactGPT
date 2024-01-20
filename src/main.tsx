@@ -85,6 +85,12 @@ enableMocking().then(() => {
  *
  * ## test
  *
+ * emptyParagraphList click the create new button
+ * un-hover to hide the modal
+ * edit paragraph but only input a white space
+ * edit paragraph when error boundary is triggered
+ * navigate to search result article
+ *
  * ## outlook and others
  *
  * update user flow
