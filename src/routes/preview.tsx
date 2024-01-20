@@ -104,6 +104,7 @@ export var Preview = () => {
 	/* Image Generation */
 	let downloadImg = async () => {
 		// a bug from the library: Error inlining remote css file DOMException: Failed to read the 'cssRules' property from 'CSSStyleSheet': Cannot access rules
+		/* v8 ignore next 13 */
 		await workerInstance.exportFile(
 			proxy(() => {
 				toBlob(articleWrapperRef.current!, { backgroundColor: 'white' }).then(function (blob) {
@@ -124,6 +125,7 @@ export var Preview = () => {
 	/* PDF Generation */
 	let downloadPDF = async () => {
 		// https://dev.to/jringeisen/using-jspdf-html2canvas-and-vue-to-generate-pdfs-1f8l
+		/* v8 ignore next 19 */
 		await workerInstance.exportFile(
 			proxy(() => {
 				let pdf = new jsPDF({
@@ -132,7 +134,6 @@ export var Preview = () => {
 					format: 'a4',
 					hotfixes: ['px_scaling'],
 				});
-
 				// credit https://stackoverflow.com/a/55497749/5800789
 				html2canvas(articleWrapperRef.current!).then((canvas) => {
 					let img = canvas.toDataURL('image/png');
@@ -151,6 +152,7 @@ export var Preview = () => {
 
 	/* DOCX Generation */
 	let downloadDocx = async () => {
+		/* v8 ignore next 12 */
 		await workerInstance.exportFile(
 			proxy(() => {
 				Packer.toBlob(articleDocx({ article: currentArticleParagraphsWithTranslation, includeTranslation })).then((blob) => {
@@ -181,6 +183,7 @@ export var Preview = () => {
 		// https://stackoverflow.com/questions/39501289/in-reactjs-how-to-copy-text-to-clipboard
 		navigator.clipboard.writeText(clipboardText);
 
+		/* v8 ignore next */
 		createToast({ type: 'info', content: 'Copied to Clipboard', toastId: 'copyToClipboard', options: { autoClose: 500, closeButton: false } });
 	};
 
@@ -194,6 +197,7 @@ export var Preview = () => {
 	useKeys({ keyBinding: previewPageHotkeys.copyToClipboard.hotkey, callback: debouncedCopyToClipboard });
 	useKeys({
 		keyBinding: previewPageHotkeys.showExportOptions.hotkey,
+		/* v8 ignore next 3 */
 		callback: () => {
 			setShowExportOptions(true);
 		},

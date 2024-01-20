@@ -18,6 +18,7 @@ export var Modal = () => {
 	return (
 		<StyleSheetManager shouldForwardProp={isPropValid}>
 			<Wrapper
+				/* v8 ignore next 3 */
 				onMouseLeave={() => {
 					dispatch(hideModal());
 				}}

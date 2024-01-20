@@ -143,15 +143,15 @@ export var renderAnExistingArticle = (articleIndex: number = 0, enterPreview: bo
 	return renderRouter({ store, initialEntries: [`/article/${articleArr[articleIndex][0]}`] });
 };
 
-interface btnWithFetchType {
+interface fetchButtonType {
 	type?: 'find' | 'query' | 'get';
 	name: string | RegExp;
 }
 type btnName = string | RegExp;
 
-export function fetchButton(args: btnWithFetchType): HTMLElement | null | Promise<HTMLElement>;
+export function fetchButton(args: fetchButtonType): HTMLElement | null | Promise<HTMLElement>;
 export function fetchButton(btnName: btnName): HTMLElement;
-export function fetchButton(arg: btnWithFetchType | btnName) {
+export function fetchButton(arg: fetchButtonType | btnName) {
 	let button;
 	if (typeof arg === 'string' || arg instanceof RegExp) {
 		button = screen.getByRole('button', { name: arg });

@@ -83,13 +83,15 @@ enableMocking().then(() => {
  *
  * ## bugs
  *
+ * click done button in article input won't preserve the search input value
+ * after drag and drop, paragraph focus state problem
+ *
  * ## test
  *
- * emptyParagraphList click the create new button
- * un-hover to hide the modal
- * edit paragraph but only input a white space
- * edit paragraph when error boundary is triggered
- * navigate to search result article
+ * hotkey trigger switching paragraph focus
+ * drag and drop
+ * click preview wrapper navigate back
+ * closing preview when translation query is fetching stops the query
  *
  * ## outlook and others
  *

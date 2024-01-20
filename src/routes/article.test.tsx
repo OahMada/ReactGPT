@@ -64,6 +64,13 @@ describe('Article route tests', () => {
 		await clickElement(/undo/i);
 		expect(fetchButton(/delete paragraph/i)).toBeInTheDocument();
 	});
+	it('Delete paragraph and navigate to article creation', async () => {
+		renderAnExistingArticle(1);
+		await clickElement(/delete paragraph/i);
+		expect(fetchButton(/create/i)).toBeInTheDocument();
+		await clickElement(/create/i);
+		expect(screen.getByRole('textbox')).toBeInTheDocument();
+	});
 	it('Insert new paragraph below', async () => {
 		renderAnExistingArticle();
 		let paragraphsOnThePage = await fetchElementsByTagName('p');
@@ -88,10 +95,7 @@ describe('Article route tests', () => {
 		expect(paragraphsOnThePage[paragraphsOnThePage.length - 1]).toHaveTextContent('Insert below');
 	});
 	it('Saving an empty new paragraph would cause it to be deleted immediately', async () => {
-		renderAnExistingArticle();
-		await waitFor(() => {
-			expect(fetchButton(/done/i)).toBeEnabled();
-		});
+		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish(false);
 		let paragraphsOnThePage = await fetchElementsByTagName('p');
 		let initialParagraphCount = paragraphsOnThePage.length;
 		await clickElement(/done/i);
@@ -99,6 +103,31 @@ describe('Article route tests', () => {
 		await clickElement(/done/i);
 		paragraphsOnThePage = await fetchElementsByTagName('p');
 		expect(paragraphsOnThePage.length).toEqual(initialParagraphCount);
+	});
+	it('Saving an empty new paragraph would cause it to be deleted immediately', async () => {
+		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish(false);
+		let paragraphsOnThePage = await fetchElementsByTagName('p');
+		let initialParagraphCount = paragraphsOnThePage.length;
+		await clickElement(/done/i);
+		await clickElement(/insert above/i);
+		await userEvent.type(screen.getByRole('textbox'), ' \n');
+		await clickElement(/done/i);
+		paragraphsOnThePage = await fetchElementsByTagName('p');
+		expect(paragraphsOnThePage.length).toEqual(initialParagraphCount);
+	});
+	it('Edit paragraph when error boundary is triggered', async () => {
+		server.use(
+			http.post('/.netlify/functions/fetchGrammarMistakes', async () => {
+				return new HttpResponse(null, { status: 500 });
+			})
+		);
+		renderAnExistingArticle(1);
+		expect(await screen.findByRole('button', { name: /retry/i })).toBeInTheDocument();
+		let paragraphsOnThePage = await fetchElementsByTagName('p');
+		await clickElement(paragraphsOnThePage[paragraphsOnThePage.length - 1]);
+		await userEvent.type(screen.getByRole('textbox'), ' \n');
+		await clickElement(/done/i);
+		expect(screen.getByText(defaultArticleInput.split('\n\n')[0])).toBeInTheDocument();
 	});
 	it('Click grammar-modified paragraph to enter its editing state, then make edits', async () => {
 		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish();
@@ -229,4 +258,17 @@ describe('Modal component tests', async () => {
 		await clickElement(/revert all/i);
 		expect(screen.getByText(defaultArticleInput.split('\n\n')[0])).toBeInTheDocument();
 	});
+	it('Un-hover a grammar fix to hide the modal', async () => {
+		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish(false);
+		let textDeletion = await fetchElementsByTagName('del');
+		await userEvent.hover(textDeletion[0]);
+		expect(fetchButton(/ignore/i)).toBeInTheDocument();
+		await userEvent.unhover(textDeletion[0]);
+		expect(fetchButton({ type: 'query', name: /ignore/i })).not.toBeInTheDocument();
+	});
+});
+
+describe('Hotkeys and drag-and-drop', () => {
+	it('Drag and drop', async () => {});
+	it('Switching paragraph focus state using hotkeys', async () => {});
 });

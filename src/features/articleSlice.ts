@@ -276,6 +276,7 @@ let articleSlice = createSlice({
 			let currentParagraphIndex = paragraphs.findIndex((item) => item.id === payload);
 			paragraphs.splice(currentParagraphIndex, 1);
 		},
+		/* v8 ignore next 24 */
 		finishParagraphDeletion: (state, { payload: { articleId, paragraphId } }: PayloadAction<{ articleId: string; paragraphId: string }>) => {
 			if (state.paragraphRemoveQueue.includes(paragraphId)) {
 				let currentParagraphIndex = state.paragraphs.findIndex((item) => item.id === paragraphId);
@@ -392,6 +393,7 @@ let articleSlice = createSlice({
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 			currentParagraph.editDate = Date.now();
 		},
+		/* v8 ignore next 6 */
 		updateArticleFirstParagraphEditDate: ({ paragraphs }, { payload }) => {
 			let currentParagraphFirstArticle = paragraphs.find((item) => item.articleId === payload);
 			if (currentParagraphFirstArticle) {

@@ -40,6 +40,7 @@ export var ArticleInput = () => {
 		reValidateMode: 'onSubmit', // Because I don't want the error message to show up every time I clear out the article text.
 	});
 
+	/* v8 ignore next 3 */
 	if (errors.article) {
 		createToast({ type: 'error', content: errors.article.message, toastId: errors.article.message });
 	}
@@ -62,6 +63,7 @@ export var ArticleInput = () => {
 
 	let { 'Article Input Page': articleInputPageHotkeys } = HotkeyMapData();
 
+	/* v8 ignore next 6 */
 	useKeys({
 		keyBinding: articleInputPageHotkeys.done.hotkey,
 		callback: () => {

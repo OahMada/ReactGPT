@@ -17,7 +17,6 @@ describe('Preview route tests', () => {
 			expect(acceptAllBtn).toBeEnabled();
 		});
 	});
-
 	it('Include and remove translation', async () => {
 		renderAnExistingArticle(0, true);
 		let pTagElementsLength = (await fetchElementsByTagName('p')).length;
@@ -28,7 +27,6 @@ describe('Preview route tests', () => {
 		await clickElement(/remove translation/i);
 		expect((await fetchElementsByTagName('p')).length).toEqual(pTagElementsLength);
 	});
-
 	it('Click the export to file button to reveal available options, click on each export option', async () => {
 		renderAnExistingArticle(0, true);
 		await clickElement(/export to file/i);
@@ -46,12 +44,15 @@ describe('Preview route tests', () => {
 		await clickElement(/download image/i);
 		expect(screen.getByText(/downloading image/i)).toBeInTheDocument();
 
+		await clickElement(/include translation/i);
+		await waitFor(() => {
+			let loadingMessages = screen.queryAllByText(/Loading/);
+			expect(loadingMessages).toHaveLength(0);
+		});
 		await clickElement(/copy to clipboard/i);
 		expect(screen.getByText(/copied to clipboard/i)).toBeInTheDocument();
-
 		// somehow it is not possible to check if the react toastify toasts disappear.
 	});
-
 	it('The "Retry All" button appears when translation requests response with error', async () => {
 		server.use(
 			http.post('/.netlify/functions/fetchTranslation', async () => {
@@ -69,4 +70,6 @@ describe('Preview route tests', () => {
 		});
 		expect(fetchButton({ type: 'query', name: /retry$/i })).not.toBeInTheDocument();
 	});
+	it('Clicking the wrapper element navigates back', async () => {});
+	it('Closing the preview modal cancels any ongoing query', async () => {});
 });

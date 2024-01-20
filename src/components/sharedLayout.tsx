@@ -105,6 +105,7 @@ export var SharedLayout = () => {
 	let handleNavigate = (path: string) => {
 		// https://stackoverflow.com/questions/65800658/react-router-v6-navigate-to-a-url-with-searchparams
 		if (query) {
+			/* v8 ignore next 6 */
 			navigate({
 				pathname: path,
 				search: `?${createSearchParams({

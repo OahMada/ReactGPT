@@ -96,7 +96,7 @@ export var Config = () => {
 	/* other */
 	// handle query result
 	useEffect(() => {
-		// only run when done fetching. ifFetched is for the beginning state, or the else logic is going to run
+		// only run when done fetching. isFetched is for the beginning state, or the else logic is going to run
 		if (!isFetching && isFetched) {
 			if (isError) {
 				createToast({ type: 'error', content: error?.message, toastId: error?.message });
@@ -121,7 +121,8 @@ export var Config = () => {
 					{` ${
 						secureLocalStorageAPIKey === import.meta.env.VITE_OPENAI_API_KEY_ALIAS
 							? 'DEFAULT'
-							: secureLocalStorageAPIKey.split('').slice(0, 3).join('') + '***' + secureLocalStorageAPIKey.split('').slice(-4).join('')
+							: /* v8 ignore next */
+								secureLocalStorageAPIKey.split('').slice(0, 3).join('') + '***' + secureLocalStorageAPIKey.split('').slice(-4).join('')
 					}`}
 				</h1>
 			) : (

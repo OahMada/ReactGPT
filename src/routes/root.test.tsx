@@ -10,7 +10,10 @@ describe('Root route (shared layout) tests', () => {
 		let searchBox = screen.getByRole('searchbox');
 		await userEvent.type(searchBox, 'hello');
 		expect(searchBox).toHaveValue('hello');
-		expect(screen.getAllByRole('listitem')).toHaveLength(1);
+		let listItem = screen.getAllByRole('listitem');
+		expect(listItem).toHaveLength(1);
+		await clickElement(listItem[0]);
+		expect(searchBox).toHaveValue('hello');
 		await userEvent.clear(searchBox);
 		await userEvent.type(searchBox, 'test');
 		expect(screen.queryAllByRole('listitem')).toHaveLength(0);
