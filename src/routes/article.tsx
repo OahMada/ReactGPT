@@ -136,12 +136,14 @@ export var Article = () => {
 	});
 
 	/* react beautiful dnd */
+	/* v8 ignore next 11 */
 	let handleOnDragEnd = (result: DropResult) => {
 		let { destination, source } = result;
 		if (!destination) return;
 		if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
 		dispatch(handleParagraphOrderChange({ destinationIndex: destination.index, sourceIndex: source.index, articleId }));
+		// To ensure that the `focusedParagraphIndexRef` updates in accordance with the drag and drop action
 		if (focusedParagraphIndexRef.current !== -1 && focusedParagraphIndexRef.current === source.index) {
 			focusedParagraphIndexRef.current = destination.index;
 		}

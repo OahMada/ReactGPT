@@ -168,7 +168,7 @@ export function fetchButton(arg: fetchButtonType | btnName) {
 export async function renderAnExistingArticleAndWaitForGrammarQueriesToFinish(clickDoneButton: boolean = true) {
 	renderAnExistingArticle(1);
 	await waitFor(() => {
-		expect(screen.getByRole('button', { name: /done/i })).toBeEnabled();
+		expect(fetchButton(/done/i)).toBeEnabled();
 	});
 	if (!clickDoneButton) {
 		return;

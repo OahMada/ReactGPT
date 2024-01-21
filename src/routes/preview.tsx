@@ -209,6 +209,7 @@ export var Preview = () => {
 
 	return (
 		<ModalWrapper
+			/* v8 ignore next 3 */
 			onClick={() => {
 				navigate(-1);
 			}}

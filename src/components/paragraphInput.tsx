@@ -101,6 +101,7 @@ export var ParagraphInput = ({
 				{...rest}
 				ref={textareaRef}
 				spellCheck='true'
+				placeholder='Please enter your paragraph content here.'
 				onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 					// https://github.com/orgs/react-hook-form/discussions/2549#discussioncomment-373578
 					// prevent double line feeds, notify user to create a new paragraph

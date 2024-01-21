@@ -22,7 +22,6 @@ describe('config route tests', () => {
 			expect(router.state.location.pathname).toEqual('/');
 		});
 	});
-
 	it('Wrong API key format triggers error toast', async () => {
 		vi.mocked(secureLocalStorage.getItem).mockReturnValue(null);
 		renderRouter();
@@ -32,7 +31,6 @@ describe('config route tests', () => {
 		let errorMessageToast = await screen.findByRole('alert');
 		expect(errorMessageToast).toHaveTextContent(/Invalid API Key Format/);
 	});
-
 	it('Cancel editing API key and jump back to main page', async () => {
 		let { router } = renderRouter({ initialEntries: ['/', '/config'], initialIndex: 1 });
 		expect(screen.getByRole('heading')).toHaveTextContent(/default/i);
@@ -44,7 +42,19 @@ describe('config route tests', () => {
 		await clickElement(/config/i);
 		expect(fetchButton(/edit/i)).toBeInTheDocument();
 	});
-
+	it('Input custom API key', async () => {
+		let { router } = renderRouter({ initialEntries: ['/', '/config'], initialIndex: 1 });
+		await clickElement(/edit/i);
+		let apiKeyInput = screen.getByLabelText(/input your openAI API key/i);
+		expect(apiKeyInput).toBeInTheDocument();
+		await userEvent.type(apiKeyInput, import.meta.env.VITE_OPENAI_API_KEY);
+		await clickElement(/done/i);
+		await waitFor(() => {
+			expect(router.state.location.pathname).toEqual('/');
+		});
+		await clickElement(/config/i);
+		expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+	});
 	it('In the case of server error, show error message in the toast', async () => {
 		server.use(
 			http.post('/.netlify/functions/testAPI', async () => {

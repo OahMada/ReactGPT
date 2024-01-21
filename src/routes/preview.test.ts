@@ -6,12 +6,12 @@ import { renderAnExistingArticle, clickElement, server, fetchButton, fetchElemen
 describe('Preview route tests', () => {
 	it('Opening preview route will halt grammar fixing queries', async () => {
 		let { router } = renderAnExistingArticle(1);
-		expect(screen.getByRole('button', { name: /accept all/i })).toBeDisabled();
+		expect(fetchButton(/accept all/i)).toBeDisabled();
 		await clickElement(screen.getByRole('link', { name: /preview article/i }));
 		expect(router.state.location.pathname).toMatch(/preview$/);
-		await new Promise((r) => setTimeout(r, 1000)); // the mocked API response has a 1000ms delay
+		vi.advanceTimersByTime(1000);
 		await clickElement(fetchButton(/close/i));
-		let acceptAllBtn = screen.getByRole('button', { name: /accept all/i });
+		let acceptAllBtn = fetchButton(/accept all/i);
 		expect(acceptAllBtn).toBeDisabled();
 		await waitFor(() => {
 			expect(acceptAllBtn).toBeEnabled();
@@ -70,6 +70,14 @@ describe('Preview route tests', () => {
 		});
 		expect(fetchButton({ type: 'query', name: /retry$/i })).not.toBeInTheDocument();
 	});
-	it('Clicking the wrapper element navigates back', async () => {});
-	it('Closing the preview modal cancels any ongoing query', async () => {});
+	it('Closing the preview modal cancels any ongoing query', async () => {
+		renderAnExistingArticle(1, true);
+		await clickElement(/include translation/i);
+		expect(screen.getByText(/loading/i)).toBeInTheDocument();
+		await clickElement(/close/i);
+		await clickElement(screen.getByRole('link', { name: /preview article/i }));
+		// the below step is not needed, I don't know why
+		// await clickElement(/include translation/i);
+		expect(screen.getByText(/loading/i)).toBeInTheDocument();
+	});
 });

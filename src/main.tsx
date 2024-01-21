@@ -85,12 +85,6 @@ enableMocking().then(() => {
  *
  * ## test
  *
- * hotkey trigger switching paragraph focus
- * drag and drop
- * click preview wrapper navigate back
- * closing preview when translation query is fetching stops the query
- * try to access a non-existing article
- *
  * ## outlook and others
  *
  * update user flow

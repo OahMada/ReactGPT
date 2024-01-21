@@ -93,6 +93,7 @@ export var ArticleInput = () => {
 					},
 				})}
 				spellCheck='true'
+				placeholder='Please enter your article here.'
 			/>
 			<button type='submit' data-tooltip-id='hotkey' data-tooltip-content={articleInputPageHotkeys.done.label}>
 				Done

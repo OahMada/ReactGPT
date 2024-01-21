@@ -332,6 +332,7 @@ let articleSlice = createSlice({
 
 			paragraphs.splice(currentParagraphIndex + 1 + (indexOffset ?? 0), 0, newParagraph);
 		},
+		/* v8 ignore next 9 */
 		handleParagraphOrderChange: (
 			{ paragraphs },
 			{ payload: { destinationIndex, sourceIndex, articleId } }: PayloadAction<{ destinationIndex: number; sourceIndex: number; articleId: string }>

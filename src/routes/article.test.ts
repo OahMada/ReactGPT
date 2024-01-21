@@ -9,8 +9,11 @@ import {
 	fetchButton,
 	renderAnExistingArticleAndWaitForGrammarQueriesToFinish,
 	fetchElementsByTagName,
+	renderRouter,
 } from '../setupTests';
 import { defaultArticleInput } from '../utils';
+import { setupStore } from '../redux/store';
+import { saveArticleInput } from '../features/articleSlice';
 
 describe('Article route tests', () => {
 	it('If no grammar fixes available, paragraphs would enter doneModification mode automatically', async () => {
@@ -44,7 +47,7 @@ describe('Article route tests', () => {
 	it('Delete article and undo deletion', async () => {
 		renderAnExistingArticle();
 		await clickElement(/delete article/i);
-		expect(screen.getByRole('textbox')).toBeInTheDocument();
+		expect(screen.getByPlaceholderText(/please enter your article/i)).toBeInTheDocument();
 		await clickElement(/undo/i);
 		expect(fetchButton(/delete article/i)).toBeInTheDocument();
 	});
@@ -69,7 +72,7 @@ describe('Article route tests', () => {
 		await clickElement(/delete paragraph/i);
 		expect(fetchButton(/create/i)).toBeInTheDocument();
 		await clickElement(/create/i);
-		expect(screen.getByRole('textbox')).toBeInTheDocument();
+		expect(screen.getByPlaceholderText(/please enter your article/i)).toBeInTheDocument();
 	});
 	it('Insert new paragraph below', async () => {
 		renderAnExistingArticle();
@@ -80,7 +83,7 @@ describe('Article route tests', () => {
 		});
 		await clickElement(/done/i);
 		await clickElement(/insert below/i);
-		let paragraphInputBox = screen.getByRole('textbox');
+		let paragraphInputBox = screen.getByPlaceholderText(/please enter your paragraph/i);
 		expect(paragraphInputBox).toBeInTheDocument();
 		await userEvent.type(paragraphInputBox, 'Insert below');
 		await clickElement(/done/i);
@@ -110,7 +113,7 @@ describe('Article route tests', () => {
 		let initialParagraphCount = paragraphsOnThePage.length;
 		await clickElement(/done/i);
 		await clickElement(/insert above/i);
-		await userEvent.type(screen.getByRole('textbox'), ' \n');
+		await userEvent.type(screen.getByPlaceholderText(/please enter your paragraph/i), ' \n');
 		await clickElement(/done/i);
 		paragraphsOnThePage = await fetchElementsByTagName('p');
 		expect(paragraphsOnThePage.length).toEqual(initialParagraphCount);
@@ -125,7 +128,7 @@ describe('Article route tests', () => {
 		expect(await screen.findByRole('button', { name: /retry/i })).toBeInTheDocument();
 		let paragraphsOnThePage = await fetchElementsByTagName('p');
 		await clickElement(paragraphsOnThePage[paragraphsOnThePage.length - 1]);
-		await userEvent.type(screen.getByRole('textbox'), ' \n');
+		await userEvent.type(screen.getByPlaceholderText(/please enter your paragraph/i), ' \n');
 		await clickElement(/done/i);
 		expect(screen.getByText(defaultArticleInput.split('\n\n')[0])).toBeInTheDocument();
 	});
@@ -134,7 +137,7 @@ describe('Article route tests', () => {
 		let paragraphsOnThePage = await fetchElementsByTagName('p');
 		let initialParagraphCount = screen.getAllByRole('article').length;
 		await clickElement(paragraphsOnThePage[paragraphsOnThePage.length - 1]);
-		let textInputBox = screen.getByRole('textbox');
+		let textInputBox = screen.getByPlaceholderText(/please enter your paragraph/i);
 		expect(textInputBox).toBeInTheDocument();
 		await userEvent.keyboard('{Enter}{Enter}');
 		expect(screen.getByRole('alert')).toBeInTheDocument();
@@ -199,7 +202,7 @@ describe('Article route tests', () => {
 		await clickElement(/done/i);
 		let paragraphsOnThePage = await fetchElementsByTagName('p');
 		await clickElement(paragraphsOnThePage[paragraphsOnThePage.length - 1]);
-		let inputBox = screen.getByRole('textbox');
+		let inputBox = screen.getByPlaceholderText(/please enter your paragraph/i);
 		await userEvent.type(inputBox, ' Hello.');
 		await clickElement(/done/i);
 		await waitFor(() => {
@@ -213,6 +216,12 @@ describe('Article route tests', () => {
 		let textInsertionsOnThePage = screen.queryAllByText((content, element) => element?.tagName.toLowerCase() === 'ins');
 		expect(textInsertionsOnThePage).toHaveLength(0);
 		expect(fetchButton(/revert all/i)).toBeDisabled();
+	});
+	it('Trying to access a non-existing article would land on article creation page', async () => {
+		let store = setupStore();
+		store.dispatch(saveArticleInput({ articleText: defaultArticleInput, articleId: 'article1' }));
+		renderRouter({ store, initialEntries: ['/article/article1', '/article/test'], initialIndex: 1 });
+		expect(screen.getByPlaceholderText(/please enter your article/i)).toBeInTheDocument();
 	});
 });
 
@@ -269,6 +278,48 @@ describe('Modal component tests', async () => {
 });
 
 describe('Hotkeys and drag-and-drop', () => {
-	it('Drag and drop', async () => {});
-	it('Switching paragraph focus state using hotkeys', async () => {});
+	it('Switching paragraph focus state using a hotkey: Scenario 1 - traversing down', async () => {
+		renderAnExistingArticle(2);
+		let articlesOnThePage = screen.getAllByRole('article');
+		let deleteParagraphBtns = screen.getAllByRole('button', { name: /delete paragraph/i });
+		await userEvent.keyboard('{Shift>}{ArrowDown}{/Shift}');
+		expect(articlesOnThePage[0]).toHaveFocus();
+		await userEvent.hover(deleteParagraphBtns[0]);
+		await waitFor(() => {
+			expect(screen.getByRole('tooltip')).toHaveTextContent('D');
+		});
+		await userEvent.keyboard('{Shift>}{ArrowDown}{/Shift}');
+		expect(articlesOnThePage[1]).toHaveFocus();
+		await waitFor(() => {
+			expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+		});
+		await userEvent.hover(deleteParagraphBtns[1]);
+		await waitFor(() => {
+			expect(screen.getByRole('tooltip')).toHaveTextContent('D');
+		});
+		await userEvent.keyboard('{Shift>}{ArrowDown}{/Shift}');
+		expect(articlesOnThePage[0]).toHaveFocus();
+	});
+	it('Switching paragraph focus state using a hotkey: Scenario 2 - traversing up', async () => {
+		renderAnExistingArticle(2);
+		let articlesOnThePage = screen.getAllByRole('article');
+		await userEvent.keyboard('{Shift>}{ArrowUp}{/Shift}');
+		expect(articlesOnThePage[1]).toHaveFocus();
+		await userEvent.keyboard('{Shift>}{ArrowUp}{/Shift}');
+		expect(articlesOnThePage[0]).toHaveFocus();
+		await userEvent.keyboard('{Shift>}{ArrowUp}{/Shift}');
+		expect(articlesOnThePage[1]).toHaveFocus();
+	});
+	it('Click an article to focus it', async () => {
+		renderAnExistingArticle(2);
+		let articlesOnThePage = screen.getAllByRole('article');
+		await userEvent.click(articlesOnThePage[1]);
+		expect(articlesOnThePage[1]).toHaveFocus();
+	});
+	it('Click the drag grabber to focus it', async () => {
+		renderAnExistingArticle(2);
+		let dragGrabbers = screen.getAllByRole('button', { name: (content, element) => element.tagName.toLowerCase() === 'div' });
+		await userEvent.click(dragGrabbers[0]);
+		expect(dragGrabbers[0]).toHaveFocus();
+	});
 });
