@@ -3,12 +3,11 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useLocalStorage } from 'react-use';
 import { compress, decompress } from 'lz-string';
-import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useAppDispatch } from '../redux/hooks';
 import { saveArticleInput } from '../features/articleSlice';
-import { createToast, defaultArticleInput, useKeys, HotkeyMapData } from '../utils';
+import { createToast, defaultArticleInput, useKeys, HotkeyMapData, useNavigateWithSearchParams } from '../utils';
 
 interface ArticleInputType {
 	article: string;
@@ -17,7 +16,7 @@ interface ArticleInputType {
 // log the last character inputted from previous render
 export var ArticleInput = () => {
 	let dispatch = useAppDispatch();
-	let navigate = useNavigate();
+	let navigateWithSearchParams = useNavigateWithSearchParams();
 
 	let [localArticle, setLocalArticle, removeLocalArticle] = useLocalStorage('article', '', {
 		raw: false,
@@ -49,7 +48,8 @@ export var ArticleInput = () => {
 		let articleId = uuidv4();
 		dispatch(saveArticleInput({ articleText: data.article, articleId }));
 		removeLocalArticle();
-		navigate(`article/${articleId}`);
+		// https://stackoverflow.com/questions/65800658/react-router-v6-navigate-to-a-url-with-searchparams
+		navigateWithSearchParams(`article/${articleId}`);
 	};
 
 	let fillInText = () => {

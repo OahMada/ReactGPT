@@ -1,4 +1,4 @@
-import { NavLink, useNavigate, useParams, useSearchParams, useSubmit, useLocation, createSearchParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams, useSearchParams, useSubmit, useLocation } from 'react-router-dom';
 import { useLocalStorage } from 'react-use';
 import { useForm } from 'react-hook-form';
 import { useRef, useImperativeHandle } from 'react';
@@ -15,7 +15,7 @@ import {
 	pinArticle,
 	removeArticleFromDeletionQueue,
 } from '../features/articleSlice';
-import { performFuseSearch, useKeys, HotkeyMapData } from '../utils';
+import { performFuseSearch, useKeys, HotkeyMapData, useNavigateWithSearchParams } from '../utils';
 
 interface SearchForm {
 	search: string;
@@ -31,6 +31,7 @@ export var SharedLayout = () => {
 	let location = useLocation();
 	const { articleId: currentArticle } = useParams();
 	let [searchParams] = useSearchParams();
+	let navigateWithSearchParams = useNavigateWithSearchParams();
 
 	let query = searchParams.get('search');
 
@@ -102,21 +103,6 @@ export var SharedLayout = () => {
 	// do nothing on form submission, prevent pressing enter key and reloading page, instead submit on content change
 	let onSubmit = () => {};
 
-	let handleNavigate = (path: string) => {
-		// https://stackoverflow.com/questions/65800658/react-router-v6-navigate-to-a-url-with-searchparams
-		if (query) {
-			/* v8 ignore next 6 */
-			navigate({
-				pathname: path,
-				search: `?${createSearchParams({
-					search: query,
-				})}`,
-			});
-		} else {
-			navigate(path);
-		}
-	};
-
 	let articleIsInFavorites = (articleId: string) => {
 		return articleQueue.favorites.indexOf(articleId) !== -1 ? true : false;
 	};
@@ -135,7 +121,7 @@ export var SharedLayout = () => {
 	useKeys({
 		keyBinding: articlePageHotkeys.createNewArticle.hotkey,
 		callback: () => {
-			navigate('/');
+			navigateWithSearchParams('/');
 		},
 		enabled: !/preview$/.test(location.pathname),
 	});
@@ -187,14 +173,18 @@ export var SharedLayout = () => {
 			</div>
 			<nav>
 				<ul>
-					<NavLink to='/' data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.createNewArticle.label}>
+					<NavLink
+						to={`/${query ? `?search=${query}` : ''}`}
+						data-tooltip-id='hotkey'
+						data-tooltip-content={articlePageHotkeys.createNewArticle.label}
+					>
 						New Article
 					</NavLink>
 					{articles.map((article) => {
 						return (
 							<li key={article.articleId}>
 								{/* need border for this*/}
-								<div onClick={() => handleNavigate(`article/${article.articleId}`)}>
+								<div onClick={() => navigateWithSearchParams(`article/${article.articleId}`)}>
 									<p>{article.articleText.slice(0, 20)}</p> {/* since paragraph role is not supported yet in RTL */}
 									<p>{dayjs(article.editDate).format('YYYY-MM-DD THH:mm')}</p>
 								</div>

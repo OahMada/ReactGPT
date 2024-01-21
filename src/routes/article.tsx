@@ -142,6 +142,9 @@ export var Article = () => {
 		if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
 		dispatch(handleParagraphOrderChange({ destinationIndex: destination.index, sourceIndex: source.index, articleId }));
+		if (focusedParagraphIndexRef.current !== -1 && focusedParagraphIndexRef.current === source.index) {
+			focusedParagraphIndexRef.current = destination.index;
+		}
 	};
 
 	/* other */
@@ -205,7 +208,6 @@ export var Article = () => {
 										<Draggable key={paragraph.id} draggableId={paragraph.id} index={index}>
 											{(provided) => (
 												<Wrapper
-													// ref={provided.innerRef}
 													ref={mergeRefs([
 														provided.innerRef,
 														(node) => {

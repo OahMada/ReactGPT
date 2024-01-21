@@ -83,15 +83,13 @@ enableMocking().then(() => {
  *
  * ## bugs
  *
- * click done button in article input won't preserve the search input value
- * after drag and drop, paragraph focus state problem
- *
  * ## test
  *
  * hotkey trigger switching paragraph focus
  * drag and drop
  * click preview wrapper navigate back
  * closing preview when translation query is fetching stops the query
+ * try to access a non-existing article
  *
  * ## outlook and others
  *

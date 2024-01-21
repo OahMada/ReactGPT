@@ -7,3 +7,4 @@ export * from './performArticleSearch';
 export * from './useKeys';
 export * from './generateHotkeyLabel';
 export * from './hotkeyMapData';
+export * from './useNavigateWithSearchParams';
