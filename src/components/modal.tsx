@@ -74,17 +74,17 @@ export var Modal = () => {
 };
 
 var Wrapper = styled.div<{ titleColor: string; positionLeft: number; positionTop: number }>`
-	padding: 0.8rem;
-	border-radius: 5px;
-	border: 1px solid black;
-	width: fit-content;
 	position: fixed;
-	background-color: white;
+	top: ${(props) => `calc( ${props.positionTop}px - 6.5rem) `};
+	left: ${(props) => `calc( ${props.positionLeft}px - 0.8rem)`};
 	display: flex;
+	width: fit-content;
 	flex-direction: column;
 	justify-content: space-around;
-	left: ${(props) => `calc( ${props.positionLeft}px - 0.8rem)`};
-	top: ${(props) => `calc( ${props.positionTop}px - 6.5rem) `};
+	padding: 0.8rem;
+	border: 1px solid black;
+	border-radius: 5px;
+	background-color: white;
 
 	.title {
 		font-size: 1.2rem;
@@ -103,8 +103,8 @@ var Wrapper = styled.div<{ titleColor: string; positionLeft: number; positionTop
 	.btn-container {
 		display: flex;
 		justify-content: space-between;
-		gap: 5px;
 		margin-top: 3px;
+		gap: 5px;
 	}
 
 	.btn {

@@ -15,7 +15,7 @@
 		"type-check": "tsc",
 		"prepare": "husky install",
 		"pre-commit": "lint-staged",
-		"lint:css": "stylelint './src/**/*.tsx' --fix"
+		"lint:css": "stylelint . --fix"
 	},
 	"dependencies": {
 		"@hello-pangea/dnd": "^16.5.0",
@@ -74,6 +74,7 @@
 		"@vitejs/plugin-react": "^4.2.1",
 		"@vitest/coverage-v8": "^1.2.0",
 		"@vitest/ui": "^1.2.0",
+		"babel-plugin-styled-components": "^2.1.4",
 		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-jest-dom": "^5.1.0",
@@ -86,6 +87,7 @@
 		"prettier": "^3.1.1",
 		"rollup-plugin-visualizer": "^5.12.0",
 		"stylelint": "^16.2.0",
+		"stylelint-config-idiomatic-order": "^10.0.0",
 		"stylelint-config-standard": "^36.0.0",
 		"typescript": "^5.2.2",
 		"user-agent-data-types": "^0.4.2",

@@ -5,7 +5,15 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [comlink(), react(), visualizer({ open: false, gzipSize: true, filename: 'chunks-report.html' })],
+	plugins: [
+		comlink(),
+		react({
+			babel: {
+				plugins: [['styled-components', { pure: true, displayName: true, fileName: true }]],
+			},
+		}),
+		visualizer({ open: false, gzipSize: true, filename: 'chunks-report.html' }),
+	],
 	worker: {
 		plugins: () => [comlink()],
 	},

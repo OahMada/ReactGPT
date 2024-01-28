@@ -306,11 +306,11 @@ export var Article = () => {
 };
 
 var Wrapper = styled.article`
+	display: flex;
+	flex-direction: column;
 	padding: 1rem;
 	margin-bottom: 1rem;
 	background-color: lightgray;
-	display: flex;
-	flex-direction: column;
 	white-space: pre-wrap; /* preserve user input line feeds */
 
 	.grabber {

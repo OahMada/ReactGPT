@@ -305,30 +305,30 @@ export var Preview = () => {
 };
 
 var ModalWrapper = styled.section`
-	width: 100vw;
-	height: 100vh;
-	display: grid;
-	place-items: center center;
-	background-color: rgb(0 0 0 / 80%);
 	position: fixed;
+	z-index: 250;
 	top: 0;
 	left: 0;
-	z-index: 250;
+	display: grid;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgb(0 0 0 / 80%);
+	place-items: center center;
 	transition: all 0.3s;
 
 	.paragraphs {
 		position: relative;
+		display: flex;
 		width: 60%;
 		min-height: 60%;
 		max-height: 80%;
+		flex-direction: column;
+		padding: 3rem;
+		border-radius: 3px;
 		background-color: #fff;
 		box-shadow: 0 2rem 4rem rgb(0 0 0 / 20%);
-		display: flex;
-		flex-direction: column;
-		border-radius: 3px;
 		overflow-y: scroll;
 		transition: all 0.4s 0.2s;
-		padding: 3rem;
 
 		article:not(:last-child) {
 			margin-bottom: 2rem;

@@ -279,10 +279,10 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 };
 
 export var StyledParagraph = styled.p`
-	letter-spacing: 2px;
-	font-size: 1.6rem;
 	border: 1px solid #ccc;
 	margin-bottom: 1rem;
+	font-size: 1.6rem;
+	letter-spacing: 2px;
 
 	.insert {
 		background-color: lightgreen;

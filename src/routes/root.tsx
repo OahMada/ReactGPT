@@ -20,11 +20,11 @@ export function Root() {
 }
 
 var StyledSection = styled.section`
-	border: 1px solid #ccc;
-	padding: 6rem;
+	position: relative;
 	width: 100%;
 	height: 80vh;
-	position: relative;
+	padding: 6rem;
+	border: 1px solid #ccc;
 `;
 
 // TODO active css effect

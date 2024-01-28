@@ -106,14 +106,14 @@ var StyledForm = styled.form`
 	height: 100%;
 
 	textarea {
-		padding: 2rem;
 		width: 100%;
 		max-height: 100%;
-		white-space: pre-wrap;
-		font-family: Arial, Helvetica, sans-serif;
-		border-radius: 5px;
+		padding: 2rem;
 		border: 1px solid #ccc;
-		resize: none;
+		border-radius: 5px;
+		font-family: Arial, Helvetica, sans-serif;
 		line-height: 1.5;
+		resize: none;
+		white-space: pre-wrap;
 	}
 `;
