@@ -206,7 +206,6 @@ export var SharedLayout = () => {
 									</button>
 									{articleIsInFavorites(article.articleId) ? (
 										<button
-											/* v8 ignore next 3 */
 											onClick={() => {
 												dispatch(unPinArticle(article.articleId));
 											}}

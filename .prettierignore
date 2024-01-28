@@ -7,3 +7,4 @@ test-report
 
 /mockServiceWorker.js
 /chunks-report.html
+.husky

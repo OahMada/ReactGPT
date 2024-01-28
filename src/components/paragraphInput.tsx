@@ -152,17 +152,16 @@ export var ParagraphInput = ({
 
 var StyledForm = styled.form`
 	height: 100%;
+
 	textarea {
 		padding: 2rem;
 		width: 100%;
 		height: 100%;
 		white-space: pre-wrap;
 		font-family: Arial, Helvetica, sans-serif;
-
 		border-radius: 5px;
 		border: 1px solid #ccc;
 		resize: none;
-
 		line-height: 1.5;
 	}
 `;

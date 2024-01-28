@@ -394,7 +394,6 @@ let articleSlice = createSlice({
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;
 			currentParagraph.editDate = Date.now();
 		},
-		/* v8 ignore next 6 */
 		updateArticleFirstParagraphEditDate: ({ paragraphs }, { payload }) => {
 			let currentParagraphFirstArticle = paragraphs.find((item) => item.articleId === payload);
 			if (currentParagraphFirstArticle) {

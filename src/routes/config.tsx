@@ -128,7 +128,7 @@ export var Config = () => {
 			) : (
 				<h1>Please set your API key first</h1>
 			)}
-			<p>The key will be securely stored locally.</p>
+			<p>Your key will be securely stored locally and sent to OpenAI for authentication.</p>
 
 			{APIKeyInEdit || !secureLocalStorageAPIKey ? (
 				<>

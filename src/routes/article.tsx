@@ -311,7 +311,7 @@ var Wrapper = styled.article`
 	background-color: lightgray;
 	display: flex;
 	flex-direction: column;
-	white-space: pre-wrap; // preserve user input line feeds
+	white-space: pre-wrap; /* preserve user input line feeds */
 
 	.grabber {
 		width: 2rem;

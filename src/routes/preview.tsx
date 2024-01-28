@@ -308,9 +308,8 @@ var ModalWrapper = styled.section`
 	width: 100vw;
 	height: 100vh;
 	display: grid;
-	justify-items: center;
-	align-items: center;
-	background-color: rgba(0, 0, 0, 0.8);
+	place-items: center center;
+	background-color: rgb(0 0 0 / 80%);
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -323,7 +322,7 @@ var ModalWrapper = styled.section`
 		min-height: 60%;
 		max-height: 80%;
 		background-color: #fff;
-		box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.2);
+		box-shadow: 0 2rem 4rem rgb(0 0 0 / 20%);
 		display: flex;
 		flex-direction: column;
 		border-radius: 3px;
