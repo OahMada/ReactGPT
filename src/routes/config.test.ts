@@ -11,7 +11,7 @@ describe('config route tests', () => {
 		let { router } = renderRouter();
 		// screen.debug();
 		expect(router.state.location.pathname).toEqual('/config');
-		let inputNode = screen.getByLabelText(/input your openAI API key/i);
+		let inputNode = screen.getByLabelText(/your openAI API key/i);
 		expect(inputNode).toBeInTheDocument();
 		await userEvent.keyboard('{Meta>}i');
 		expect(inputNode).toHaveFocus();
@@ -25,7 +25,7 @@ describe('config route tests', () => {
 	it('Wrong API key format triggers error toast', async () => {
 		vi.mocked(secureLocalStorage.getItem).mockReturnValue(null);
 		renderRouter();
-		let inputNode = screen.getByLabelText(/input your openAI API key/i);
+		let inputNode = screen.getByLabelText(/your openAI API key/i);
 		await userEvent.type(inputNode, 'TESTING');
 		await clickElement();
 		let errorMessageToast = await screen.findByRole('alert');
@@ -35,7 +35,7 @@ describe('config route tests', () => {
 		let { router } = renderRouter({ initialEntries: ['/', '/config'], initialIndex: 1 });
 		expect(screen.getByRole('heading')).toHaveTextContent(/default/i);
 		await clickElement(/edit/i);
-		expect(screen.getByLabelText(/input your openAI API key/i)).toBeInTheDocument();
+		expect(screen.getByLabelText(/your openAI API key/i)).toBeInTheDocument();
 		await clickElement(/cancel/i);
 		expect(router.state.location.pathname).toEqual('/');
 		// reenter config page always shows existing API key and edit button.
@@ -45,7 +45,7 @@ describe('config route tests', () => {
 	it('Input custom API key', async () => {
 		let { router } = renderRouter({ initialEntries: ['/', '/config'], initialIndex: 1 });
 		await clickElement(/edit/i);
-		let apiKeyInput = screen.getByLabelText(/input your openAI API key/i);
+		let apiKeyInput = screen.getByLabelText(/your openAI API key/i);
 		expect(apiKeyInput).toBeInTheDocument();
 		await userEvent.type(apiKeyInput, import.meta.env.VITE_OPENAI_API_KEY);
 		await clickElement(/done/i);
@@ -63,7 +63,7 @@ describe('config route tests', () => {
 		);
 		vi.mocked(secureLocalStorage.getItem).mockReturnValue(null);
 		renderRouter();
-		await userEvent.type(screen.getByLabelText(/input your openAI API key/i), import.meta.env.VITE_OPENAI_API_KEY_ALIAS);
+		await userEvent.type(screen.getByLabelText(/your openAI API key/i), import.meta.env.VITE_OPENAI_API_KEY_ALIAS);
 		await clickElement();
 		expect(await screen.findByRole('alert')).toBeInTheDocument();
 	});

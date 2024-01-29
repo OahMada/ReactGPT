@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import secureLocalStorage from 'react-secure-storage';
 import { useState, useEffect, useRef, useImperativeHandle } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import styled from 'styled-components';
+import cs from 'classnames';
 
 import { testQuery, testQueryKeys } from '../query/testQuery';
 import { selectConfig, toggleAPIKeyInEdit } from '../features/configSlice';
@@ -114,7 +116,7 @@ export var Config = () => {
 	}, [isError, isFetching, isFetched, key, APIKeyInEdit, navigate, reset, dispatch, error]);
 
 	return (
-		<section>
+		<StyledSection>
 			{secureLocalStorageAPIKey ? (
 				<h1>
 					Your API Key is:
@@ -130,10 +132,10 @@ export var Config = () => {
 			)}
 			<p>Your key will be securely stored locally and sent to OpenAI for authentication.</p>
 
-			{APIKeyInEdit || !secureLocalStorageAPIKey ? (
+			{(APIKeyInEdit || !secureLocalStorageAPIKey) && (
 				<>
 					<form onSubmit={handleSubmit(onSubmit)}>
-						<label htmlFor='api-key'>Input Your OpenAI API Key: </label>
+						<label htmlFor='api-key'>Your OpenAI API Key: </label>
 						<input
 							type='password'
 							id='api-key'
@@ -142,21 +144,68 @@ export var Config = () => {
 							data-tooltip-id='hotkey'
 							data-tooltip-content={configPageHotkeys.focusInput.label}
 						/>
-						<button type='submit' disabled={errors?.key?.message ? true : false || isFetching}>
+						<button type='submit' disabled={errors?.key?.message ? true : false || isFetching} className='btn'>
 							Done
 						</button>
 					</form>
 				</>
-			) : (
-				<button onClick={clickEditButton} data-tooltip-id='hotkey' data-tooltip-content={configPageHotkeys.edit.label}>
-					Edit
-				</button>
 			)}
-			{secureLocalStorageAPIKey && (
-				<button type='button' onClick={clickCancelButton} data-tooltip-id='hotkey' data-tooltip-content={configPageHotkeys.cancel.label}>
-					Cancel
-				</button>
-			)}
-		</section>
+			<div className='btns'>
+				{!APIKeyInEdit && secureLocalStorageAPIKey && (
+					<button onClick={clickEditButton} data-tooltip-id='hotkey' data-tooltip-content={configPageHotkeys.edit.label} className='btn'>
+						Edit
+					</button>
+				)}
+				{secureLocalStorageAPIKey && (
+					<button
+						type='button'
+						onClick={clickCancelButton}
+						data-tooltip-id='hotkey'
+						data-tooltip-content={configPageHotkeys.cancel.label}
+						className='btn'
+					>
+						Cancel
+					</button>
+				)}
+			</div>
+		</StyledSection>
 	);
 };
+
+var StyledSection = styled.section`
+	padding: 1.5rem;
+	border: 0.5px solid black;
+	border-radius: 1rem;
+
+	form {
+		display: flex;
+		align-items: stretch;
+
+		input {
+			display: inline-block;
+			flex-grow: 1;
+			margin-right: 3px;
+		}
+
+		label {
+			margin-right: 2.5rem;
+			font-size: var(--font-larger);
+		}
+	}
+
+	h1 {
+		font-size: var(--font-big);
+		font-weight: 700;
+	}
+
+	p {
+		margin-bottom: 1.5rem;
+		font-size: var(--font-primary);
+	}
+
+	.btns {
+		display: flex;
+		margin-top: 1.5rem;
+		gap: 0.8rem;
+	}
+`;

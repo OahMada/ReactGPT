@@ -23,9 +23,6 @@ import { compress, decompress } from 'lz-string';
 
 import { App } from './app';
 
-// style
-import './index.css';
-
 var queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {

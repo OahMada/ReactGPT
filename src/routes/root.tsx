@@ -22,7 +22,7 @@ export function Root() {
 var StyledSection = styled.section`
 	position: relative;
 	width: 100%;
-	height: 80vh;
+	min-height: 100vh;
 	padding: 6rem;
 	border: 1px solid #ccc;
 `;

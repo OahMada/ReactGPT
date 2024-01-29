@@ -1,7 +1,7 @@
 // components
 import { Root, Article, ArticleInput, Config, ErrorPage, Preview, HotkeyMap } from './routes';
 
-export var routesConfig = [
+var routesConfig = [
 	{
 		errorElement: <ErrorPage />,
 		children: [
@@ -38,3 +38,5 @@ export var routesConfig = [
 		],
 	},
 ];
+
+export default routesConfig;

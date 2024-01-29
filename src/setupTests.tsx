@@ -15,7 +15,7 @@ import userEvent from '@testing-library/user-event';
 
 import { handlers } from './handlers';
 import { setupStore, RootState, AppStore } from './redux/store';
-import { routesConfig } from './routesConfig';
+import routesConfig from './routesConfig';
 import { saveArticleInput } from './features/articleSlice';
 import { defaultArticleInput } from './utils';
 

@@ -7,13 +7,16 @@ import 'react-toastify/dist/ReactToastify.min.css';
 
 // tooltip
 import { Tooltip } from 'react-tooltip';
-import { routesConfig } from './routesConfig';
+
+import routesConfig from './routesConfig';
+import GlobalStyles from './styles';
 
 export var router = createBrowserRouter(routesConfig);
 
 export var App = () => {
 	return (
 		<>
+			<GlobalStyles />
 			<RouterProvider router={router} />
 			<ToastContainer enableMultiContainer containerId={'articleDeletion'} closeOnClick={false} closeButton={false} />
 			<ToastContainer limit={3} enableMultiContainer />
