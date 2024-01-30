@@ -145,7 +145,7 @@ export var HotkeyMapData = () => {
 				id: 'preview/exit',
 				hotkey: getUserDefinedHotkey({ id: 'preview/exit', hotkey: 'mod+x' }),
 				label: generateHotkeyLabel(getUserDefinedHotkey({ id: 'preview/exit', hotkey: 'mod+x' })),
-				purpose: 'Close the Close button. Exit the Preview page.',
+				purpose: 'Click the Close button. Exit the Preview page.',
 			},
 			copyToClipboard: {
 				id: 'preview/clipboard',

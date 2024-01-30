@@ -75,11 +75,14 @@ enableMocking().then(() => {
  *
  * ## features
  *
- * verify the persisted data
  * Why do I need to input the API key every once in a while?
  *
  * useLayoutEffect
  * a new articles route to host all articles; only see 10 articles in the outside
+ * keep the input state
+ * hide tooltip when focused
+ *
+ * verify the persisted data
  *
  * ## bugs
  *

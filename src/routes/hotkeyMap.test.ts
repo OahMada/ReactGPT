@@ -11,7 +11,7 @@ describe('hotkeyMap route tests', () => {
 		await waitFor(() => {
 			expect(
 				screen.getByText((content, element) => {
-					return /config page/i.test(content) && element?.tagName.toLowerCase() === 'th';
+					return /config page/i.test(content) && element?.tagName.toLowerCase() === 'caption';
 				})
 			).toBeInTheDocument();
 		});

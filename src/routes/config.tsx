@@ -4,7 +4,6 @@ import secureLocalStorage from 'react-secure-storage';
 import { useState, useEffect, useRef, useImperativeHandle } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
-import cs from 'classnames';
 
 import { testQuery, testQueryKeys } from '../query/testQuery';
 import { selectConfig, toggleAPIKeyInEdit } from '../features/configSlice';

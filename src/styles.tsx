@@ -1,4 +1,4 @@
-import { createGlobalStyle, styled } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 
 var GlobalStyles = createGlobalStyle`
 *,
@@ -16,6 +16,8 @@ html {
 	--font-big: 2rem;
 	--font-primary: 1.6rem;
 	--font-larger: 1.8rem;
+	--color-light: #eee;
+	--color-dark: lightgrey;
 }
 
 body {

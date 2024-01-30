@@ -1,5 +1,6 @@
 import { useRecordHotkeys } from 'react-hotkeys-hook';
 import { useEffect } from 'react';
+import styled from 'styled-components';
 
 import { generateHotkeyLabel } from '../utils';
 import { LocalStorageHotkeys, RecordingStopper } from '../types';
@@ -36,14 +37,16 @@ export var HotkeyInput = ({ keyBinding, userDefinedHotkeys, setUserDefinedHotkey
 
 	if (isRecording) {
 		return (
-			<td>
-				<span>{generateHotkeyLabel(newHotkey)}</span>
-				<button onClick={submit}>Done</button>
-			</td>
+			<StyledTd $newHotkey={newHotkey}>
+				<span>{newHotkey ? generateHotkeyLabel(newHotkey) : keyBinding.label}</span>
+				<button onClick={submit} className='btn'>
+					Done
+				</button>
+			</StyledTd>
 		);
 	}
 	return (
-		<td>
+		<StyledTd>
 			<button
 				onClick={() => {
 					// run other hotkey's stop utility first
@@ -55,9 +58,20 @@ export var HotkeyInput = ({ keyBinding, userDefinedHotkeys, setUserDefinedHotkey
 				}}
 				data-tooltip-id='tip'
 				data-tooltip-content='Click to change.'
+				className='btn'
 			>
 				{keyBinding.label}
 			</button>
-		</td>
+		</StyledTd>
 	);
 };
+
+var StyledTd = styled.td<{ $newHotkey?: string }>`
+	span {
+		display: inline-block;
+		width: 70%;
+		border: 1px solid var(--color-dark);
+		margin-right: 0.5rem;
+		color: ${({ $newHotkey }) => ($newHotkey ? 'black' : 'var(--color-dark)')};
+	}
+`;
