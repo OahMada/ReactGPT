@@ -76,13 +76,10 @@ export var ArticleInput = () => {
 			{/* {
 				errors.article && <p>{errors.article.message}</p> // replace with toast
 			} */}
-			<button type='button' onClick={fillInText}>
-				Fill in Demonstration Text
-			</button>
 
 			<TextareaAutosize
 				// TODO minRows could be dynamic? // container height divide by line height?
-				minRows={30}
+				// minRows={25}
 				autoFocus
 				{...register('article', {
 					required: 'This filed is required',
@@ -95,9 +92,14 @@ export var ArticleInput = () => {
 				spellCheck='true'
 				placeholder='Please enter your article here.'
 			/>
-			<button type='submit' data-tooltip-id='hotkey' data-tooltip-content={articleInputPageHotkeys.done.label}>
-				Done
-			</button>
+			<div className='btn-container'>
+				<button type='button' onClick={fillInText} className='btn'>
+					Fill in Demonstration Text
+				</button>
+				<button type='submit' data-tooltip-id='hotkey' data-tooltip-content={articleInputPageHotkeys.done.label} className='btn'>
+					Done
+				</button>
+			</div>
 		</StyledForm>
 	);
 };
@@ -106,14 +108,21 @@ var StyledForm = styled.form`
 	height: 100%;
 
 	textarea {
+		display: inline-block;
 		width: 100%;
-		max-height: 100%;
+		min-height: 90%;
 		padding: 2rem;
-		border: 1px solid #ccc;
+		border: 1px solid var(--color-darker);
 		border-radius: 5px;
 		font-family: Arial, Helvetica, sans-serif;
+		font-size: var(--font-primary);
 		line-height: 1.5;
 		resize: none;
 		white-space: pre-wrap;
+	}
+
+	.btn-container {
+		display: flex;
+		gap: 0.8rem;
 	}
 `;

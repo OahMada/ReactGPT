@@ -74,8 +74,9 @@ export var HotkeyMap = () => {
 };
 
 var Section = styled.section`
-	width: 100%;
-	padding: 3rem;
+	width: 65%;
+	padding: 5rem;
+	margin: auto;
 	font-size: var(--font-primary);
 
 	.btn-container {

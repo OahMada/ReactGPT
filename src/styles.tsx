@@ -13,11 +13,13 @@ html {
 	box-sizing: border-box;
 	font-size: 62.5%;
 	
+	--font-small: 1.4rem;
 	--font-big: 2rem;
 	--font-primary: 1.6rem;
 	--font-larger: 1.8rem;
 	--color-light: #eee;
 	--color-dark: lightgrey;
+	--color-darker: #ccc;
 }
 
 body {
@@ -31,9 +33,10 @@ body {
 
 #root {
 	display: grid;
-	width: 100%;
 	min-height: 100vh;
-	place-content: center;
+
+	/* place-content: center; */
+	grid-template-rows: repeat(auto-fill, 100%);
 }
 
 .btn {

@@ -8,23 +8,38 @@ export function Root() {
 	let secureLocalStorageAPIKey = secureLocalStorage.getItem('string');
 
 	return secureLocalStorageAPIKey ? (
-		<>
+		<StyledDiv>
 			<SharedLayout />
-			<StyledSection id='detail'>
+			<main>
 				<Outlet />
-			</StyledSection>
-		</>
+			</main>
+		</StyledDiv>
 	) : (
 		<Navigate to='/config' replace />
 	);
 }
 
-var StyledSection = styled.section`
-	position: relative;
-	width: 100%;
-	min-height: 100vh;
-	padding: 6rem;
-	border: 1px solid #ccc;
+var StyledDiv = styled.div`
+	display: grid;
+	padding: 5rem;
+	font-size: var(--font-primary);
+	grid-template-columns: repeat(12, 1fr);
+	grid-template-rows: min-content min-content auto;
+	row-gap: 2rem;
+
+	header {
+		grid-column: 1 / span 12;
+
+		/* position: fixed; */
+	}
+
+	nav {
+		grid-column: 1 / span 12;
+	}
+
+	main {
+		grid-column: 1 / span 12;
+	}
 `;
 
 // TODO active css effect

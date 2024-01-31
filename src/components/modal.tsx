@@ -5,36 +5,42 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { showModal, hideModal, selectModal } from '../features/modalSlice';
 import { acceptSingleAdjustment, ignoreSingleAdjustment, updateParagraphEditDate } from '../features/articleSlice';
 
-// for the purpose of https://styled-components.com/docs/faqs#shouldforwardprop-is-no-longer-provided-by-default
-// the warning said: Warning: React does not recognize the `positionTop` prop on a DOM element...
-import isPropValid from '@emotion/is-prop-valid';
-import { StyleSheetManager } from 'styled-components';
-
 export var Modal = () => {
 	let dispatch = useAppDispatch();
 	let { title, content, dimension, color, indexInParagraph, paragraphStatus, paragraphId } = useAppSelector(selectModal);
 
 	// 0.8 & 6.5 here is fixed
 	return (
-		<StyleSheetManager shouldForwardProp={isPropValid}>
-			<Wrapper
-				/* v8 ignore next 3 */
-				onMouseLeave={() => {
-					dispatch(hideModal());
-				}}
-				onMouseEnter={() => {
-					dispatch(showModal());
-				}}
-				titleColor={color}
-				positionLeft={dimension.left}
-				positionTop={dimension.top}
-			>
-				<h4 className='title'>{title.toUpperCase()}</h4>
-				<p className='content'>
-					{/* indicate white spaces that are ought to adjust */}
-					<cite>{content === ' ' ? <i>{'[space]'}</i> : content}</cite>
-				</p>
-				{paragraphStatus === 'reviving' ? (
+		<Wrapper
+			/* v8 ignore next 3 */
+			onMouseLeave={() => {
+				dispatch(hideModal());
+			}}
+			onMouseEnter={() => {
+				dispatch(showModal());
+			}}
+			$titleColor={color}
+			$positionLeft={dimension.left}
+			$positionTop={dimension.top}
+		>
+			<h4 className='title'>{title.toUpperCase()}</h4>
+			<p className='content'>
+				{/* indicate white spaces that are ought to adjust */}
+				<cite>{content === ' ' ? <i>{'[space]'}</i> : content}</cite>
+			</p>
+			{paragraphStatus === 'reviving' ? (
+				<button
+					className='accept-btn btn'
+					onClick={() => {
+						dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
+						dispatch(updateParagraphEditDate(paragraphId));
+						dispatch(hideModal());
+					}}
+				>
+					REVERT
+				</button>
+			) : (
+				<div className='btn-container'>
 					<button
 						className='accept-btn btn'
 						onClick={() => {
@@ -43,40 +49,27 @@ export var Modal = () => {
 							dispatch(hideModal());
 						}}
 					>
-						REVERT
+						ACCEPT
 					</button>
-				) : (
-					<div className='btn-container'>
-						<button
-							className='accept-btn btn'
-							onClick={() => {
-								dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
-								dispatch(updateParagraphEditDate(paragraphId));
-								dispatch(hideModal());
-							}}
-						>
-							ACCEPT
-						</button>
-						<button
-							className='ignore-btn btn'
-							onClick={() => {
-								dispatch(ignoreSingleAdjustment({ indexInParagraph, paragraphId }));
-								dispatch(hideModal());
-							}}
-						>
-							IGNORE
-						</button>
-					</div>
-				)}
-			</Wrapper>
-		</StyleSheetManager>
+					<button
+						className='ignore-btn btn'
+						onClick={() => {
+							dispatch(ignoreSingleAdjustment({ indexInParagraph, paragraphId }));
+							dispatch(hideModal());
+						}}
+					>
+						IGNORE
+					</button>
+				</div>
+			)}
+		</Wrapper>
 	);
 };
 
-var Wrapper = styled.div<{ titleColor: string; positionLeft: number; positionTop: number }>`
+var Wrapper = styled.div<{ $titleColor: string; $positionLeft: number; $positionTop: number }>`
 	position: fixed;
-	top: ${(props) => `calc( ${props.positionTop}px - 6.5rem) `};
-	left: ${(props) => `calc( ${props.positionLeft}px - 0.8rem)`};
+	top: ${(props) => `calc( ${props.$positionTop}px - 6.5rem) `};
+	left: ${(props) => `calc( ${props.$positionLeft}px - 0.8rem)`};
 	display: flex;
 	width: fit-content;
 	flex-direction: column;
@@ -91,7 +84,7 @@ var Wrapper = styled.div<{ titleColor: string; positionLeft: number; positionTop
 		font-weight: 600;
 		line-height: 1;
 		text-decoration: underline 3px;
-		text-decoration-color: ${(props) => props.titleColor};
+		text-decoration-color: ${(props) => props.$titleColor};
 	}
 
 	.content {

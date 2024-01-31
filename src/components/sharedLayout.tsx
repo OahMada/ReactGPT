@@ -5,6 +5,7 @@ import { useRef, useImperativeHandle } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn'; // import locale
 import { toast } from 'react-toastify';
+import styled from 'styled-components';
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import {
@@ -152,13 +153,20 @@ export var SharedLayout = () => {
 
 	return (
 		<>
-			<div>
-				<button onClick={handleClickConfigBtn} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.enterConfig.label}>
-					CONFIG
+			<StyledHeader>
+				<button onClick={handleClickConfigBtn} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.enterConfig.label} className='btn'>
+					Config
 				</button>
-				<button onClick={handleClickHotkeyMapBtn} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.enterHotkeyMap.label}>
+				<button
+					onClick={handleClickHotkeyMapBtn}
+					data-tooltip-id='hotkey'
+					data-tooltip-content={articlePageHotkeys.enterHotkeyMap.label}
+					className='btn'
+				>
 					Hotkey Map
 				</button>
+			</StyledHeader>
+			<StyledNav>
 				<form role='search' onSubmit={handleSubmit(onSubmit)}>
 					<input
 						aria-label='Search articles'
@@ -170,22 +178,22 @@ export var SharedLayout = () => {
 						data-tooltip-content={articlePageHotkeys.enableSearch.label}
 					/>
 				</form>
-			</div>
-			<nav>
-				<ul>
-					<NavLink
-						to={`/${query ? `?search=${query}` : ''}`}
-						data-tooltip-id='hotkey'
-						data-tooltip-content={articlePageHotkeys.createNewArticle.label}
-					>
-						New Article
-					</NavLink>
+				<div className='card-wrapper'>
+					<div className='card'>
+						<NavLink
+							to={`/${query ? `?search=${query}` : ''}`}
+							data-tooltip-id='hotkey'
+							data-tooltip-content={articlePageHotkeys.createNewArticle.label}
+						>
+							New Article
+						</NavLink>
+					</div>
 					{articles.map((article) => {
 						return (
-							<li key={article.articleId}>
+							<div key={article.articleId} className='card'>
 								{/* need border for this*/}
 								<div onClick={() => navigateWithSearchParams(`article/${article.articleId}`)}>
-									<p>{article.articleText.slice(0, 20)}</p> {/* since paragraph role is not supported yet in RTL */}
+									<p>{article.articleText.slice(0, 60) + '...'}</p> {/* since paragraph role is not supported yet in RTL */}
 									<p>{dayjs(article.editDate).format('YYYY-MM-DD THH:mm')}</p>
 								</div>
 								<div>
@@ -222,11 +230,64 @@ export var SharedLayout = () => {
 										</button>
 									)}
 								</div>
-							</li>
+							</div>
 						);
 					})}
-				</ul>
-			</nav>
+				</div>
+			</StyledNav>
 		</>
 	);
 };
+
+var StyledHeader = styled.header`
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.8rem;
+`;
+
+var StyledNav = styled.nav`
+	font-size: var(--font-small);
+
+	form {
+		padding: 1rem 0;
+		font-size: var(--font-primary);
+
+		input {
+			display: inline-block;
+			padding: 0.5rem;
+			font-size: var(--font-primary);
+
+			/* border-color: var(--color-dark); */
+		}
+	}
+
+	.card-wrapper {
+		display: grid;
+		gap: 0.5rem;
+		grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+
+		.card {
+			display: flex;
+			width: 100%;
+			height: 10rem;
+			align-items: center;
+			justify-content: center;
+			padding: 0.5rem;
+			border: 1px solid var(--color-dark);
+			border-radius: 0.5rem;
+			gap: 0.5rem;
+
+			&:nth-child(1) a {
+				display: inline-block;
+				color: black;
+				font-size: var(--font-big);
+				font-weight: lighter;
+				text-decoration: none;
+
+				&:hover {
+					color: var(--color-dark);
+				}
+			}
+		}
+	}
+`;

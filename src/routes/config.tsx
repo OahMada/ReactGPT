@@ -175,6 +175,7 @@ var StyledSection = styled.section`
 	padding: 1.5rem;
 	border: 0.5px solid black;
 	border-radius: 1rem;
+	margin: auto;
 
 	form {
 		display: flex;

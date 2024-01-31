@@ -71,28 +71,32 @@ enableMocking().then(() => {
 });
 
 /**
- * one thing not right with react query: error boundary reset;
  *
  * ## features
  *
- * Why do I need to input the API key every once in a while?
- *
- * useLayoutEffect
  * a new articles route to host all articles; only see 10 articles in the outside
  * keep the input state
  * hide tooltip when focused
+ * extract away drag and drop
+ * article textarea minlength
+ * remove trailing new line from copied text
+ * no new article & search entry if there's no existing article
  *
+ * Why do I need to input the API key every once in a while?
+ * useLayoutEffect
  * verify the persisted data
  *
  * ## bugs
  *
  * ## test
  *
- * ## outlook and others
+ * two tests need to adjust
  *
- * update user flow
+ * ## outlook and others
  *
  * rethought html layout and css
  * modal dynamic position props
- * MUI
+ *
+ * one thing not right with react query: error boundary reset;
+ * update user flow
  */
