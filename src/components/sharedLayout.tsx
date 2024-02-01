@@ -167,36 +167,48 @@ export var SharedLayout = () => {
 				</button>
 			</StyledHeader>
 			<StyledNav>
-				<form role='search' onSubmit={handleSubmit(onSubmit)}>
-					<input
-						aria-label='Search articles'
-						type='search'
-						placeholder='Search'
-						ref={searchInputRef}
-						{...rest}
-						data-tooltip-id='hotkey'
-						data-tooltip-content={articlePageHotkeys.enableSearch.label}
-					/>
-				</form>
-				<div className='card-wrapper'>
-					<div className='card'>
-						<NavLink
-							to={`/${query ? `?search=${query}` : ''}`}
+				{(query || articles.length > 0) && ( // same as !(!query && articles.length < 1), means no articles have been created
+					<form role='search' onSubmit={handleSubmit(onSubmit)}>
+						<input
+							aria-label='Search articles'
+							type='search'
+							placeholder='Search'
+							ref={searchInputRef}
+							{...rest}
 							data-tooltip-id='hotkey'
-							data-tooltip-content={articlePageHotkeys.createNewArticle.label}
-						>
-							New Article
-						</NavLink>
-					</div>
+							data-tooltip-content={articlePageHotkeys.enableSearch.label}
+						/>
+					</form>
+				)}
+				<div className='card-wrapper'>
+					{(query || articles.length > 0) && (
+						<div className='card'>
+							<div className='link-wrapper'>
+								<NavLink
+									to={`/${query ? `?search=${query}` : ''}`}
+									data-tooltip-id='hotkey'
+									data-tooltip-content={articlePageHotkeys.createNewArticle.label}
+								>
+									New Article
+								</NavLink>
+							</div>
+						</div>
+					)}
+					{query && articles.length < 1 && (
+						<div className='card'>
+							<p>No articles match the search query.</p>
+						</div>
+					)}
 					{articles.map((article) => {
 						return (
 							<div key={article.articleId} className='card'>
 								{/* need border for this*/}
-								<div onClick={() => navigateWithSearchParams(`article/${article.articleId}`)}>
-									<p>{article.articleText.slice(0, 60) + '...'}</p> {/* since paragraph role is not supported yet in RTL */}
-									<p>{dayjs(article.editDate).format('YYYY-MM-DD THH:mm')}</p>
+								<div onClick={() => navigateWithSearchParams(`article/${article.articleId}`)} className='card-content'>
+									<p>{article.articleText.length > 40 ? article.articleText.slice(0, 40) + '...' : article.articleText}</p>{' '}
+									{/* since paragraph role is not supported yet in RTL */}
+									<p className='date'>{dayjs(article.editDate).format('YYYY-MM-DD THH:mm')}</p>
 								</div>
-								<div>
+								<div className='btn-container'>
 									{/* TODO hover to show */}
 									<button
 										onClick={() => {
@@ -209,6 +221,7 @@ export var SharedLayout = () => {
 											dispatch(removeArticleFromDeletionQueue(article.articleId));
 											toast.dismiss(`articleDeletion${article.articleId}`);
 										}}
+										className='btn'
 									>
 										Delete
 									</button>
@@ -217,6 +230,7 @@ export var SharedLayout = () => {
 											onClick={() => {
 												dispatch(unPinArticle(article.articleId));
 											}}
+											className='btn'
 										>
 											Unpin
 										</button>
@@ -225,6 +239,7 @@ export var SharedLayout = () => {
 											onClick={() => {
 												dispatch(pinArticle(article.articleId));
 											}}
+											className='btn'
 										>
 											Pin
 										</button>
@@ -256,8 +271,6 @@ var StyledNav = styled.nav`
 			display: inline-block;
 			padding: 0.5rem;
 			font-size: var(--font-primary);
-
-			/* border-color: var(--color-dark); */
 		}
 	}
 
@@ -267,27 +280,79 @@ var StyledNav = styled.nav`
 		grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
 
 		.card {
+			position: relative;
 			display: flex;
+			overflow: hidden;
 			width: 100%;
 			height: 10rem;
 			align-items: center;
-			justify-content: center;
+			justify-content: flex-start;
 			padding: 0.5rem;
 			border: 1px solid var(--color-dark);
 			border-radius: 0.5rem;
 			gap: 0.5rem;
 
-			&:nth-child(1) a {
-				display: inline-block;
+			& .link-wrapper {
+				display: grid;
+				width: 100%;
+				place-items: center;
+
+				a {
+					display: inline-block;
+					color: black;
+					font-size: var(--font-big);
+					font-weight: lighter;
+					text-decoration: none;
+
+					&:hover {
+						color: var(--color-dark);
+					}
+				}
+			}
+
+			& > p {
+				padding: 1rem;
 				color: black;
 				font-size: var(--font-big);
 				font-weight: lighter;
-				text-decoration: none;
+			}
 
-				&:hover {
-					color: var(--color-dark);
+			.btn-container {
+				position: absolute;
+				right: 0;
+				display: flex;
+				flex-direction: column;
+				gap: 0.5rem;
+				opacity: 0;
+				transition:
+					translate 0.5s,
+					opacity 0.5s;
+				translate: 100%;
+
+				.btn {
+					border: none;
+					border-radius: 1rem;
 				}
 			}
+
+			&:hover .btn-container {
+				position: static;
+				opacity: 1;
+				translate: none;
+			}
+		}
+
+		.card-content {
+			display: flex;
+			height: 100%;
+			flex: 1 1 auto;
+			flex-direction: column;
+			justify-content: space-between;
+		}
+
+		.date {
+			color: grey;
+			font-style: italic;
 		}
 	}
 `;

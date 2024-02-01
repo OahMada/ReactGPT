@@ -23,19 +23,14 @@ html {
 }
 
 body {
-	/* padding: 3rem; */
 	font-family: sans-serif;
 	font-weight: 400;
 	line-height: 1.7;
-
-	/* min-height: 100vh; */
 }
 
 #root {
 	display: grid;
 	min-height: 100vh;
-
-	/* place-content: center; */
 	grid-template-rows: repeat(auto-fill, 100%);
 }
 

@@ -29,8 +29,6 @@ var StyledDiv = styled.div`
 
 	header {
 		grid-column: 1 / span 12;
-
-		/* position: fixed; */
 	}
 
 	nav {

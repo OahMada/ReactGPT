@@ -80,7 +80,6 @@ enableMocking().then(() => {
  * extract away drag and drop
  * article textarea minlength
  * remove trailing new line from copied text
- * no new article & search entry if there's no existing article
  *
  * Why do I need to input the API key every once in a while?
  * useLayoutEffect
