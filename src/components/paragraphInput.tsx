@@ -10,7 +10,7 @@ import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { selectArticle, saveParagraphInput, disableCancelQueryState, deleteParagraphRightAway, insertBelowParagraph } from '../features/articleSlice';
 
-import { createToast, sanitizeUserInput, throwIfUndefined } from '../utils/index';
+import { createToast, sanitizeUserInput, throwIfUndefined } from '../utils';
 import { Paragraph } from '../types';
 import { useAutoFocusContext } from './autoFocus';
 
@@ -50,17 +50,22 @@ export var ParagraphInput = ({
 		register,
 		handleSubmit,
 		setValue,
-		formState: { isDirty },
+		formState: { isDirty, errors },
 	} = useForm({
 		defaultValues: {
 			paragraph: localParagraph ?? paragraphValue,
 		},
 	});
 
+	if (errors.paragraph) {
+		createToast({ type: 'error', content: errors.paragraph.message, toastId: errors.paragraph.message });
+	}
+
 	let { ref, ...rest } = register('paragraph', {
 		onChange: (e) => {
 			setLocalParagraph(e.target.value);
 		},
+		minLength: { value: 10, message: 'Please input at least 10 characters.' },
 	});
 
 	// https://react-hook-form.com/faqs#Howtosharerefusage
@@ -121,11 +126,11 @@ export var ParagraphInput = ({
 				}}
 				// https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event // https://stackoverflow.com/questions/20509061/window-clipboarddata-getdatatext-doesnt-work-in-chrome
 				// remove double line feeds from pasting text
+
 				onPaste={(e: React.ClipboardEvent) => {
 					e.preventDefault();
 
-					let paste = e.clipboardData.getData('text');
-					// paste = paste.replace(/\n{2,}/g, '\n');
+					let paste = sanitizeUserInput(e.clipboardData.getData('text'));
 					let selectionStart: number | undefined = textareaRef.current?.selectionStart!;
 					let selectionEnd: number | undefined = textareaRef.current?.selectionEnd!;
 					let text: string | undefined = textareaRef.current?.value!;

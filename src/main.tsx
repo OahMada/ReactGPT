@@ -74,12 +74,7 @@ enableMocking().then(() => {
  *
  * ## features
  *
- * a new articles route to host all articles; only see 10 articles in the outside
- * keep the input state
- * hide tooltip when focused
  * extract away drag and drop
- * article textarea minlength
- * remove trailing new line from copied text
  *
  * Why do I need to input the API key every once in a while?
  * useLayoutEffect
@@ -88,8 +83,6 @@ enableMocking().then(() => {
  * ## bugs
  *
  * ## test
- *
- * two tests need to adjust
  *
  * ## outlook and others
  *

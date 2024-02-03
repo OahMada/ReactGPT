@@ -78,11 +78,10 @@ export var ArticleInput = () => {
 			} */}
 
 			<TextareaAutosize
-				// TODO minRows could be dynamic? // container height divide by line height?
-				// minRows={25}
 				autoFocus
 				{...register('article', {
 					required: 'This filed is required',
+					minLength: { value: 10, message: 'Please input at least 10 characters.' },
 					onChange: (e) => {
 						// clear errors after submitting https://stackoverflow.com/a/67659536/5800789 https://github.com/react-hook-form/react-hook-form/releases/tag/v7.16.0
 						clearErrors('article'); //It is needed when displaying the error message text, or the message would keep showing up.

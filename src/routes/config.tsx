@@ -16,6 +16,7 @@ interface APIKey {
 
 export var Config = () => {
 	let [key, setKey] = useState(''); // to access form submission data out of onSubmit handler
+	let [inputFocus, setInputFocus] = useState(false);
 	let secureLocalStorageAPIKey = secureLocalStorage.getItem('string') as string | null;
 
 	// react router
@@ -136,12 +137,16 @@ export var Config = () => {
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<label htmlFor='api-key'>Your OpenAI API Key: </label>
 						<input
+							autoFocus
 							type='password'
 							id='api-key'
 							{...rest}
 							ref={APIInput}
 							data-tooltip-id='hotkey'
 							data-tooltip-content={configPageHotkeys.focusInput.label}
+							data-tooltip-hidden={inputFocus}
+							onFocus={() => setInputFocus(true)}
+							onBlur={() => setInputFocus(false)}
 						/>
 						<button type='submit' disabled={errors?.key?.message ? true : false || isFetching} className='btn'>
 							Done

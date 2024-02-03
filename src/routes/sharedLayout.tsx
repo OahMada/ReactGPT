@@ -1,7 +1,7 @@
 import { NavLink, useNavigate, useSearchParams, useSubmit, useLocation } from 'react-router-dom';
 import { useLocalStorage } from 'react-use';
 import { useForm } from 'react-hook-form';
-import { useRef, useImperativeHandle } from 'react';
+import { useRef, useImperativeHandle, useState } from 'react';
 import styled from 'styled-components';
 
 import { useAppSelector } from '../redux/hooks';
@@ -14,6 +14,8 @@ interface SearchForm {
 }
 
 export var SharedLayout = () => {
+	let [searchFocus, setSearchFocus] = useState(false);
+
 	let { articleQueue, paragraphs } = useAppSelector(selectArticle);
 
 	let navigate = useNavigate();
@@ -165,6 +167,9 @@ export var SharedLayout = () => {
 							{...rest}
 							data-tooltip-id='hotkey'
 							data-tooltip-content={articlePageHotkeys.enableSearch.label}
+							onFocus={() => setSearchFocus(true)}
+							onBlur={() => setSearchFocus(false)}
+							data-tooltip-hidden={searchFocus}
 						/>
 					</form>
 				)}
