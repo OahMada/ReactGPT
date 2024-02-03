@@ -9,7 +9,7 @@ describe('article input route tests', () => {
 		await clickElement(/fill in demonstration text/i);
 		expect(screen.getByPlaceholderText(/please enter your article/i)).toHaveDisplayValue(/A voiced consonant/);
 		await clickElement(/done/i);
-		expect(screen.getAllByRole('listitem')).toHaveLength(1);
+		expect(screen.getAllByText((content, element) => element?.className === 'card-content')).toHaveLength(1);
 		await clickElement(screen.getByRole('link', { name: /new article/i }));
 		let textArea = screen.getByPlaceholderText(/please enter your article/i);
 		expect(textArea).toBeInTheDocument();
@@ -18,7 +18,7 @@ describe('article input route tests', () => {
 		await userEvent.hover(doneEditingButton);
 		expect(await screen.findByRole('tooltip')).toBeInTheDocument();
 		await clickElement(doneEditingButton);
-		expect(screen.getAllByRole('listitem')).toHaveLength(2);
+		expect(screen.getAllByText((content, element) => element?.className === 'card-content')).toHaveLength(2);
 	});
 
 	it('User inputs splits to correct number of paragraphs', async () => {

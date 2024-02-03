@@ -19,6 +19,7 @@
 	},
 	"rules": {
 		"no-var": "off",
+		"no-empty": "warn",
 		"prefer-const": "off",
 		"@typescript-eslint/no-non-null-asserted-optional-chain": "off",
 		"no-unused-vars": "warn",

@@ -12,3 +12,4 @@ export * from './articleDocx';
 export * from './hotkeyInput';
 export * from './loading';
 export * from './previewTranslation';
+export * from './articleCard';

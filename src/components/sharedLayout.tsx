@@ -1,36 +1,24 @@
-import { NavLink, useNavigate, useParams, useSearchParams, useSubmit, useLocation } from 'react-router-dom';
+import { NavLink, useNavigate, useSearchParams, useSubmit, useLocation } from 'react-router-dom';
 import { useLocalStorage } from 'react-use';
 import { useForm } from 'react-hook-form';
 import { useRef, useImperativeHandle } from 'react';
-import dayjs from 'dayjs';
-import 'dayjs/locale/zh-cn'; // import locale
-import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
-import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import {
-	selectArticle,
-	removeArticle,
-	addArticleToDeletionQueue,
-	unPinArticle,
-	pinArticle,
-	removeArticleFromDeletionQueue,
-} from '../features/articleSlice';
+import { useAppSelector } from '../redux/hooks';
+import { selectArticle } from '../features/articleSlice';
 import { performFuseSearch, useKeys, HotkeyMapData, useNavigateWithSearchParams } from '../utils';
+import { ArticleCard } from '.';
 
 interface SearchForm {
 	search: string;
 }
 
 export var SharedLayout = () => {
-	dayjs.locale('zh-cn');
-	let dispatch = useAppDispatch();
 	let { articleQueue, paragraphs } = useAppSelector(selectArticle);
 
 	let navigate = useNavigate();
 	let submit = useSubmit();
 	let location = useLocation();
-	const { articleId: currentArticle } = useParams();
 	let [searchParams] = useSearchParams();
 	let navigateWithSearchParams = useNavigateWithSearchParams();
 
@@ -200,53 +188,7 @@ export var SharedLayout = () => {
 						</div>
 					)}
 					{articles.map((article) => {
-						return (
-							<div key={article.articleId} className='card'>
-								{/* need border for this*/}
-								<div onClick={() => navigateWithSearchParams(`article/${article.articleId}`)} className='card-content'>
-									<p>{article.articleText.length > 40 ? article.articleText.slice(0, 40) + '...' : article.articleText}</p>{' '}
-									{/* since paragraph role is not supported yet in RTL */}
-									<p className='date'>{dayjs(article.editDate).format('YYYY-MM-DD THH:mm')}</p>
-								</div>
-								<div className='btn-container'>
-									{/* TODO hover to show */}
-									<button
-										onClick={() => {
-											dispatch(addArticleToDeletionQueue(article.articleId));
-											dispatch(removeArticle(article.articleId));
-											// only navigate when the displaying article is deleted
-											if (article.articleId === currentArticle) {
-												navigate('/');
-											}
-											dispatch(removeArticleFromDeletionQueue(article.articleId));
-											toast.dismiss(`articleDeletion${article.articleId}`);
-										}}
-										className='btn'
-									>
-										Delete
-									</button>
-									{articleIsInFavorites(article.articleId) ? (
-										<button
-											onClick={() => {
-												dispatch(unPinArticle(article.articleId));
-											}}
-											className='btn'
-										>
-											Unpin
-										</button>
-									) : (
-										<button
-											onClick={() => {
-												dispatch(pinArticle(article.articleId));
-											}}
-											className='btn'
-										>
-											Pin
-										</button>
-									)}
-								</div>
-							</div>
-						);
+						return <ArticleCard article={article} articleIsInFavorites={articleIsInFavorites(article.articleId)} key={article.articleId} />;
 					})}
 				</div>
 			</StyledNav>
@@ -316,43 +258,6 @@ var StyledNav = styled.nav`
 				font-size: var(--font-big);
 				font-weight: lighter;
 			}
-
-			.btn-container {
-				position: absolute;
-				right: 0;
-				display: flex;
-				flex-direction: column;
-				gap: 0.5rem;
-				opacity: 0;
-				transition:
-					translate 0.5s,
-					opacity 0.5s;
-				translate: 100%;
-
-				.btn {
-					border: none;
-					border-radius: 1rem;
-				}
-			}
-
-			&:hover .btn-container {
-				position: static;
-				opacity: 1;
-				translate: none;
-			}
-		}
-
-		.card-content {
-			display: flex;
-			height: 100%;
-			flex: 1 1 auto;
-			flex-direction: column;
-			justify-content: space-between;
-		}
-
-		.date {
-			color: grey;
-			font-style: italic;
 		}
 	}
 `;
