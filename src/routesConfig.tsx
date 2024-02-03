@@ -23,6 +23,9 @@ var routesConfig = [
 									},
 								],
 							},
+							{
+								path: 'articles',
+							},
 						],
 					},
 				],

@@ -5,3 +5,4 @@ export * from './root';
 export * from './error-page';
 export * from './hotkeyMap';
 export * from './preview';
+export * from './sharedLayout';

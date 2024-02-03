@@ -1,18 +1,22 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import secureLocalStorage from 'react-secure-storage';
+import { useLocation } from 'react-router-dom';
 
-import { SharedLayout } from '../components';
+import { SharedLayout } from '.';
 
 export function Root() {
 	let secureLocalStorageAPIKey = secureLocalStorage.getItem('string');
+	let location = useLocation();
 
 	return secureLocalStorageAPIKey ? (
 		<StyledDiv>
 			<SharedLayout />
-			<main>
-				<Outlet />
-			</main>
+			{!/articles$/.test(location.pathname) && (
+				<main>
+					<Outlet />
+				</main>
+			)}
 		</StyledDiv>
 	) : (
 		<Navigate to='/config' replace />

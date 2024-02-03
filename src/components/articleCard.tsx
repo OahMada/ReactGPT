@@ -55,8 +55,10 @@ export var ArticleCard = ({ article, articleIsInFavorites }: ArticleCardProp) =>
 				setCardHoverState(true);
 			}}
 			onMouseLeave={() => {
-				setCardHoverState(false);
-				setTimeout(() => resolvePinningAction(), 500);
+				setTimeout(() => {
+					setCardHoverState(false);
+					resolvePinningAction();
+				}, 500);
 			}}
 		>
 			<div onClick={() => navigateWithSearchParams(`article/${article.articleId}`)} className='card-content'>

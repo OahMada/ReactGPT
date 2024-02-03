@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { useAppSelector } from '../redux/hooks';
 import { selectArticle } from '../features/articleSlice';
 import { performFuseSearch, useKeys, HotkeyMapData, useNavigateWithSearchParams } from '../utils';
-import { ArticleCard } from '.';
+import { ArticleCard } from '../components';
 
 interface SearchForm {
 	search: string;
@@ -187,11 +187,33 @@ export var SharedLayout = () => {
 							<p>No articles match the search query.</p>
 						</div>
 					)}
-					{articles.map((article) => {
+					{articles.map((article, index) => {
+						if (!/articles$/.test(location.pathname) && index > 4) {
+							return;
+						}
 						return <ArticleCard article={article} articleIsInFavorites={articleIsInFavorites(article.articleId)} key={article.articleId} />;
 					})}
+					{articles.length > 5 && !/articles$/.test(location.pathname) && (
+						<div className='card'>
+							<div className='link-wrapper'>
+								<NavLink to={`/articles${query ? `?search=${query}` : ''}`}>More...</NavLink>
+							</div>
+						</div>
+					)}
 				</div>
 			</StyledNav>
+			{/articles$/.test(location.pathname) && (
+				<div>
+					<button
+						className='btn'
+						onClick={() => {
+							navigate(-1);
+						}}
+					>
+						Back
+					</button>
+				</div>
+			)}
 		</>
 	);
 };
