@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn'; // import locale
+import cs from 'classnames';
 
 import { useAppDispatch } from '../redux/hooks';
 import { removeArticle, addArticleToDeletionQueue, unPinArticle, pinArticle, removeArticleFromDeletionQueue } from '../features/articleSlice';
@@ -47,8 +48,9 @@ export var ArticleCard = ({ article, articleIsInFavorites }: ArticleCardProp) =>
 	return (
 		<StyledDiv
 			$cardHover={cardHoverState}
+			$isPinned={pinning}
 			key={article.articleId}
-			className='card'
+			className={cs('card', { active: article.articleId === currentArticle })}
 			onMouseEnter={() => {
 				setCardHoverState(true);
 			}}
@@ -91,7 +93,9 @@ export var ArticleCard = ({ article, articleIsInFavorites }: ArticleCardProp) =>
 	);
 };
 
-var StyledDiv = styled.div<{ $cardHover: boolean }>`
+var StyledDiv = styled.div<{ $cardHover: boolean; $isPinned: boolean }>`
+	background-color: ${({ $isPinned }) => $isPinned && 'var(--color-light)'};
+
 	.btn-container {
 		display: flex;
 		flex-direction: column;
@@ -117,6 +121,7 @@ var StyledDiv = styled.div<{ $cardHover: boolean }>`
 		.btn {
 			border: none;
 			border-radius: 1rem;
+			background-color: var(--color-dark);
 		}
 	}
 

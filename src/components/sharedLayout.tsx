@@ -259,5 +259,10 @@ var StyledNav = styled.nav`
 				font-weight: lighter;
 			}
 		}
+
+		.card.active:not(:first-child) {
+			box-shadow: 0 1rem 1rem rgb(0 0 0 / 10%);
+			transform: translateY(-1px);
+		}
 	}
 `;
