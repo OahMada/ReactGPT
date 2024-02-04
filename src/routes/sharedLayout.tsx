@@ -285,6 +285,13 @@ var StyledNav = styled.nav`
 				font-size: var(--font-big);
 				font-weight: lighter;
 			}
+
+			&:hover .btn-container {
+				position: static;
+				opacity: 1;
+				transition-timing-function: ease-out;
+				translate: none;
+			}
 		}
 
 		.card.active:not(:first-child) {

@@ -8,7 +8,7 @@ import cs from 'classnames';
 
 import { useAppDispatch } from '../redux/hooks';
 import { removeArticle, addArticleToDeletionQueue, unPinArticle, pinArticle, removeArticleFromDeletionQueue } from '../features/articleSlice';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 interface ArticleCardProp {
 	article: {
@@ -21,8 +21,6 @@ interface ArticleCardProp {
 
 export var ArticleCard = ({ article, articleIsInFavorites }: ArticleCardProp) => {
 	dayjs.locale('zh-cn');
-
-	let [cardHoverState, setCardHoverState] = useState(false);
 	let [pinning, setPinning] = useState(articleIsInFavorites);
 
 	// to sync state with prop https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
@@ -47,22 +45,17 @@ export var ArticleCard = ({ article, articleIsInFavorites }: ArticleCardProp) =>
 
 	return (
 		<StyledDiv
-			$cardHover={cardHoverState}
 			$isPinned={pinning}
 			key={article.articleId}
 			className={cs('card', { active: article.articleId === currentArticle })}
-			onMouseEnter={() => {
-				setCardHoverState(true);
-			}}
 			onMouseLeave={() => {
 				setTimeout(() => {
-					setCardHoverState(false);
 					resolvePinningAction();
 				}, 500);
 			}}
 		>
 			<div onClick={() => navigateWithSearchParams(`article/${article.articleId}`)} className='card-content'>
-				<p>{article.articleText.length > 40 ? article.articleText.slice(0, 40) + '...' : article.articleText}</p>{' '}
+				<p>{article.articleText.length > 40 ? article.articleText.slice(0, 35) + '...' : article.articleText}</p>{' '}
 				<p className='date'>{dayjs(article.editDate).format('YYYY-MM-DD THH:mm')}</p>
 			</div>
 			<div className='btn-container'>
@@ -95,30 +88,21 @@ export var ArticleCard = ({ article, articleIsInFavorites }: ArticleCardProp) =>
 	);
 };
 
-var StyledDiv = styled.div<{ $cardHover: boolean; $isPinned: boolean }>`
+var StyledDiv = styled.div<{ $isPinned: boolean }>`
 	background-color: ${({ $isPinned }) => $isPinned && 'var(--color-light)'};
 
 	.btn-container {
+		position: absolute;
+		right: 0;
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
+		opacity: 0;
 		transition:
 			translate 0.5s,
 			opacity 0.5s;
-
-		${({ $cardHover }) =>
-			$cardHover
-				? css`
-						position: static;
-						opacity: 1;
-						translate: none;
-					`
-				: css`
-						position: absolute;
-						right: 0;
-						opacity: 0;
-						translate: 100%;
-					`}
+		transition-timing-function: ease-in;
+		translate: 100%;
 
 		.btn {
 			border: none;

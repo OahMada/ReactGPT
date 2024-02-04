@@ -75,12 +75,18 @@ enableMocking().then(() => {
  * ## features
  *
  * extract away drag and drop
+ * prevent toasts from stacking on each other
+ * https://www.joshwcomeau.com/snippets/javascript/debounce/
+ * https://www.joshwcomeau.com/css/custom-css-reset/
+ * track the hover state of all article cards
  *
  * Why do I need to input the API key every once in a while?
  * useLayoutEffect
  * verify the persisted data
  *
  * ## bugs
+ *
+ * sometimes there are two cards with the same content
  *
  * ## test
  *
