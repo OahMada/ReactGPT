@@ -31,14 +31,6 @@ var StyledDiv = styled.div`
 	grid-template-rows: min-content min-content auto;
 	row-gap: 2rem;
 
-	header {
-		grid-column: 1 / span 12;
-	}
-
-	nav {
-		grid-column: 1 / span 12;
-	}
-
 	main {
 		grid-column: 1 / span 12;
 	}

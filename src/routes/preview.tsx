@@ -9,14 +9,13 @@ import { saveAs } from 'file-saver';
 import { toBlob } from 'html-to-image';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import { debounce } from 'lodash';
 import { proxy } from 'comlink';
 import styled from 'styled-components';
 
 import { PreviewContent, articleDocx } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
 import { translationQueryKeys } from '../query/translationQuery';
-import { createToast, useKeys, HotkeyMapData } from '../utils';
+import { createToast, useKeys, HotkeyMapData, debounce } from '../utils';
 import { workerInstance } from '../worker/workerInstance';
 
 export var Preview = () => {
@@ -120,7 +119,7 @@ export var Preview = () => {
 		createToast({ type: 'info', content: 'Downloading Image...', toastId: 'downloadImg', options: { autoClose: 500, closeButton: false } });
 	};
 
-	let debouncedDownloadImg = debounce(downloadImg, 500, { leading: true, trailing: false });
+	let debouncedDownloadImg = debounce(downloadImg, 500);
 
 	/* PDF Generation */
 	let downloadPDF = async () => {
@@ -148,7 +147,7 @@ export var Preview = () => {
 
 		createToast({ type: 'info', content: 'Downloading PDF...', toastId: 'downloadPDF', options: { autoClose: 500, closeButton: false } });
 	};
-	let debouncedDownloadPDF = debounce(downloadPDF, 500, { leading: true, trailing: false });
+	let debouncedDownloadPDF = debounce(downloadPDF, 500);
 
 	/* DOCX Generation */
 	let downloadDocx = async () => {
@@ -167,7 +166,7 @@ export var Preview = () => {
 		createToast({ type: 'info', content: 'Downloading DOCX...', toastId: 'downloadDOCX', options: { autoClose: 500, closeButton: false } });
 	};
 
-	let debouncedDownloadDocx = debounce(downloadDocx, 500, { leading: true, trailing: false });
+	let debouncedDownloadDocx = debounce(downloadDocx, 500);
 
 	/* Copy to Clipboard */
 	let copyToClipboard = () => {
@@ -187,7 +186,7 @@ export var Preview = () => {
 		createToast({ type: 'info', content: 'Copied to Clipboard', toastId: 'copyToClipboard', options: { autoClose: 500, closeButton: false } });
 	};
 
-	let debouncedCopyToClipboard = debounce(copyToClipboard, 500, { leading: true, trailing: false });
+	let debouncedCopyToClipboard = debounce(copyToClipboard, 500);
 
 	/* Hotkeys */
 	let { 'Preview Page': previewPageHotkeys } = HotkeyMapData();

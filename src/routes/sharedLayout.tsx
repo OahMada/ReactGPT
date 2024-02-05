@@ -227,10 +227,12 @@ var StyledHeader = styled.header`
 	display: flex;
 	justify-content: flex-end;
 	gap: 0.8rem;
+	grid-column: 1 / span 12;
 `;
 
 var StyledNav = styled.nav`
 	font-size: var(--font-small);
+	grid-column: 1 / span 12;
 
 	form {
 		padding: 1rem 0;
@@ -284,13 +286,6 @@ var StyledNav = styled.nav`
 				color: black;
 				font-size: var(--font-big);
 				font-weight: lighter;
-			}
-
-			&:hover .btn-container {
-				position: static;
-				opacity: 1;
-				transition-timing-function: ease-out;
-				translate: none;
 			}
 		}
 

@@ -34,7 +34,6 @@ export default defineConfig({
 			output: {
 				manualChunks: {
 					// https://dev.to/tassiofront/splitting-vendor-chunk-with-vite-and-loading-them-async-15o3
-					lodash: ['lodash'],
 					html2canvas: ['html2canvas'],
 					docx: ['docx'],
 					jspdf: ['jspdf'],

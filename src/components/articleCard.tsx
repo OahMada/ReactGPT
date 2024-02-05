@@ -103,12 +103,13 @@ var StyledDiv = styled.div<{ $isPinned: boolean }>`
 			opacity 0.5s;
 		transition-timing-function: ease-in;
 		translate: 100%;
+	}
 
-		.btn {
-			border: none;
-			border-radius: 1rem;
-			background-color: var(--color-dark);
-		}
+	&:hover .btn-container {
+		position: static;
+		opacity: 1;
+		transition-timing-function: ease-out;
+		translate: none;
 	}
 
 	.card-content {

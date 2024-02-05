@@ -5,6 +5,8 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { showModal, hideModal, selectModal } from '../features/modalSlice';
 import { acceptSingleAdjustment, ignoreSingleAdjustment, updateParagraphEditDate } from '../features/articleSlice';
 
+type CustomCSS = React.CSSProperties & Record<`--${string}`, string | number>;
+
 export var Modal = () => {
 	let dispatch = useAppDispatch();
 	let { title, content, dimension, color, indexInParagraph, paragraphStatus, paragraphId } = useAppSelector(selectModal);
@@ -19,9 +21,13 @@ export var Modal = () => {
 			onMouseEnter={() => {
 				dispatch(showModal());
 			}}
-			$titleColor={color}
-			$positionLeft={dimension.left}
-			$positionTop={dimension.top}
+			style={
+				{
+					'--color': color,
+					'--position-left': dimension.left,
+					'--position-top': dimension.top,
+				} as CustomCSS // https://stackoverflow.com/a/65959390/5800789 https://www.joshwcomeau.com/css/styled-components/#css-variables-1
+			}
 		>
 			<h4 className='title'>{title.toUpperCase()}</h4>
 			<p className='content'>
@@ -66,10 +72,10 @@ export var Modal = () => {
 	);
 };
 
-var Wrapper = styled.div<{ $titleColor: string; $positionLeft: number; $positionTop: number }>`
+var Wrapper = styled.div`
 	position: fixed;
-	top: ${(props) => `calc( ${props.$positionTop}px - 6.5rem) `};
-	left: ${(props) => `calc( ${props.$positionLeft}px - 0.8rem)`};
+	top: calc(var(--position-top) * 1px - 6.5rem);
+	left: calc(var(--position-left) * 1px - 0.8rem);
 	display: flex;
 	width: fit-content;
 	flex-direction: column;
@@ -84,7 +90,7 @@ var Wrapper = styled.div<{ $titleColor: string; $positionLeft: number; $position
 		font-weight: 600;
 		line-height: 1;
 		text-decoration: underline 3px;
-		text-decoration-color: ${(props) => props.$titleColor};
+		text-decoration-color: var(--color);
 	}
 
 	.content {

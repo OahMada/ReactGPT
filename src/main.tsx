@@ -22,6 +22,7 @@ import { HotkeysProvider } from 'react-hotkeys-hook';
 import { compress, decompress } from 'lz-string';
 
 import { App } from './app';
+import './index.css';
 
 var queryClient = new QueryClient({
 	defaultOptions: {
@@ -76,9 +77,8 @@ enableMocking().then(() => {
  *
  * extract away drag and drop
  * prevent toasts from stacking on each other
- * https://www.joshwcomeau.com/snippets/javascript/debounce/
- * https://www.joshwcomeau.com/css/custom-css-reset/
  * track the hover state of all article cards
+ * btn-container extract out
  *
  * Why do I need to input the API key every once in a while?
  * useLayoutEffect
