@@ -381,14 +381,12 @@ let articleSlice = createSlice({
 			state.articleRemoveQueue = state.articleRemoveQueue.filter((articleId) => articleId !== payload);
 		},
 		pinArticle: ({ articleQueue }, { payload }) => {
-			let index = articleQueue.normal.indexOf(payload);
 			articleQueue.favorites.push(payload);
-			articleQueue.normal.splice(index, 1);
+			articleQueue.normal = articleQueue.normal.filter((articleId) => articleId !== payload);
 		},
 		unPinArticle: ({ articleQueue }, { payload }) => {
-			let index = articleQueue.favorites.indexOf(payload);
 			articleQueue.normal.unshift(payload);
-			articleQueue.favorites.splice(index, 1);
+			articleQueue.favorites = articleQueue.favorites.filter((articleId) => articleId !== payload);
 		},
 		updateParagraphEditDate: ({ paragraphs }, { payload }) => {
 			let currentParagraph = paragraphs.find((item) => item.id === payload) as Paragraph;

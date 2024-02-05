@@ -35,14 +35,17 @@ describe('Preview route tests', () => {
 		expect(fetchButton(/download image/i)).toBeInTheDocument();
 
 		await clickElement(/download pdf/i);
-		expect(screen.getByRole('alert')).toBeInTheDocument();
+		vi.runAllTimers();
+		expect(await screen.findByRole('alert')).toBeInTheDocument();
 		expect(screen.getByText(/downloading pdf/i)).toBeInTheDocument();
 
 		await clickElement(/download docx/i);
-		expect(screen.getByText(/downloading docx/i)).toBeInTheDocument();
+		vi.runAllTimers();
+		expect(await screen.findByText(/downloading docx/i)).toBeInTheDocument();
 
 		await clickElement(/download image/i);
-		expect(screen.getByText(/downloading image/i)).toBeInTheDocument();
+		vi.runAllTimers();
+		expect(await screen.findByText(/downloading image/i)).toBeInTheDocument();
 
 		await clickElement(/include translation/i);
 		await waitFor(() => {
@@ -50,7 +53,8 @@ describe('Preview route tests', () => {
 			expect(loadingMessages).toHaveLength(0);
 		});
 		await clickElement(/copy to clipboard/i);
-		expect(screen.getByText(/copied to clipboard/i)).toBeInTheDocument();
+		vi.runAllTimers();
+		expect(await screen.findByText(/copied to clipboard/i)).toBeInTheDocument();
 		// somehow it is not possible to check if the react toastify toasts disappear.
 	});
 	it('The "Retry All" button appears when translation requests response with error', async () => {

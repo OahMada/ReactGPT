@@ -77,8 +77,8 @@ enableMocking().then(() => {
  *
  * extract away drag and drop
  * prevent toasts from stacking on each other
- * track the hover state of all article cards
  * btn-container extract out
+ * remove show/hide modal actions
  *
  * Why do I need to input the API key every once in a while?
  * useLayoutEffect
@@ -89,6 +89,8 @@ enableMocking().then(() => {
  * sometimes there are two cards with the same content
  *
  * ## test
+ *
+ * one test needs adjustment
  *
  * ## outlook and others
  *

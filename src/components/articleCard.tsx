@@ -7,7 +7,7 @@ import 'dayjs/locale/zh-cn'; // import locale
 import cs from 'classnames';
 
 import { useAppDispatch } from '../redux/hooks';
-import { removeArticle, addArticleToDeletionQueue, unPinArticle, pinArticle, removeArticleFromDeletionQueue } from '../features/articleSlice';
+import { removeArticle, addArticleToDeletionQueue, removeArticleFromDeletionQueue } from '../features/articleSlice';
 import styled from 'styled-components';
 
 interface ArticleCardProp {
@@ -17,9 +17,10 @@ interface ArticleCardProp {
 		editDate: number;
 	};
 	articleIsInFavorites: boolean;
+	articlePinningScheduleRef: Map<string, 'pin' | 'unpin'>;
 }
 
-export var ArticleCard = ({ article, articleIsInFavorites }: ArticleCardProp) => {
+export var ArticleCard = ({ article, articleIsInFavorites, articlePinningScheduleRef }: ArticleCardProp) => {
 	dayjs.locale('zh-cn');
 	let [pinning, setPinning] = useState(articleIsInFavorites);
 
@@ -30,32 +31,21 @@ export var ArticleCard = ({ article, articleIsInFavorites }: ArticleCardProp) =>
 		setPinning(articleIsInFavorites);
 	}
 
+	if (pinning !== articleIsInFavorites) {
+		articlePinningScheduleRef.set(article.articleId, pinning ? 'pin' : 'unpin');
+	} else {
+		articlePinningScheduleRef.delete(article.articleId);
+	}
+
 	let navigateWithSearchParams = useNavigateWithSearchParams();
 	let navigate = useNavigate();
 	let dispatch = useAppDispatch();
 	const { articleId: currentArticle } = useParams();
 
-	let resolvePinningAction = () => {
-		if (articleIsInFavorites && !pinning) {
-			dispatch(unPinArticle(article.articleId));
-		} else if (!articleIsInFavorites && pinning) {
-			dispatch(pinArticle(article.articleId));
-		}
-	};
-
 	return (
-		<StyledDiv
-			$isPinned={pinning}
-			key={article.articleId}
-			className={cs('card', { active: article.articleId === currentArticle })}
-			onMouseLeave={() => {
-				setTimeout(() => {
-					resolvePinningAction();
-				}, 500);
-			}}
-		>
+		<StyledDiv $isPinned={pinning} key={article.articleId} className={cs('card', { active: article.articleId === currentArticle })}>
 			<div onClick={() => navigateWithSearchParams(`article/${article.articleId}`)} className='card-content'>
-				<p>{article.articleText.length > 40 ? article.articleText.slice(0, 35) + '...' : article.articleText}</p>{' '}
+				<p>{article.articleText.length > 35 ? article.articleText.slice(0, 35) + '...' : article.articleText}</p>{' '}
 				<p className='date'>{dayjs(article.editDate).format('YYYY-MM-DD THH:mm')}</p>
 			</div>
 			<div className='btn-container'>

@@ -4,8 +4,8 @@ import { useForm } from 'react-hook-form';
 import { useRef, useImperativeHandle, useState } from 'react';
 import styled from 'styled-components';
 
-import { useAppSelector } from '../redux/hooks';
-import { selectArticle } from '../features/articleSlice';
+import { useAppSelector, useAppDispatch } from '../redux/hooks';
+import { selectArticle, unPinArticle, pinArticle } from '../features/articleSlice';
 import { performFuseSearch, useKeys, HotkeyMapData, useNavigateWithSearchParams } from '../utils';
 import { ArticleCard } from '../components';
 
@@ -15,7 +15,10 @@ interface SearchForm {
 
 export var SharedLayout = () => {
 	let [searchFocus, setSearchFocus] = useState(false);
+	let articlePinningScheduleRef = useRef<Map<string, 'pin' | 'unpin'>>(new Map());
+	let debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>();
 
+	let dispatch = useAppDispatch();
 	let { articleQueue, paragraphs } = useAppSelector(selectArticle);
 
 	let navigate = useNavigate();
@@ -105,6 +108,20 @@ export var SharedLayout = () => {
 		navigate('/hotkey');
 	};
 
+	let resolveArticlePinningSchedules = () => {
+		for (let entry of articlePinningScheduleRef.current) {
+			// article can be deleted during the process
+			if ([...articleQueue.favorites, ...articleQueue.normal].includes(entry[0])) {
+				if (entry[1] === 'pin') {
+					dispatch(pinArticle(entry[0]));
+				} else {
+					dispatch(unPinArticle(entry[0]));
+				}
+			}
+		}
+		articlePinningScheduleRef.current.clear();
+	};
+
 	let { 'Article Page': articlePageHotkeys } = HotkeyMapData();
 
 	// hotkey for entering new article page
@@ -173,7 +190,17 @@ export var SharedLayout = () => {
 						/>
 					</form>
 				)}
-				<div className='card-wrapper'>
+				<div
+					className='card-wrapper'
+					onMouseLeave={() => {
+						debounceTimeoutRef.current = setTimeout(() => {
+							resolveArticlePinningSchedules();
+						}, 500);
+					}}
+					onMouseEnter={() => {
+						window.clearTimeout(debounceTimeoutRef.current);
+					}}
+				>
 					{(query || articles.length > 0) && (
 						<div className='card'>
 							<div className='link-wrapper'>
@@ -196,7 +223,14 @@ export var SharedLayout = () => {
 						if (!/articles$/.test(location.pathname) && index > 4) {
 							return;
 						}
-						return <ArticleCard article={article} articleIsInFavorites={articleIsInFavorites(article.articleId)} key={article.articleId} />;
+						return (
+							<ArticleCard
+								key={article.articleId}
+								article={article}
+								articleIsInFavorites={articleIsInFavorites(article.articleId)}
+								articlePinningScheduleRef={articlePinningScheduleRef.current}
+							/>
+						);
 					})}
 					{articles.length > 5 && !/articles$/.test(location.pathname) && (
 						<div className='card'>
