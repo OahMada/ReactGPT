@@ -19,7 +19,7 @@ interface ModalProperties {
 export interface ModalType extends ModalProperties {
 	title: string;
 	content: string;
-	showModal: boolean;
+	displayModal: boolean;
 }
 
 interface payloadType extends ModalProperties {
@@ -31,7 +31,7 @@ let initialState: ModalType = {
 	content: '',
 	dimension: { left: 0, top: 0 },
 	color: '',
-	showModal: false,
+	displayModal: false,
 	indexInParagraph: 0, // used to find the right element in adjustmentObjectArr to update its content
 	paragraphId: '',
 	paragraphStatus: null,
@@ -76,10 +76,10 @@ let modalSlice = createSlice({
 			state.paragraphId = action.payload.paragraphId;
 		},
 		showModal: (state) => {
-			state.showModal = true;
+			state.displayModal = true;
 		},
 		hideModal: (state) => {
-			state.showModal = false;
+			state.displayModal = false;
 		},
 	},
 });

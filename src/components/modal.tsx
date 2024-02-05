@@ -9,7 +9,7 @@ type CustomCSS = React.CSSProperties & Record<`--${string}`, string | number>;
 
 export var Modal = () => {
 	let dispatch = useAppDispatch();
-	let { title, content, dimension, color, indexInParagraph, paragraphStatus, paragraphId } = useAppSelector(selectModal);
+	let { title, content, dimension, color, indexInParagraph, paragraphStatus, paragraphId, displayModal } = useAppSelector(selectModal);
 
 	// 0.8 & 6.5 here is fixed
 	return (
@@ -28,6 +28,7 @@ export var Modal = () => {
 					'--position-top': dimension.top,
 				} as CustomCSS // https://stackoverflow.com/a/65959390/5800789 https://www.joshwcomeau.com/css/styled-components/#css-variables-1
 			}
+			$displayModal={displayModal}
 		>
 			<h4 className='title'>{title.toUpperCase()}</h4>
 			<p className='content'>
@@ -72,11 +73,11 @@ export var Modal = () => {
 	);
 };
 
-var Wrapper = styled.div`
+var Wrapper = styled.div<{ $displayModal: boolean }>`
 	position: fixed;
 	top: calc(var(--position-top) * 1px - 6.5rem);
 	left: calc(var(--position-left) * 1px - 0.8rem);
-	display: flex;
+	display: ${({ $displayModal }) => ($displayModal ? 'flex' : 'none')};
 	width: fit-content;
 	flex-direction: column;
 	justify-content: space-around;

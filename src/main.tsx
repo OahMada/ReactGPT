@@ -72,13 +72,11 @@ enableMocking().then(() => {
 });
 
 /**
- *
  * ## features
  *
  * extract away drag and drop
  * prevent toasts from stacking on each other
  * btn-container extract out
- * remove show/hide modal actions
  *
  * Why do I need to input the API key every once in a while?
  * useLayoutEffect
@@ -86,11 +84,9 @@ enableMocking().then(() => {
  *
  * ## bugs
  *
- * sometimes there are two cards with the same content
- *
  * ## test
  *
- * one test needs adjustment
+ * three failures
  *
  * ## outlook and others
  *
@@ -99,4 +95,5 @@ enableMocking().then(() => {
  *
  * one thing not right with react query: error boundary reset;
  * update user flow
+ *
  */

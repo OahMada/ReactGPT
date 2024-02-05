@@ -22,7 +22,7 @@ import {
 	updateParagraphEditDate,
 	selectArticle,
 } from '../features/articleSlice';
-import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
+import { updateModalContent, showModal, hideModal } from '../features/modalSlice';
 import { useAutoFocusContext } from './autoFocus';
 
 import { Modal, ParagraphInput, ParagraphTranslation } from '.';
@@ -53,9 +53,6 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 
 	// query client
 	let QueryClient = useQueryClient();
-
-	// state values
-	let modal = useAppSelector(selectModal);
 
 	let { reset } = useQueryErrorResetBoundary();
 
@@ -207,7 +204,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 				>
 					Done
 				</button>
-				{modal.showModal && <Modal />}
+				<Modal />
 			</>
 		);
 	}
