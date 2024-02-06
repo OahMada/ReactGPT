@@ -78,7 +78,6 @@ enableMocking().then(() => {
  * btn-container extract out
  *
  * Why do I need to input the API key every once in a while?
- * useLayoutEffect
  * verify the persisted data
  *
  * ## bugs

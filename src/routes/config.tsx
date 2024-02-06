@@ -86,7 +86,7 @@ export var Config = () => {
 	useKeys({ keyBinding: configPageHotkeys.edit.hotkey, callback: clickEditButton });
 	useKeys({ keyBinding: configPageHotkeys.cancel.hotkey, callback: clickCancelButton });
 
-	let APIInput = useRef<HTMLInputElement | null>(null);
+	let APIInput = useRef<HTMLInputElement>(null);
 	useImperativeHandle(ref, () => APIInput.current);
 	useKeys({
 		keyBinding: configPageHotkeys.focusInput.hotkey,

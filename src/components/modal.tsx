@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { forwardRef } from 'react';
 
 // redux
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
@@ -7,7 +8,7 @@ import { acceptSingleAdjustment, ignoreSingleAdjustment, updateParagraphEditDate
 
 type CustomCSS = React.CSSProperties & Record<`--${string}`, string | number>;
 
-export var Modal = () => {
+export var Modal = forwardRef<HTMLDivElement, { modalTopOffset: number }>(({ modalTopOffset }, ref) => {
 	let dispatch = useAppDispatch();
 	let { title, content, dimension, color, indexInParagraph, paragraphStatus, paragraphId, displayModal } = useAppSelector(selectModal);
 
@@ -26,9 +27,11 @@ export var Modal = () => {
 					'--color': color,
 					'--position-left': dimension.left,
 					'--position-top': dimension.top,
+					'--position-top-offset': modalTopOffset,
 				} as CustomCSS // https://stackoverflow.com/a/65959390/5800789 https://www.joshwcomeau.com/css/styled-components/#css-variables-1
 			}
 			$displayModal={displayModal}
+			ref={ref}
 		>
 			<h4 className='title'>{title.toUpperCase()}</h4>
 			<p className='content'>
@@ -71,12 +74,12 @@ export var Modal = () => {
 			)}
 		</Wrapper>
 	);
-};
+});
 
 var Wrapper = styled.div<{ $displayModal: boolean }>`
 	position: fixed;
-	top: calc(var(--position-top) * 1px - 6.5rem);
-	left: calc(var(--position-left) * 1px - 0.8rem);
+	top: calc((var(--position-top) - var(--position-top-offset)) * 1px);
+	left: calc(var(--position-left) * 1px - 0.5rem);
 	display: ${({ $displayModal }) => ($displayModal ? 'flex' : 'none')};
 	width: fit-content;
 	flex-direction: column;

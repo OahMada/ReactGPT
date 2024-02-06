@@ -35,5 +35,3 @@ var StyledDiv = styled.div`
 		grid-column: 1 / span 12;
 	}
 `;
-
-// TODO active css effect

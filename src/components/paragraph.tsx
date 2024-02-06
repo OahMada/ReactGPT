@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useQueryClient, useQueryErrorResetBoundary } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { useRef } from 'react';
+import { useRef, useState, useLayoutEffect } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { refactoredChange, EditHistoryMode, Paragraph as ParagraphType } from '../types';
@@ -22,7 +22,7 @@ import {
 	updateParagraphEditDate,
 	selectArticle,
 } from '../features/articleSlice';
-import { updateModalContent, showModal, hideModal } from '../features/modalSlice';
+import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
 import { useAutoFocusContext } from './autoFocus';
 
 import { Modal, ParagraphInput, ParagraphTranslation } from '.';
@@ -41,8 +41,11 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 		editHistoryMode,
 		showTranslation,
 	} = paragraphs.find((item) => paragraphId === item.id) as ParagraphType;
+	let { displayModal } = useAppSelector(selectModal);
 
 	let doneButtonRef = useRef<HTMLButtonElement>(null);
+	let modalRef = useRef<HTMLDivElement>(null);
+	let [modalTopOffset, setModalTopOffset] = useState(0);
 
 	// dispatch
 	let dispatch = useAppDispatch();
@@ -85,6 +88,14 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 			}
 		}
 	});
+
+	// https://react.dev/reference/react/useLayoutEffect#measuring-layout-before-the-browser-repaints-the-screen
+	useLayoutEffect(() => {
+		if (modalRef.current && displayModal) {
+			let { height } = modalRef.current.getBoundingClientRect();
+			setModalTopOffset(height);
+		}
+	}, [displayModal]);
 
 	// -------------- Editing--------------
 
@@ -204,7 +215,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 				>
 					Done
 				</button>
-				<Modal />
+				<Modal ref={modalRef} modalTopOffset={modalTopOffset} />
 			</>
 		);
 	}
