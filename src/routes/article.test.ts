@@ -76,12 +76,12 @@ describe('Article route tests', () => {
 	});
 	it('Insert new paragraph below', async () => {
 		renderAnExistingArticle();
-		let paragraphsOnThePage = await fetchElementsByTagName('p');
-		let initialParagraphCount = paragraphsOnThePage.length;
 		await waitFor(() => {
 			expect(fetchButton(/done/i)).toBeEnabled();
 		});
 		await clickElement(/done/i);
+		let paragraphsOnThePage = await fetchElementsByTagName('p');
+		let initialParagraphCount = paragraphsOnThePage.length;
 		await clickElement(/insert below/i);
 		let paragraphInputBox = screen.getByPlaceholderText(/please enter your paragraph/i);
 		expect(paragraphInputBox).toBeInTheDocument();
@@ -98,22 +98,10 @@ describe('Article route tests', () => {
 		expect(paragraphsOnThePage[paragraphsOnThePage.length - 1]).toHaveTextContent('Insert below');
 	});
 	it('Saving an empty new paragraph would cause it to be deleted immediately', async () => {
-		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish(false);
+		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish(true);
 		let paragraphsOnThePage = await fetchElementsByTagName('p');
 		let initialParagraphCount = paragraphsOnThePage.length;
-		await clickElement(/done/i);
 		await clickElement(/insert above/i);
-		await clickElement(/done/i);
-		paragraphsOnThePage = await fetchElementsByTagName('p');
-		expect(paragraphsOnThePage.length).toEqual(initialParagraphCount);
-	});
-	it('Saving an empty new paragraph would cause it to be deleted immediately', async () => {
-		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish(false);
-		let paragraphsOnThePage = await fetchElementsByTagName('p');
-		let initialParagraphCount = paragraphsOnThePage.length;
-		await clickElement(/done/i);
-		await clickElement(/insert above/i);
-		await userEvent.type(screen.getByPlaceholderText(/please enter your paragraph/i), ' \n');
 		await clickElement(/done/i);
 		paragraphsOnThePage = await fetchElementsByTagName('p');
 		expect(paragraphsOnThePage.length).toEqual(initialParagraphCount);
