@@ -47,7 +47,7 @@
 		"react-router-dom": "^6.22.0",
 		"react-secure-storage": "^1.3.2",
 		"react-textarea-autosize": "^8.5.3",
-		"react-toastify": "^10.0.4",
+		"react-toastify": "^9.1.3",
 		"react-tooltip": "^5.26.0",
 		"react-use": "^17.5.0",
 		"redux-persist": "^6.0.0",
@@ -99,7 +99,9 @@
 		"testing-library-related": "https://sapegin.me/til/react/ensuring-react-testing-library-best-practices-with-eslint/"
 	},
 	"msw": {
-		"workerDirectory": ""
+		"workerDirectory": [
+			""
+		]
 	},
 	"lint-staged": {
 		"*.{js,jsx,ts,tsx,mjs,mts}": [

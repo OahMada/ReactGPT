@@ -17,7 +17,7 @@ describe('config route tests', () => {
 		expect(inputNode).toHaveFocus();
 		await userEvent.type(inputNode, import.meta.env.VITE_OPENAI_API_KEY_ALIAS);
 		expect(inputNode).toHaveValue(import.meta.env.VITE_OPENAI_API_KEY_ALIAS);
-		await clickElement(/done/i);
+		await clickElement();
 		await waitFor(() => {
 			expect(router.state.location.pathname).toEqual('/');
 		});

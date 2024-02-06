@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { toast, Id, ToastContentProps } from 'react-toastify';
+import { toast, Id } from 'react-toastify';
 import { useNavigate, Link } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
@@ -13,7 +13,7 @@ import {
 } from '../features/articleSlice';
 import { createToast, useKeys, HotkeyMapData } from '../utils';
 
-interface UndoProps extends Partial<ToastContentProps> {
+interface UndoProps {
 	onUndo: () => void;
 	closeToast: () => void;
 }
