@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { toast, Id, ToastContentProps } from 'react-toastify';
+import { toast, Id } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import { useHotkeysContext } from 'react-hotkeys-hook';
 
@@ -18,7 +18,7 @@ import { Paragraph } from '../types';
 import { useAutoFocusContext } from './autoFocus';
 
 // https://github.com/fkhadra/react-toastify/issues/568#issuecomment-779847274
-interface UndoProps extends Partial<ToastContentProps> {
+interface UndoProps {
 	onUndo: () => void;
 	closeToast: () => void;
 	paragraph: string;

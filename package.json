@@ -13,7 +13,7 @@
 		"format": "prettier --write .",
 		"lint": "eslint .",
 		"type-check": "tsc",
-		"prepare": "husky install",
+		"prepare": "husky",
 		"pre-commit": "lint-staged",
 		"lint:css": "stylelint . --fix"
 	},
