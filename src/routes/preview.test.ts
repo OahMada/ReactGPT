@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, act } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 
 import { renderAnExistingArticle, clickElement, server, fetchButton, fetchElementsByTagName } from '../setupTests';
@@ -28,6 +28,7 @@ describe('Preview route tests', () => {
 		expect((await fetchElementsByTagName('p')).length).toEqual(pTagElementsLength);
 	});
 	it('Click the export to file button to reveal available options, click on each export option', async () => {
+		// https://kentcdodds.com/blog/fix-the-not-wrapped-in-act-warning#1-when-using-jestusefaketimers
 		renderAnExistingArticle(0, true);
 		await clickElement(/export to file/i);
 		expect(fetchButton(/download pdf/i)).toBeInTheDocument();
@@ -35,16 +36,16 @@ describe('Preview route tests', () => {
 		expect(fetchButton(/download image/i)).toBeInTheDocument();
 
 		await clickElement(/download pdf/i);
-		vi.runAllTimers();
+		act(() => vi.runAllTimers());
 		expect(await screen.findByRole('alert')).toBeInTheDocument();
-		expect(screen.getByText(/downloading pdf/i)).toBeInTheDocument();
+		expect(await screen.findByText(/downloading pdf/i)).toBeInTheDocument();
 
 		await clickElement(/download docx/i);
-		vi.runAllTimers();
+		act(() => vi.runAllTimers());
 		expect(await screen.findByText(/downloading docx/i)).toBeInTheDocument();
 
 		await clickElement(/download image/i);
-		vi.runAllTimers();
+		act(() => vi.runAllTimers());
 		expect(await screen.findByText(/downloading image/i)).toBeInTheDocument();
 
 		await clickElement(/include translation/i);
@@ -53,7 +54,7 @@ describe('Preview route tests', () => {
 			expect(loadingMessages).toHaveLength(0);
 		});
 		await clickElement(/copy to clipboard/i);
-		vi.runAllTimers();
+		act(() => vi.runAllTimers());
 		expect(await screen.findByText(/copied to clipboard/i)).toBeInTheDocument();
 		// somehow it is not possible to check if the react toastify toasts disappear.
 	});

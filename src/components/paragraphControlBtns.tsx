@@ -44,7 +44,7 @@ var Undo = ({ closeToast, onUndo, paragraph, paragraphId }: UndoProps) => {
 
 	return (
 		<div>
-			Paragraph {paragraph ? `"${paragraph.slice(0, 10)}..." ` : ''}Deleted{' '}
+			Deleting Paragraph {`"${paragraph.slice(0, 10)}..." `}
 			<button
 				onClick={handleClick}
 				data-tooltip-id='hotkey'
@@ -81,12 +81,13 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 					closeToast={() => {
 						toast.dismiss(toastId.current);
 					}}
-					paragraph={currentParagraph.paragraphAfterGrammarFix}
+					paragraph={
+						currentParagraph.paragraphAfterGrammarFix ? currentParagraph.paragraphAfterGrammarFix : currentParagraph.paragraphBeforeGrammarFix
+					}
 					paragraphId={paragraphId}
 				/>
 			),
-			containerId: 'articleDeletion',
-			options: { hideProgressBar: false },
+			options: { hideProgressBar: false, closeOnClick: false, closeButton: false },
 		});
 
 		/* v8 ignore next 7 */

@@ -62,8 +62,7 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 					}}
 				/>
 			),
-			containerId: 'articleDeletion',
-			options: { hideProgressBar: false },
+			options: { hideProgressBar: false, closeOnClick: false, closeButton: false },
 			toastId: `articleDeletion${articleId}`,
 		});
 

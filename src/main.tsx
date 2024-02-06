@@ -75,9 +75,7 @@ enableMocking().then(() => {
  * ## features
  *
  * extract away drag and drop
- * prevent toasts from stacking on each other
  * btn-container extract out
- * why sometimes delete one article results in other highlighted instead of navigate to root route?
  *
  * Why do I need to input the API key every once in a while?
  * useLayoutEffect
