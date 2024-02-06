@@ -74,7 +74,6 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- * extract away drag and drop
  * btn-container extract out
  *
  * Why do I need to input the API key every once in a while?
@@ -87,9 +86,11 @@ enableMocking().then(() => {
  * ## outlook and others
  *
  * rethought html layout and css
- * modal dynamic position props
+ * icon
+ * responsive layout on mobile devices
+ *
+ * update user flow
  *
  * one thing not right with react query: error boundary reset;
- * update user flow
  *
  */

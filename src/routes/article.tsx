@@ -199,11 +199,11 @@ export var Article = () => {
 					</button>
 				</div>
 			)}
+			{filteredParagraphs.length === 0 && <EmptyParagraphList />}
 			<DragDropContext onDragEnd={handleOnDragEnd}>
 				<Droppable droppableId='paragraphs'>
 					{(provided) => (
 						<div ref={provided.innerRef} {...provided.droppableProps}>
-							{filteredParagraphs.length === 0 && <EmptyParagraphList />}
 							<AutoFocusWrapper>
 								{filteredParagraphs.map((paragraph: ParagraphType, index) => {
 									return (
