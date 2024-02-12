@@ -275,7 +275,6 @@ var StyledNav = styled.nav`
 		input {
 			display: inline-block;
 			padding: 0.5rem;
-			font-size: var(--font-primary);
 		}
 	}
 

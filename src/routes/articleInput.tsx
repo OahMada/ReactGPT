@@ -113,8 +113,6 @@ var StyledForm = styled.form`
 		padding: 2rem;
 		border: 1px solid var(--color-darker);
 		border-radius: 5px;
-		font-family: Arial, Helvetica, sans-serif;
-		font-size: var(--font-primary);
 		line-height: 1.5;
 		resize: none;
 		white-space: pre-wrap;

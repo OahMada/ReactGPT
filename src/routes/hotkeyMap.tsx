@@ -77,7 +77,6 @@ var Section = styled.section`
 	width: 65%;
 	padding: 5rem;
 	margin: auto;
-	font-size: var(--font-primary);
 
 	.btn-container {
 		display: flex;

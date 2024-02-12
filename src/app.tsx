@@ -20,8 +20,8 @@ export var App = () => {
 			<RouterProvider router={router} />
 			{/* duplicate toasts might show when applying the limit option, a library bug */}
 			<ToastContainer limit={3} />
-			<Tooltip id='hotkey' delayShow={1000} delayHide={150} style={{ zIndex: 300 }} />
-			<Tooltip id='tip' delayShow={500} delayHide={150} style={{ zIndex: 200 }} />
+			<Tooltip id='hotkey' delayShow={1000} delayHide={150} />
+			<Tooltip id='tip' delayShow={500} delayHide={150} />
 		</>
 	);
 };

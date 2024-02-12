@@ -57,7 +57,7 @@ export var HotkeyInput = ({ keyBinding, userDefinedHotkeys, setUserDefinedHotkey
 					start();
 				}}
 				data-tooltip-id='tip'
-				data-tooltip-content='Click to change.'
+				data-tooltip-content='Click to change'
 				className='btn'
 			>
 				{keyBinding.label}

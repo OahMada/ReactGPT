@@ -15,12 +15,13 @@ html {
 
 body {
 	font-family: sans-serif;
+	font-size: var(--font-primary);
 	font-weight: 400;
 }
 
 #root {
 	display: grid;
-	min-height: 100vh;
+	min-height: 100dvh;
 	grid-template-rows: repeat(auto-fill, 100%);
 }
 

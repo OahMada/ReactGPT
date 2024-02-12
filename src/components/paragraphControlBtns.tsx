@@ -110,7 +110,7 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 	};
 
 	let { enabledScopes } = useHotkeysContext();
-	let toolTipHidden = !enabledScopes.includes(paragraphId);
+	let toolTipHidden = !enabledScopes.includes(paragraphId) || currentParagraph.paragraphStatus === 'editing'; // the hotkeys are not gonna enabled when in editing mode
 	let { 'Article Page': articlePageHotkeys } = HotkeyMapData();
 
 	useKeys({

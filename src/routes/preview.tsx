@@ -305,13 +305,13 @@ export var Preview = () => {
 
 var ModalWrapper = styled.section`
 	position: fixed;
-	z-index: 250;
 	top: 0;
 	left: 0;
 	display: grid;
 	width: 100vw;
-	height: 100vh;
+	height: 100dvh;
 	background-color: rgb(0 0 0 / 80%);
+	isolation: isolate;
 	place-items: center center;
 	transition: all 0.3s;
 

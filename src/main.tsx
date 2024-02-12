@@ -75,6 +75,10 @@ enableMocking().then(() => {
  * ## features
  *
  * btn-container extract out
+ * improve articleInput page to fill more content
+ * preview tab index
+ * createPortal?
+ * modal overflow on small screen devices
  *
  * Why do I need to input the API key every once in a while?
  * verify the persisted data
@@ -85,7 +89,7 @@ enableMocking().then(() => {
  *
  * ## outlook and others
  *
- * rethought html layout and css
+ * rethink html layout and css
  * icon
  * responsive layout on mobile devices
  *

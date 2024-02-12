@@ -205,7 +205,6 @@ var StyledSection = styled.section`
 
 	p {
 		margin-bottom: 1.5rem;
-		font-size: var(--font-primary);
 	}
 
 	.btns {
