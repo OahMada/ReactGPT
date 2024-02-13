@@ -81,6 +81,7 @@ var Wrapper = styled.div<{ $displayModal: boolean; $leftOffset: number }>`
 	position: fixed;
 	top: calc((var(--position-top) + var(--position-top-offset)) * 1px);
 	left: calc(var(--position-left) * 1px + ${({ $leftOffset }) => ($leftOffset ? `${$leftOffset} * 1px - 1rem` : '-0.5rem')});
+
 	/* to move into viewport in the case of viewport overflow */
 	display: ${({ $displayModal }) => ($displayModal ? 'flex' : 'none')};
 	width: fit-content;
