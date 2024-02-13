@@ -1,6 +1,6 @@
 // components
 import { Root, Article, ArticleInput, Config, ErrorPage, Preview, HotkeyMap } from './routes';
-import { ReactPortal } from './components';
+// import { ReactPortal } from './components';
 
 var routesConfig = [
 	{
@@ -20,9 +20,9 @@ var routesConfig = [
 									{
 										path: 'preview',
 										element: (
-											<ReactPortal>
-												<Preview />
-											</ReactPortal>
+											// <ReactPortal>
+											<Preview />
+											// </ReactPortal>
 										),
 									},
 								],
