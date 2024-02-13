@@ -47,7 +47,7 @@ describe('Article route tests', () => {
 	it('Delete article and undo deletion', async () => {
 		renderAnExistingArticle();
 		await clickElement(/delete article/i);
-		expect(screen.getByPlaceholderText(/please enter your article/i)).toBeInTheDocument();
+		expect(screen.getByPlaceholderText(/article content/i)).toBeInTheDocument();
 		await clickElement(/undo/i);
 		expect(fetchButton(/delete article/i)).toBeInTheDocument();
 	});
@@ -72,7 +72,7 @@ describe('Article route tests', () => {
 		await clickElement(/delete paragraph/i);
 		expect(fetchButton(/create/i)).toBeInTheDocument();
 		await clickElement(/create/i);
-		expect(screen.getByPlaceholderText(/please enter your article/i)).toBeInTheDocument();
+		expect(screen.getByPlaceholderText(/article content/i)).toBeInTheDocument();
 	});
 	it('Insert new paragraph below', async () => {
 		renderAnExistingArticle();
@@ -209,7 +209,7 @@ describe('Article route tests', () => {
 		let store = setupStore();
 		store.dispatch(saveArticleInput({ articleText: defaultArticleInput, articleId: 'article1' }));
 		renderRouter({ store, initialEntries: ['/article/article1', '/article/test'], initialIndex: 1 });
-		expect(screen.getByPlaceholderText(/please enter your article/i)).toBeInTheDocument();
+		expect(screen.getByPlaceholderText(/article content/i)).toBeInTheDocument();
 	});
 });
 

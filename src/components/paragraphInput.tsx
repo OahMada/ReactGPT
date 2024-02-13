@@ -142,11 +142,10 @@ export var ParagraphInput = ({
 					splitCombinedTextArr.shift();
 
 					let payloadId = paragraphId;
-					setAutoFocus(false);
+					setAutoFocus(false); // do not autofocus newly created paragraph only in this situation.
 					for (let index = 0; index < splitCombinedTextArr.length; index++) {
 						let splitText = splitCombinedTextArr[index];
 						dispatch(insertBelowParagraph({ paragraphId: payloadId, newParagraphText: splitText, indexOffset: index, articleId }));
-						// payloadId = getNewlyCreatedParagraphId(splitText);
 					}
 				}}
 			/>

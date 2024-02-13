@@ -5,8 +5,8 @@ import { useLocalStorage } from 'react-use';
 import { compress, decompress } from 'lz-string';
 import { v4 as uuidv4 } from 'uuid';
 
-import { useAppDispatch } from '../redux/hooks';
-import { saveArticleInput } from '../features/articleSlice';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { saveArticleInput, selectArticle } from '../features/articleSlice';
 import { createToast, defaultArticleInput, useKeys, HotkeyMapData, useNavigateWithSearchParams } from '../utils';
 
 interface ArticleInputType {
@@ -16,6 +16,8 @@ interface ArticleInputType {
 // log the last character inputted from previous render
 export var ArticleInput = () => {
 	let dispatch = useAppDispatch();
+	let { articleQueue } = useAppSelector(selectArticle);
+	let articles = [...articleQueue.normal, ...articleQueue.favorites];
 	let navigateWithSearchParams = useNavigateWithSearchParams();
 
 	let [localArticle, setLocalArticle, removeLocalArticle] = useLocalStorage('article', '', {
@@ -76,7 +78,12 @@ export var ArticleInput = () => {
 			{/* {
 				errors.article && <p>{errors.article.message}</p> // replace with toast
 			} */}
-
+			{articles.length === 0 && (
+				<div className='intro'>
+					<h1>Input or copy/paste your article into the textarea.</h1>
+					<p>Paragraphs are separated by double line breaks.</p>
+				</div>
+			)}
 			<TextareaAutosize
 				autoFocus
 				{...register('article', {
@@ -89,7 +96,7 @@ export var ArticleInput = () => {
 					},
 				})}
 				spellCheck='true'
-				placeholder='Please enter your article here.'
+				placeholder='Article content.'
 			/>
 			<div className='btn-container'>
 				<button type='button' onClick={fillInText} className='btn'>
@@ -104,12 +111,29 @@ export var ArticleInput = () => {
 };
 
 var StyledForm = styled.form`
+	display: grid;
 	height: 100%;
+	align-items: end;
+
+	.intro {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		margin-bottom: 1rem;
+
+		h1 {
+			line-height: 1em + 0.5rem;
+		}
+
+		p {
+			font-size: var(--font-larger);
+		}
+	}
 
 	textarea {
 		display: inline-block;
 		width: 100%;
-		min-height: 90%;
+		min-height: 55dvh;
 		padding: 2rem;
 		border: 1px solid var(--color-darker);
 		border-radius: 5px;
