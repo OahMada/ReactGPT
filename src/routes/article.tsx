@@ -199,7 +199,7 @@ export var Article = () => {
 					</button>
 				</div>
 			)}
-			{filteredParagraphs.length === 0 && <EmptyParagraphList />}
+			{filteredParagraphs.length === 0 && combinedArticleQueue.indexOf(articleId) !== -1 && <EmptyParagraphList />}
 			<DragDropContext onDragEnd={handleOnDragEnd}>
 				<Droppable droppableId='paragraphs'>
 					{(provided) => (

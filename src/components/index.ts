@@ -12,3 +12,4 @@ export * from './hotkeyInput';
 export * from './loading';
 export * from './previewTranslation';
 export * from './articleCard';
+export * from './reactPortal';

@@ -1,5 +1,6 @@
 // components
 import { Root, Article, ArticleInput, Config, ErrorPage, Preview, HotkeyMap } from './routes';
+import { ReactPortal } from './components';
 
 var routesConfig = [
 	{
@@ -10,7 +11,6 @@ var routesConfig = [
 				element: <Root />,
 				children: [
 					{
-						errorElement: <ErrorPage />,
 						children: [
 							{ index: true, element: <ArticleInput /> },
 							{
@@ -19,7 +19,11 @@ var routesConfig = [
 								children: [
 									{
 										path: 'preview',
-										element: <Preview />,
+										element: (
+											<ReactPortal>
+												<Preview />
+											</ReactPortal>
+										),
 									},
 								],
 							},

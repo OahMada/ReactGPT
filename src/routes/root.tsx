@@ -10,14 +10,16 @@ export function Root() {
 	let location = useLocation();
 
 	return secureLocalStorageAPIKey ? (
-		<StyledDiv>
-			<SharedLayout />
-			{!/articles$/.test(location.pathname) && (
-				<main>
-					<Outlet />
-				</main>
-			)}
-		</StyledDiv>
+		<>
+			<StyledDiv>
+				<SharedLayout />
+				{!/articles$/.test(location.pathname) && (
+					<main>
+						<Outlet />
+					</main>
+				)}
+			</StyledDiv>
+		</>
 	) : (
 		<Navigate to='/config' replace />
 	);

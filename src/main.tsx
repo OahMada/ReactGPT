@@ -76,12 +76,13 @@ enableMocking().then(() => {
  *
  * btn-container extract out
  * preview tab index
- * createPortal?
  *
  * Why do I need to input the API key every once in a while?
  * verify the persisted data
  *
  * ## bugs
+ *
+ * tooltip keeps showing up when on small screen
  *
  * ## test
  *
