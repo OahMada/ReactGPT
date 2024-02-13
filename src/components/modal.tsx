@@ -8,7 +8,7 @@ import { acceptSingleAdjustment, ignoreSingleAdjustment, updateParagraphEditDate
 
 type CustomCSS = React.CSSProperties & Record<`--${string}`, string | number>;
 
-export var Modal = forwardRef<HTMLDivElement, { modalTopOffset: number }>(({ modalTopOffset }, ref) => {
+export var Modal = forwardRef<HTMLDivElement, { modalOffsets: { top: number; left: number } }>(({ modalOffsets }, ref) => {
 	let dispatch = useAppDispatch();
 	let { title, content, dimension, color, indexInParagraph, paragraphStatus, paragraphId, displayModal } = useAppSelector(selectModal);
 
@@ -27,10 +27,11 @@ export var Modal = forwardRef<HTMLDivElement, { modalTopOffset: number }>(({ mod
 					'--color': color,
 					'--position-left': dimension.left,
 					'--position-top': dimension.top,
-					'--position-top-offset': modalTopOffset,
+					'--position-top-offset': modalOffsets.top,
 				} as CustomCSS // https://stackoverflow.com/a/65959390/5800789 https://www.joshwcomeau.com/css/styled-components/#css-variables-1
 			}
 			$displayModal={displayModal}
+			$leftOffset={modalOffsets.left}
 			ref={ref}
 		>
 			<h4 className='title'>{title.toUpperCase()}</h4>
@@ -76,10 +77,11 @@ export var Modal = forwardRef<HTMLDivElement, { modalTopOffset: number }>(({ mod
 	);
 });
 
-var Wrapper = styled.div<{ $displayModal: boolean }>`
+var Wrapper = styled.div<{ $displayModal: boolean; $leftOffset: number }>`
 	position: fixed;
-	top: calc((var(--position-top) - var(--position-top-offset)) * 1px);
-	left: calc(var(--position-left) * 1px - 0.5rem);
+	top: calc((var(--position-top) + var(--position-top-offset)) * 1px);
+	left: calc(var(--position-left) * 1px + ${({ $leftOffset }) => ($leftOffset ? `${$leftOffset} * 1px - 1rem` : '-0.5rem')});
+	/* to move into viewport in the case of viewport overflow */
 	display: ${({ $displayModal }) => ($displayModal ? 'flex' : 'none')};
 	width: fit-content;
 	flex-direction: column;

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useQueryClient, useQueryErrorResetBoundary } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { useRef, useState, useLayoutEffect } from 'react';
+import { useRef, useLayoutEffect } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { refactoredChange, EditHistoryMode, Paragraph as ParagraphType } from '../types';
@@ -45,7 +45,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 
 	let doneButtonRef = useRef<HTMLButtonElement>(null);
 	let modalRef = useRef<HTMLDivElement>(null);
-	let [modalTopOffset, setModalTopOffset] = useState(0);
+	let modalOffsetsRef = useRef({ top: 0, left: 0 });
 
 	// dispatch
 	let dispatch = useAppDispatch();
@@ -91,12 +91,16 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 
 	// https://react.dev/reference/react/useLayoutEffect#measuring-layout-before-the-browser-repaints-the-screen
 	useLayoutEffect(() => {
-		if (modalRef.current && displayModal) {
-			let { height } = modalRef.current.getBoundingClientRect();
-			setModalTopOffset(height);
+		if (modalRef.current) {
+			let { height, right } = modalRef.current.getBoundingClientRect();
+			let leftOffset = 0;
+			// calculate the viewport offset
+			if (right > window.innerWidth) {
+				leftOffset = right - window.innerWidth;
+			}
+			modalOffsetsRef.current = { top: -height, left: -leftOffset };
 		}
 	}, [displayModal]);
-
 	// -------------- Editing--------------
 
 	if (paragraphStatus === 'editing') {
@@ -215,7 +219,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 				>
 					Done
 				</button>
-				<Modal ref={modalRef} modalTopOffset={modalTopOffset} />
+				<Modal ref={modalRef} modalOffsets={modalOffsetsRef.current} />
 			</>
 		);
 	}
