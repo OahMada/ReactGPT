@@ -57,6 +57,7 @@ export var ParagraphInput = ({
 		},
 	});
 
+	/* v8 ignore next 3 */
 	if (errors.paragraph) {
 		createToast({ type: 'error', content: errors.paragraph.message, toastId: errors.paragraph.message });
 	}

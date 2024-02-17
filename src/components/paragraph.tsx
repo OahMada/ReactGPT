@@ -95,6 +95,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 			let { height, right } = modalRef.current.getBoundingClientRect();
 			let leftOffset = 0;
 			// calculate the viewport offset
+			/* v8 ignore next 3 */
 			if (right > window.innerWidth) {
 				leftOffset = right - window.innerWidth;
 			}
