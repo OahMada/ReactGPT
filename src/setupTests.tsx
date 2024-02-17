@@ -26,6 +26,14 @@ vi.mock('react-secure-storage', () => ({
 		setItem: vi.fn(),
 	},
 }));
+
+vi.mock('focus-trap', () => ({
+	createFocusTrap: () => ({
+		activate: vi.fn(),
+		deactivate: vi.fn(),
+	}),
+}));
+
 vi.mock('./worker/workerInstance.ts', () => ({
 	workerInstance: {
 		exportFile: vi.fn(),

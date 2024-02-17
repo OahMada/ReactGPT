@@ -75,14 +75,11 @@ enableMocking().then(() => {
  * ## features
  *
  * btn-container extract out
- * preview tab index
  *
  * Why do I need to input the API key every once in a while?
  * verify the persisted data
  *
  * ## bugs
- *
- * tooltip keeps showing up when on small screen
  *
  * ## test
  *

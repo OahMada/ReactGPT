@@ -23,8 +23,8 @@ export var App = () => {
 			<ToastContainer limit={3} />
 			{createPortal(
 				<>
-					<Tooltip id='hotkey' delayShow={1000} delayHide={150} />
-					<Tooltip id='tip' delayShow={500} delayHide={150} />
+					<Tooltip id='hotkey' delayShow={1000} delayHide={150} openEvents={{ focus: false }} />
+					<Tooltip id='tip' delayShow={500} delayHide={150} openEvents={{ focus: false }} />
 				</>,
 				document.querySelector('#root')!
 			)}
