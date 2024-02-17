@@ -11,6 +11,7 @@ import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { proxy } from 'comlink';
 import styled from 'styled-components';
+import { createFocusTrap } from 'focus-trap';
 
 import { PreviewContent, articleDocx } from '../components';
 import { PartialParagraph, Paragraph } from '../types';
@@ -97,6 +98,15 @@ export var Preview = () => {
 			if (observerRefValue) {
 				enableBodyScroll(observerRefValue);
 			}
+		};
+	}, []);
+
+	// handle focus trap within the modal
+	useEffect(() => {
+		let focusTrap = createFocusTrap(modalRef.current!, { clickOutsideDeactivates: true, escapeDeactivates: false, initialFocus: false });
+		focusTrap.activate();
+		return () => {
+			focusTrap.deactivate();
 		};
 	}, []);
 

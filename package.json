@@ -32,6 +32,7 @@
 		"diff": "^5.1.0",
 		"docx": "^8.5.0",
 		"file-saver": "^2.0.5",
+		"focus-trap": "^7.5.4",
 		"fuse.js": "^7.0.0",
 		"html-to-image": "^1.11.11",
 		"html2canvas": "^1.4.1",
