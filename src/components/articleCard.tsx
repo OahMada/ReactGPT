@@ -46,7 +46,7 @@ export var ArticleCard = ({ article, articleIsInFavorites, articlePinningSchedul
 		<StyledDiv $isPinned={pinning} key={article.articleId} className={cs('card', { active: article.articleId === currentArticle })}>
 			<div onClick={() => navigateWithSearchParams(`article/${article.articleId}`)} className='card-content'>
 				<p>{article.articleText.length > 35 ? article.articleText.slice(0, 35) + '...' : article.articleText}</p>{' '}
-				<p className='date'>{dayjs(article.editDate).format('YYYY-MM-DD THH:mm')}</p>
+				<p className='date'>{dayjs(article.editDate).format('YYYY-MM-DD T:HH:mm:ss')}</p>
 			</div>
 			<div className='btn-container'>
 				<button

@@ -74,6 +74,7 @@ enableMocking().then(() => {
 /**
  * ## features
  *
+ * prevent zooming in when inputting // https://arc.net/l/quote/pghsajhn
  * btn-container extract out
  *
  * Why do I need to input the API key every once in a while?
@@ -85,6 +86,8 @@ enableMocking().then(() => {
  *
  * ## outlook and others
  *
+ * all padding and margin should be px unit, except for vertical margins of paragraphs/headings
+ * stop use font-size: 62.5%; maybe
  * rethink html layout and css
  * icon
  * responsive layout on mobile devices
