@@ -293,7 +293,7 @@ var StyledNav = styled.nav`
 			justify-content: flex-start;
 			padding: 5px;
 			border: 1px solid var(--color-dark);
-			border-radius: 0.5rem;
+			border-radius: 5px;
 			gap: 0.5rem;
 
 			& .link-wrapper {

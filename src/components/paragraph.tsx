@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useQueryClient, useQueryErrorResetBoundary } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { useRef, useLayoutEffect } from 'react';
@@ -111,7 +111,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 	// -------------- Modifying / Reviving --------------
 	if (paragraphStatus === 'modifying' || paragraphStatus === 'reviving') {
 		return (
-			<>
+			<ExtendedStyledDiv>
 				{paragraphStatus === 'reviving' && (
 					<fieldset>
 						<legend>Check edit history mode:</legend>
@@ -124,7 +124,9 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 								checked={editHistoryMode === 'paragraphCreation'}
 								onChange={handleEditHistoryMode}
 							/>
-							<label htmlFor={`${paragraphId}Creation`}>Since Paragraph Creation</label>
+							<StyledLabel htmlFor={`${paragraphId}Creation`} $disabled={false}>
+								Since Paragraph Creation
+							</StyledLabel>
 						</div>
 						<div>
 							<input
@@ -136,7 +138,9 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 								onChange={handleEditHistoryMode}
 								disabled={initialParagraph === updatedInitialParagraph}
 							/>
-							<label htmlFor={`${paragraphId}LastEdit`}>Since Paragraph Last Edit</label>
+							<StyledLabel htmlFor={`${paragraphId}LastEdit`} $disabled={initialParagraph === updatedInitialParagraph}>
+								Since Paragraph Last Edit
+							</StyledLabel>
 						</div>
 					</fieldset>
 				)}
@@ -198,40 +202,41 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 						}
 					</StyledParagraph>
 				)}
-
-				<button
-					onClick={() => {
-						dispatch(acceptAllAdjustments(paragraphId));
-						dispatch(updateParagraphEditDate(paragraphId));
-					}}
-					disabled={allAdjustmentsCount === 0 || isGrammarFixesPending || isGrammarFixesFetching}
-				>
-					{paragraphStatus === 'modifying' && 'Accept All'}
-					{paragraphStatus === 'reviving' && 'Revert All'}
-				</button>
-				<button
-					onClick={() => {
-						// to make sure the next time, paragraph changed back to old content, there will be a refetch
-						QueryClient.invalidateQueries({
-							queryKey: grammarQueryKeys(paragraphBeforeGrammarFix, paragraphId),
-							exact: true,
-							refetchType: 'none',
-						});
-						dispatch(doneWithCurrentParagraphState(paragraphId));
-					}}
-					disabled={isGrammarFixesPending || isGrammarFixesFetching}
-					ref={doneButtonRef}
-				>
-					Done
-				</button>
+				<div className='btn-container'>
+					<button
+						onClick={() => {
+							dispatch(acceptAllAdjustments(paragraphId));
+							dispatch(updateParagraphEditDate(paragraphId));
+						}}
+						disabled={allAdjustmentsCount === 0 || isGrammarFixesPending || isGrammarFixesFetching}
+					>
+						{paragraphStatus === 'modifying' && 'Accept All'}
+						{paragraphStatus === 'reviving' && 'Revert All'}
+					</button>
+					<button
+						onClick={() => {
+							// to make sure the next time, paragraph changed back to old content, there will be a refetch
+							QueryClient.invalidateQueries({
+								queryKey: grammarQueryKeys(paragraphBeforeGrammarFix, paragraphId),
+								exact: true,
+								refetchType: 'none',
+							});
+							dispatch(doneWithCurrentParagraphState(paragraphId));
+						}}
+						disabled={isGrammarFixesPending || isGrammarFixesFetching}
+						ref={doneButtonRef}
+					>
+						Done
+					</button>
+				</div>
 				<Modal ref={modalRef} modalOffsets={modalOffsetsRef.current} />
-			</>
+			</ExtendedStyledDiv>
 		);
 	}
 	// -------------- Done Modification --------------
 	if (paragraphStatus === 'doneModification') {
 		return (
-			<>
+			<ExtendedStyledDiv>
 				<h4>Click Paragraph to Edit</h4>
 				<StyledParagraph
 					onClick={() => {
@@ -254,7 +259,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 						<ParagraphTranslation paragraph={{ paragraphText: paragraphAfterGrammarFix, paragraphId }} />
 					</ErrorBoundary>
 				)}
-				<div>
+				<div className='btn-container'>
 					<button onClick={() => dispatch(checkEditHistory(paragraphId))} disabled={paragraphAfterGrammarFix === initialParagraph}>
 						Show Edit History
 					</button>
@@ -290,14 +295,15 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 						{!showTranslation ? 'Show Translation' : 'Hide Translation'}
 					</button>
 				</div>
-			</>
+			</ExtendedStyledDiv>
 		);
 	}
 };
 
 export var StyledParagraph = styled.p`
-	border: 1px solid #ccc;
-	margin-bottom: 1rem;
+	padding: 10px;
+	border: 1px solid var(--color-darker);
+	border-radius: 5px;
 	font-size: 1.6rem;
 	letter-spacing: 2px;
 
@@ -317,4 +323,49 @@ export var StyledParagraph = styled.p`
 
 var StyledSpan = styled.span<{ $isSpace: boolean }>`
 	text-decoration: ${({ $isSpace }) => ($isSpace ? 'none' : 'line-through')};
+`;
+
+export var StyledDiv = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 5px;
+
+	p:first-child {
+		margin-top: calc(var(--font-small) * 1.5 + 5px);
+	}
+`;
+
+var ExtendedStyledDiv = styled(StyledDiv)`
+	h4 {
+		align-self: flex-end;
+		margin-right: 5px;
+		font-size: var(--font-small);
+		font-weight: 500;
+	}
+
+	.btn-container {
+		display: flex;
+		gap: 3px;
+	}
+
+	fieldset {
+		display: flex;
+		border: 1px solid var(--color-darker);
+		border-radius: 5px;
+		gap: 20px;
+
+		input {
+			display: inline-block;
+			margin-right: 5px;
+		}
+	}
+`;
+
+var StyledLabel = styled.label<{ $disabled: boolean }>`
+	${($disabled) =>
+		$disabled &&
+		css`
+			color: var(--color-darker);
+		`}
 `;

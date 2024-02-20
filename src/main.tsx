@@ -75,26 +75,22 @@ enableMocking().then(() => {
  * ## features
  *
  * btn-container extract out
- *
- * Why do I need to input the API key every once in a while?
- * verify the persisted data
- *
- * ## bugs
- *
- * prevent zooming in when inputting // https://arc.net/l/quote/pghsajhn
- *
- * ## test
- *
- * Chromatic UI test
- *
- * ## outlook and others
- *
  * rethink html layout and css
  * icon
  * responsive layout on mobile devices
  *
+ * ## bugs
+ *
+ * back to previous page when existing hotkey map page
+ *
+ * ## test
+ *
+ * ##  others
+ *
  * update user flow
  *
+ * Why do I need to input the API key every once in a while?
+ * verify the persisted data
  * one thing not right with react query: error boundary reset;
  *
  */

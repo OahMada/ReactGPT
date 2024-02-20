@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { toast, Id } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import { useHotkeysContext } from 'react-hotkeys-hook';
+import styled from 'styled-components';
 
 import {
 	finishParagraphDeletion,
@@ -133,7 +134,7 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 	});
 
 	return (
-		<div>
+		<StyledDiv>
 			<button
 				onClick={handleParagraphDeletion}
 				data-tooltip-id='hotkey'
@@ -142,25 +143,29 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 			>
 				Delete Paragraph
 			</button>
-			<div>
-				<button>Insert New Paragraph</button>
-				<button
-					onClick={handleInsertParagraphAbove}
-					data-tooltip-id='hotkey'
-					data-tooltip-content={articlePageHotkeys.insertParagraphAbove.label}
-					data-tooltip-hidden={toolTipHidden}
-				>
-					Insert Above
-				</button>
-				<button
-					onClick={handleInsertParagraphBelow}
-					data-tooltip-id='hotkey'
-					data-tooltip-content={articlePageHotkeys.insertParagraphBelow.label}
-					data-tooltip-hidden={toolTipHidden}
-				>
-					Insert Below
-				</button>
-			</div>
-		</div>
+			<button
+				onClick={handleInsertParagraphAbove}
+				data-tooltip-id='hotkey'
+				data-tooltip-content={articlePageHotkeys.insertParagraphAbove.label}
+				data-tooltip-hidden={toolTipHidden}
+			>
+				Insert Above
+			</button>
+			<button
+				onClick={handleInsertParagraphBelow}
+				data-tooltip-id='hotkey'
+				data-tooltip-content={articlePageHotkeys.insertParagraphBelow.label}
+				data-tooltip-hidden={toolTipHidden}
+			>
+				Insert Below
+			</button>
+		</StyledDiv>
 	);
 };
+
+var StyledDiv = styled.div`
+	display: flex;
+	width: fit-content;
+	margin-top: 5px;
+	gap: 3px;
+`;

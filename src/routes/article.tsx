@@ -14,7 +14,7 @@ import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { selectArticle, handleParagraphOrderChange, updateUserInput, toggleTranslation } from '../features/articleSlice';
 
 // components
-import { StyledParagraph, ParagraphInput, Paragraph, ParagraphControlBtns, EmptyParagraphList, ArticleControlBtns } from '../components';
+import { StyledParagraph, ParagraphInput, ParagraphControlBtns, Paragraph, EmptyParagraphList, ArticleControlBtns, StyledDiv } from '../components';
 import AutoFocusWrapper from '../components/autoFocus';
 
 // utils
@@ -190,15 +190,15 @@ export var Article = () => {
 	}
 
 	return (
-		<>
-			{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
-			{showRetryAllButton && (
-				<div>
+		<StyledSection>
+			<div className='article-controls'>
+				{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
+				{showRetryAllButton && (
 					<button onClick={handleRetryAll} disabled={grammarFixFetchingCount > 0} data-tooltip-id='hotkey' data-tooltip-content={retryAllErred.label}>
 						Retry All
 					</button>
-				</div>
-			)}
+				)}
+			</div>
 			{filteredParagraphs.length === 0 && combinedArticleQueue.indexOf(articleId) !== -1 && <EmptyParagraphList />}
 			<DragDropContext onDragEnd={handleOnDragEnd}>
 				<Droppable droppableId='paragraphs'>
@@ -243,51 +243,51 @@ export var Article = () => {
 															(e) => e.currentTarget.focus() // to make initiating drag and drop a bit easer
 														}
 													></div>
-													<QueryErrorResetBoundary>
-														{({ reset }) => (
-															<ErrorBoundary
-																fallbackRender={({ resetErrorBoundary }) => {
-																	if (paragraph.paragraphStatus === 'editing') {
-																		return <ParagraphInput paragraphId={paragraph.id} resetErrorBoundary={resetErrorBoundary} />;
-																	}
-																	return (
-																		<div
-																			// reference https://react.dev/learn/manipulating-the-dom-with-refs#how-to-manage-a-list-of-refs-using-a-ref-callback
-																			ref={(node) => {
-																				if (node) {
-																					resetErrorBoundariesRef.current.set(paragraph.id, resetErrorBoundary);
-																					errorBoundaryFallbackElementCount.current += 1;
-																				} else {
-																					resetErrorBoundariesRef.current.delete(paragraph.id);
-																					errorBoundaryFallbackElementCount.current -= 1;
-																				}
-																			}}
-																		>
-																			<StyledParagraph onClick={() => dispatch(updateUserInput(paragraph.id))}>
-																				{paragraph.paragraphBeforeGrammarFix}
-																			</StyledParagraph>
-																			<button
-																				onClick={async () => {
-																					resetErrorBoundary();
+													<div className='content'>
+														<QueryErrorResetBoundary>
+															{({ reset }) => (
+																<ErrorBoundary
+																	fallbackRender={({ resetErrorBoundary }) => {
+																		if (paragraph.paragraphStatus === 'editing') {
+																			return <ParagraphInput paragraphId={paragraph.id} resetErrorBoundary={resetErrorBoundary} />;
+																		}
+																		return (
+																			<StyledDiv
+																				// reference https://react.dev/learn/manipulating-the-dom-with-refs#how-to-manage-a-list-of-refs-using-a-ref-callback
+																				ref={(node) => {
+																					if (node) {
+																						resetErrorBoundariesRef.current.set(paragraph.id, resetErrorBoundary);
+																						errorBoundaryFallbackElementCount.current += 1;
+																					} else {
+																						resetErrorBoundariesRef.current.delete(paragraph.id);
+																						errorBoundaryFallbackElementCount.current -= 1;
+																					}
 																				}}
 																			>
-																				Retry
-																			</button>
-																		</div>
-																	);
-																}}
-																onError={(error) => {
-																	createToast({ type: 'error', content: error.message, toastId: error.message });
-																}}
-																onReset={reset}
-															>
-																<div>
+																				<StyledParagraph onClick={() => dispatch(updateUserInput(paragraph.id))}>
+																					{paragraph.paragraphBeforeGrammarFix}
+																				</StyledParagraph>
+																				<button
+																					onClick={async () => {
+																						resetErrorBoundary();
+																					}}
+																				>
+																					Retry
+																				</button>
+																			</StyledDiv>
+																		);
+																	}}
+																	onError={(error) => {
+																		createToast({ type: 'error', content: error.message, toastId: error.message });
+																	}}
+																	onReset={reset}
+																>
 																	<Paragraph paragraphId={paragraph.id} />
-																</div>
-															</ErrorBoundary>
-														)}
-													</QueryErrorResetBoundary>
-													<ParagraphControlBtns paragraphId={paragraph.id} />
+																</ErrorBoundary>
+															)}
+														</QueryErrorResetBoundary>
+														<ParagraphControlBtns paragraphId={paragraph.id} />
+													</div>
 												</Wrapper>
 											)}
 										</Draggable>
@@ -301,21 +301,41 @@ export var Article = () => {
 				</Droppable>
 			</DragDropContext>
 			<Outlet context={filteredParagraphs} />
-		</>
+		</StyledSection>
 	);
 };
 
 var Wrapper = styled.article`
 	display: flex;
-	flex-direction: column;
+	align-items: center;
 	padding: 10px;
-	margin-bottom: 1rem;
-	background-color: lightgray;
+	border: 1px solid black;
+	border-radius: 5px;
+	margin-bottom: 10px;
+	background-color: var(--color-light);
 	white-space: pre-wrap; /* preserve user input line feeds */
 
 	.grabber {
 		width: 2rem;
 		height: 2rem;
+		flex-basis: 5%;
 		background-color: lightskyblue;
+	}
+
+	.content {
+		flex-basis: 95%;
+	}
+`;
+
+var StyledSection = styled.section`
+	.article-controls {
+		display: flex;
+		margin-bottom: 5px;
+		gap: 3px;
+
+		a {
+			color: inherit;
+			text-decoration: none;
+		}
 	}
 `;

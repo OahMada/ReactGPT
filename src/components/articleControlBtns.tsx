@@ -106,7 +106,7 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 	});
 
 	return (
-		<div>
+		<>
 			<button onClick={handlePinArticle} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.pinArticle.label}>
 				{articleIsInFavorites ? 'Unpin' : 'Pin'}
 			</button>
@@ -118,6 +118,6 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 					Preview Article
 				</Link>
 			</button>
-		</div>
+		</>
 	);
 };

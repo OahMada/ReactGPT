@@ -29,10 +29,12 @@ body {
 	display: inline-block;
 	height: 3rem;
 	padding: 0 10px;
+	border: 1px solid black;
+	border-radius: 5px;
 
 	.card .btn-container & {
 		border: none;
-		border-radius: 1rem;
+		border-radius: 10px;
 		background-color: var(--color-dark);
 	}
 }

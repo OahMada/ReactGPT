@@ -4,7 +4,7 @@ import { defaultArticleInput } from './utils';
 export var handlers = [
 	http.post('/.netlify/functions/fetchGrammarMistakes', async ({ request }) => {
 		let { text } = (await request.json()) as { text: string; key: string };
-
+		// return new HttpResponse(null, { status: 500 });
 		await delay(500);
 		if (text === 'Hello there.') {
 			return HttpResponse.text(text);

@@ -156,7 +156,7 @@ export var ParagraphInput = ({
 };
 
 var StyledForm = styled.form`
-	height: 100%;
+	margin-top: calc(var(--font-small) * 1.5 + 5px);
 
 	textarea {
 		width: 100%;

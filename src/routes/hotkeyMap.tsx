@@ -94,7 +94,7 @@ var Section = styled.section`
 		width: 100%;
 		padding: 10px;
 		border: 1px solid var(--color-dark);
-		border-radius: 1rem;
+		border-radius: 10px;
 
 		&:not(:last-child) {
 			margin-bottom: 10px;
