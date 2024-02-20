@@ -174,10 +174,10 @@ describe('Article route tests', () => {
 		let revertAllChangesBtn = fetchButton(/revert all changes/i);
 		expect(showEditHistoryBtn).toBeDisabled();
 		expect(revertAllChangesBtn).toBeDisabled();
-		expect(await fetchElementsByTagName({ tagName: 'del', method: 'query' })).not.toBeInTheDocument();
+		expect(screen.queryByText((content, element) => /deletion/.test(element!.className))).not.toBeInTheDocument();
 		await clickElement(/find grammar mistakes/i);
 		await waitFor(async () => {
-			let textDeletion = await fetchElementsByTagName('del');
+			let textDeletion = screen.getAllByText((content, element) => /deletion/.test(element!.className));
 			expect(textDeletion.length).not.toBe(0);
 		});
 		await clickElement(/accept all/i);
@@ -216,11 +216,11 @@ describe('Article route tests', () => {
 describe('Modal component tests', async () => {
 	it('Modal manipulating', async () => {
 		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish(false);
-		let textDeletion = await fetchElementsByTagName('del');
+		let textDeletion = screen.getAllByText((content, element) => /deletion/.test(element!.className));
 		let initialDeletionCount = textDeletion.length;
 		await userEvent.hover(textDeletion[0]);
 		await clickElement(/accept$/i);
-		expect(await fetchElementsByTagName('del')).toHaveLength(initialDeletionCount - 1);
+		expect(screen.getAllByText((content, element) => /deletion/.test(element!.className))).toHaveLength(initialDeletionCount - 1);
 		let textInsertion = await fetchElementsByTagName('ins');
 		let initialInsertionCount = textInsertion.length;
 		await userEvent.hover(textInsertion[0]);
@@ -235,11 +235,11 @@ describe('Modal component tests', async () => {
 			await userEvent.hover(ele);
 			await clickElement(/accept$/i);
 		}
-		let textDeletionsOnThePage = screen.queryAllByText((content, element) => element?.tagName.toLowerCase() === 'del');
+		let textDeletionsOnThePage = screen.queryAllByText((content, element) => /deletion|replacement/.test(element!.className));
 		do {
 			await userEvent.hover(textDeletionsOnThePage[0]);
 			await clickElement(/accept$/i);
-			textDeletionsOnThePage = screen.queryAllByText((content, element) => element?.tagName.toLowerCase() === 'del');
+			textDeletionsOnThePage = screen.queryAllByText((content, element) => /deletion|replacement/.test(element!.className));
 		} while (textDeletionsOnThePage.length > 0);
 		expect(fetchButton(/show edit history/i)).toBeInTheDocument();
 	});
@@ -257,7 +257,7 @@ describe('Modal component tests', async () => {
 	});
 	it('Un-hover a grammar fix to hide the modal', async () => {
 		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish(false);
-		let textDeletion = await fetchElementsByTagName('del');
+		let textDeletion = screen.getAllByText((content, element) => /deletion/.test(element!.className));
 		await userEvent.hover(textDeletion[0]);
 		expect(fetchButton(/ignore/i)).toBeInTheDocument();
 		await userEvent.unhover(textDeletion[0]);

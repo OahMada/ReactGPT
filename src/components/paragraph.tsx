@@ -60,7 +60,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 	let { reset } = useQueryErrorResetBoundary();
 
 	// handlers
-	let onMouseEnterHandler = (e: React.MouseEvent<HTMLElement>, item: refactoredChange, index: number) => {
+	let mouseEnterHandler = (e: React.MouseEvent<HTMLElement>, item: refactoredChange, index: number) => {
 		let { left, top } = e.currentTarget.getBoundingClientRect();
 		// target is whatever you actually clicked on. It can vary, as this can be within an element that the event was bound to.
 		// currentTarget is the element you actually bound the event to. This will never change.
@@ -153,24 +153,26 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 									if (item.added && !item.removed) {
 										let element =
 											paragraphStatus === 'modifying' ? (
-												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
+												<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
 													<ins className='insert'>{item.addedValue}</ins>
 												</span>
 											) : (
-												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
-													<del className='deletion'>{item.addedValue}</del>
+												<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
+													<StyledSpan className='deletion' $isSpace={item.addedValue === ' '}>
+														{item.addedValue}
+													</StyledSpan>
 												</span>
 											);
 										acc.push(element);
 									} else if (item.added && item.removed) {
 										let element =
 											paragraphStatus === 'modifying' ? (
-												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
-													<del className='replacement'>{item.addedValue}</del>
+												<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
+													<span className='replacement'>{item.addedValue}</span>
 												</span>
 											) : (
-												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
-													<del className='replacement'>{item.removedValue}</del>
+												<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
+													<span className='replacement'>{item.removedValue}</span>
 												</span>
 											);
 
@@ -178,11 +180,13 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 									} else if (!item.added && item.removed) {
 										let element =
 											paragraphStatus === 'modifying' ? (
-												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
-													<del className='deletion'>{item.removedValue}</del>
+												<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
+													<StyledSpan className='deletion' $isSpace={item.removedValue === ' '}>
+														{item.removedValue}
+													</StyledSpan>
 												</span>
 											) : (
-												<span onMouseEnter={(e) => onMouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
+												<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
 													<ins className='insert'>{item.removedValue}</ins>
 												</span>
 											);
@@ -308,4 +312,8 @@ export var StyledParagraph = styled.p`
 	.deletion {
 		background-color: lightcoral;
 	}
+`;
+
+var StyledSpan = styled.span<{ $isSpace: boolean }>`
+	text-decoration: ${({ $isSpace }) => ($isSpace ? 'none' : 'line-through')};
 `;
