@@ -269,12 +269,12 @@ var StyledNav = styled.nav`
 	grid-column: 1 / span 12;
 
 	form {
-		padding: 1rem 0;
+		padding: 10px 0;
 		font-size: var(--font-primary);
 
 		input {
 			display: inline-block;
-			padding: 0.5rem;
+			padding: 5px;
 		}
 	}
 
@@ -291,7 +291,7 @@ var StyledNav = styled.nav`
 			height: 10rem;
 			align-items: center;
 			justify-content: flex-start;
-			padding: 0.5rem;
+			padding: 5px;
 			border: 1px solid var(--color-dark);
 			border-radius: 0.5rem;
 			gap: 0.5rem;
@@ -315,7 +315,7 @@ var StyledNav = styled.nav`
 			}
 
 			& > p {
-				padding: 1rem;
+				padding: 10px;
 				color: black;
 				font-size: var(--font-big);
 				font-weight: lighter;

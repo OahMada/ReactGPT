@@ -25,7 +25,7 @@ export function Root() {
 
 var StyledDiv = styled.div`
 	display: grid;
-	padding: 5rem;
+	padding: 50px;
 	grid-template-columns: repeat(12, 1fr);
 	grid-template-rows: min-content min-content auto;
 	row-gap: 2rem;

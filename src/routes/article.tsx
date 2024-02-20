@@ -308,7 +308,7 @@ export var Article = () => {
 var Wrapper = styled.article`
 	display: flex;
 	flex-direction: column;
-	padding: 1rem;
+	padding: 10px;
 	margin-bottom: 1rem;
 	background-color: lightgray;
 	white-space: pre-wrap; /* preserve user input line feeds */

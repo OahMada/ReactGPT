@@ -87,7 +87,7 @@ var Wrapper = styled.div<{ $displayModal: boolean; $leftOffset: number }>`
 	width: fit-content;
 	flex-direction: column;
 	justify-content: space-around;
-	padding: 0.8rem;
+	padding: 8px;
 	border: 1px solid black;
 	border-radius: 5px;
 	background-color: white;

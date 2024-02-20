@@ -28,7 +28,7 @@ body {
 .btn {
 	display: inline-block;
 	height: 3rem;
-	padding: 0 1rem;
+	padding: 0 10px;
 
 	.card .btn-container & {
 		border: none;

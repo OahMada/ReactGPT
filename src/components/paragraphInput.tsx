@@ -161,7 +161,7 @@ var StyledForm = styled.form`
 	textarea {
 		width: 100%;
 		height: 100%;
-		padding: 2rem;
+		padding: 20px;
 		border: 1px solid #ccc;
 		border-radius: 5px;
 		font-family: Arial, Helvetica, sans-serif;

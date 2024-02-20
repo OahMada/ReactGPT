@@ -130,12 +130,12 @@ export var Config = () => {
 			) : (
 				<h1>Please set your API key first</h1>
 			)}
-			<p>Your key will be securely stored locally and sent to OpenAI for authentication.</p>
+			<p>The key will be securely stored locally and sent to OpenAI for authentication.</p>
 
 			{(APIKeyInEdit || !secureLocalStorageAPIKey) && (
 				<>
 					<form onSubmit={handleSubmit(onSubmit)}>
-						<label htmlFor='api-key'>Your OpenAI API Key: </label>
+						<label htmlFor='api-key'>OpenAI API Key: </label>
 						<input
 							autoFocus
 							type='password'
@@ -177,14 +177,14 @@ export var Config = () => {
 };
 
 var StyledSection = styled.section`
-	padding: 1.5rem;
+	padding: 15px;
 	border: 0.5px solid black;
 	border-radius: 1rem;
 	margin: auto;
 
 	form {
 		display: flex;
-		align-items: stretch;
+		align-items: center;
 
 		input {
 			display: inline-block;
@@ -193,8 +193,7 @@ var StyledSection = styled.section`
 		}
 
 		label {
-			margin-right: 2.5rem;
-			font-size: var(--font-larger);
+			margin-right: 25px;
 		}
 	}
 

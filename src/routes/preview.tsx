@@ -332,7 +332,7 @@ var ModalWrapper = styled.section`
 		min-height: 60%;
 		max-height: 80%;
 		flex-direction: column;
-		padding: 3rem;
+		padding: 30px;
 		border-radius: 3px;
 		background-color: #fff;
 		box-shadow: 0 2rem 4rem rgb(0 0 0 / 20%);
@@ -356,7 +356,7 @@ var ModalWrapper = styled.section`
 		}
 
 		.article-display {
-			padding: 2rem;
+			padding: 20px;
 		}
 	}
 `;

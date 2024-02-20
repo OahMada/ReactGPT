@@ -134,7 +134,7 @@ var StyledForm = styled.form`
 		display: inline-block;
 		width: 100%;
 		min-height: 55dvh;
-		padding: 2rem;
+		padding: 20px;
 		border: 1px solid var(--color-darker);
 		border-radius: 5px;
 		line-height: 1.5;

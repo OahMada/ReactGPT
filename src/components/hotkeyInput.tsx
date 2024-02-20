@@ -71,7 +71,7 @@ var StyledTd = styled.td<{ $newHotkey?: string }>`
 		display: inline-block;
 		width: 70%;
 		border: 1px solid var(--color-dark);
-		margin-right: 0.5rem;
+		margin-right: 5px;
 		color: ${({ $newHotkey }) => ($newHotkey ? 'black' : 'var(--color-dark)')};
 	}
 `;

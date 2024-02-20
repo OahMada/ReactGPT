@@ -75,34 +75,34 @@ export var HotkeyMap = () => {
 
 var Section = styled.section`
 	width: 65%;
-	padding: 5rem;
+	padding: 50px;
 	margin: auto;
 
 	.btn-container {
 		display: flex;
 		justify-content: flex-end;
-		padding-bottom: 2rem;
+		padding-bottom: 20px;
 	}
 
 	caption {
-		margin-bottom: 0.8rem;
+		margin-bottom: 8px;
 		font-size: var(--font-big);
 		font-weight: bold;
 	}
 
 	table {
 		width: 100%;
-		padding: 1rem;
+		padding: 10px;
 		border: 1px solid var(--color-dark);
 		border-radius: 1rem;
 
 		&:not(:last-child) {
-			margin-bottom: 1rem;
+			margin-bottom: 10px;
 		}
 
 		th,
 		td {
-			padding: 0.8rem;
+			padding: 8px;
 			border-spacing: 0;
 		}
 
