@@ -303,6 +303,7 @@ export var StyledParagraph = styled.p`
 
 	.insert {
 		background-color: lightgreen;
+		text-decoration: none;
 	}
 
 	.replacement {

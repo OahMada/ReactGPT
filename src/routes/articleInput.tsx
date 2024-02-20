@@ -144,6 +144,7 @@ var StyledForm = styled.form`
 
 	.btn-container {
 		display: flex;
+		margin-top: 10px;
 		gap: 0.8rem;
 	}
 `;

@@ -74,11 +74,7 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- * all padding and margin should be px unit, except for vertical margins of paragraphs/headings
- * stop use font-size: 62.5%; maybe
  * btn-container extract out
- *
- * Chromatic UI test
  *
  * Why do I need to input the API key every once in a while?
  * verify the persisted data
@@ -86,9 +82,10 @@ enableMocking().then(() => {
  * ## bugs
  *
  * prevent zooming in when inputting // https://arc.net/l/quote/pghsajhn
- * for example, an image in-between paragraphs in a blog post
  *
  * ## test
+ *
+ * Chromatic UI test
  *
  * ## outlook and others
  *
