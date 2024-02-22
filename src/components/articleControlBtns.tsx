@@ -114,7 +114,12 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 				Delete Article
 			</button>
 			<button>
-				<Link to={`/article/${articleId}/preview`} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.previewArticle.label}>
+				<Link
+					to={`/article/${articleId}/preview`}
+					data-tooltip-id='hotkey'
+					data-tooltip-content={articlePageHotkeys.previewArticle.label}
+					tabIndex={-1} // remove underlying a tag from tabbing sequence
+				>
 					Preview Article
 				</Link>
 			</button>

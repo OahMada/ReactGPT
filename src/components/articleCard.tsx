@@ -95,7 +95,9 @@ var StyledDiv = styled.div<{ $isPinned: boolean }>`
 		translate: 100%;
 	}
 
-	&:hover .btn-container {
+	&:hover .btn-container,
+	/* https://stackoverflow.com/a/45674671/5800789 */
+	&:focus-within .btn-container {
 		position: static;
 		opacity: 1;
 		transition-timing-function: ease-out;

@@ -321,6 +321,7 @@ var StyledArticle = styled.article`
 	border-radius: 5px;
 	margin-bottom: 10px;
 	background-color: var(--color-light);
+	outline: none; /* there will be shadow added to the focused element, thus the default blue line is not needed */
 	white-space: pre-wrap; /* preserve user input line feeds */
 
 	&.active {

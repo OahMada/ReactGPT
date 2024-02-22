@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, forwardRef } from 'react';
 import { toast, Id } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import { useHotkeysContext } from 'react-hotkeys-hook';
@@ -135,33 +135,43 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 
 	return (
 		<StyledDiv>
-			<button
+			<NoFocusPropagationButton
 				onClick={handleParagraphDeletion}
 				data-tooltip-id='hotkey'
 				data-tooltip-content={articlePageHotkeys.deleteParagraph.label}
 				data-tooltip-hidden={toolTipHidden}
 			>
 				Delete Paragraph
-			</button>
-			<button
+			</NoFocusPropagationButton>
+			<NoFocusPropagationButton
 				onClick={handleInsertParagraphAbove}
 				data-tooltip-id='hotkey'
 				data-tooltip-content={articlePageHotkeys.insertParagraphAbove.label}
 				data-tooltip-hidden={toolTipHidden}
 			>
 				Insert Above
-			</button>
-			<button
+			</NoFocusPropagationButton>
+			<NoFocusPropagationButton
 				onClick={handleInsertParagraphBelow}
 				data-tooltip-id='hotkey'
 				data-tooltip-content={articlePageHotkeys.insertParagraphBelow.label}
 				data-tooltip-hidden={toolTipHidden}
 			>
 				Insert Below
-			</button>
+			</NoFocusPropagationButton>
 		</StyledDiv>
 	);
 };
+
+type Ref = HTMLButtonElement;
+
+var NoFocusPropagationButton = forwardRef<Ref, React.ComponentPropsWithRef<'button'>>(({ children, ...props }, ref) => {
+	return (
+		<button {...props} onFocus={(e) => e.stopPropagation()} ref={ref}>
+			{children}
+		</button>
+	);
+});
 
 var StyledDiv = styled.div`
 	display: flex;

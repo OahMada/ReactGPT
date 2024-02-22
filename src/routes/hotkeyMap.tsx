@@ -25,7 +25,7 @@ export var HotkeyMap = () => {
 	);
 
 	let clickExitButton = () => {
-		navigate('/');
+		navigate(-1);
 	};
 
 	let { 'Hotkey Map Page': hotkeyMapHotkeys } = HotkeyMapData();
