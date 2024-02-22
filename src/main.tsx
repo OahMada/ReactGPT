@@ -74,7 +74,8 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- * text too long
+ * put the newly created article in the first place
+ * text too long, how to put contents in the center of the page?
  * btn-container extract out
  * rethink html layout and css
  * icon

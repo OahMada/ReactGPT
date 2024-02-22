@@ -86,9 +86,8 @@ export var SharedLayout = () => {
 			.map((articleId) => {
 				return { articleId, articleText: buildArticle(articleId), editDate: buildArticleEditDate(articleId) };
 			})
-			.sort((a, b) => b.editDate - a.editDate),
+			.sort((a, b) => b.editDate - a.editDate), // put the newly created article in the first place
 	];
-
 	// filter articles based on search params
 	if (query) {
 		articles = performFuseSearch(articles, query);

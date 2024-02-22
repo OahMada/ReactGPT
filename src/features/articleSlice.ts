@@ -30,7 +30,7 @@ let initialParagraphState: Paragraph = {
 	cancelQuery: false,
 	editHistoryMode: 'paragraphCreation',
 	showTranslation: false,
-	editDate: Date.now(),
+	editDate: 0,
 };
 
 interface Article {
@@ -62,6 +62,7 @@ let articleSlice = createSlice({
 					obj.paragraphBeforeGrammarFix = paragraph;
 					obj.id = uuidv4();
 					obj.articleId = articleId;
+					obj.editDate = Date.now();
 					return obj;
 				})
 			);
