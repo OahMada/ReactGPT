@@ -74,14 +74,13 @@ enableMocking().then(() => {
 /**
  * ## features
  *
+ * text too long
  * btn-container extract out
  * rethink html layout and css
  * icon
  * responsive layout on mobile devices
  *
  * ## bugs
- *
- * the focus change logic when deleting one article
  *
  * ## test
  *

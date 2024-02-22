@@ -76,7 +76,6 @@ export var Article = () => {
 		element: item[1],
 	}));
 	let focusedParagraphIndexRef = useRef(-1);
-
 	let { enableScope, disableScope, enabledScopes } = useHotkeysContext();
 
 	let performEnableScope = (scope: string) => {
@@ -90,16 +89,17 @@ export var Article = () => {
 	useKeys({
 		keyBinding: traverseDownwardsParagraphList.hotkey,
 		callback: () => {
+			// Recalculate articleElements before using the shortcut; drag-and-drop could introduce inconsistencies.
+			articleElements = Array.from(articleElementsRef.current, (item) => ({
+				paragraphId: item[0],
+				element: item[1],
+			}));
 			if (articleElements.length === 0) return;
 			if (focusedParagraphIndexRef.current === -1) {
 				articleElements[0].element.focus();
 				focusedParagraphIndexRef.current = 0;
 				performEnableScope(articleElements[0].paragraphId);
 			} else {
-				// when the focused paragraph gets deleted, this makes sure user still steps one paragraph forward
-				if (!articleElements.some((item) => enabledScopes.includes(item.paragraphId))) {
-					focusedParagraphIndexRef.current -= 1;
-				}
 				focusedParagraphIndexRef.current += 1;
 				if (focusedParagraphIndexRef.current > articleElements.length - 1) {
 					focusedParagraphIndexRef.current = 0;
@@ -115,6 +115,11 @@ export var Article = () => {
 	useKeys({
 		keyBinding: traverseUpwardsParagraphList.hotkey,
 		callback: () => {
+			// Recalculate articleElements before using the shortcut; drag-and-drop could introduce inconsistencies.
+			articleElements = Array.from(articleElementsRef.current, (item) => ({
+				paragraphId: item[0],
+				element: item[1],
+			}));
 			if (articleElements.length === 0) return;
 			if (focusedParagraphIndexRef.current === -1) {
 				articleElements[articleElements.length - 1].element.focus();
@@ -131,6 +136,21 @@ export var Article = () => {
 			}
 		},
 	});
+
+	useEffect(() => {
+		if (!articleElements.some((item) => enabledScopes.includes(item.paragraphId))) {
+			// reset focusedParagraphIndexRef when focused paragraph gets deleted, return to a no-focused-element state
+			focusedParagraphIndexRef.current = -1;
+		} else {
+			// if undo deletion, restore the previous focus status
+			articleElements.map((item) => {
+				if (item.paragraphId === enabledScopes[0] && !item.element.classList.contains('active')) {
+					// without the second condition, the newly inserted paragraph won't be able to input text
+					item.element.focus();
+				}
+			});
+		}
+	}, [articleElements]);
 
 	/* react beautiful dnd */
 	/* v8 ignore next 11 */

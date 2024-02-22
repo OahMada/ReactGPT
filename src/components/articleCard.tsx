@@ -70,6 +70,7 @@ export var ArticleCard = ({ article, articleIsInFavorites, articlePinningSchedul
 						setPinning(!pinning);
 					}}
 					className='btn'
+					onMouseLeave={(e) => e.currentTarget.blur()} // because clicking the pin/unpin button would focus the button element, thus the css rule &:focus-within .btn-container {} is applied. Remove focus so that the button can properly fade away.
 				>
 					{pinning ? 'Unpin' : 'Pin'}
 				</button>
@@ -95,9 +96,9 @@ var StyledDiv = styled.div<{ $isPinned: boolean }>`
 		translate: 100%;
 	}
 
-	&:hover .btn-container,
+	&:hover .btn-container
 	/* https://stackoverflow.com/a/45674671/5800789 */
-	&:focus-within .btn-container {
+	, &:focus-within .btn-container {
 		position: static;
 		opacity: 1;
 		transition-timing-function: ease-out;

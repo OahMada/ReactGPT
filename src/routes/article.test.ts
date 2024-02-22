@@ -87,7 +87,6 @@ describe('Article route tests', () => {
 		expect(paragraphInputBox).toBeInTheDocument();
 		await userEvent.type(paragraphInputBox, 'Insert below');
 		await clickElement(/done/i);
-
 		await waitFor(() => {
 			expect(fetchButton(/done/i)).toBeEnabled();
 		});
