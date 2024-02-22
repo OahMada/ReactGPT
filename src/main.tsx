@@ -82,6 +82,7 @@ enableMocking().then(() => {
  * ## bugs
  *
  * back to previous page when existing hotkey map page
+ * the modal scroll with cursor
  *
  * ## test
  *

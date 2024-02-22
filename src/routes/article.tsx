@@ -5,9 +5,10 @@ import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { QueryErrorResetBoundary, useIsFetching, useQueryClient } from '@tanstack/react-query'; // https://www.thisdot.co/blog/common-patterns-and-nuances-using-react-query/#handling-errors-with-error-boundaries
 import { Navigate, useParams, Outlet, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { DragDropContext, Draggable, Droppable, DropResult } from '@hello-pangea/dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
+import { DragDropContext, Draggable, Droppable, DropResult, DragStart } from '@hello-pangea/dnd'; // https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
 import { mergeRefs } from 'react-merge-refs';
 import { useHotkeysContext } from 'react-hotkeys-hook';
+import cs from 'classnames';
 
 // redux
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
@@ -70,6 +71,10 @@ export var Article = () => {
 	useKeys({ keyBinding: retryAllErred.hotkey, callback: handleRetryAll, enabled: !/preview$/.test(location.pathname) }); // enabled only when on the article page
 
 	let articleElementsRef = useRef(new Map());
+	let articleElements = Array.from(articleElementsRef.current, (item) => ({
+		paragraphId: item[0],
+		element: item[1],
+	}));
 	let focusedParagraphIndexRef = useRef(-1);
 
 	let { enableScope, disableScope, enabledScopes } = useHotkeysContext();
@@ -85,10 +90,6 @@ export var Article = () => {
 	useKeys({
 		keyBinding: traverseDownwardsParagraphList.hotkey,
 		callback: () => {
-			let articleElements = Array.from(articleElementsRef.current, (item) => ({
-				paragraphId: item[1].paragraphId,
-				element: item[1].element,
-			}));
 			if (articleElements.length === 0) return;
 			if (focusedParagraphIndexRef.current === -1) {
 				articleElements[0].element.focus();
@@ -114,10 +115,6 @@ export var Article = () => {
 	useKeys({
 		keyBinding: traverseUpwardsParagraphList.hotkey,
 		callback: () => {
-			let articleElements = Array.from(articleElementsRef.current, (item) => ({
-				paragraphId: item[1].paragraphId,
-				element: item[1].element,
-			}));
 			if (articleElements.length === 0) return;
 			if (focusedParagraphIndexRef.current === -1) {
 				articleElements[articleElements.length - 1].element.focus();
@@ -144,9 +141,19 @@ export var Article = () => {
 
 		dispatch(handleParagraphOrderChange({ destinationIndex: destination.index, sourceIndex: source.index, articleId }));
 		// To ensure that the `focusedParagraphIndexRef` updates in accordance with the drag and drop action
-		if (focusedParagraphIndexRef.current !== -1 && focusedParagraphIndexRef.current === source.index) {
+		if (focusedParagraphIndexRef.current !== -1) {
 			focusedParagraphIndexRef.current = destination.index;
 		}
+	};
+
+	// give dragging item focus, to properly handle the enabling of hotkey scope
+	/* v8 ignore next 7 */
+	let handleOnDargStart = ({ draggableId }: DragStart) => {
+		articleElements.map((item) => {
+			if (item.paragraphId === draggableId) {
+				item.element.focus();
+			}
+		});
 	};
 
 	/* other */
@@ -200,7 +207,7 @@ export var Article = () => {
 				)}
 			</div>
 			{filteredParagraphs.length === 0 && combinedArticleQueue.indexOf(articleId) !== -1 && <EmptyParagraphList />}
-			<DragDropContext onDragEnd={handleOnDragEnd}>
+			<DragDropContext onDragEnd={handleOnDragEnd} onDragStart={handleOnDargStart}>
 				<Droppable droppableId='paragraphs'>
 					{(provided) => (
 						<div ref={provided.innerRef} {...provided.droppableProps}>
@@ -209,15 +216,15 @@ export var Article = () => {
 									return (
 										<Draggable key={paragraph.id} draggableId={paragraph.id} index={index}>
 											{(provided) => (
-												<Wrapper
+												<StyledArticle
 													ref={mergeRefs([
 														provided.innerRef,
 														(node) => {
 															if (node) {
-																articleElementsRef.current.set(index, { element: node, paragraphId: paragraph.id });
+																articleElementsRef.current.set(paragraph.id, node);
 															} else {
 																// To keep the ref reflects the current paragraph structure.
-																articleElementsRef.current.delete(index);
+																articleElementsRef.current.delete(paragraph.id);
 															}
 														},
 													])}
@@ -235,12 +242,13 @@ export var Article = () => {
 														focusedParagraphIndexRef.current = index;
 														performEnableScope(paragraph.id);
 													}}
+													className={cs({ active: focusedParagraphIndexRef.current === index })}
 												>
 													<div
 														className='grabber'
 														{...provided.dragHandleProps}
 														onClick={
-															(e) => e.currentTarget.focus() // to make initiating drag and drop a bit easer
+															(e) => e.currentTarget.focus() // to make initiating drag and drop from keyboard a bit easer
 														}
 													></div>
 													<div className='content'>
@@ -288,7 +296,7 @@ export var Article = () => {
 														</QueryErrorResetBoundary>
 														<ParagraphControlBtns paragraphId={paragraph.id} />
 													</div>
-												</Wrapper>
+												</StyledArticle>
 											)}
 										</Draggable>
 									);
@@ -305,7 +313,7 @@ export var Article = () => {
 	);
 };
 
-var Wrapper = styled.article`
+var StyledArticle = styled.article`
 	display: flex;
 	align-items: center;
 	padding: 10px;
@@ -314,6 +322,10 @@ var Wrapper = styled.article`
 	margin-bottom: 10px;
 	background-color: var(--color-light);
 	white-space: pre-wrap; /* preserve user input line feeds */
+
+	&.active {
+		box-shadow: 0 1rem 1rem rgb(0 0 0 / 30%);
+	}
 
 	.grabber {
 		width: 2rem;
@@ -330,7 +342,7 @@ var Wrapper = styled.article`
 var StyledSection = styled.section`
 	.article-controls {
 		display: flex;
-		margin-bottom: 5px;
+		margin-bottom: 10px;
 		gap: 3px;
 
 		a {

@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { useQueryClient, useQueryErrorResetBoundary } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { useRef, useLayoutEffect } from 'react';
@@ -111,126 +111,124 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 	// -------------- Modifying / Reviving --------------
 	if (paragraphStatus === 'modifying' || paragraphStatus === 'reviving') {
 		return (
-			<ExtendedStyledDiv>
-				{paragraphStatus === 'reviving' && (
-					<fieldset>
-						<legend>Check edit history mode:</legend>
-						<div>
-							<input
-								type='radio'
-								id={`${paragraphId}Creation`}
-								name={paragraphId}
-								value='paragraphCreation'
-								checked={editHistoryMode === 'paragraphCreation'}
-								onChange={handleEditHistoryMode}
-							/>
-							<StyledLabel htmlFor={`${paragraphId}Creation`} $disabled={false}>
-								Since Paragraph Creation
-							</StyledLabel>
-						</div>
-						<div>
-							<input
-								type='radio'
-								id={`${paragraphId}LastEdit`}
-								name={paragraphId}
-								value='paragraphLastEdit'
-								checked={editHistoryMode === 'paragraphLastEdit'}
-								onChange={handleEditHistoryMode}
-								disabled={initialParagraph === updatedInitialParagraph}
-							/>
-							<StyledLabel htmlFor={`${paragraphId}LastEdit`} $disabled={initialParagraph === updatedInitialParagraph}>
-								Since Paragraph Last Edit
-							</StyledLabel>
-						</div>
-					</fieldset>
-				)}
-				{isGrammarFixesPending || isGrammarFixesFetching ? (
-					<StyledParagraph>{paragraphBeforeGrammarFix}</StyledParagraph>
-				) : (
-					<StyledParagraph>
-						{
-							// the three dots indicate that these are not a list
-							...adjustmentObjectArr.reduce<React.ReactNode[]>((acc, item, index) => {
-								if (item.value) {
-									acc.push(item.value);
-								} else if (item.removed || item.added) {
-									if (item.added && !item.removed) {
-										let element =
-											paragraphStatus === 'modifying' ? (
-												<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
-													<ins className='insert'>{item.addedValue}</ins>
-												</span>
-											) : (
-												<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
-													<StyledSpan className='deletion' $isSpace={item.addedValue === ' '}>
-														{item.addedValue}
-													</StyledSpan>
-												</span>
-											);
-										acc.push(element);
-									} else if (item.added && item.removed) {
-										let element =
-											paragraphStatus === 'modifying' ? (
-												<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
-													<span className='replacement'>{item.addedValue}</span>
-												</span>
-											) : (
-												<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
-													<span className='replacement'>{item.removedValue}</span>
-												</span>
-											);
+			<>
+				<ExtendedStyledDiv>
+					{paragraphStatus === 'reviving' && (
+						<fieldset>
+							<legend>Check edit history mode:</legend>
+							<div>
+								<input
+									type='radio'
+									id={`${paragraphId}Creation`}
+									name={paragraphId}
+									value='paragraphCreation'
+									checked={editHistoryMode === 'paragraphCreation'}
+									onChange={handleEditHistoryMode}
+								/>
+								<label htmlFor={`${paragraphId}Creation`}>Since Paragraph Creation</label>
+							</div>
+							<div>
+								<input
+									type='radio'
+									id={`${paragraphId}LastEdit`}
+									name={paragraphId}
+									value='paragraphLastEdit'
+									checked={editHistoryMode === 'paragraphLastEdit'}
+									onChange={handleEditHistoryMode}
+									disabled={initialParagraph === updatedInitialParagraph}
+								/>
+								<label htmlFor={`${paragraphId}LastEdit`}>Since Paragraph Last Edit</label>
+							</div>
+						</fieldset>
+					)}
+					{isGrammarFixesPending || isGrammarFixesFetching ? (
+						<StyledParagraph>{paragraphBeforeGrammarFix}</StyledParagraph>
+					) : (
+						<StyledParagraph>
+							{
+								// the three dots indicate that these are not a list
+								...adjustmentObjectArr.reduce<React.ReactNode[]>((acc, item, index) => {
+									if (item.value) {
+										acc.push(item.value);
+									} else if (item.removed || item.added) {
+										if (item.added && !item.removed) {
+											let element =
+												paragraphStatus === 'modifying' ? (
+													<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
+														<ins className='insert'>{item.addedValue}</ins>
+													</span>
+												) : (
+													<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
+														<StyledSpan className='deletion' $isSpace={item.addedValue === ' '}>
+															{item.addedValue}
+														</StyledSpan>
+													</span>
+												);
+											acc.push(element);
+										} else if (item.added && item.removed) {
+											let element =
+												paragraphStatus === 'modifying' ? (
+													<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
+														<span className='replacement'>{item.addedValue}</span>
+													</span>
+												) : (
+													<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightblue'>
+														<span className='replacement'>{item.removedValue}</span>
+													</span>
+												);
 
-										acc.push(element);
-									} else if (!item.added && item.removed) {
-										let element =
-											paragraphStatus === 'modifying' ? (
-												<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
-													<StyledSpan className='deletion' $isSpace={item.removedValue === ' '}>
-														{item.removedValue}
-													</StyledSpan>
-												</span>
-											) : (
-												<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
-													<ins className='insert'>{item.removedValue}</ins>
-												</span>
-											);
-										acc.push(element);
+											acc.push(element);
+										} else if (!item.added && item.removed) {
+											let element =
+												paragraphStatus === 'modifying' ? (
+													<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightcoral'>
+														<StyledSpan className='deletion' $isSpace={item.removedValue === ' '}>
+															{item.removedValue}
+														</StyledSpan>
+													</span>
+												) : (
+													<span onMouseEnter={(e) => mouseEnterHandler(e, item, index)} onMouseLeave={mouseLeaveHandler} data-color='lightgreen'>
+														<ins className='insert'>{item.removedValue}</ins>
+													</span>
+												);
+											acc.push(element);
+										}
 									}
-								}
-								return acc;
-							}, [])
-						}
-					</StyledParagraph>
-				)}
-				<div className='btn-container'>
-					<button
-						onClick={() => {
-							dispatch(acceptAllAdjustments(paragraphId));
-							dispatch(updateParagraphEditDate(paragraphId));
-						}}
-						disabled={allAdjustmentsCount === 0 || isGrammarFixesPending || isGrammarFixesFetching}
-					>
-						{paragraphStatus === 'modifying' && 'Accept All'}
-						{paragraphStatus === 'reviving' && 'Revert All'}
-					</button>
-					<button
-						onClick={() => {
-							// to make sure the next time, paragraph changed back to old content, there will be a refetch
-							QueryClient.invalidateQueries({
-								queryKey: grammarQueryKeys(paragraphBeforeGrammarFix, paragraphId),
-								exact: true,
-								refetchType: 'none',
-							});
-							dispatch(doneWithCurrentParagraphState(paragraphId));
-						}}
-						disabled={isGrammarFixesPending || isGrammarFixesFetching}
-						ref={doneButtonRef}
-					>
-						Done
-					</button>
-				</div>
+									return acc;
+								}, [])
+							}
+						</StyledParagraph>
+					)}
+					<div className='btn-container'>
+						<button
+							onClick={() => {
+								dispatch(acceptAllAdjustments(paragraphId));
+								dispatch(updateParagraphEditDate(paragraphId));
+							}}
+							disabled={allAdjustmentsCount === 0 || isGrammarFixesPending || isGrammarFixesFetching}
+						>
+							{paragraphStatus === 'modifying' && 'Accept All'}
+							{paragraphStatus === 'reviving' && 'Revert All'}
+						</button>
+						<button
+							onClick={() => {
+								// to make sure the next time, paragraph changed back to old content, there will be a refetch
+								QueryClient.invalidateQueries({
+									queryKey: grammarQueryKeys(paragraphBeforeGrammarFix, paragraphId),
+									exact: true,
+									refetchType: 'none',
+								});
+								dispatch(doneWithCurrentParagraphState(paragraphId));
+							}}
+							disabled={isGrammarFixesPending || isGrammarFixesFetching}
+							ref={doneButtonRef}
+						>
+							Done
+						</button>
+					</div>
+				</ExtendedStyledDiv>
 				<Modal ref={modalRef} modalOffsets={modalOffsetsRef.current} />
-			</ExtendedStyledDiv>
+			</>
 		);
 	}
 	// -------------- Done Modification --------------
@@ -359,13 +357,9 @@ var ExtendedStyledDiv = styled(StyledDiv)`
 			display: inline-block;
 			margin-right: 5px;
 		}
-	}
-`;
 
-var StyledLabel = styled.label<{ $disabled: boolean }>`
-	${($disabled) =>
-		$disabled &&
-		css`
+		input:disabled + label {
 			color: var(--color-darker);
-		`}
+		}
+	}
 `;

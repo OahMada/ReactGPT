@@ -14,7 +14,7 @@ export var Modal = forwardRef<HTMLDivElement, { modalOffsets: { top: number; lef
 
 	// 0.8 & 6.5 here is fixed
 	return (
-		<Wrapper
+		<StyledDiv
 			/* v8 ignore next 3 */
 			onMouseLeave={() => {
 				dispatch(hideModal());
@@ -73,11 +73,11 @@ export var Modal = forwardRef<HTMLDivElement, { modalOffsets: { top: number; lef
 					</button>
 				</div>
 			)}
-		</Wrapper>
+		</StyledDiv>
 	);
 });
 
-var Wrapper = styled.div<{ $displayModal: boolean; $leftOffset: number }>`
+var StyledDiv = styled.div<{ $displayModal: boolean; $leftOffset: number }>`
 	position: fixed;
 	top: calc((var(--position-top) + var(--position-top-offset)) * 1px);
 	left: calc(var(--position-left) * 1px + ${({ $leftOffset }) => ($leftOffset ? `${$leftOffset} * 1px - 1rem` : '-0.5rem')});
