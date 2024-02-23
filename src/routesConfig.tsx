@@ -1,6 +1,7 @@
 // components
 import { Root, Article, ArticleInput, Config, ErrorPage, Preview, HotkeyMap } from './routes';
 // import { ReactPortal } from './components';
+import { FocusedParagraphIndexContextWrapper } from './components';
 
 var routesConfig = [
 	{
@@ -15,7 +16,11 @@ var routesConfig = [
 							{ index: true, element: <ArticleInput /> },
 							{
 								path: 'article/:articleId',
-								element: <Article />,
+								element: (
+									<FocusedParagraphIndexContextWrapper>
+										<Article />
+									</FocusedParagraphIndexContextWrapper>
+								),
 								children: [
 									{
 										path: 'preview',

@@ -15,8 +15,17 @@ import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { selectArticle, handleParagraphOrderChange, updateUserInput, toggleTranslation } from '../features/articleSlice';
 
 // components
-import { StyledParagraph, ParagraphInput, ParagraphControlBtns, Paragraph, EmptyParagraphList, ArticleControlBtns, StyledDiv } from '../components';
-import AutoFocusWrapper from '../components/autoFocus';
+import {
+	StyledParagraph,
+	ParagraphInput,
+	ParagraphControlBtns,
+	Paragraph,
+	EmptyParagraphList,
+	ArticleControlBtns,
+	StyledDiv,
+	useFocusedParagraphIndexContext,
+} from '../components';
+import { AutoFocusWrapper } from '../components';
 
 // utils
 import { createToast, throwIfUndefined, useKeys, HotkeyMapData } from '../utils';
@@ -75,7 +84,8 @@ export var Article = () => {
 		paragraphId: item[0],
 		element: item[1],
 	}));
-	let focusedParagraphIndexRef = useRef(-1);
+	let focusedParagraphIndexRef = useFocusedParagraphIndexContext();
+
 	let { enableScope, disableScope, enabledScopes } = useHotkeysContext();
 
 	let performEnableScope = (scope: string) => {
@@ -137,20 +147,15 @@ export var Article = () => {
 		},
 	});
 
+	// when paragraph deletion is undone, re-focus it
 	useEffect(() => {
-		if (!articleElements.some((item) => enabledScopes.includes(item.paragraphId))) {
-			// reset focusedParagraphIndexRef when focused paragraph gets deleted, return to a no-focused-element state
-			focusedParagraphIndexRef.current = -1;
-		} else {
-			// if undo deletion, restore the previous focus status
-			articleElements.map((item) => {
-				if (item.paragraphId === enabledScopes[0] && !item.element.classList.contains('active')) {
-					// without the second condition, the newly inserted paragraph won't be able to input text
-					item.element.focus();
-				}
-			});
-		}
-	}, [articleElements]);
+		articleElements.map((item) => {
+			if (item.paragraphId === enabledScopes[0] && !item.element.classList.contains('active')) {
+				// without the second condition, the newly inserted paragraph won't be able to input text
+				item.element.focus();
+			}
+		});
+	}, [filteredParagraphs]);
 
 	/* react beautiful dnd */
 	/* v8 ignore next 11 */

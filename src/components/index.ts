@@ -13,3 +13,5 @@ export * from './loading';
 export * from './previewTranslation';
 export * from './articleCard';
 export * from './reactPortal';
+export * from './focusedParagraphIndex';
+export * from './autoFocus';

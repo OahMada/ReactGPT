@@ -16,7 +16,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { createToast, throwIfUndefined, useKeys, HotkeyMapData } from '../utils';
 import { Paragraph } from '../types';
-import { useAutoFocusContext } from './autoFocus';
+import { useAutoFocusContext, useFocusedParagraphIndexContext } from './';
 
 // https://github.com/fkhadra/react-toastify/issues/568#issuecomment-779847274
 interface UndoProps {
@@ -60,6 +60,8 @@ var Undo = ({ closeToast, onUndo, paragraph, paragraphId }: UndoProps) => {
 
 export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
 	let { setAutoFocus } = useAutoFocusContext();
+	let focusedParagraphIndexRef = useFocusedParagraphIndexContext();
+
 	let dispatch = useAppDispatch();
 	let toastId = useRef<Id>();
 	const { articleId } = useParams();
@@ -70,6 +72,7 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 
 	let handleParagraphDeletion = () => {
 		dispatch(addParagraphToDeletionQueue(paragraphId));
+		focusedParagraphIndexRef.current = -1;
 
 		toastId.current = createToast({
 			type: 'error',

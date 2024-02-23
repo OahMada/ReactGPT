@@ -5,9 +5,9 @@ interface AutoFocusContextType {
 	setAutoFocus: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export var AutoFocusContext = createContext<AutoFocusContextType | null>(null);
+var AutoFocusContext = createContext<AutoFocusContextType | null>(null);
 
-export default function AutoFocusWrapper({ children }: { children: React.ReactNode }) {
+export function AutoFocusWrapper({ children }: { children: React.ReactNode }) {
 	let [autoFocus, setAutoFocus] = useState(false);
 
 	return (

@@ -12,7 +12,7 @@ import { selectArticle, saveParagraphInput, disableCancelQueryState, deleteParag
 
 import { createToast, sanitizeUserInput, throwIfUndefined } from '../utils';
 import { Paragraph } from '../types';
-import { useAutoFocusContext } from './autoFocus';
+import { useFocusedParagraphIndexContext, useAutoFocusContext } from '.';
 
 interface ParagraphInputType {
 	paragraph: string;
@@ -27,6 +27,8 @@ export var ParagraphInput = ({
 	resetErrorBoundary?: FallbackProps['resetErrorBoundary'];
 }) => {
 	let { autoFocus, setAutoFocus } = useAutoFocusContext();
+	let focusedParagraphIndexRef = useFocusedParagraphIndexContext();
+
 	const { articleId } = useParams();
 	throwIfUndefined(articleId);
 	let textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -75,7 +77,9 @@ export var ParagraphInput = ({
 	let onsubmit: SubmitHandler<ParagraphInputType> = (data) => {
 		if (sanitizeUserInput(data.paragraph) === '') {
 			// empty paragraph get deleted right away
-			return dispatch(deleteParagraphRightAway(paragraphId));
+			dispatch(deleteParagraphRightAway(paragraphId));
+			focusedParagraphIndexRef.current = -1;
+			return;
 		}
 
 		// trailing whitespace or line feeds do not count
