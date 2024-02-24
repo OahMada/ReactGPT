@@ -248,8 +248,6 @@ export var Preview = () => {
 					<button onClick={handleClosePreview} data-tooltip-id='hotkey' data-tooltip-content={previewPageHotkeys.exitPreview.label} className='btn'>
 						Close
 					</button>
-				</div>
-				<div>
 					<button
 						disabled={translationFetchingCount !== 0}
 						onClick={debouncedCopyToClipboard}
@@ -334,7 +332,6 @@ var ModalWrapper = styled.section`
 	background-color: rgb(0 0 0 / 80%);
 	isolation: isolate;
 	place-items: center center;
-	transition: all 0.3s;
 
 	button {
 		border-color: var(--color-dark);
@@ -344,35 +341,35 @@ var ModalWrapper = styled.section`
 	.paragraphs {
 		position: relative;
 		display: flex;
-		width: 60%;
+		width: 70rem;
 		min-height: 60%;
 		max-height: 80%;
 		flex-direction: column;
 		padding: 30px;
 		border-radius: var(--border-radius-small);
-		background-color: #fff;
+		background-color: white;
 		box-shadow: 0 2rem 4rem rgb(0 0 0 / 20%);
 		overflow-y: scroll;
-		transition: all 0.4s 0.2s;
-
-		article:not(:last-child) {
-			margin-bottom: 2rem;
-		}
-
-		p {
-			font-size: 1.6rem;
-		}
-
-		p:not(:last-child) {
-			margin-bottom: 0.8rem;
-		}
 
 		.btn-container {
-			margin-bottom: 1rem;
+			display: flex;
+			margin-bottom: 10px;
+			gap: var(--gap-primary);
 		}
 
 		.article-display {
+			flex-grow: 1;
 			padding: 20px;
+			border: 1px solid var(--color-dark);
+			border-radius: var(--border-radius);
+
+			p {
+				font-size: var(--font-primary);
+			}
+
+			p:not(:last-child) {
+				margin-bottom: 0.8rem;
+			}
 		}
 	}
 `;

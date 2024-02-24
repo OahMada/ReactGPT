@@ -87,7 +87,7 @@ var StyledDiv = styled.div<{ $isPinned: boolean }>`
 		right: 0;
 		display: flex;
 		flex-direction: column;
-		gap: 0.5rem;
+		gap: var(--gap-primary);
 		opacity: 0;
 		transition:
 			translate 0.5s,

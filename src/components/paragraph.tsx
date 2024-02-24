@@ -332,7 +332,7 @@ export var StyledDiv = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: 5px;
+	gap: var(--gap-primary);
 
 	p:first-child {
 		margin-top: calc(var(--util-icon-container-dimension) + 5px);
@@ -354,7 +354,7 @@ var ExtendedStyledDiv = styled(StyledDiv)`
 		display: flex;
 		flex-wrap: wrap;
 		margin-top: 5px;
-		gap: 5px;
+		gap: var(--gap-primary);
 
 		button {
 			border-color: var(--color-darker);
@@ -366,7 +366,7 @@ var ExtendedStyledDiv = styled(StyledDiv)`
 		display: flex;
 		border: 1px solid var(--color-darker);
 		border-radius: var(--border-radius);
-		gap: 20px;
+		gap: var(--gap-huge);
 
 		input {
 			display: inline-block;

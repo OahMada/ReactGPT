@@ -398,7 +398,7 @@ var StyledSection = styled.section`
 	.article-controls {
 		display: flex;
 		margin-bottom: 10px;
-		gap: 3px;
+		gap: var(--gap-small);
 
 		a {
 			color: inherit;

@@ -30,7 +30,7 @@ var StyledDiv = styled.div`
 	margin: 0 auto;
 	grid-template-columns: repeat(12, 1fr);
 	grid-template-rows: min-content min-content auto;
-	row-gap: 2rem;
+	row-gap: var(--gap-huge);
 
 	main {
 		grid-column: 1 / span 12;

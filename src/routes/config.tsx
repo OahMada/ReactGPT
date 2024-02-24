@@ -209,6 +209,6 @@ var StyledSection = styled.section`
 	.btns {
 		display: flex;
 		margin-top: 1.5rem;
-		gap: 0.8rem;
+		gap: var(--gap-big);
 	}
 `;

@@ -18,6 +18,10 @@ html {
 	--border-radius-big: 10px;
 	--border-radius-small: 3px;
 	--util-icon-container-dimension: 3rem;
+	--gap-primary: 5px;
+	--gap-small: 3px;
+	--gap-big: 8px;
+	--gap-huge: 20px;
 }
 
 body {

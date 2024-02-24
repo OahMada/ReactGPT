@@ -36,7 +36,7 @@ export function ErrorPage() {
 var StyledDiv = styled.div`
 	display: grid;
 	width: 100%;
-	gap: 2rem;
+	gap: var(--gap-huge);
 	place-content: center;
 
 	p:last-child {

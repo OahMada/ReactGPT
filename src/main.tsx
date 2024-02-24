@@ -74,16 +74,22 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- *
+ * preview page styles
+ * preview fixed buttons
+ * new article whole area clickable
  * it's better to have a StyledButton than to add .btn class all over the places
- * rethink html layout and css
  * icon
+ * fixed config hotkey
+ * footer
+ * css rules organize
+ * new layout
  * responsive layout on mobile devices
  *
  * ## bugs
  *
  * why position change when editing paragraph
  * dismissed paragraph deletion toast reappears
+ * tooltip persisting issue on phone
  *
  * ## test
  *

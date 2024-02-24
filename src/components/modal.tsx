@@ -115,7 +115,7 @@ var StyledDiv = styled.div<{ $displayModal: boolean; $leftOffset: number }>`
 		display: flex;
 		justify-content: flex-start;
 		margin-top: 10px;
-		gap: 5px;
+		gap: var(--gap-primary);
 	}
 
 	.modal-btn {

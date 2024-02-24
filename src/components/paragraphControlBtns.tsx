@@ -190,7 +190,7 @@ var StyledDiv = styled.div`
 	border-radius: var(--border-radius-small);
 	background-color: white;
 	box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 30%);
-	gap: 3px;
+	gap: var(--gap-small);
 
 	&:hover {
 		display: flex;

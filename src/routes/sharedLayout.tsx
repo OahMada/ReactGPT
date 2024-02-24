@@ -259,7 +259,7 @@ export var SharedLayout = () => {
 var StyledHeader = styled.header`
 	display: flex;
 	justify-content: flex-end;
-	gap: 0.8rem;
+	gap: var(--gap-big);
 	grid-column: 1 / span 12;
 `;
 
@@ -279,7 +279,7 @@ var StyledNav = styled.nav`
 
 	.card-wrapper {
 		display: grid;
-		gap: 0.5rem;
+		gap: var(--gap-primary);
 		grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
 
 		.card {
@@ -293,7 +293,7 @@ var StyledNav = styled.nav`
 			padding: 5px;
 			border: 1px solid var(--color-dark);
 			border-radius: var(--border-radius);
-			gap: 0.5rem;
+			gap: var(--gap-primary);
 
 			& .link-wrapper {
 				display: grid;
