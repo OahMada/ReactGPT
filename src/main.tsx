@@ -81,7 +81,7 @@ enableMocking().then(() => {
  *
  * ## bugs
  *
- * the last piece of the focus issue
+ * why position change when editing paragraph
  *
  * ## test
  *

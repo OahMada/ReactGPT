@@ -301,7 +301,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 export var StyledParagraph = styled.p`
 	padding: 10px;
 	border: 1px solid var(--color-darker);
-	border-radius: 5px;
+	border-radius: var(--border-radius);
 	font-size: 1.6rem;
 	letter-spacing: 2px;
 
@@ -338,6 +338,7 @@ var ExtendedStyledDiv = styled(StyledDiv)`
 	h4 {
 		align-self: flex-end;
 		margin-right: 5px;
+		color: var(--color-darkest);
 		font-size: var(--font-small);
 		font-weight: 500;
 	}
@@ -350,7 +351,7 @@ var ExtendedStyledDiv = styled(StyledDiv)`
 	fieldset {
 		display: flex;
 		border: 1px solid var(--color-darker);
-		border-radius: 5px;
+		border-radius: var(--border-radius);
 		gap: 20px;
 
 		input {

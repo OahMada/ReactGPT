@@ -77,17 +77,16 @@ export var Article = () => {
 	let {
 		'Article Page': { retryAllErred, traverseDownwardsParagraphList, traverseUpwardsParagraphList },
 	} = HotkeyMapData();
-	useKeys({ keyBinding: retryAllErred.hotkey, callback: handleRetryAll, enabled: !/preview$/.test(location.pathname) }); // enabled only when on the article page
 
-	let articleElementsRef = useRef(new Map());
-	let articleElements = Array.from(articleElementsRef.current, (item) => ({
+	let articleElementRefs = useRef(new Map());
+	let articleElements = Array.from(articleElementRefs.current, (item) => ({
 		paragraphId: item[0],
 		element: item[1],
 	}));
+
 	let focusedParagraphIndexRef = useFocusedParagraphIndexContext();
 
 	let { enableScope, disableScope, enabledScopes } = useHotkeysContext();
-
 	let performEnableScope = (scope: string) => {
 		enabledScopes.forEach((scope) => {
 			disableScope(scope);
@@ -95,12 +94,14 @@ export var Article = () => {
 		enableScope(scope);
 	};
 
+	useKeys({ keyBinding: retryAllErred.hotkey, callback: handleRetryAll, enabled: !/preview$/.test(location.pathname) }); // enabled only when on the article page
+
 	// traverse downwards through the paragraph list
 	useKeys({
 		keyBinding: traverseDownwardsParagraphList.hotkey,
 		callback: () => {
 			// Recalculate articleElements before using the shortcut; drag-and-drop could introduce inconsistencies.
-			articleElements = Array.from(articleElementsRef.current, (item) => ({
+			articleElements = Array.from(articleElementRefs.current, (item) => ({
 				paragraphId: item[0],
 				element: item[1],
 			}));
@@ -126,7 +127,7 @@ export var Article = () => {
 		keyBinding: traverseUpwardsParagraphList.hotkey,
 		callback: () => {
 			// Recalculate articleElements before using the shortcut; drag-and-drop could introduce inconsistencies.
-			articleElements = Array.from(articleElementsRef.current, (item) => ({
+			articleElements = Array.from(articleElementRefs.current, (item) => ({
 				paragraphId: item[0],
 				element: item[1],
 			}));
@@ -236,10 +237,10 @@ export var Article = () => {
 														provided.innerRef,
 														(node) => {
 															if (node) {
-																articleElementsRef.current.set(paragraph.id, node);
+																articleElementRefs.current.set(paragraph.id, node);
 															} else {
 																// To keep the ref reflects the current paragraph structure.
-																articleElementsRef.current.delete(paragraph.id);
+																articleElementRefs.current.delete(paragraph.id);
 															}
 														},
 													])}
@@ -337,7 +338,7 @@ var StyledArticle = styled.article`
 	align-items: center;
 	padding: 10px;
 	border: 1px solid black;
-	border-radius: 5px;
+	border-radius: var(--border-radius);
 	margin-bottom: 10px;
 	background-color: var(--color-light);
 	outline: none; /* there will be shadow added to the focused element, thus the default blue line is not needed */

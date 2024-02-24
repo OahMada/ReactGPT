@@ -137,8 +137,7 @@ var StyledForm = styled.form`
 		min-height: 55dvh;
 		padding: 20px;
 		border: 1px solid var(--color-darker);
-		border-radius: 5px;
-		line-height: 1.5;
+		border-radius: var(--border-radius);
 		resize: none;
 		white-space: pre-wrap;
 	}

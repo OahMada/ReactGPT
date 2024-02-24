@@ -333,7 +333,7 @@ var ModalWrapper = styled.section`
 		max-height: 80%;
 		flex-direction: column;
 		padding: 30px;
-		border-radius: 3px;
+		border-radius: var(--border-radius-small);
 		background-color: #fff;
 		box-shadow: 0 2rem 4rem rgb(0 0 0 / 20%);
 		overflow-y: scroll;

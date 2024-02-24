@@ -292,7 +292,7 @@ var StyledNav = styled.nav`
 			justify-content: flex-start;
 			padding: 5px;
 			border: 1px solid var(--color-dark);
-			border-radius: 5px;
+			border-radius: var(--border-radius);
 			gap: 0.5rem;
 
 			& .link-wrapper {
@@ -308,7 +308,7 @@ var StyledNav = styled.nav`
 					text-decoration: none;
 
 					&:hover {
-						color: var(--color-dark);
+						color: var(--color-darkest);
 					}
 				}
 			}

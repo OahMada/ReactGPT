@@ -39,40 +39,42 @@ export var Modal = forwardRef<HTMLDivElement, { modalOffsets: { top: number; lef
 				{/* indicate white spaces that are ought to adjust */}
 				<cite>{content === ' ' ? <i>{'[space]'}</i> : content}</cite>
 			</p>
-			{paragraphStatus === 'reviving' ? (
-				<button
-					className='accept-btn btn'
-					onClick={() => {
-						dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
-						dispatch(updateParagraphEditDate(paragraphId));
-						dispatch(hideModal());
-					}}
-				>
-					REVERT
-				</button>
-			) : (
-				<div className='btn-container'>
+			<div className='btn-container'>
+				{paragraphStatus === 'reviving' ? (
 					<button
-						className='accept-btn btn'
+						className='accept-btn modal-btn'
 						onClick={() => {
 							dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
 							dispatch(updateParagraphEditDate(paragraphId));
 							dispatch(hideModal());
 						}}
 					>
-						ACCEPT
+						REVERT
 					</button>
-					<button
-						className='ignore-btn btn'
-						onClick={() => {
-							dispatch(ignoreSingleAdjustment({ indexInParagraph, paragraphId }));
-							dispatch(hideModal());
-						}}
-					>
-						IGNORE
-					</button>
-				</div>
-			)}
+				) : (
+					<>
+						<button
+							className='accept-btn modal-btn'
+							onClick={() => {
+								dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
+								dispatch(updateParagraphEditDate(paragraphId));
+								dispatch(hideModal());
+							}}
+						>
+							ACCEPT
+						</button>
+						<button
+							className='ignore-btn modal-btn'
+							onClick={() => {
+								dispatch(ignoreSingleAdjustment({ indexInParagraph, paragraphId }));
+								dispatch(hideModal());
+							}}
+						>
+							IGNORE
+						</button>
+					</>
+				)}
+			</div>
 		</StyledDiv>
 	);
 });
@@ -87,43 +89,51 @@ var StyledDiv = styled.div<{ $displayModal: boolean; $leftOffset: number }>`
 	width: fit-content;
 	flex-direction: column;
 	justify-content: space-around;
-	padding: 8px;
+	padding: 15px;
 	border: 1px solid black;
-	border-radius: 5px;
+	border-radius: var(--border-radius-small);
 	background-color: white;
 
 	.title {
-		font-size: 1.2rem;
-		font-weight: 600;
-		line-height: 1;
+		font-size: var(--font-small-extra);
+		font-style: italic;
+		font-weight: 300;
 		text-decoration: underline 3px;
 		text-decoration-color: var(--color);
 	}
 
 	.content {
-		margin: 0.5rem 0;
-		font-size: 1.5rem;
-		line-height: 1;
+		margin-top: 10px;
+		font-size: var(--font-larger);
+		font-weight: bold;
+
+		cite {
+			font-style: inherit;
+		}
 	}
 
 	.btn-container {
 		display: flex;
-		justify-content: space-between;
-		margin-top: 3px;
+		justify-content: flex-start;
+		margin-top: 10px;
 		gap: 5px;
 	}
 
-	.btn {
+	.modal-btn {
 		border: none;
 		background-color: transparent;
-		font-size: 1rem;
+		font-size: var(--font-small);
+
+		&:hover {
+			opacity: 0.6;
+		}
 	}
 
 	.accept-btn {
-		color: green;
+		color: var(--color-green);
 	}
 
 	.ignore-btn {
-		color: gray;
+		color: var(--color-darkest);
 	}
 `;

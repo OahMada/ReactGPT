@@ -167,9 +167,8 @@ var StyledForm = styled.form`
 		height: 100%;
 		padding: 20px;
 		border: 1px solid #ccc;
-		border-radius: 5px;
+		border-radius: var(--border-radius);
 		font-family: Arial, Helvetica, sans-serif;
-		line-height: 1.5;
 		resize: none;
 		white-space: pre-wrap;
 	}

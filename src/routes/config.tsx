@@ -179,7 +179,7 @@ export var Config = () => {
 var StyledSection = styled.section`
 	padding: 15px;
 	border: 0.5px solid black;
-	border-radius: 10px;
+	border-radius: var(--border-radius-big);
 	margin: auto;
 
 	form {
