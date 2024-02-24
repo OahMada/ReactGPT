@@ -51,6 +51,7 @@ var Undo = ({ closeToast, onUndo, paragraph, paragraphId }: UndoProps) => {
 				data-tooltip-id='hotkey'
 				data-tooltip-content={articlePageHotkeys.undoParagraphDeletion.label}
 				data-tooltip-hidden={toolTipHidden}
+				className='btn'
 			>
 				UNDO
 			</button>
@@ -173,15 +174,39 @@ type Ref = HTMLButtonElement;
 
 var NoFocusPropagationButton = forwardRef<Ref, React.ComponentPropsWithRef<'button'>>(({ children, ...props }, ref) => {
 	return (
-		<button {...props} onFocus={(e) => e.stopPropagation()} ref={ref}>
+		<button {...props} onFocus={(e) => e.stopPropagation()} ref={ref} className='btn'>
 			{children}
 		</button>
 	);
 });
 
 var StyledDiv = styled.div`
-	display: flex;
+	display: none;
 	width: fit-content;
-	margin-top: 5px;
+	flex-direction: column;
+	align-items: flex-end;
+	padding: 5px;
+	border: 1px solid var(--color-darker);
+	border-radius: var(--border-radius-small);
+	background-color: white;
+	box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 30%);
 	gap: 3px;
+
+	&:hover {
+		display: flex;
+	}
+
+	button {
+		border: none;
+		background-color: transparent;
+
+		&:hover {
+			color: var(--color-darkest);
+		}
+
+		&:not(:last-child) {
+			border-radius: 0;
+			border-bottom: 1px solid black;
+		}
+	}
 `;

@@ -74,7 +74,8 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- * btn-container extract out
+ *
+ * it's better to have a StyledButton than to add .btn class all over the places
  * rethink html layout and css
  * icon
  * responsive layout on mobile devices
@@ -82,6 +83,7 @@ enableMocking().then(() => {
  * ## bugs
  *
  * why position change when editing paragraph
+ * dismissed paragraph deletion toast reappears
  *
  * ## test
  *

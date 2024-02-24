@@ -31,7 +31,7 @@ var Undo = ({ closeToast, onUndo }: UndoProps) => {
 	return (
 		<div>
 			Deleting Current Article{' '}
-			<button onClick={handleClick} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.undoArticleDeletion.label}>
+			<button onClick={handleClick} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.undoArticleDeletion.label} className='btn'>
 				UNDO
 			</button>
 		</div>
@@ -107,13 +107,13 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 
 	return (
 		<>
-			<button onClick={handlePinArticle} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.pinArticle.label}>
+			<button onClick={handlePinArticle} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.pinArticle.label} className='btn'>
 				{articleIsInFavorites ? 'Unpin' : 'Pin'}
 			</button>
-			<button onClick={handleArticleDeletion} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.deleteArticle.label}>
+			<button onClick={handleArticleDeletion} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.deleteArticle.label} className='btn'>
 				Delete Article
 			</button>
-			<button>
+			<button className='btn'>
 				<Link
 					to={`/article/${articleId}/preview`}
 					data-tooltip-id='hotkey'

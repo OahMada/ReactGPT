@@ -42,7 +42,7 @@ export var Modal = forwardRef<HTMLDivElement, { modalOffsets: { top: number; lef
 			<div className='btn-container'>
 				{paragraphStatus === 'reviving' ? (
 					<button
-						className='accept-btn modal-btn'
+						className='accept-btn modal-btn btn'
 						onClick={() => {
 							dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
 							dispatch(updateParagraphEditDate(paragraphId));
@@ -54,7 +54,7 @@ export var Modal = forwardRef<HTMLDivElement, { modalOffsets: { top: number; lef
 				) : (
 					<>
 						<button
-							className='accept-btn modal-btn'
+							className='accept-btn modal-btn btn'
 							onClick={() => {
 								dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
 								dispatch(updateParagraphEditDate(paragraphId));
@@ -64,7 +64,7 @@ export var Modal = forwardRef<HTMLDivElement, { modalOffsets: { top: number; lef
 							ACCEPT
 						</button>
 						<button
-							className='ignore-btn modal-btn'
+							className='ignore-btn modal-btn btn'
 							onClick={() => {
 								dispatch(ignoreSingleAdjustment({ indexInParagraph, paragraphId }));
 								dispatch(hideModal());
@@ -89,7 +89,7 @@ var StyledDiv = styled.div<{ $displayModal: boolean; $leftOffset: number }>`
 	width: fit-content;
 	flex-direction: column;
 	justify-content: space-around;
-	padding: 15px;
+	padding: 10px;
 	border: 1px solid black;
 	border-radius: var(--border-radius-small);
 	background-color: white;
@@ -105,7 +105,6 @@ var StyledDiv = styled.div<{ $displayModal: boolean; $leftOffset: number }>`
 	.content {
 		margin-top: 10px;
 		font-size: var(--font-larger);
-		font-weight: bold;
 
 		cite {
 			font-style: inherit;
@@ -120,6 +119,7 @@ var StyledDiv = styled.div<{ $displayModal: boolean; $leftOffset: number }>`
 	}
 
 	.modal-btn {
+		padding: 0 5px;
 		border: none;
 		background-color: transparent;
 		font-size: var(--font-small);

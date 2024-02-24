@@ -206,6 +206,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 								dispatch(updateParagraphEditDate(paragraphId));
 							}}
 							disabled={allAdjustmentsCount === 0 || isGrammarFixesPending || isGrammarFixesFetching}
+							className='btn'
 						>
 							{paragraphStatus === 'modifying' && 'Accept All'}
 							{paragraphStatus === 'reviving' && 'Revert All'}
@@ -220,6 +221,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 								});
 								dispatch(doneWithCurrentParagraphState(paragraphId));
 							}}
+							className='btn'
 							disabled={isGrammarFixesPending || isGrammarFixesFetching}
 							ref={doneButtonRef}
 						>
@@ -258,7 +260,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 					</ErrorBoundary>
 				)}
 				<div className='btn-container'>
-					<button onClick={() => dispatch(checkEditHistory(paragraphId))} disabled={paragraphAfterGrammarFix === initialParagraph}>
+					<button onClick={() => dispatch(checkEditHistory(paragraphId))} disabled={paragraphAfterGrammarFix === initialParagraph} className='btn'>
 						Show Edit History
 					</button>
 					<button
@@ -267,6 +269,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 							dispatch(updateParagraphEditDate(paragraphId));
 						}}
 						disabled={paragraphAfterGrammarFix === initialParagraph}
+						className='btn'
 					>
 						Revert All Changes
 					</button>
@@ -278,6 +281,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 							});
 							dispatch(reFetchGrammarMistakes(paragraphId));
 						}}
+						className='btn'
 					>
 						Find Grammar Mistakes
 					</button>
@@ -289,6 +293,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 							dispatch(toggleTranslation(paragraphId));
 							reset();
 						}}
+						className='btn'
 					>
 						{!showTranslation ? 'Show Translation' : 'Hide Translation'}
 					</button>
@@ -330,22 +335,31 @@ export var StyledDiv = styled.div`
 	gap: 5px;
 
 	p:first-child {
-		margin-top: calc(var(--font-small) * 1.5 + 5px);
+		margin-top: calc(var(--util-icon-container-dimension) + 5px);
 	}
 `;
 
 var ExtendedStyledDiv = styled(StyledDiv)`
 	h4 {
-		align-self: flex-end;
-		margin-right: 5px;
+		height: var(--util-icon-container-dimension);
+		align-self: flex-start;
+		margin-right: calc(var(--util-icon-container-dimension) + 5px);
 		color: var(--color-darkest);
 		font-size: var(--font-small);
 		font-weight: 500;
+		line-height: var(--util-icon-container-dimension);
 	}
 
 	.btn-container {
 		display: flex;
-		gap: 3px;
+		flex-wrap: wrap;
+		margin-top: 5px;
+		gap: 5px;
+
+		button {
+			border-color: var(--color-darker);
+			background-color: var(--color-dark);
+		}
 	}
 
 	fieldset {

@@ -217,7 +217,13 @@ export var Article = () => {
 			<div className='article-controls'>
 				{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
 				{showRetryAllButton && (
-					<button onClick={handleRetryAll} disabled={grammarFixFetchingCount > 0} data-tooltip-id='hotkey' data-tooltip-content={retryAllErred.label}>
+					<button
+						onClick={handleRetryAll}
+						disabled={grammarFixFetchingCount > 0}
+						data-tooltip-id='hotkey'
+						data-tooltip-content={retryAllErred.label}
+						className='btn'
+					>
 						Retry All
 					</button>
 				)}
@@ -295,6 +301,7 @@ export var Article = () => {
 																					onClick={async () => {
 																						resetErrorBoundary();
 																					}}
+																					className='btn'
 																				>
 																					Retry
 																				</button>
@@ -310,11 +317,14 @@ export var Article = () => {
 																</ErrorBoundary>
 															)}
 														</QueryErrorResetBoundary>
-														<ParagraphControlBtns
-															paragraphId={paragraph.id}
-															index={index}
-															paragraphFocused={focusedParagraphIndexRef.current === index}
-														/>
+														<div className='paragraph-menu-container'>
+															<div className='paragraph-menu'></div>
+															<ParagraphControlBtns
+																paragraphId={paragraph.id}
+																index={index}
+																paragraphFocused={focusedParagraphIndexRef.current === index}
+															/>
+														</div>
 													</div>
 												</StyledArticle>
 											)}
@@ -334,12 +344,13 @@ export var Article = () => {
 };
 
 var StyledArticle = styled.article`
+	position: relative;
 	display: flex;
 	align-items: center;
 	padding: 10px;
 	border: 1px solid black;
 	border-radius: var(--border-radius);
-	margin-bottom: 10px;
+	margin-bottom: 15px;
 	background-color: var(--color-light);
 	outline: none; /* there will be shadow added to the focused element, thus the default blue line is not needed */
 	white-space: pre-wrap; /* preserve user input line feeds */
@@ -349,14 +360,35 @@ var StyledArticle = styled.article`
 	}
 
 	.grabber {
-		width: 2rem;
-		height: 2rem;
+		/* https://www.joshwcomeau.com/css/css-variables-for-react-devs/#:~:text=industry%20guidelines%20are%20that%20interactive%20elements%20should%20be%20between%2044px%20and%2048px%20tall. */
+		width: var(--util-icon-container-dimension);
+		height: var(--util-icon-container-dimension);
 		flex-basis: 5%;
 		background-color: lightskyblue;
 	}
 
 	.content {
 		flex-basis: 95%;
+	}
+
+	.paragraph-menu-container {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+
+		.paragraph-menu {
+			/* https://www.joshwcomeau.com/css/css-variables-for-react-devs/#:~:text=industry%20guidelines%20are%20that%20interactive%20elements%20should%20be%20between%2044px%20and%2048px%20tall. */
+			width: var(--util-icon-container-dimension);
+			height: var(--util-icon-container-dimension);
+			background-color: lightskyblue;
+		}
+
+		.paragraph-menu:hover + div {
+			display: flex;
+		}
 	}
 `;
 
@@ -371,6 +403,11 @@ var StyledSection = styled.section`
 		a {
 			color: inherit;
 			text-decoration: none;
+		}
+
+		button {
+			border-color: var(--color-dark);
+			background-color: var(--color-light);
 		}
 	}
 `;

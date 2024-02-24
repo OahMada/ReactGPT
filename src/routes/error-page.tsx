@@ -26,7 +26,7 @@ export function ErrorPage() {
 					<i>{(isRouteErrorResponse(error) && error.statusText) || (error instanceof Error && error.message)}</i>
 				</p>
 			</div>
-			<button onClick={handleClick} data-tooltip-id='hotkey' data-tooltip-content={errorPageHotkeys.back.label}>
+			<button onClick={handleClick} data-tooltip-id='hotkey' data-tooltip-content={errorPageHotkeys.back.label} className='btn'>
 				Back to home page
 			</button>
 		</StyledDiv>
@@ -42,5 +42,9 @@ var StyledDiv = styled.div`
 	p:last-child {
 		margin-top: 0.8rem;
 		color: red;
+	}
+
+	button {
+		width: fit-content;
 	}
 `;

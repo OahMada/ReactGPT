@@ -226,7 +226,12 @@ export var Preview = () => {
 		>
 			<div onClick={(e) => e.stopPropagation()} className='paragraphs'>
 				<div className='btn-container'>
-					<button onClick={handleTranslation} data-tooltip-id='hotkey' data-tooltip-content={previewPageHotkeys.includeTranslation.label}>
+					<button
+						onClick={handleTranslation}
+						data-tooltip-id='hotkey'
+						data-tooltip-content={previewPageHotkeys.includeTranslation.label}
+						className='btn'
+					>
 						{!includeTranslation ? 'Include Translation' : 'Remove Translation'}
 					</button>
 					{showRetryAllButton && (
@@ -235,11 +240,12 @@ export var Preview = () => {
 							disabled={translationFetchingCount > 0}
 							data-tooltip-id='hotkey'
 							data-tooltip-content={previewPageHotkeys.retryAllErred.label}
+							className='btn'
 						>
 							Retry All
 						</button>
 					)}
-					<button onClick={handleClosePreview} data-tooltip-id='hotkey' data-tooltip-content={previewPageHotkeys.exitPreview.label}>
+					<button onClick={handleClosePreview} data-tooltip-id='hotkey' data-tooltip-content={previewPageHotkeys.exitPreview.label} className='btn'>
 						Close
 					</button>
 				</div>
@@ -249,6 +255,7 @@ export var Preview = () => {
 						onClick={debouncedCopyToClipboard}
 						data-tooltip-id='hotkey'
 						data-tooltip-content={previewPageHotkeys.copyToClipboard.label}
+						className='btn'
 					>
 						Copy To Clipboard
 					</button>
@@ -259,6 +266,7 @@ export var Preview = () => {
 								onClick={debouncedDownloadPDF}
 								data-tooltip-id='hotkey'
 								data-tooltip-content={previewPageHotkeys.downloadPDF.label}
+								className='btn'
 							>
 								Download PDF
 							</button>
@@ -267,6 +275,7 @@ export var Preview = () => {
 								onClick={debouncedDownloadDocx}
 								data-tooltip-id='hotkey'
 								data-tooltip-content={previewPageHotkeys.downloadDocx.label}
+								className='btn'
 							>
 								Download DOCX
 							</button>
@@ -275,6 +284,7 @@ export var Preview = () => {
 								onClick={debouncedDownloadImg}
 								data-tooltip-id='hotkey'
 								data-tooltip-content={previewPageHotkeys.downloadImg.label}
+								className='btn'
 							>
 								Download Image
 							</button>
@@ -284,6 +294,7 @@ export var Preview = () => {
 							onClick={() => setShowExportOptions(true)}
 							data-tooltip-id='hotkey'
 							data-tooltip-content={previewPageHotkeys.showExportOptions.label}
+							className='btn'
 						>
 							Export To File
 						</button>
@@ -324,6 +335,11 @@ var ModalWrapper = styled.section`
 	isolation: isolate;
 	place-items: center center;
 	transition: all 0.3s;
+
+	button {
+		border-color: var(--color-dark);
+		background-color: var(--color-light);
+	}
 
 	.paragraphs {
 		position: relative;

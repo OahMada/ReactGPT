@@ -154,13 +154,15 @@ export var ParagraphInput = ({
 					}
 				}}
 			/>
-			<button type='submit'>Done</button>
+			<button type='submit' className='btn'>
+				Done
+			</button>
 		</StyledForm>
 	);
 };
 
 var StyledForm = styled.form`
-	margin-top: calc(var(--font-small) * 1.5 + 5px);
+	margin-top: calc(var(--util-icon-container-dimension) + 5px);
 
 	textarea {
 		width: 100%;

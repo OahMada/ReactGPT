@@ -39,7 +39,9 @@ export var PreviewContent = forwardRef<Ref, Props>(({ paragraph, includeTranslat
 						return (
 							<div ref={mergeRefs([() => (resetErrorBoundaryRef.current = resetErrorBoundary), ref])}>
 								<p>Error Occurred</p>
-								<button onClick={() => resetErrorBoundary()}>Retry</button>
+								<button onClick={() => resetErrorBoundary()} className='btn'>
+									Retry
+								</button>
 							</div>
 						);
 					}}

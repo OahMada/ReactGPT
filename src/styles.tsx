@@ -17,6 +17,7 @@ html {
 	--border-radius: 5px;
 	--border-radius-big: 10px;
 	--border-radius-small: 3px;
+	--util-icon-container-dimension: 3rem;
 }
 
 body {
