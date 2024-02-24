@@ -112,6 +112,7 @@ export var ArticleInput = () => {
 
 var StyledForm = styled.form`
 	display: grid;
+	width: 70rem;
 	height: 100%;
 	align-items: end;
 

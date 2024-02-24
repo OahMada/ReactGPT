@@ -366,6 +366,8 @@ var StyledArticle = styled.article`
 `;
 
 var StyledSection = styled.section`
+	width: 70rem;
+
 	.article-controls {
 		display: flex;
 		margin-bottom: 10px;

@@ -38,7 +38,7 @@ export var HotkeyMap = () => {
 					Exit
 				</button>
 			</div>
-			<div>
+			<div className='table-container'>
 				{hotkeyMapData.map((item) => {
 					let hotkeys = Object.entries(item[1]);
 					return (
@@ -74,7 +74,6 @@ export var HotkeyMap = () => {
 };
 
 var Section = styled.section`
-	max-width: 85rem;
 	padding: 50px;
 	margin: 0 auto;
 
@@ -82,6 +81,10 @@ var Section = styled.section`
 		display: flex;
 		justify-content: flex-end;
 		padding-bottom: 20px;
+	}
+
+	.table-container {
+		width: 70rem;
 	}
 
 	caption {

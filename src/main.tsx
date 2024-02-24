@@ -74,13 +74,14 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- * text too long, how to put contents in the center of the page?
  * btn-container extract out
  * rethink html layout and css
  * icon
  * responsive layout on mobile devices
  *
  * ## bugs
+ *
+ * the last piece of the focus issue
  *
  * ## test
  *
