@@ -147,16 +147,6 @@ export var Article = () => {
 		},
 	});
 
-	// when paragraph deletion is undone, re-focus it
-	useEffect(() => {
-		articleElements.map((item) => {
-			if (item.paragraphId === enabledScopes[0] && !item.element.classList.contains('active')) {
-				// without the second condition, the newly inserted paragraph won't be able to input text
-				item.element.focus();
-			}
-		});
-	}, [filteredParagraphs]);
-
 	/* react beautiful dnd */
 	/* v8 ignore next 11 */
 	let handleOnDragEnd = (result: DropResult) => {
@@ -319,7 +309,11 @@ export var Article = () => {
 																</ErrorBoundary>
 															)}
 														</QueryErrorResetBoundary>
-														<ParagraphControlBtns paragraphId={paragraph.id} />
+														<ParagraphControlBtns
+															paragraphId={paragraph.id}
+															index={index}
+															paragraphFocused={focusedParagraphIndexRef.current === index}
+														/>
 													</div>
 												</StyledArticle>
 											)}

@@ -4,7 +4,6 @@ var FocusedParagraphIndexContext = createContext<MutableRefObject<number> | null
 
 export function FocusedParagraphIndexContextWrapper({ children }: { children: React.ReactNode }) {
 	let focusedParagraphIndexRef = useRef(-1);
-
 	return <FocusedParagraphIndexContext.Provider value={focusedParagraphIndexRef}>{children}</FocusedParagraphIndexContext.Provider>;
 }
 

@@ -58,7 +58,7 @@ var Undo = ({ closeToast, onUndo, paragraph, paragraphId }: UndoProps) => {
 	);
 };
 
-export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => {
+export var ParagraphControlBtns = ({ paragraphId, index, paragraphFocused }: { paragraphId: string; index: number; paragraphFocused: boolean }) => {
 	let { setAutoFocus } = useAutoFocusContext();
 	let focusedParagraphIndexRef = useFocusedParagraphIndexContext();
 
@@ -80,6 +80,9 @@ export var ParagraphControlBtns = ({ paragraphId }: { paragraphId: string }) => 
 				<Undo
 					onUndo={() => {
 						dispatch(undoParagraphDeletion(paragraphId));
+						if (paragraphFocused) {
+							focusedParagraphIndexRef.current = index;
+						}
 					}}
 					/* v8 ignore next 3 */
 					closeToast={() => {

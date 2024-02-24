@@ -80,7 +80,7 @@ export var ArticleInput = () => {
 			} */}
 			{articles.length === 0 && (
 				<div className='intro'>
-					<h1>Input or copy/paste your article into the textarea.</h1>
+					<h1>Input or paste your article into the textarea.</h1>
 					<p>Paragraphs are separated by double line breaks.</p>
 				</div>
 			)}
