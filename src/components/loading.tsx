@@ -1,7 +1,13 @@
+import styled from 'styled-components';
+
 export var Loading = () => {
 	return (
-		<p>
+		<StyledP>
 			<i>Loading...</i>
-		</p>
+		</StyledP>
 	);
 };
+
+var StyledP = styled.p`
+	color: var(--color-darkest);
+`;

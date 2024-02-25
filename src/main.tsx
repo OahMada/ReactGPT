@@ -74,7 +74,8 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- * it's better to have a StyledButton than to add .btn class all over the places
+ * error loading translation
+ * it's better to have a StyledButton than to add .btn class all over the places: create several StyledButton element
  * fixed config hotkey
  * footer
  * icon
@@ -87,6 +88,7 @@ enableMocking().then(() => {
  * why position change when editing paragraph
  * dismissed paragraph deletion toast reappears
  * tooltip persisting issue on phone
+ * sanitize user input first before checking characters length
  *
  * ## test
  *
