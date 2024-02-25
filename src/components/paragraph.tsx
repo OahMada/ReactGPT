@@ -23,9 +23,8 @@ import {
 	selectArticle,
 } from '../features/articleSlice';
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
-import { useAutoFocusContext } from './autoFocus';
 
-import { Modal, ParagraphInput, ParagraphTranslation } from '.';
+import { Modal, ParagraphInput, ParagraphTranslation, useAutoFocusContext } from '.';
 import { ParagraphWrapper, StyledParagraph } from '../styles';
 
 export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {

@@ -74,11 +74,10 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- * new article whole area clickable
  * it's better to have a StyledButton than to add .btn class all over the places
- * icon
  * fixed config hotkey
  * footer
+ * icon
  * css rules organize
  * new layout
  * responsive layout on mobile devices

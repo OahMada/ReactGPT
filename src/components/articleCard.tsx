@@ -5,10 +5,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn'; // import locale
 import cs from 'classnames';
+import styled from 'styled-components';
 
 import { useAppDispatch } from '../redux/hooks';
 import { removeArticle, addArticleToDeletionQueue, removeArticleFromDeletionQueue } from '../features/articleSlice';
-import styled from 'styled-components';
 
 interface ArticleCardProp {
 	article: {

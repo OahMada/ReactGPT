@@ -17,6 +17,7 @@ export var SharedLayout = () => {
 	let [searchFocus, setSearchFocus] = useState(false);
 	let articlePinningScheduleRef = useRef<Map<string, 'pin' | 'unpin'>>(new Map());
 	let debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>();
+	let newArticleLinkRef = useRef<HTMLAnchorElement>(null);
 
 	let dispatch = useAppDispatch();
 	let { articleQueue, paragraphs } = useAppSelector(selectArticle);
@@ -202,11 +203,18 @@ export var SharedLayout = () => {
 				>
 					{(query || articles.length > 0) && (
 						<div className='card'>
-							<div className='link-wrapper'>
+							<div
+								className='link-wrapper'
+								onClick={() => {
+									if (!newArticleLinkRef.current) throw Error('newArticleLinkRef is not assigned');
+									newArticleLinkRef.current.click();
+								}}
+							>
 								<NavLink
 									to={`/${query ? `?search=${query}` : ''}`}
 									data-tooltip-id='hotkey'
 									data-tooltip-content={articlePageHotkeys.createNewArticle.label}
+									ref={newArticleLinkRef}
 								>
 									New Article
 								</NavLink>
@@ -298,18 +306,19 @@ var StyledNav = styled.nav`
 			& .link-wrapper {
 				display: grid;
 				width: 100%;
+				height: 100%;
 				place-items: center;
+
+				&:hover {
+					color: var(--color-darkest);
+				}
 
 				a {
 					display: inline-block;
-					color: black;
+					color: inherit;
 					font-size: var(--font-big);
 					font-weight: lighter;
 					text-decoration: none;
-
-					&:hover {
-						color: var(--color-darkest);
-					}
 				}
 			}
 
