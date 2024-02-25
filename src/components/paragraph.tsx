@@ -26,6 +26,7 @@ import { updateModalContent, showModal, hideModal, selectModal } from '../featur
 import { useAutoFocusContext } from './autoFocus';
 
 import { Modal, ParagraphInput, ParagraphTranslation } from '.';
+import { ParagraphWrapper, StyledParagraph } from '../styles';
 
 export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 	let { setAutoFocus } = useAutoFocusContext();
@@ -112,7 +113,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 	if (paragraphStatus === 'modifying' || paragraphStatus === 'reviving') {
 		return (
 			<>
-				<ExtendedStyledDiv>
+				<ExtendedParagraphWrapper>
 					{paragraphStatus === 'reviving' && (
 						<fieldset>
 							<legend>Check edit history mode:</legend>
@@ -228,7 +229,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 							Done
 						</button>
 					</div>
-				</ExtendedStyledDiv>
+				</ExtendedParagraphWrapper>
 				<Modal ref={modalRef} modalOffsets={modalOffsetsRef.current} />
 			</>
 		);
@@ -236,7 +237,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 	// -------------- Done Modification --------------
 	if (paragraphStatus === 'doneModification') {
 		return (
-			<ExtendedStyledDiv>
+			<ExtendedParagraphWrapper>
 				<h4>Click Paragraph to Edit</h4>
 				<StyledParagraph
 					onClick={() => {
@@ -298,48 +299,16 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 						{!showTranslation ? 'Show Translation' : 'Hide Translation'}
 					</button>
 				</div>
-			</ExtendedStyledDiv>
+			</ExtendedParagraphWrapper>
 		);
 	}
 };
-
-export var StyledParagraph = styled.p`
-	padding: 10px;
-	border: 1px solid var(--color-darker);
-	border-radius: var(--border-radius);
-	font-size: 1.6rem;
-	letter-spacing: 2px;
-
-	.insert {
-		background-color: lightgreen;
-		text-decoration: none;
-	}
-
-	.replacement {
-		background-color: lightblue;
-	}
-
-	.deletion {
-		background-color: lightcoral;
-	}
-`;
 
 var StyledSpan = styled.span<{ $isSpace: boolean }>`
 	text-decoration: ${({ $isSpace }) => ($isSpace ? 'none' : 'line-through')};
 `;
 
-export var StyledDiv = styled.div`
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: var(--gap-primary);
-
-	p:first-child {
-		margin-top: calc(var(--util-icon-container-dimension) + 5px);
-	}
-`;
-
-var ExtendedStyledDiv = styled(StyledDiv)`
+var ExtendedParagraphWrapper = styled(ParagraphWrapper)`
 	h4 {
 		height: var(--util-icon-container-dimension);
 		align-self: flex-start;

@@ -1,5 +1,6 @@
 import { screen, waitFor, act } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
+import userEvent from '@testing-library/user-event';
 
 import { renderAnExistingArticle, clickElement, server, fetchButton, fetchElementsByTagName } from '../setupTests';
 
@@ -30,7 +31,7 @@ describe('Preview route tests', () => {
 	it('Click the export to file button to reveal available options, click on each export option', async () => {
 		// https://kentcdodds.com/blog/fix-the-not-wrapped-in-act-warning#1-when-using-jestusefaketimers
 		renderAnExistingArticle(0, true);
-		await clickElement(/export to file/i);
+		await userEvent.hover(fetchButton(/export to file/i));
 		expect(fetchButton(/download pdf/i)).toBeInTheDocument();
 		expect(fetchButton(/download docx/i)).toBeInTheDocument();
 		expect(fetchButton(/download image/i)).toBeInTheDocument();

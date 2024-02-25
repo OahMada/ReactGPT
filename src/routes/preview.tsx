@@ -18,11 +18,11 @@ import { PartialParagraph, Paragraph } from '../types';
 import { translationQueryKeys } from '../query/translationQuery';
 import { createToast, useKeys, HotkeyMapData, debounce } from '../utils';
 import { workerInstance } from '../worker/workerInstance';
+import { ControlOptionsMenuContainerStyles, ControlOptionsMenu } from '../styles';
 
 export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);
 	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
-	let [showExportOptions, setShowExportOptions] = useState(false);
 	let articleWrapperRef = useRef(null);
 
 	// react router
@@ -204,20 +204,13 @@ export var Preview = () => {
 	useKeys({ keyBinding: previewPageHotkeys.includeTranslation.hotkey, callback: handleTranslation });
 	useKeys({ keyBinding: previewPageHotkeys.exitPreview.hotkey, callback: handleClosePreview });
 	useKeys({ keyBinding: previewPageHotkeys.copyToClipboard.hotkey, callback: debouncedCopyToClipboard });
-	useKeys({
-		keyBinding: previewPageHotkeys.showExportOptions.hotkey,
-		/* v8 ignore next 3 */
-		callback: () => {
-			setShowExportOptions(true);
-		},
-	});
 	useKeys({ keyBinding: previewPageHotkeys.downloadPDF.hotkey, callback: debouncedDownloadPDF });
 	useKeys({ keyBinding: previewPageHotkeys.downloadDocx.hotkey, callback: debouncedDownloadDocx });
 	useKeys({ keyBinding: previewPageHotkeys.downloadImg.hotkey, callback: debouncedDownloadImg });
 	useKeys({ keyBinding: previewPageHotkeys.retryAllErred.hotkey, callback: handleRetryAll });
 
 	return (
-		<ModalWrapper
+		<StyledSection
 			/* v8 ignore next 3 */
 			onClick={() => {
 				navigate(-1);
@@ -225,40 +218,45 @@ export var Preview = () => {
 			ref={modalRef}
 		>
 			<div onClick={(e) => e.stopPropagation()} className='paragraphs'>
-				<div className='btn-container'>
-					<button
-						onClick={handleTranslation}
-						data-tooltip-id='hotkey'
-						data-tooltip-content={previewPageHotkeys.includeTranslation.label}
-						className='btn'
-					>
-						{!includeTranslation ? 'Include Translation' : 'Remove Translation'}
-					</button>
-					{showRetryAllButton && (
+				<header>
+					<div className='btn-container'>
+						<button onClick={handleClosePreview} data-tooltip-id='hotkey' data-tooltip-content={previewPageHotkeys.exitPreview.label} className='btn'>
+							Close
+						</button>
 						<button
-							onClick={handleRetryAll}
-							disabled={translationFetchingCount > 0}
+							onClick={handleTranslation}
 							data-tooltip-id='hotkey'
-							data-tooltip-content={previewPageHotkeys.retryAllErred.label}
+							data-tooltip-content={previewPageHotkeys.includeTranslation.label}
 							className='btn'
 						>
-							Retry All
+							{!includeTranslation ? 'Include Translation' : 'Remove Translation'}
 						</button>
-					)}
-					<button onClick={handleClosePreview} data-tooltip-id='hotkey' data-tooltip-content={previewPageHotkeys.exitPreview.label} className='btn'>
-						Close
-					</button>
-					<button
-						disabled={translationFetchingCount !== 0}
-						onClick={debouncedCopyToClipboard}
-						data-tooltip-id='hotkey'
-						data-tooltip-content={previewPageHotkeys.copyToClipboard.label}
-						className='btn'
-					>
-						Copy To Clipboard
-					</button>
-					{showExportOptions ? (
-						<>
+						{showRetryAllButton && (
+							<button
+								onClick={handleRetryAll}
+								disabled={translationFetchingCount > 0}
+								data-tooltip-id='hotkey'
+								data-tooltip-content={previewPageHotkeys.retryAllErred.label}
+								className='btn'
+							>
+								Retry All
+							</button>
+						)}
+					</div>
+					<div className='export-options-container'>
+						<div className='btn-container'>
+							<button
+								disabled={translationFetchingCount !== 0}
+								onClick={debouncedCopyToClipboard}
+								data-tooltip-id='hotkey'
+								data-tooltip-content={previewPageHotkeys.copyToClipboard.label}
+								className='btn'
+							>
+								Copy To Clipboard
+							</button>
+							<button className='btn export-btn'>Export To File</button>
+						</div>
+						<StyledDiv className='export-options'>
 							<button
 								disabled={translationFetchingCount !== 0}
 								onClick={debouncedDownloadPDF}
@@ -286,19 +284,10 @@ export var Preview = () => {
 							>
 								Download Image
 							</button>
-						</>
-					) : (
-						<button
-							onClick={() => setShowExportOptions(true)}
-							data-tooltip-id='hotkey'
-							data-tooltip-content={previewPageHotkeys.showExportOptions.label}
-							className='btn'
-						>
-							Export To File
-						</button>
-					)}
-				</div>
-				<div ref={articleWrapperRef} className='article-display'>
+						</StyledDiv>
+					</div>
+				</header>
+				<main ref={articleWrapperRef}>
 					{currentArticleParagraphs.map((paragraph) => {
 						return (
 							<PreviewContent
@@ -316,13 +305,13 @@ export var Preview = () => {
 							/>
 						);
 					})}
-				</div>
+				</main>
 			</div>
-		</ModalWrapper>
+		</StyledSection>
 	);
 };
 
-var ModalWrapper = styled.section`
+var StyledSection = styled.section`
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -345,23 +334,40 @@ var ModalWrapper = styled.section`
 		min-height: 60%;
 		max-height: 80%;
 		flex-direction: column;
-		padding: 30px;
 		border-radius: var(--border-radius-small);
 		background-color: white;
 		box-shadow: 0 2rem 4rem rgb(0 0 0 / 20%);
 		overflow-y: scroll;
 
+		header {
+			position: fixed;
+			display: flex;
+			width: inherit;
+			justify-content: space-between;
+			padding: 30px;
+			padding-bottom: 10px;
+			border-radius: var(--border-radius-small);
+			background-color: white;
+		}
+
 		.btn-container {
 			display: flex;
-			margin-bottom: 10px;
+			min-height: 30px;
 			gap: var(--gap-primary);
 		}
 
-		.article-display {
+		.export-options-container {
+			right: 30px;
+			${ControlOptionsMenuContainerStyles}
+		}
+
+		main {
 			flex-grow: 1;
 			padding: 20px;
 			border: 1px solid var(--color-dark);
 			border-radius: var(--border-radius);
+			margin: 30px;
+			margin-top: 70px;
 
 			p {
 				font-size: var(--font-primary);
@@ -371,5 +377,15 @@ var ModalWrapper = styled.section`
 				margin-bottom: 0.8rem;
 			}
 		}
+	}
+`;
+
+var StyledDiv = styled(ControlOptionsMenu)`
+	background-color: var(--color-light);
+	box-shadow: 0 0 0.5rem rgb(0 0 0 / 60%);
+	translate: 0 -1px;
+
+	.btn-container:has(.export-btn:hover) + & {
+		display: flex;
 	}
 `;

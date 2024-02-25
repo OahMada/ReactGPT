@@ -1,4 +1,4 @@
-import { StyledParagraph } from './paragraph';
+import { StyledParagraph } from '../styles';
 import { useTranslationQuery } from '../query/translationQuery';
 import { PartialParagraph } from '../types';
 

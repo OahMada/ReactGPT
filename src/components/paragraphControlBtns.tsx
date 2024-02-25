@@ -2,7 +2,6 @@ import { useRef, forwardRef } from 'react';
 import { toast, Id } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import { useHotkeysContext } from 'react-hotkeys-hook';
-import styled from 'styled-components';
 
 import {
 	finishParagraphDeletion,
@@ -17,6 +16,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { createToast, throwIfUndefined, useKeys, HotkeyMapData } from '../utils';
 import { Paragraph } from '../types';
 import { useAutoFocusContext, useFocusedParagraphIndexContext } from './';
+import { ControlOptionsMenu } from '../styles';
 
 // https://github.com/fkhadra/react-toastify/issues/568#issuecomment-779847274
 interface UndoProps {
@@ -141,7 +141,7 @@ export var ParagraphControlBtns = ({ paragraphId, index, paragraphFocused }: { p
 	});
 
 	return (
-		<StyledDiv>
+		<ControlOptionsMenu>
 			<NoFocusPropagationButton
 				onClick={handleParagraphDeletion}
 				data-tooltip-id='hotkey'
@@ -166,7 +166,7 @@ export var ParagraphControlBtns = ({ paragraphId, index, paragraphFocused }: { p
 			>
 				Insert Below
 			</NoFocusPropagationButton>
-		</StyledDiv>
+		</ControlOptionsMenu>
 	);
 };
 
@@ -179,34 +179,3 @@ var NoFocusPropagationButton = forwardRef<Ref, React.ComponentPropsWithRef<'butt
 		</button>
 	);
 });
-
-var StyledDiv = styled.div`
-	display: none;
-	width: fit-content;
-	flex-direction: column;
-	align-items: flex-end;
-	padding: 5px;
-	border: 1px solid var(--color-darker);
-	border-radius: var(--border-radius-small);
-	background-color: white;
-	box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 30%);
-	gap: var(--gap-small);
-
-	&:hover {
-		display: flex;
-	}
-
-	button {
-		border: none;
-		background-color: transparent;
-
-		&:hover {
-			color: var(--color-darkest);
-		}
-
-		&:not(:last-child) {
-			border-radius: 0;
-			border-bottom: 1px solid black;
-		}
-	}
-`;

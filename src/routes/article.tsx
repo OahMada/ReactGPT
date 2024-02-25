@@ -16,16 +16,15 @@ import { selectArticle, handleParagraphOrderChange, updateUserInput, toggleTrans
 
 // components
 import {
-	StyledParagraph,
 	ParagraphInput,
-	ParagraphControlBtns,
 	Paragraph,
 	EmptyParagraphList,
 	ArticleControlBtns,
-	StyledDiv,
 	useFocusedParagraphIndexContext,
+	ParagraphControlBtns,
+	AutoFocusWrapper,
 } from '../components';
-import { AutoFocusWrapper } from '../components';
+import { ControlOptionsMenuContainerStyles, ParagraphWrapper, StyledParagraph } from '../styles';
 
 // utils
 import { createToast, throwIfUndefined, useKeys, HotkeyMapData } from '../utils';
@@ -282,7 +281,7 @@ export var Article = () => {
 																			return <ParagraphInput paragraphId={paragraph.id} resetErrorBoundary={resetErrorBoundary} />;
 																		}
 																		return (
-																			<StyledDiv
+																			<ParagraphWrapper
 																				// reference https://react.dev/learn/manipulating-the-dom-with-refs#how-to-manage-a-list-of-refs-using-a-ref-callback
 																				ref={(node) => {
 																					if (node) {
@@ -305,7 +304,7 @@ export var Article = () => {
 																				>
 																					Retry
 																				</button>
-																			</StyledDiv>
+																			</ParagraphWrapper>
 																		);
 																	}}
 																	onError={(error) => {
@@ -372,12 +371,9 @@ var StyledArticle = styled.article`
 	}
 
 	.paragraph-menu-container {
-		position: absolute;
 		top: 10px;
 		right: 10px;
-		display: flex;
-		flex-direction: column;
-		align-items: flex-end;
+		${ControlOptionsMenuContainerStyles}
 
 		.paragraph-menu {
 			/* https://www.joshwcomeau.com/css/css-variables-for-react-devs/#:~:text=industry%20guidelines%20are%20that%20interactive%20elements%20should%20be%20between%2044px%20and%2048px%20tall. */

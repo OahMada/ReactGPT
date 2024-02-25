@@ -153,12 +153,6 @@ export var HotkeyMapData = () => {
 				label: generateHotkeyLabel(getUserDefinedHotkey({ id: 'preview/clipboard', hotkey: 'c' })),
 				purpose: 'Click the Copy to Clipboard button. Copy article to clipboard.',
 			},
-			showExportOptions: {
-				id: 'preview/export',
-				hotkey: getUserDefinedHotkey({ id: 'preview/export', hotkey: 'mod+e' }),
-				label: generateHotkeyLabel(getUserDefinedHotkey({ id: 'preview/export', hotkey: 'mod+e' })),
-				purpose: 'Click the Export As File button. Show article export options.',
-			},
 			downloadPDF: {
 				id: 'preview/pdf',
 				hotkey: getUserDefinedHotkey({ id: 'preview/pdf', hotkey: 'p' }),

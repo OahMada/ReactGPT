@@ -74,8 +74,6 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- * preview page styles
- * preview fixed buttons
  * new article whole area clickable
  * it's better to have a StyledButton than to add .btn class all over the places
  * icon
