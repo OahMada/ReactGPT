@@ -256,7 +256,7 @@ export var Preview = () => {
 							</button>
 							<button className='btn export-btn'>Export To File</button>
 						</div>
-						<StyledDiv className='export-options'>
+						<StyledDiv>
 							<button
 								disabled={translationFetchingCount !== 0}
 								onClick={debouncedDownloadPDF}
@@ -367,7 +367,7 @@ var StyledSection = styled.section`
 			border: 1px solid var(--color-dark);
 			border-radius: var(--border-radius);
 			margin: 30px;
-			margin-top: 70px;
+			margin-top: calc(40px + var(--util-icon-container-dimension));
 
 			p {
 				font-size: var(--font-primary);

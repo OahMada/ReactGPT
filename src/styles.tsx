@@ -17,7 +17,7 @@ html {
 	--border-radius: 5px;
 	--border-radius-big: 10px;
 	--border-radius-small: 3px;
-	--util-icon-container-dimension: 3rem;
+	--util-icon-container-dimension: 3.2rem;
 	--gap-primary: 5px;
 	--gap-small: 3px;
 	--gap-big: 8px;
@@ -38,7 +38,7 @@ body {
 
 .btn {
 	display: inline-block;
-	height: 3rem;
+	height: var(--util-icon-container-dimension);
 	padding: 0 10px;
 	border: 1px solid black;
 	border-radius: var(--border-radius);
