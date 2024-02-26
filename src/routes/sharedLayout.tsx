@@ -303,6 +303,12 @@ var StyledNav = styled.nav`
 			border-radius: var(--border-radius);
 			gap: var(--gap-primary);
 
+			button {
+				border: none;
+				border-radius: var(--border-radius-big);
+				background-color: var(--color-dark);
+			}
+
 			& .link-wrapper {
 				display: grid;
 				width: 100%;

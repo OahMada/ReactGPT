@@ -43,11 +43,6 @@ body {
 	border: 1px solid black;
 	border-radius: var(--border-radius);
 
-	.card .btn-container & {
-		border: none;
-		border-radius: var(--border-radius-big);
-		background-color: var(--color-dark);
-	}
 }
 `;
 
