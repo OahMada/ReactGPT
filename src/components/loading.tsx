@@ -9,5 +9,11 @@ export var Loading = () => {
 };
 
 var StyledP = styled.p`
+	/* to match the error message */
+	padding: 8px;
+	padding-left: 0;
+
+	/* reset margin from preview page styles */
+	margin-bottom: 0;
 	color: var(--color-darkest);
 `;

@@ -218,7 +218,7 @@ export var Preview = () => {
 			ref={modalRef}
 		>
 			<div onClick={(e) => e.stopPropagation()} className='paragraphs'>
-				<header>
+				<div className='preview-header'>
 					<div className='btn-container'>
 						<button onClick={handleClosePreview} data-tooltip-id='hotkey' data-tooltip-content={previewPageHotkeys.exitPreview.label} className='btn'>
 							Close
@@ -286,8 +286,8 @@ export var Preview = () => {
 							</button>
 						</StyledDiv>
 					</div>
-				</header>
-				<main ref={articleWrapperRef}>
+				</div>
+				<section ref={articleWrapperRef}>
 					{currentArticleParagraphs.map((paragraph) => {
 						return (
 							<PreviewContent
@@ -305,7 +305,7 @@ export var Preview = () => {
 							/>
 						);
 					})}
-				</main>
+				</section>
 			</div>
 		</StyledSection>
 	);
@@ -339,7 +339,7 @@ var StyledSection = styled.section`
 		box-shadow: 0 2rem 4rem rgb(0 0 0 / 20%);
 		overflow-y: scroll;
 
-		header {
+		.preview-header {
 			position: fixed;
 			display: flex;
 			width: inherit;
@@ -361,7 +361,7 @@ var StyledSection = styled.section`
 			${ControlOptionsMenuContainerStyles}
 		}
 
-		main {
+		section {
 			flex-grow: 1;
 			padding: 20px;
 			border: 1px solid var(--color-dark);
@@ -373,7 +373,7 @@ var StyledSection = styled.section`
 				font-size: var(--font-primary);
 			}
 
-			p:not(:last-child) {
+			& > p:not(:last-child) {
 				margin-bottom: 0.8rem;
 			}
 		}

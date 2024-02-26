@@ -97,7 +97,7 @@ export var ParagraphWrapper = styled.div`
 	align-items: flex-start;
 	gap: var(--gap-primary);
 
-	p:first-child {
+	& > p:first-child {
 		margin-top: calc(var(--util-icon-container-dimension) + 5px);
 	}
 `;
@@ -120,5 +120,15 @@ export var StyledParagraph = styled.p`
 
 	.deletion {
 		background-color: lightcoral;
+	}
+`;
+
+export var ErrorBoundaryWrapper = styled.div`
+	display: flex;
+	align-items: center;
+	gap: var(--gap-primary);
+
+	p {
+		padding: 8px;
 	}
 `;

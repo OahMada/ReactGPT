@@ -2,9 +2,11 @@ import { forwardRef, useEffect, useRef, Suspense } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { useQueryErrorResetBoundary, useIsFetching } from '@tanstack/react-query';
 import { mergeRefs } from 'react-merge-refs';
+import styled from 'styled-components';
 
 import { PartialParagraph } from '../types';
 import { Loading, PreviewTranslation } from '.';
+import { ErrorBoundaryWrapper } from '../styles';
 
 interface Props {
 	paragraph: PartialParagraph;
@@ -37,12 +39,14 @@ export var PreviewContent = forwardRef<Ref, Props>(({ paragraph, includeTranslat
 					onReset={reset}
 					fallbackRender={({ resetErrorBoundary }) => {
 						return (
-							<div ref={mergeRefs([() => (resetErrorBoundaryRef.current = resetErrorBoundary), ref])}>
-								<p>Error Occurred</p>
+							<StyledDiv ref={mergeRefs([() => (resetErrorBoundaryRef.current = resetErrorBoundary), ref])}>
+								<p>
+									<i>Error Occurred!</i>
+								</p>
 								<button onClick={() => resetErrorBoundary()} className='btn'>
 									Retry
 								</button>
-							</div>
+							</StyledDiv>
 						);
 					}}
 				>
@@ -54,3 +58,13 @@ export var PreviewContent = forwardRef<Ref, Props>(({ paragraph, includeTranslat
 		</>
 	);
 });
+
+var StyledDiv = styled(ErrorBoundaryWrapper)`
+	&:not(:last-child) {
+		margin-bottom: 10px;
+	}
+
+	p {
+		padding-left: 0;
+	}
+`;

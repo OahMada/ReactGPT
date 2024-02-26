@@ -74,8 +74,6 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- * error loading translation
- * it's better to have a StyledButton than to add .btn class all over the places: create several StyledButton element
  * fixed config hotkey
  * footer
  * icon

@@ -25,7 +25,7 @@ import {
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
 
 import { Modal, ParagraphInput, ParagraphTranslation, useAutoFocusContext } from '.';
-import { ParagraphWrapper, StyledParagraph } from '../styles';
+import { ParagraphWrapper, StyledParagraph, ErrorBoundaryWrapper } from '../styles';
 
 export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 	let { setAutoFocus } = useAutoFocusContext();
@@ -250,10 +250,14 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 					<ErrorBoundary
 						onReset={reset}
 						fallbackRender={({ resetErrorBoundary }) => (
-							<div>
-								<StyledParagraph>There was an error!</StyledParagraph>
-								<button onClick={() => resetErrorBoundary()}>Try again</button>
-							</div>
+							<ErrorBoundaryWrapper>
+								<StyledParagraph>
+									<i>There was an error!</i>
+								</StyledParagraph>
+								<button onClick={() => resetErrorBoundary()} className='btn'>
+									Try again
+								</button>
+							</ErrorBoundaryWrapper>
 						)}
 					>
 						<ParagraphTranslation paragraph={{ paragraphText: paragraphAfterGrammarFix, paragraphId }} />
@@ -308,6 +312,11 @@ var StyledSpan = styled.span<{ $isSpace: boolean }>`
 `;
 
 var ExtendedParagraphWrapper = styled(ParagraphWrapper)`
+	button {
+		border-color: var(--color-darker);
+		background-color: var(--color-dark);
+	}
+
 	h4 {
 		height: var(--util-icon-container-dimension);
 		align-self: flex-start;
@@ -323,11 +332,6 @@ var ExtendedParagraphWrapper = styled(ParagraphWrapper)`
 		flex-wrap: wrap;
 		margin-top: 5px;
 		gap: var(--gap-primary);
-
-		button {
-			border-color: var(--color-darker);
-			background-color: var(--color-dark);
-		}
 	}
 
 	fieldset {
