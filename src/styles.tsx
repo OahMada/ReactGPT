@@ -1,9 +1,14 @@
-import styled, { createGlobalStyle, css } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 
 import { ModalWrapper } from './components/modal/modalWrapper';
 import { PreviewWrapper } from './routes/preview/previewWrapper';
 
 var GlobalStyles = createGlobalStyle`
+/* https://fkhadra.github.io/react-toastify/how-to-style#override-css-variables */
+:root {
+	--toastify-toast-width: 350px;
+}
+
 html {
 	font-size: 62.5%;
 
@@ -101,6 +106,13 @@ export var ErrorBoundaryWrapper = styled.div`
 	}
 `;
 
+export var UndoDeletionWrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 8px;
+`;
+
 // https://www.joshwcomeau.com/css/styled-components/#:~:text=With%20this%20little%20trick%2C%20we%27ve%20inverted%20the%20control
 export var Button = styled.button`
 	display: inline-block;
@@ -108,6 +120,7 @@ export var Button = styled.button`
 	padding: 0 10px;
 	border: 1px solid black;
 	border-radius: var(--border-radius);
+	background-color: white;
 
 	.card & {
 		border: none;
@@ -152,6 +165,16 @@ export var Button = styled.button`
 
 		&:hover {
 			opacity: 0.6;
+		}
+	}
+
+	${UndoDeletionWrapper} & {
+		padding: 5px;
+		border: none;
+		box-shadow: 0 0 0.5rem rgb(0 0 0 / 10%);
+
+		&:hover {
+			color: var(--color-darkest);
 		}
 	}
 `;

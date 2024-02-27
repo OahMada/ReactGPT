@@ -16,7 +16,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { createToast, throwIfUndefined, useKeys, HotkeyMapData } from '../utils';
 import { Paragraph } from '../types';
 import { useAutoFocusContext, useFocusedParagraphIndexContext } from './';
-import { ControlOptionsMenu, Button } from '../styles';
+import { ControlOptionsMenu, Button, UndoDeletionWrapper } from '../styles';
 
 // https://github.com/fkhadra/react-toastify/issues/568#issuecomment-779847274
 interface UndoProps {
@@ -44,8 +44,8 @@ var Undo = ({ closeToast, onUndo, paragraph, paragraphId }: UndoProps) => {
 	});
 
 	return (
-		<div>
-			Deleting Paragraph {`"${paragraph.slice(0, 10)}..." `}
+		<UndoDeletionWrapper>
+			<h4>Deleting Paragraph {`"${paragraph.slice(0, 10)}..." `}</h4>
 			<Button
 				onClick={handleClick}
 				data-tooltip-id='hotkey'
@@ -54,7 +54,7 @@ var Undo = ({ closeToast, onUndo, paragraph, paragraphId }: UndoProps) => {
 			>
 				UNDO
 			</Button>
-		</div>
+		</UndoDeletionWrapper>
 	);
 };
 

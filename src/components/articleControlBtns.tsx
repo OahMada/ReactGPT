@@ -12,7 +12,7 @@ import {
 	unPinArticle,
 } from '../features/articleSlice';
 import { createToast, useKeys, HotkeyMapData } from '../utils';
-import { Button } from '../styles';
+import { Button, UndoDeletionWrapper } from '../styles';
 
 interface UndoProps {
 	onUndo: () => void;
@@ -30,12 +30,12 @@ var Undo = ({ closeToast, onUndo }: UndoProps) => {
 	useKeys({ keyBinding: articlePageHotkeys.undoArticleDeletion.hotkey, callback: handleClick });
 
 	return (
-		<div>
-			Deleting Current Article{' '}
-			<button onClick={handleClick} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.undoArticleDeletion.label}>
+		<UndoDeletionWrapper>
+			<h4>Deleting Current Article</h4>
+			<Button onClick={handleClick} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.undoArticleDeletion.label}>
 				UNDO
-			</button>
-		</div>
+			</Button>
+		</UndoDeletionWrapper>
 	);
 };
 

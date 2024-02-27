@@ -13,7 +13,7 @@ import { selectArticle, saveParagraphInput, disableCancelQueryState, deleteParag
 import { createToast, sanitizeUserInput, throwIfUndefined } from '../utils';
 import { Paragraph } from '../types';
 import { useFocusedParagraphIndexContext, useAutoFocusContext } from '.';
-import { Button } from '../styles';
+import { Button, ParagraphWrapper } from '../styles';
 
 interface ParagraphInputType {
 	paragraph: string;
@@ -155,8 +155,10 @@ export var ParagraphInput = ({
 					}
 				}}
 			/>
-			{/* TODO */}
-			<Button type='submit'>Done</Button>
+			{/* give the button extra styles */}
+			<ParagraphWrapper>
+				<Button type='submit'>Done</Button>
+			</ParagraphWrapper>
 		</StyledForm>
 	);
 };

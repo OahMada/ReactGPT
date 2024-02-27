@@ -74,7 +74,6 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- * toast element styles
  * fixed config hotkey
  * footer
  * icon
@@ -88,6 +87,8 @@ enableMocking().then(() => {
  * dismissed paragraph deletion toast reappears
  * tooltip persisting issue on phone
  * sanitize user input first before checking characters length
+ * retry all translation may not shown
+ * download image
  *
  * ## test
  *

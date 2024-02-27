@@ -278,7 +278,7 @@ export var Preview = () => {
 						</StyledDiv>
 					</div>
 				</div>
-				<section ref={articleWrapperRef}>
+				<div ref={articleWrapperRef} className='preview-content'>
 					{currentArticleParagraphs.map((paragraph) => {
 						return (
 							<PreviewContent
@@ -296,7 +296,7 @@ export var Preview = () => {
 							/>
 						);
 					})}
-				</section>
+				</div>
 			</div>
 		</PreviewWrapper>
 	);

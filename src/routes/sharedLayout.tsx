@@ -312,9 +312,6 @@ var StyledNav = styled.nav`
 					display: inline-block;
 					color: inherit;
 					font-size: var(--font-big);
-
-					/* TODO */
-					font-weight: 100;
 					text-decoration: none;
 				}
 			}

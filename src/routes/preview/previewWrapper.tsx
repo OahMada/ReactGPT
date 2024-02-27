@@ -46,7 +46,7 @@ export var PreviewWrapper = styled.section`
 			${ControlOptionsMenuContainerStyles}
 		}
 
-		section {
+		.preview-content {
 			flex-grow: 1;
 			padding: 20px;
 			border: 1px solid var(--color-dark);
