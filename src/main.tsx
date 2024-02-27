@@ -74,6 +74,7 @@ enableMocking().then(() => {
 /**
  * ## features
  *
+ * toast element styles
  * fixed config hotkey
  * footer
  * icon

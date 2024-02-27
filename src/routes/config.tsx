@@ -9,6 +9,7 @@ import { testQuery, testQueryKeys } from '../query/testQuery';
 import { selectConfig, toggleAPIKeyInEdit } from '../features/configSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { createToast, useKeys, HotkeyMapData } from '../utils';
+import { Button } from '../styles';
 
 interface APIKey {
 	key: string;
@@ -148,28 +149,22 @@ export var Config = () => {
 							onFocus={() => setInputFocus(true)}
 							onBlur={() => setInputFocus(false)}
 						/>
-						<button type='submit' disabled={errors?.key?.message ? true : false || isFetching} className='btn'>
+						<Button type='submit' disabled={errors?.key?.message ? true : false || isFetching}>
 							Done
-						</button>
+						</Button>
 					</form>
 				</>
 			)}
 			<div className='btns'>
 				{!APIKeyInEdit && secureLocalStorageAPIKey && (
-					<button onClick={clickEditButton} data-tooltip-id='hotkey' data-tooltip-content={configPageHotkeys.edit.label} className='btn'>
+					<Button onClick={clickEditButton} data-tooltip-id='hotkey' data-tooltip-content={configPageHotkeys.edit.label}>
 						Edit
-					</button>
+					</Button>
 				)}
 				{secureLocalStorageAPIKey && (
-					<button
-						type='button'
-						onClick={clickCancelButton}
-						data-tooltip-id='hotkey'
-						data-tooltip-content={configPageHotkeys.cancel.label}
-						className='btn'
-					>
+					<Button type='button' onClick={clickCancelButton} data-tooltip-id='hotkey' data-tooltip-content={configPageHotkeys.cancel.label}>
 						Cancel
-					</button>
+					</Button>
 				)}
 			</div>
 		</StyledSection>

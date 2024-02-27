@@ -12,6 +12,7 @@ import {
 	unPinArticle,
 } from '../features/articleSlice';
 import { createToast, useKeys, HotkeyMapData } from '../utils';
+import { Button } from '../styles';
 
 interface UndoProps {
 	onUndo: () => void;
@@ -31,7 +32,7 @@ var Undo = ({ closeToast, onUndo }: UndoProps) => {
 	return (
 		<div>
 			Deleting Current Article{' '}
-			<button onClick={handleClick} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.undoArticleDeletion.label} className='btn'>
+			<button onClick={handleClick} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.undoArticleDeletion.label}>
 				UNDO
 			</button>
 		</div>
@@ -107,13 +108,13 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 
 	return (
 		<>
-			<button onClick={handlePinArticle} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.pinArticle.label} className='btn'>
+			<Button onClick={handlePinArticle} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.pinArticle.label}>
 				{articleIsInFavorites ? 'Unpin' : 'Pin'}
-			</button>
-			<button onClick={handleArticleDeletion} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.deleteArticle.label} className='btn'>
+			</Button>
+			<Button onClick={handleArticleDeletion} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.deleteArticle.label}>
 				Delete Article
-			</button>
-			<button className='btn'>
+			</Button>
+			<Button>
 				<Link
 					to={`/article/${articleId}/preview`}
 					data-tooltip-id='hotkey'
@@ -122,7 +123,7 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 				>
 					Preview Article
 				</Link>
-			</button>
+			</Button>
 		</>
 	);
 };

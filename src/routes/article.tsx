@@ -24,7 +24,8 @@ import {
 	ParagraphControlBtns,
 	AutoFocusWrapper,
 } from '../components';
-import { ControlOptionsMenuContainerStyles, ParagraphWrapper, StyledParagraph } from '../styles';
+import { ParagraphWrapper, StyledParagraph, Button } from '../styles';
+import { ControlOptionsMenuContainerStyles } from './ControlOptionsMenuContainerStyles';
 
 // utils
 import { createToast, throwIfUndefined, useKeys, HotkeyMapData } from '../utils';
@@ -216,15 +217,9 @@ export var Article = () => {
 			<div className='article-controls'>
 				{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
 				{showRetryAllButton && (
-					<button
-						onClick={handleRetryAll}
-						disabled={grammarFixFetchingCount > 0}
-						data-tooltip-id='hotkey'
-						data-tooltip-content={retryAllErred.label}
-						className='btn'
-					>
+					<Button onClick={handleRetryAll} disabled={grammarFixFetchingCount > 0} data-tooltip-id='hotkey' data-tooltip-content={retryAllErred.label}>
 						Retry All
-					</button>
+					</Button>
 				)}
 			</div>
 			{filteredParagraphs.length === 0 && combinedArticleQueue.indexOf(articleId) !== -1 && <EmptyParagraphList />}
@@ -296,14 +291,13 @@ export var Article = () => {
 																				<StyledParagraph onClick={() => dispatch(updateUserInput(paragraph.id))}>
 																					{paragraph.paragraphBeforeGrammarFix}
 																				</StyledParagraph>
-																				<button
+																				<Button
 																					onClick={async () => {
 																						resetErrorBoundary();
 																					}}
-																					className='btn'
 																				>
 																					Retry
-																				</button>
+																				</Button>
 																			</ParagraphWrapper>
 																		);
 																	}}
@@ -399,11 +393,6 @@ var StyledSection = styled.section`
 		a {
 			color: inherit;
 			text-decoration: none;
-		}
-
-		button {
-			border-color: var(--color-dark);
-			background-color: var(--color-light);
 		}
 	}
 `;

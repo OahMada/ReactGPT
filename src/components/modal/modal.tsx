@@ -1,10 +1,11 @@
-import styled from 'styled-components';
 import { forwardRef } from 'react';
 
 // redux
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { showModal, hideModal, selectModal } from '../features/modalSlice';
-import { acceptSingleAdjustment, ignoreSingleAdjustment, updateParagraphEditDate } from '../features/articleSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { showModal, hideModal, selectModal } from '../../features/modalSlice';
+import { acceptSingleAdjustment, ignoreSingleAdjustment, updateParagraphEditDate } from '../../features/articleSlice';
+import { Button } from '../../styles';
+import { ModalWrapper } from './modalWrapper';
 
 type CustomCSS = React.CSSProperties & Record<`--${string}`, string | number>;
 
@@ -14,7 +15,7 @@ export var Modal = forwardRef<HTMLDivElement, { modalOffsets: { top: number; lef
 
 	// 0.8 & 6.5 here is fixed
 	return (
-		<StyledDiv
+		<ModalWrapper
 			/* v8 ignore next 3 */
 			onMouseLeave={() => {
 				dispatch(hideModal());
@@ -41,8 +42,8 @@ export var Modal = forwardRef<HTMLDivElement, { modalOffsets: { top: number; lef
 			</p>
 			<div className='btn-container'>
 				{paragraphStatus === 'reviving' ? (
-					<button
-						className='accept-btn modal-btn btn'
+					<Button
+						className='accept-btn'
 						onClick={() => {
 							dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
 							dispatch(updateParagraphEditDate(paragraphId));
@@ -50,11 +51,11 @@ export var Modal = forwardRef<HTMLDivElement, { modalOffsets: { top: number; lef
 						}}
 					>
 						REVERT
-					</button>
+					</Button>
 				) : (
 					<>
-						<button
-							className='accept-btn modal-btn btn'
+						<Button
+							className='accept-btn'
 							onClick={() => {
 								dispatch(acceptSingleAdjustment({ indexInParagraph, paragraphId }));
 								dispatch(updateParagraphEditDate(paragraphId));
@@ -62,78 +63,19 @@ export var Modal = forwardRef<HTMLDivElement, { modalOffsets: { top: number; lef
 							}}
 						>
 							ACCEPT
-						</button>
-						<button
-							className='ignore-btn modal-btn btn'
+						</Button>
+						<Button
+							className='ignore-btn'
 							onClick={() => {
 								dispatch(ignoreSingleAdjustment({ indexInParagraph, paragraphId }));
 								dispatch(hideModal());
 							}}
 						>
 							IGNORE
-						</button>
+						</Button>
 					</>
 				)}
 			</div>
-		</StyledDiv>
+		</ModalWrapper>
 	);
 });
-
-var StyledDiv = styled.div<{ $displayModal: boolean; $leftOffset: number }>`
-	position: fixed;
-	top: calc((var(--position-top) + var(--position-top-offset)) * 1px);
-	left: calc(var(--position-left) * 1px + ${({ $leftOffset }) => ($leftOffset ? `${$leftOffset} * 1px - 1rem` : '-0.5rem')});
-
-	/* to move into viewport in the case of viewport overflow */
-	display: ${({ $displayModal }) => ($displayModal ? 'flex' : 'none')};
-	width: fit-content;
-	flex-direction: column;
-	justify-content: space-around;
-	padding: 10px;
-	border: 1px solid black;
-	border-radius: var(--border-radius-small);
-	background-color: white;
-
-	.title {
-		font-size: var(--font-small-extra);
-		font-style: italic;
-		font-weight: 300;
-		text-decoration: underline 3px;
-		text-decoration-color: var(--color);
-	}
-
-	.content {
-		margin-top: 10px;
-		font-size: var(--font-larger);
-
-		cite {
-			font-style: inherit;
-		}
-	}
-
-	.btn-container {
-		display: flex;
-		justify-content: flex-start;
-		margin-top: 10px;
-		gap: var(--gap-primary);
-	}
-
-	.modal-btn {
-		padding: 0 5px;
-		border: none;
-		background-color: transparent;
-		font-size: var(--font-small);
-
-		&:hover {
-			opacity: 0.6;
-		}
-	}
-
-	.accept-btn {
-		color: var(--color-green);
-	}
-
-	.ignore-btn {
-		color: var(--color-darkest);
-	}
-`;

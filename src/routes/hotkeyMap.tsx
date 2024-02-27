@@ -8,6 +8,7 @@ import { useKeys, HotkeyMapData } from '../utils';
 import { LocalStorageHotkeys, RecordingStopper } from '../types';
 
 import { HotkeyInput } from '../components';
+import { Button } from '../styles';
 
 export var HotkeyMap = () => {
 	let hotkeyRecordingStopperRef = useRef<Map<'stopper', RecordingStopper>>(new Map()); // the initial value needs to be an object(or array, map) to properly save the `stop` util. https://stackoverflow.com/a/56444537/5800789
@@ -34,9 +35,9 @@ export var HotkeyMap = () => {
 	return (
 		<Section>
 			<div className='btn-container'>
-				<button onClick={clickExitButton} data-tooltip-id='hotkey' data-tooltip-content={hotkeyMapHotkeys.exit.label} className='btn'>
+				<Button onClick={clickExitButton} data-tooltip-id='hotkey' data-tooltip-content={hotkeyMapHotkeys.exit.label}>
 					Exit
-				</button>
+				</Button>
 			</div>
 			<div className='table-container'>
 				{hotkeyMapData.map((item) => {

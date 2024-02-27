@@ -1,6 +1,7 @@
 import { useRouteError, isRouteErrorResponse, useNavigate } from 'react-router-dom';
 import { useKeys, HotkeyMapData } from '../utils';
 import styled from 'styled-components';
+import { Button } from '../styles';
 
 export function ErrorPage() {
 	let error = useRouteError();
@@ -26,9 +27,9 @@ export function ErrorPage() {
 					<i>{(isRouteErrorResponse(error) && error.statusText) || (error instanceof Error && error.message)}</i>
 				</p>
 			</div>
-			<button onClick={handleClick} data-tooltip-id='hotkey' data-tooltip-content={errorPageHotkeys.back.label} className='btn'>
+			<Button onClick={handleClick} data-tooltip-id='hotkey' data-tooltip-content={errorPageHotkeys.back.label}>
 				Back to home page
-			</button>
+			</Button>
 		</StyledDiv>
 	);
 }

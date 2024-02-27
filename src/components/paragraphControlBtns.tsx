@@ -16,7 +16,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { createToast, throwIfUndefined, useKeys, HotkeyMapData } from '../utils';
 import { Paragraph } from '../types';
 import { useAutoFocusContext, useFocusedParagraphIndexContext } from './';
-import { ControlOptionsMenu } from '../styles';
+import { ControlOptionsMenu, Button } from '../styles';
 
 // https://github.com/fkhadra/react-toastify/issues/568#issuecomment-779847274
 interface UndoProps {
@@ -46,15 +46,14 @@ var Undo = ({ closeToast, onUndo, paragraph, paragraphId }: UndoProps) => {
 	return (
 		<div>
 			Deleting Paragraph {`"${paragraph.slice(0, 10)}..." `}
-			<button
+			<Button
 				onClick={handleClick}
 				data-tooltip-id='hotkey'
 				data-tooltip-content={articlePageHotkeys.undoParagraphDeletion.label}
 				data-tooltip-hidden={toolTipHidden}
-				className='btn'
 			>
 				UNDO
-			</button>
+			</Button>
 		</div>
 	);
 };
@@ -174,8 +173,8 @@ type Ref = HTMLButtonElement;
 
 var NoFocusPropagationButton = forwardRef<Ref, React.ComponentPropsWithRef<'button'>>(({ children, ...props }, ref) => {
 	return (
-		<button {...props} onFocus={(e) => e.stopPropagation()} ref={ref} className='btn'>
+		<Button {...props} onFocus={(e) => e.stopPropagation()} ref={ref}>
 			{children}
-		</button>
+		</Button>
 	);
 });

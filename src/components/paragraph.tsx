@@ -25,7 +25,7 @@ import {
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
 
 import { Modal, ParagraphInput, ParagraphTranslation, useAutoFocusContext } from '.';
-import { ParagraphWrapper, StyledParagraph, ErrorBoundaryWrapper } from '../styles';
+import { ParagraphWrapper, StyledParagraph, ErrorBoundaryWrapper, Button } from '../styles';
 
 export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 	let { setAutoFocus } = useAutoFocusContext();
@@ -200,18 +200,17 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 						</StyledParagraph>
 					)}
 					<div className='btn-container'>
-						<button
+						<Button
 							onClick={() => {
 								dispatch(acceptAllAdjustments(paragraphId));
 								dispatch(updateParagraphEditDate(paragraphId));
 							}}
 							disabled={allAdjustmentsCount === 0 || isGrammarFixesPending || isGrammarFixesFetching}
-							className='btn'
 						>
 							{paragraphStatus === 'modifying' && 'Accept All'}
 							{paragraphStatus === 'reviving' && 'Revert All'}
-						</button>
-						<button
+						</Button>
+						<Button
 							onClick={() => {
 								// to make sure the next time, paragraph changed back to old content, there will be a refetch
 								QueryClient.invalidateQueries({
@@ -221,12 +220,11 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 								});
 								dispatch(doneWithCurrentParagraphState(paragraphId));
 							}}
-							className='btn'
 							disabled={isGrammarFixesPending || isGrammarFixesFetching}
 							ref={doneButtonRef}
 						>
 							Done
-						</button>
+						</Button>
 					</div>
 				</ExtendedParagraphWrapper>
 				<Modal ref={modalRef} modalOffsets={modalOffsetsRef.current} />
@@ -254,9 +252,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 								<StyledParagraph>
 									<i>There was an error!</i>
 								</StyledParagraph>
-								<button onClick={() => resetErrorBoundary()} className='btn'>
-									Try again
-								</button>
+								<Button onClick={() => resetErrorBoundary()}>Try again</Button>
 							</ErrorBoundaryWrapper>
 						)}
 					>
@@ -264,20 +260,19 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 					</ErrorBoundary>
 				)}
 				<div className='btn-container'>
-					<button onClick={() => dispatch(checkEditHistory(paragraphId))} disabled={paragraphAfterGrammarFix === initialParagraph} className='btn'>
+					<Button onClick={() => dispatch(checkEditHistory(paragraphId))} disabled={paragraphAfterGrammarFix === initialParagraph}>
 						Show Edit History
-					</button>
-					<button
+					</Button>
+					<Button
 						onClick={() => {
 							dispatch(revertToBeginning(paragraphId));
 							dispatch(updateParagraphEditDate(paragraphId));
 						}}
 						disabled={paragraphAfterGrammarFix === initialParagraph}
-						className='btn'
 					>
 						Revert All Changes
-					</button>
-					<button
+					</Button>
+					<Button
 						onClick={() => {
 							QueryClient.invalidateQueries({
 								queryKey: grammarQueryKeys(paragraphBeforeGrammarFix, paragraphId),
@@ -285,11 +280,10 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 							});
 							dispatch(reFetchGrammarMistakes(paragraphId));
 						}}
-						className='btn'
 					>
 						Find Grammar Mistakes
-					</button>
-					<button
+					</Button>
+					<Button
 						onClick={() => {
 							if (showTranslation) {
 								QueryClient.cancelQueries({ queryKey: translationQueryKeys(paragraphAfterGrammarFix, paragraphId) });
@@ -297,10 +291,9 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 							dispatch(toggleTranslation(paragraphId));
 							reset();
 						}}
-						className='btn'
 					>
 						{!showTranslation ? 'Show Translation' : 'Hide Translation'}
-					</button>
+					</Button>
 				</div>
 			</ExtendedParagraphWrapper>
 		);
@@ -312,11 +305,6 @@ var StyledSpan = styled.span<{ $isSpace: boolean }>`
 `;
 
 var ExtendedParagraphWrapper = styled(ParagraphWrapper)`
-	button {
-		border-color: var(--color-darker);
-		background-color: var(--color-dark);
-	}
-
 	h4 {
 		height: var(--util-icon-container-dimension);
 		align-self: flex-start;

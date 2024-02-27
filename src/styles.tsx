@@ -1,5 +1,8 @@
 import styled, { createGlobalStyle, css } from 'styled-components';
 
+import { ModalWrapper } from './components/modal/modalWrapper';
+import { PreviewWrapper } from './routes/preview/previewWrapper';
+
 var GlobalStyles = createGlobalStyle`
 html {
 	font-size: 62.5%;
@@ -35,25 +38,9 @@ body {
 	min-height: 100dvh;
 	grid-template-rows: repeat(auto-fill, 100%);
 }
-
-.btn {
-	display: inline-block;
-	height: var(--util-icon-container-dimension);
-	padding: 0 10px;
-	border: 1px solid black;
-	border-radius: var(--border-radius);
-
-}
 `;
 
 export default GlobalStyles;
-
-export var ControlOptionsMenuContainerStyles = css`
-	position: absolute;
-	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
-`;
 
 export var ControlOptionsMenu = styled.div`
 	display: none;
@@ -69,20 +56,6 @@ export var ControlOptionsMenu = styled.div`
 
 	&:hover {
 		display: flex;
-	}
-
-	button {
-		border: none;
-		background-color: transparent;
-
-		&:hover {
-			color: var(--color-darkest);
-		}
-
-		&:not(:last-child) {
-			border-radius: 0;
-			border-bottom: 1px solid black;
-		}
 	}
 `;
 
@@ -125,5 +98,60 @@ export var ErrorBoundaryWrapper = styled.div`
 
 	p {
 		padding: 8px;
+	}
+`;
+
+// https://www.joshwcomeau.com/css/styled-components/#:~:text=With%20this%20little%20trick%2C%20we%27ve%20inverted%20the%20control
+export var Button = styled.button`
+	display: inline-block;
+	height: var(--util-icon-container-dimension);
+	padding: 0 10px;
+	border: 1px solid black;
+	border-radius: var(--border-radius);
+
+	.card & {
+		border: none;
+		border-radius: var(--border-radius-big);
+		background-color: var(--color-dark);
+	}
+
+	.article-controls & {
+		border-color: var(--color-dark);
+		background-color: var(--color-light);
+	}
+
+	${ParagraphWrapper} & {
+		border-color: var(--color-darker);
+		background-color: var(--color-dark);
+	}
+
+	${ControlOptionsMenu} & {
+		border: none;
+		background-color: transparent;
+
+		&:hover {
+			color: var(--color-darkest);
+		}
+
+		&:not(:last-child) {
+			border-radius: 0;
+			border-bottom: 1px solid black;
+		}
+	}
+
+	${PreviewWrapper} & {
+		border-color: var(--color-dark);
+		background-color: var(--color-light);
+	}
+
+	${ModalWrapper} & {
+		padding: 0 5px;
+		border: none;
+		background-color: transparent;
+		font-size: var(--font-small);
+
+		&:hover {
+			opacity: 0.6;
+		}
 	}
 `;

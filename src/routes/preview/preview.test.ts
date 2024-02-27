@@ -2,7 +2,7 @@ import { screen, waitFor, act } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import userEvent from '@testing-library/user-event';
 
-import { renderAnExistingArticle, clickElement, server, fetchButton, fetchElementsByTagName } from '../setupTests';
+import { renderAnExistingArticle, clickElement, server, fetchButton, fetchElementsByTagName } from '../../setupTests';
 
 describe('Preview route tests', () => {
 	it('Opening preview route will halt grammar fixing queries', async () => {

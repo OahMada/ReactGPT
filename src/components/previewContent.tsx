@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { PartialParagraph } from '../types';
 import { Loading, PreviewTranslation } from '.';
-import { ErrorBoundaryWrapper } from '../styles';
+import { ErrorBoundaryWrapper, Button } from '../styles';
 
 interface Props {
 	paragraph: PartialParagraph;
@@ -43,9 +43,7 @@ export var PreviewContent = forwardRef<Ref, Props>(({ paragraph, includeTranslat
 								<p>
 									<i>Error Occurred!</i>
 								</p>
-								<button onClick={() => resetErrorBoundary()} className='btn'>
-									Retry
-								</button>
+								<Button onClick={() => resetErrorBoundary()}>Retry</Button>
 							</StyledDiv>
 						);
 					}}

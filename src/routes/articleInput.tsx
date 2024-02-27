@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { saveArticleInput, selectArticle } from '../features/articleSlice';
 import { createToast, defaultArticleInput, useKeys, HotkeyMapData, useNavigateWithSearchParams } from '../utils';
+import { Button } from '../styles';
 
 interface ArticleInputType {
 	article: string;
@@ -99,12 +100,12 @@ export var ArticleInput = () => {
 				placeholder='Article content.'
 			/>
 			<div className='btn-container'>
-				<button type='button' onClick={fillInText} className='btn'>
+				<Button type='button' onClick={fillInText}>
 					Fill in Demonstration Text
-				</button>
-				<button type='submit' data-tooltip-id='hotkey' data-tooltip-content={articleInputPageHotkeys.done.label} className='btn'>
+				</Button>
+				<Button type='submit' data-tooltip-id='hotkey' data-tooltip-content={articleInputPageHotkeys.done.label}>
 					Done
-				</button>
+				</Button>
 			</div>
 		</StyledForm>
 	);

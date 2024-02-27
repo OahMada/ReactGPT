@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { generateHotkeyLabel } from '../utils';
 import { LocalStorageHotkeys, RecordingStopper } from '../types';
+import { Button } from '../styles';
 
 interface Hotkey {
 	label: string;
@@ -39,15 +40,13 @@ export var HotkeyInput = ({ keyBinding, userDefinedHotkeys, setUserDefinedHotkey
 		return (
 			<StyledTd $newHotkey={newHotkey}>
 				<span>{newHotkey ? generateHotkeyLabel(newHotkey) : keyBinding.label}</span>
-				<button onClick={submit} className='btn'>
-					Done
-				</button>
+				<Button onClick={submit}>Done</Button>
 			</StyledTd>
 		);
 	}
 	return (
 		<StyledTd>
-			<button
+			<Button
 				onClick={() => {
 					// run other hotkey's stop utility first
 					let stopper = hotkeyRecordingStopperRef.get('stopper');
@@ -58,10 +57,9 @@ export var HotkeyInput = ({ keyBinding, userDefinedHotkeys, setUserDefinedHotkey
 				}}
 				data-tooltip-id='tip'
 				data-tooltip-content='Click to change'
-				className='btn'
 			>
 				{keyBinding.label}
-			</button>
+			</Button>
 		</StyledTd>
 	);
 };
@@ -70,6 +68,9 @@ var StyledTd = styled.td<{ $newHotkey?: string }>`
 	span {
 		display: inline-block;
 		width: 70%;
+
+		/* (button height - font-size * line-height - border size) / 2  */
+		padding: calc(((var(--util-icon-container-dimension) - var(--font-primary) * 1.5) - 2px) / 2);
 		border: 1px solid var(--color-dark);
 		margin-right: 5px;
 		color: ${({ $newHotkey }) => ($newHotkey ? 'black' : 'var(--color-dark)')};

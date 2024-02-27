@@ -13,12 +13,13 @@ import { proxy } from 'comlink';
 import styled from 'styled-components';
 import { createFocusTrap } from 'focus-trap';
 
-import { PreviewContent, articleDocx } from '../components';
-import { PartialParagraph, Paragraph } from '../types';
-import { translationQueryKeys } from '../query/translationQuery';
-import { createToast, useKeys, HotkeyMapData, debounce } from '../utils';
-import { workerInstance } from '../worker/workerInstance';
-import { ControlOptionsMenuContainerStyles, ControlOptionsMenu } from '../styles';
+import { PreviewContent, articleDocx } from '../../components';
+import { PartialParagraph, Paragraph } from '../../types';
+import { translationQueryKeys } from '../../query/translationQuery';
+import { createToast, useKeys, HotkeyMapData, debounce } from '../../utils';
+import { workerInstance } from '../../worker/workerInstance';
+import { ControlOptionsMenu, Button } from '../../styles';
+import { PreviewWrapper } from './previewWrapper';
 
 export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);
@@ -210,7 +211,7 @@ export var Preview = () => {
 	useKeys({ keyBinding: previewPageHotkeys.retryAllErred.hotkey, callback: handleRetryAll });
 
 	return (
-		<StyledSection
+		<PreviewWrapper
 			/* v8 ignore next 3 */
 			onClick={() => {
 				navigate(-1);
@@ -220,70 +221,60 @@ export var Preview = () => {
 			<div onClick={(e) => e.stopPropagation()} className='paragraphs'>
 				<div className='preview-header'>
 					<div className='btn-container'>
-						<button onClick={handleClosePreview} data-tooltip-id='hotkey' data-tooltip-content={previewPageHotkeys.exitPreview.label} className='btn'>
+						<Button onClick={handleClosePreview} data-tooltip-id='hotkey' data-tooltip-content={previewPageHotkeys.exitPreview.label}>
 							Close
-						</button>
-						<button
-							onClick={handleTranslation}
-							data-tooltip-id='hotkey'
-							data-tooltip-content={previewPageHotkeys.includeTranslation.label}
-							className='btn'
-						>
+						</Button>
+						<Button onClick={handleTranslation} data-tooltip-id='hotkey' data-tooltip-content={previewPageHotkeys.includeTranslation.label}>
 							{!includeTranslation ? 'Include Translation' : 'Remove Translation'}
-						</button>
+						</Button>
 						{showRetryAllButton && (
-							<button
+							<Button
 								onClick={handleRetryAll}
 								disabled={translationFetchingCount > 0}
 								data-tooltip-id='hotkey'
 								data-tooltip-content={previewPageHotkeys.retryAllErred.label}
-								className='btn'
 							>
 								Retry All
-							</button>
+							</Button>
 						)}
 					</div>
 					<div className='export-options-container'>
 						<div className='btn-container'>
-							<button
+							<Button
 								disabled={translationFetchingCount !== 0}
 								onClick={debouncedCopyToClipboard}
 								data-tooltip-id='hotkey'
 								data-tooltip-content={previewPageHotkeys.copyToClipboard.label}
-								className='btn'
 							>
 								Copy To Clipboard
-							</button>
-							<button className='btn export-btn'>Export To File</button>
+							</Button>
+							<Button className='export-btn'>Export To File</Button>
 						</div>
 						<StyledDiv>
-							<button
+							<Button
 								disabled={translationFetchingCount !== 0}
 								onClick={debouncedDownloadPDF}
 								data-tooltip-id='hotkey'
 								data-tooltip-content={previewPageHotkeys.downloadPDF.label}
-								className='btn'
 							>
 								Download PDF
-							</button>
-							<button
+							</Button>
+							<Button
 								disabled={translationFetchingCount !== 0}
 								onClick={debouncedDownloadDocx}
 								data-tooltip-id='hotkey'
 								data-tooltip-content={previewPageHotkeys.downloadDocx.label}
-								className='btn'
 							>
 								Download DOCX
-							</button>
-							<button
+							</Button>
+							<Button
 								disabled={translationFetchingCount !== 0}
 								onClick={debouncedDownloadImg}
 								data-tooltip-id='hotkey'
 								data-tooltip-content={previewPageHotkeys.downloadImg.label}
-								className='btn'
 							>
 								Download Image
-							</button>
+							</Button>
 						</StyledDiv>
 					</div>
 				</div>
@@ -307,78 +298,9 @@ export var Preview = () => {
 					})}
 				</section>
 			</div>
-		</StyledSection>
+		</PreviewWrapper>
 	);
 };
-
-var StyledSection = styled.section`
-	position: fixed;
-	top: 0;
-	left: 0;
-	display: grid;
-	width: 100vw;
-	height: 100dvh;
-	background-color: rgb(0 0 0 / 80%);
-	isolation: isolate;
-	place-items: center center;
-
-	button {
-		border-color: var(--color-dark);
-		background-color: var(--color-light);
-	}
-
-	.paragraphs {
-		position: relative;
-		display: flex;
-		width: 70rem;
-		min-height: 60%;
-		max-height: 80%;
-		flex-direction: column;
-		border-radius: var(--border-radius-small);
-		background-color: white;
-		box-shadow: 0 2rem 4rem rgb(0 0 0 / 20%);
-		overflow-y: scroll;
-
-		.preview-header {
-			position: fixed;
-			display: flex;
-			width: inherit;
-			justify-content: space-between;
-			padding: 30px;
-			padding-bottom: 10px;
-			border-radius: var(--border-radius-small);
-			background-color: white;
-		}
-
-		.btn-container {
-			display: flex;
-			min-height: 30px;
-			gap: var(--gap-primary);
-		}
-
-		.export-options-container {
-			right: 30px;
-			${ControlOptionsMenuContainerStyles}
-		}
-
-		section {
-			flex-grow: 1;
-			padding: 20px;
-			border: 1px solid var(--color-dark);
-			border-radius: var(--border-radius);
-			margin: 30px;
-			margin-top: calc(40px + var(--util-icon-container-dimension));
-
-			p {
-				font-size: var(--font-primary);
-			}
-
-			& > p:not(:last-child) {
-				margin-bottom: 0.8rem;
-			}
-		}
-	}
-`;
 
 var StyledDiv = styled(ControlOptionsMenu)`
 	background-color: var(--color-light);

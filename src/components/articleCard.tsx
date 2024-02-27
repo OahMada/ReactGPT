@@ -9,6 +9,7 @@ import styled from 'styled-components';
 
 import { useAppDispatch } from '../redux/hooks';
 import { removeArticle, addArticleToDeletionQueue, removeArticleFromDeletionQueue } from '../features/articleSlice';
+import { Button } from '../styles';
 
 interface ArticleCardProp {
 	article: {
@@ -43,13 +44,13 @@ export var ArticleCard = ({ article, articleIsInFavorites, articlePinningSchedul
 	const { articleId: currentArticle } = useParams();
 
 	return (
-		<StyledDiv $isPinned={pinning} key={article.articleId} className={cs('card', { active: article.articleId === currentArticle })}>
+		<ArticleCardWrapper $isPinned={pinning} key={article.articleId} className={cs('card', { active: article.articleId === currentArticle })}>
 			<div onClick={() => navigateWithSearchParams(`article/${article.articleId}`)} className='card-content'>
 				<p>{article.articleText.length > 35 ? article.articleText.slice(0, 35) + '...' : article.articleText}</p>{' '}
 				<p className='date'>{dayjs(article.editDate).format('YYYY-MM-DD HH:mm:ss')}</p>
 			</div>
 			<div className='btn-container'>
-				<button
+				<Button
 					onClick={() => {
 						dispatch(addArticleToDeletionQueue(article.articleId));
 						dispatch(removeArticle(article.articleId));
@@ -60,26 +61,24 @@ export var ArticleCard = ({ article, articleIsInFavorites, articlePinningSchedul
 						dispatch(removeArticleFromDeletionQueue(article.articleId));
 						toast.dismiss(`articleDeletion${article.articleId}`);
 					}}
-					className='btn'
 				>
 					Delete
-				</button>
-				<button
+				</Button>
+				<Button
 					onClick={() => {
 						// handel initial click
 						setPinning(!pinning);
 					}}
-					className='btn'
 					onMouseLeave={(e) => e.currentTarget.blur()} // because clicking the pin/unpin button would focus the button element, thus the css rule &:focus-within .btn-container {} is applied. Remove focus so that the button can properly fade away.
 				>
 					{pinning ? 'Unpin' : 'Pin'}
-				</button>
+				</Button>
 			</div>
-		</StyledDiv>
+		</ArticleCardWrapper>
 	);
 };
 
-var StyledDiv = styled.div<{ $isPinned: boolean }>`
+var ArticleCardWrapper = styled.div<{ $isPinned: boolean }>`
 	background-color: ${({ $isPinned }) => $isPinned && 'var(--color-light)'};
 
 	.btn-container {

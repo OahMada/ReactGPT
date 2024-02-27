@@ -6,7 +6,7 @@ export * from './emptyParagraphList';
 export * from './focusedParagraphIndex';
 export * from './hotkeyInput';
 export * from './loading';
-export * from './modal';
+export * from './modal/modal';
 export * from './paragraph';
 export * from './paragraphControlBtns';
 export * from './paragraphInput';

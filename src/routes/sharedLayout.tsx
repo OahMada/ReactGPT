@@ -8,6 +8,7 @@ import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { selectArticle, unPinArticle, pinArticle } from '../features/articleSlice';
 import { performFuseSearch, useKeys, HotkeyMapData, useNavigateWithSearchParams } from '../utils';
 import { ArticleCard } from '../components';
+import { Button } from '../styles';
 
 interface SearchForm {
 	search: string;
@@ -161,17 +162,12 @@ export var SharedLayout = () => {
 	return (
 		<>
 			<StyledHeader>
-				<button onClick={handleClickConfigBtn} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.enterConfig.label} className='btn'>
+				<Button onClick={handleClickConfigBtn} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.enterConfig.label}>
 					Config
-				</button>
-				<button
-					onClick={handleClickHotkeyMapBtn}
-					data-tooltip-id='hotkey'
-					data-tooltip-content={articlePageHotkeys.enterHotkeyMap.label}
-					className='btn'
-				>
+				</Button>
+				<Button onClick={handleClickHotkeyMapBtn} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.enterHotkeyMap.label}>
 					Hotkey Map
-				</button>
+				</Button>
 			</StyledHeader>
 			<StyledNav>
 				{(query || articles.length > 0) && ( // same as !(!query && articles.length < 1), means no articles have been created
@@ -250,14 +246,13 @@ export var SharedLayout = () => {
 			</StyledNav>
 			{/articles$/.test(location.pathname) && (
 				<div>
-					<button
-						className='btn'
+					<Button
 						onClick={() => {
 							navigate(-1);
 						}}
 					>
 						Back
-					</button>
+					</Button>
 				</div>
 			)}
 		</>
@@ -303,12 +298,6 @@ var StyledNav = styled.nav`
 			border-radius: var(--border-radius);
 			gap: var(--gap-primary);
 
-			button {
-				border: none;
-				border-radius: var(--border-radius-big);
-				background-color: var(--color-dark);
-			}
-
 			& .link-wrapper {
 				display: grid;
 				width: 100%;
@@ -323,7 +312,9 @@ var StyledNav = styled.nav`
 					display: inline-block;
 					color: inherit;
 					font-size: var(--font-big);
-					font-weight: lighter;
+
+					/* TODO */
+					font-weight: 100;
 					text-decoration: none;
 				}
 			}

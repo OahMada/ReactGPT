@@ -1,6 +1,7 @@
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { Button } from '../styles';
 
 export var EmptyParagraphList = () => {
 	let navigate = useNavigate();
@@ -8,15 +9,14 @@ export var EmptyParagraphList = () => {
 	return (
 		<StyledDiv>
 			<h1>No Content Yet, Create New?</h1>
-			<button
+			<Button
 				onClick={() => {
 					navigate('/');
 					toast.dismiss(); // dismiss any displaying toasts
 				}}
-				className='btn'
 			>
 				Create
-			</button>
+			</Button>
 		</StyledDiv>
 	);
 };
