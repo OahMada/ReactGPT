@@ -4,6 +4,8 @@ export * from './articleDocx';
 export * from './autoFocus';
 export * from './emptyParagraphList';
 export * from './focusedParagraphIndex';
+export * from './footer';
+export * from './header';
 export * from './hotkeyInput';
 export * from './loading';
 export * from './modal/modal';

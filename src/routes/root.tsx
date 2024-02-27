@@ -2,33 +2,31 @@ import { Navigate, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import secureLocalStorage from 'react-secure-storage';
 
-import { SharedLayout } from '../components';
+import { Footer, Header } from '../components';
 
 export function Root() {
 	let secureLocalStorageAPIKey = secureLocalStorage.getItem('string');
 
 	return secureLocalStorageAPIKey ? (
-		<StyledDiv>
-			<SharedLayout />
-			<main>
+		<>
+			<Header />
+			<StyledMain>
 				<Outlet />
-			</main>
-		</StyledDiv>
+			</StyledMain>
+			<Footer />
+		</>
 	) : (
 		<Navigate to='/config' replace />
 	);
 }
 
-var StyledDiv = styled.div`
+var StyledMain = styled.main`
 	display: grid;
 	max-width: 85rem;
 	padding: 50px;
+	padding-top: min(8rem, 110px);
+	padding-bottom: 0%;
 	margin: 0 auto;
-	grid-template-columns: repeat(12, 1fr);
-	grid-template-rows: min-content min-content auto;
+	grid-template-rows: min-content auto;
 	row-gap: var(--gap-huge);
-
-	main {
-		grid-column: 1 / span 12;
-	}
 `;

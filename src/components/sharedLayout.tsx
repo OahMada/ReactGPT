@@ -1,4 +1,4 @@
-import { NavLink, useNavigate, useSearchParams, useSubmit, useLocation } from 'react-router-dom';
+import { NavLink, useSearchParams, useSubmit, useLocation, Outlet } from 'react-router-dom';
 import { useLocalStorage } from 'react-use';
 import { useForm } from 'react-hook-form';
 import { useRef, useImperativeHandle, useState } from 'react';
@@ -8,7 +8,6 @@ import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { selectArticle, unPinArticle, pinArticle } from '../features/articleSlice';
 import { performFuseSearch, useKeys, HotkeyMapData, useNavigateWithSearchParams } from '../utils';
 import { ArticleCard } from '.';
-import { Button } from '../styles';
 
 interface SearchForm {
 	search: string;
@@ -23,7 +22,6 @@ export var SharedLayout = () => {
 	let dispatch = useAppDispatch();
 	let { articleQueue, paragraphs } = useAppSelector(selectArticle);
 
-	let navigate = useNavigate();
 	let submit = useSubmit();
 	let location = useLocation();
 	let [searchParams] = useSearchParams();
@@ -102,13 +100,6 @@ export var SharedLayout = () => {
 		return articleQueue.favorites.indexOf(articleId) !== -1 ? true : false;
 	};
 
-	let handleClickConfigBtn = () => {
-		navigate('/config');
-	};
-	let handleClickHotkeyMapBtn = () => {
-		navigate('/hotkey');
-	};
-
 	let resolveArticlePinningSchedules = () => {
 		for (let entry of articlePinningScheduleRef.current) {
 			// article can be deleted during the process
@@ -135,18 +126,6 @@ export var SharedLayout = () => {
 		enabled: !/preview$/.test(location.pathname),
 	});
 
-	// hotkey for entering config page
-	useKeys({
-		keyBinding: articlePageHotkeys.enterConfig.hotkey,
-		callback: handleClickConfigBtn,
-	});
-
-	// hotkey for entering hotkey map page
-	useKeys({
-		keyBinding: articlePageHotkeys.enterHotkeyMap.hotkey,
-		callback: handleClickHotkeyMapBtn,
-	});
-
 	let searchInputRef = useRef<HTMLInputElement>(null);
 	useImperativeHandle(ref, () => searchInputRef.current);
 
@@ -161,14 +140,6 @@ export var SharedLayout = () => {
 
 	return (
 		<>
-			<StyledHeader>
-				<Button onClick={handleClickConfigBtn} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.enterConfig.label}>
-					Config
-				</Button>
-				<Button onClick={handleClickHotkeyMapBtn} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.enterHotkeyMap.label}>
-					Hotkey Map
-				</Button>
-			</StyledHeader>
 			<StyledNav>
 				{(query || articles.length > 0) && ( // same as !(!query && articles.length < 1), means no articles have been created
 					<form role='search' onSubmit={handleSubmit(onSubmit)}>
@@ -234,20 +205,13 @@ export var SharedLayout = () => {
 					})}
 				</div>
 			</StyledNav>
+			<Outlet />
 		</>
 	);
 };
 
-var StyledHeader = styled.header`
-	display: flex;
-	justify-content: flex-end;
-	gap: var(--gap-big);
-	grid-column: 1 / span 12;
-`;
-
 var StyledNav = styled.nav`
 	font-size: var(--font-small);
-	grid-column: 1 / span 12;
 
 	form {
 		padding: 10px 0;

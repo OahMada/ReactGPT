@@ -1,7 +1,7 @@
 // components
 import { Root, Article, ArticleInput, Config, ErrorPage, Preview, HotkeyMap } from './routes';
 // import { ReactPortal } from './components';
-import { FocusedParagraphIndexContextWrapper } from './components';
+import { FocusedParagraphIndexContextWrapper, SharedLayout } from './components';
 
 var routesConfig = [
 	{
@@ -12,6 +12,7 @@ var routesConfig = [
 				element: <Root />,
 				children: [
 					{
+						element: <SharedLayout />,
 						children: [
 							{ index: true, element: <ArticleInput /> },
 							{
@@ -34,15 +35,15 @@ var routesConfig = [
 							},
 						],
 					},
+					{
+						path: 'hotkey',
+						element: <HotkeyMap />,
+					},
 				],
 			},
 			{
 				path: 'config',
 				element: <Config />,
-			},
-			{
-				path: 'hotkey',
-				element: <HotkeyMap />,
 			},
 		],
 	},

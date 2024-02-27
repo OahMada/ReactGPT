@@ -74,10 +74,8 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- * fixed config hotkey
- * footer
- * icon
  * css rules organize
+ * icon
  * new layout
  * responsive layout on mobile devices
  *
@@ -87,8 +85,8 @@ enableMocking().then(() => {
  * dismissed paragraph deletion toast reappears
  * tooltip persisting issue on phone
  * sanitize user input first before checking characters length
- * retry all translation may not shown
- * download image
+ * retry all translation may not shown: can't reproduce
+ * downloaded image ratio failure
  *
  * ## test
  *
