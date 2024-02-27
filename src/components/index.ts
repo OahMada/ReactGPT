@@ -14,3 +14,4 @@ export * from './paragraphTranslation';
 export * from './previewContent';
 export * from './previewTranslation';
 export * from './reactPortal';
+export * from './sharedLayout';
