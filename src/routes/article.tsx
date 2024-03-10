@@ -383,11 +383,12 @@ var StyledArticle = styled.article`
 `;
 
 var StyledSection = styled.section`
-	width: 70rem;
+	padding-top: 10px;
+	margin-top: var(--header-offset);
 
 	.article-controls {
 		display: flex;
-		margin-bottom: 10px;
+		margin-bottom: 16px;
 		gap: var(--gap-small);
 
 		a {

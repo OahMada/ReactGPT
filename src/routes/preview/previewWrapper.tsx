@@ -3,6 +3,7 @@ import { ControlOptionsMenuContainerStyles } from '../ControlOptionsMenuContaine
 
 export var PreviewWrapper = styled.section`
 	position: fixed;
+	z-index: 2;
 	top: 0;
 	left: 0;
 	display: grid;
@@ -15,7 +16,7 @@ export var PreviewWrapper = styled.section`
 	.paragraphs {
 		position: relative;
 		display: flex;
-		width: 70rem;
+		width: var(--paragraph-width);
 		min-height: 60%;
 		max-height: 80%;
 		flex-direction: column;

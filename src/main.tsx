@@ -76,7 +76,6 @@ enableMocking().then(() => {
  *
  * css rules organize
  * icon
- * new layout
  * responsive layout on mobile devices
  *
  * ## bugs
@@ -87,6 +86,9 @@ enableMocking().then(() => {
  * sanitize user input first before checking characters length
  * retry all translation may not shown: can't reproduce
  * downloaded image ratio failure
+ * tooltip stacking order in heading, preview
+ * the tooltip position of preview article if a bit off
+ * white header background when previewing article
  *
  * ## test
  *

@@ -140,8 +140,8 @@ export var SharedLayout = () => {
 
 	return (
 		<>
-			<StyledNav>
-				{(query || articles.length > 0) && ( // same as !(!query && articles.length < 1), means no articles have been created
+			{(query || articles.length > 0) && ( // same as !(!query && articles.length < 1), means no articles have been created
+				<StyledAside>
 					<form role='search' onSubmit={handleSubmit(onSubmit)}>
 						<input
 							aria-label='Search articles'
@@ -156,19 +156,17 @@ export var SharedLayout = () => {
 							data-tooltip-hidden={searchFocus}
 						/>
 					</form>
-				)}
-				<div
-					className='card-wrapper'
-					onMouseLeave={() => {
-						debounceTimeoutRef.current = setTimeout(() => {
-							resolveArticlePinningSchedules();
-						}, 500);
-					}}
-					onMouseEnter={() => {
-						window.clearTimeout(debounceTimeoutRef.current);
-					}}
-				>
-					{(query || articles.length > 0) && (
+					<div
+						className='card-wrapper'
+						onMouseLeave={() => {
+							debounceTimeoutRef.current = setTimeout(() => {
+								resolveArticlePinningSchedules();
+							}, 500);
+						}}
+						onMouseEnter={() => {
+							window.clearTimeout(debounceTimeoutRef.current);
+						}}
+					>
 						<div className='card'>
 							<div
 								className='link-wrapper'
@@ -187,30 +185,37 @@ export var SharedLayout = () => {
 								</NavLink>
 							</div>
 						</div>
-					)}
-					{query && articles.length < 1 && (
-						<div className='card'>
-							<p>No articles match the search query.</p>
-						</div>
-					)}
-					{articles.map((article) => {
-						return (
-							<ArticleCard
-								key={article.articleId}
-								article={article}
-								articleIsInFavorites={articleIsInFavorites(article.articleId)}
-								articlePinningScheduleRef={articlePinningScheduleRef.current}
-							/>
-						);
-					})}
-				</div>
-			</StyledNav>
+						{articles.length < 1 && (
+							<div className='card'>
+								<p>No articles match the search query.</p>
+							</div>
+						)}
+						{articles.map((article) => {
+							return (
+								<ArticleCard
+									key={article.articleId}
+									article={article}
+									articleIsInFavorites={articleIsInFavorites(article.articleId)}
+									articlePinningScheduleRef={articlePinningScheduleRef.current}
+								/>
+							);
+						})}
+					</div>
+				</StyledAside>
+			)}
 			<Outlet />
 		</>
 	);
 };
 
-var StyledNav = styled.nav`
+var StyledAside = styled.aside`
+	position: sticky;
+	top: 100px;
+	width: 250px;
+	max-height: calc(100dvh - var(--header-height));
+	flex-shrink: 0;
+	margin-top: var(--header-offset);
+	margin-right: var(--gap-big);
 	font-size: var(--font-small);
 
 	form {
@@ -224,9 +229,12 @@ var StyledNav = styled.nav`
 	}
 
 	.card-wrapper {
-		display: grid;
+		display: flex;
+		max-height: calc(100dvh - 2 * min(70rem, 100px) - 50px);
+		flex-direction: column;
+		padding-right: 15px;
 		gap: var(--gap-primary);
-		grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+		overflow-y: scroll;
 
 		.card {
 			position: relative;
@@ -234,6 +242,7 @@ var StyledNav = styled.nav`
 			overflow: hidden;
 			width: 100%;
 			height: 10rem;
+			flex-shrink: 0;
 			align-items: center;
 			justify-content: flex-start;
 			padding: 5px;

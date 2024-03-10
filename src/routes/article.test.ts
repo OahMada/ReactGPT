@@ -94,7 +94,7 @@ describe('Article route tests', () => {
 
 		paragraphsOnThePage = await fetchElementsByTagName('p');
 		expect(paragraphsOnThePage.length).toEqual(initialParagraphCount + 1);
-		expect(paragraphsOnThePage[paragraphsOnThePage.length - 1]).toHaveTextContent('Insert below');
+		expect(paragraphsOnThePage[paragraphsOnThePage.length - 2]).toHaveTextContent('Insert below');
 	});
 	it('Saving an empty new paragraph would cause it to be deleted immediately', async () => {
 		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish(true);
@@ -114,7 +114,7 @@ describe('Article route tests', () => {
 		renderAnExistingArticle(1);
 		expect(await screen.findByRole('button', { name: /retry/i })).toBeInTheDocument();
 		let paragraphsOnThePage = await fetchElementsByTagName('p');
-		await clickElement(paragraphsOnThePage[paragraphsOnThePage.length - 1]);
+		await clickElement(paragraphsOnThePage[paragraphsOnThePage.length - 2]);
 		await userEvent.type(screen.getByPlaceholderText(/please enter your paragraph/i), ' \n');
 		await clickElement(/done/i);
 		expect(screen.getByText(defaultArticleInput.split('\n\n')[0])).toBeInTheDocument();
@@ -123,7 +123,7 @@ describe('Article route tests', () => {
 		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish();
 		let paragraphsOnThePage = await fetchElementsByTagName('p');
 		let initialParagraphCount = screen.getAllByRole('article').length;
-		await clickElement(paragraphsOnThePage[paragraphsOnThePage.length - 1]);
+		await clickElement(paragraphsOnThePage[paragraphsOnThePage.length - 2]);
 		let textInputBox = screen.getByPlaceholderText(/please enter your paragraph/i);
 		expect(textInputBox).toBeInTheDocument();
 		await userEvent.keyboard('{Enter}{Enter}');
@@ -188,7 +188,7 @@ describe('Article route tests', () => {
 		expect(screen.getByLabelText(/since paragraph last edit/i)).toBeDisabled();
 		await clickElement(/done/i);
 		let paragraphsOnThePage = await fetchElementsByTagName('p');
-		await clickElement(paragraphsOnThePage[paragraphsOnThePage.length - 1]);
+		await clickElement(paragraphsOnThePage[paragraphsOnThePage.length - 2]);
 		let inputBox = screen.getByPlaceholderText(/please enter your paragraph/i);
 		await userEvent.type(inputBox, ' Hello.');
 		await clickElement(/done/i);

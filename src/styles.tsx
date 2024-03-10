@@ -30,6 +30,10 @@ html {
 	--gap-small: 3px;
 	--gap-big: 8px;
 	--gap-huge: 20px;
+	--header-height: min(7rem, 100px);
+	--main-content-height: calc(100dvh - var(--header-height));
+	--paragraph-width: 70rem;
+	--header-offset: min(10rem, 120px);
 }
 
 body {
@@ -39,9 +43,7 @@ body {
 }
 
 #root {
-	display: grid;
 	min-height: 100dvh;
-	grid-template-rows: repeat(auto-fill, 100%);
 }
 `;
 

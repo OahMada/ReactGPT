@@ -21,12 +21,12 @@ export function Root() {
 }
 
 var StyledMain = styled.main`
-	display: grid;
-	max-width: 85rem;
+	display: flex;
+	width: min(110rem, 100%);
+	min-height: var(--main-content-height);
+	justify-content: center;
 	padding: 50px;
-	padding-top: min(8rem, 110px);
+	padding-top: 0;
 	padding-bottom: 0%;
 	margin: 0 auto;
-	grid-template-rows: min-content auto;
-	row-gap: var(--gap-huge);
 `;

@@ -118,92 +118,99 @@ export var Config = () => {
 
 	return (
 		<StyledSection>
-			{secureLocalStorageAPIKey ? (
-				<h1>
-					Your API Key is:
-					{` ${
-						secureLocalStorageAPIKey === import.meta.env.VITE_OPENAI_API_KEY_ALIAS
-							? 'DEFAULT'
-							: /* v8 ignore next */
-								secureLocalStorageAPIKey.split('').slice(0, 3).join('') + '***' + secureLocalStorageAPIKey.split('').slice(-4).join('')
-					}`}
-				</h1>
-			) : (
-				<h1>Please set your API key first</h1>
-			)}
-			<p>The key will be securely stored locally and sent to OpenAI for authentication.</p>
+			<div className='wrapper'>
+				{secureLocalStorageAPIKey ? (
+					<h1>
+						Your API Key is:
+						{` ${
+							secureLocalStorageAPIKey === import.meta.env.VITE_OPENAI_API_KEY_ALIAS
+								? 'DEFAULT'
+								: /* v8 ignore next */
+									secureLocalStorageAPIKey.split('').slice(0, 3).join('') + '***' + secureLocalStorageAPIKey.split('').slice(-4).join('')
+						}`}
+					</h1>
+				) : (
+					<h1>Please set your API key first</h1>
+				)}
+				<p>The key will be securely stored locally and sent to OpenAI for authentication.</p>
 
-			{(APIKeyInEdit || !secureLocalStorageAPIKey) && (
-				<>
-					<form onSubmit={handleSubmit(onSubmit)}>
-						<label htmlFor='api-key'>OpenAI API Key: </label>
-						<input
-							autoFocus
-							type='password'
-							id='api-key'
-							{...rest}
-							ref={APIInput}
-							data-tooltip-id='hotkey'
-							data-tooltip-content={configPageHotkeys.focusInput.label}
-							data-tooltip-hidden={inputFocus}
-							onFocus={() => setInputFocus(true)}
-							onBlur={() => setInputFocus(false)}
-						/>
-						<Button type='submit' disabled={errors?.key?.message ? true : false || isFetching}>
-							Done
+				{(APIKeyInEdit || !secureLocalStorageAPIKey) && (
+					<>
+						<form onSubmit={handleSubmit(onSubmit)}>
+							<label htmlFor='api-key'>OpenAI API Key: </label>
+							<input
+								autoFocus
+								type='password'
+								id='api-key'
+								{...rest}
+								ref={APIInput}
+								data-tooltip-id='hotkey'
+								data-tooltip-content={configPageHotkeys.focusInput.label}
+								data-tooltip-hidden={inputFocus}
+								onFocus={() => setInputFocus(true)}
+								onBlur={() => setInputFocus(false)}
+							/>
+							<Button type='submit' disabled={errors?.key?.message ? true : false || isFetching}>
+								Done
+							</Button>
+						</form>
+					</>
+				)}
+				<div className='btns'>
+					{!APIKeyInEdit && secureLocalStorageAPIKey && (
+						<Button onClick={clickEditButton} data-tooltip-id='hotkey' data-tooltip-content={configPageHotkeys.edit.label}>
+							Edit
 						</Button>
-					</form>
-				</>
-			)}
-			<div className='btns'>
-				{!APIKeyInEdit && secureLocalStorageAPIKey && (
-					<Button onClick={clickEditButton} data-tooltip-id='hotkey' data-tooltip-content={configPageHotkeys.edit.label}>
-						Edit
-					</Button>
-				)}
-				{secureLocalStorageAPIKey && (
-					<Button type='button' onClick={clickCancelButton} data-tooltip-id='hotkey' data-tooltip-content={configPageHotkeys.cancel.label}>
-						Cancel
-					</Button>
-				)}
+					)}
+					{secureLocalStorageAPIKey && (
+						<Button type='button' onClick={clickCancelButton} data-tooltip-id='hotkey' data-tooltip-content={configPageHotkeys.cancel.label}>
+							Cancel
+						</Button>
+					)}
+				</div>
 			</div>
 		</StyledSection>
 	);
 };
 
 var StyledSection = styled.section`
-	padding: 15px;
-	border: 0.5px solid black;
-	border-radius: var(--border-radius-big);
-	margin: auto;
+	display: grid;
+	height: 100dvh;
+	place-content: center;
 
-	form {
-		display: flex;
-		align-items: center;
+	.wrapper {
+		padding: 15px;
+		border: 0.5px solid black;
+		border-radius: var(--border-radius-big);
 
-		input {
-			display: inline-block;
-			flex-grow: 1;
-			margin-right: 3px;
+		form {
+			display: flex;
+			align-items: center;
+
+			input {
+				display: inline-block;
+				flex-grow: 1;
+				margin-right: 3px;
+			}
+
+			label {
+				margin-right: 25px;
+			}
 		}
 
-		label {
-			margin-right: 25px;
+		h1 {
+			font-size: var(--font-big);
+			font-weight: 700;
 		}
-	}
 
-	h1 {
-		font-size: var(--font-big);
-		font-weight: 700;
-	}
+		p {
+			margin-bottom: 1.5rem;
+		}
 
-	p {
-		margin-bottom: 1.5rem;
-	}
-
-	.btns {
-		display: flex;
-		margin-top: 1.5rem;
-		gap: var(--gap-big);
+		.btns {
+			display: flex;
+			margin-top: 1.5rem;
+			gap: var(--gap-big);
+		}
 	}
 `;

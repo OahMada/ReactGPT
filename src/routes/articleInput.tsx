@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import TextareaAutosize from 'react-textarea-autosize';
 import { useLocalStorage } from 'react-use';
 import { compress, decompress } from 'lz-string';
 import { v4 as uuidv4 } from 'uuid';
@@ -85,7 +84,7 @@ export var ArticleInput = () => {
 					<p>Paragraphs are separated by double line breaks.</p>
 				</div>
 			)}
-			<TextareaAutosize
+			<textarea
 				autoFocus
 				{...register('article', {
 					required: 'This filed is required',
@@ -112,10 +111,13 @@ export var ArticleInput = () => {
 };
 
 var StyledForm = styled.form`
-	display: grid;
-	width: 70rem;
-	height: 100%;
-	align-items: end;
+	display: flex;
+	max-width: 80rem;
+	max-height: var(--main-content-height);
+	flex-direction: column;
+	flex-grow: 1;
+	padding-top: 10px;
+	margin-top: var(--header-offset);
 
 	.intro {
 		display: flex;
@@ -133,9 +135,7 @@ var StyledForm = styled.form`
 	}
 
 	textarea {
-		display: inline-block;
-		width: 100%;
-		min-height: 55dvh;
+		height: 100%;
 		padding: 20px;
 		border: 1px solid var(--color-darker);
 		border-radius: var(--border-radius);
