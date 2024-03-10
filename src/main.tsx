@@ -21,6 +21,9 @@ import { HotkeysProvider } from 'react-hotkeys-hook';
 // data compressing
 import { compress, decompress } from 'lz-string';
 
+// react icon
+import { IconContext } from 'react-icons';
+
 import { App } from './app';
 import './index.css';
 
@@ -61,7 +64,9 @@ enableMocking().then(() => {
 				<Provider store={store}>
 					<PersistGate loading={null} persistor={persistor}>
 						<HotkeysProvider>
-							<App />
+							<IconContext.Provider value={{ size: '2.5rem' }}>
+								<App />
+							</IconContext.Provider>
 						</HotkeysProvider>
 					</PersistGate>
 				</Provider>
@@ -74,21 +79,20 @@ enableMocking().then(() => {
 /**
  * ## features
  *
+ * give pinned article an icon
  * css rules organize
- * icon
  * responsive layout on mobile devices
  *
  * ## bugs
  *
- * why position change when editing paragraph
- * dismissed paragraph deletion toast reappears
- * tooltip persisting issue on phone
- * sanitize user input first before checking characters length
- * retry all translation may not shown: can't reproduce
+ * delete paragraph, click on shift + down, and undo deletion, enabled scopes error
+ * retry all translation may not shown
  * downloaded image ratio failure
- * tooltip stacking order in heading, preview
- * the tooltip position of preview article if a bit off
- * white header background when previewing article
+ * tooltip persisting issue on phone
+ * dismissed paragraph deletion toast reappears
+ * why position change when editing paragraph
+ * click on grabber might not work
+ * the toast of deleting empty paragraph
  *
  * ## test
  *

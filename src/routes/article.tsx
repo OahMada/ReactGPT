@@ -9,6 +9,7 @@ import { DragDropContext, Draggable, Droppable, DropResult, DragStart } from '@h
 import { mergeRefs } from 'react-merge-refs';
 import { useHotkeysContext } from 'react-hotkeys-hook';
 import cs from 'classnames';
+import { RxHamburgerMenu, RxDragHandleDots1 } from 'react-icons/rx';
 
 // redux
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
@@ -266,7 +267,9 @@ export var Article = () => {
 														onClick={
 															(e) => e.currentTarget.focus() // to make initiating drag and drop from keyboard a bit easer
 														}
-													></div>
+													>
+														<RxDragHandleDots1 />
+													</div>
 													<div className='content'>
 														<QueryErrorResetBoundary>
 															{({ reset }) => (
@@ -311,7 +314,9 @@ export var Article = () => {
 															)}
 														</QueryErrorResetBoundary>
 														<div className='paragraph-menu-container'>
-															<div className='paragraph-menu'></div>
+															<div className='paragraph-menu'>
+																<RxHamburgerMenu />
+															</div>
 															<ParagraphControlBtns
 																paragraphId={paragraph.id}
 																index={index}
@@ -353,11 +358,15 @@ var StyledArticle = styled.article`
 	}
 
 	.grabber {
+		display: grid;
+
 		/* https://www.joshwcomeau.com/css/css-variables-for-react-devs/#:~:text=industry%20guidelines%20are%20that%20interactive%20elements%20should%20be%20between%2044px%20and%2048px%20tall. */
 		width: var(--util-icon-container-dimension);
 		height: var(--util-icon-container-dimension);
 		flex-basis: 5%;
-		background-color: lightskyblue;
+		margin-right: 3px;
+		cursor: grab;
+		place-content: center;
 	}
 
 	.content {
@@ -370,10 +379,12 @@ var StyledArticle = styled.article`
 		${ControlOptionsMenuContainerStyles}
 
 		.paragraph-menu {
+			display: grid;
+
 			/* https://www.joshwcomeau.com/css/css-variables-for-react-devs/#:~:text=industry%20guidelines%20are%20that%20interactive%20elements%20should%20be%20between%2044px%20and%2048px%20tall. */
 			width: var(--util-icon-container-dimension);
 			height: var(--util-icon-container-dimension);
-			background-color: lightskyblue;
+			place-content: center;
 		}
 
 		.paragraph-menu:hover + div {

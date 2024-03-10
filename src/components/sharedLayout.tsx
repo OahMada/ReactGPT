@@ -250,6 +250,11 @@ var StyledAside = styled.aside`
 			border-radius: var(--border-radius);
 			gap: var(--gap-primary);
 
+			/* without this, the box shadow on the last card won't show up */
+			&:last-child {
+				margin-bottom: 20px;
+			}
+
 			& .link-wrapper {
 				display: grid;
 				width: 100%;

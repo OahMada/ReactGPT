@@ -69,7 +69,8 @@ export var ParagraphInput = ({
 		onChange: (e) => {
 			setLocalParagraph(e.target.value);
 		},
-		minLength: { value: 10, message: 'Please input at least 10 characters.' },
+		// Sanitize user input before checking for the value length. This way, input such as a single carriage return character won't be checked
+		validate: (value) => sanitizeUserInput(value).length > 10 || sanitizeUserInput(value).length === 0 || 'Please input at least 10 characters.',
 	});
 
 	// https://react-hook-form.com/faqs#Howtosharerefusage

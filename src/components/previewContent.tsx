@@ -31,6 +31,11 @@ export var PreviewContent = forwardRef<Ref, Props>(({ paragraph, includeTranslat
 		}
 	}, [fetchCount, paragraph.paragraphId, resetErrorBoundariesMapRef]);
 
+	// For newly inserted paragraphs that do not have any saved content yet
+	if (paragraph.paragraphText === '') {
+		return;
+	}
+
 	return (
 		<>
 			<p>{paragraph.paragraphText}</p>

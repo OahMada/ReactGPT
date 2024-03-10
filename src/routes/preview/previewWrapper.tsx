@@ -48,7 +48,6 @@ export var PreviewWrapper = styled.section`
 		}
 
 		.preview-content {
-			flex-grow: 1;
 			padding: 20px;
 			border: 1px solid var(--color-dark);
 			border-radius: var(--border-radius);
