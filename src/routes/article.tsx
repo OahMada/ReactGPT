@@ -25,7 +25,7 @@ import {
 	ParagraphControlBtns,
 	AutoFocusWrapper,
 } from '../components';
-import { ParagraphWrapper, StyledParagraph, Button } from '../styles';
+import { ParagraphWrapper, StyledParagraph, Button, BtnContainer } from '../styles';
 import { ControlOptionsMenuContainerStyles } from './ControlOptionsMenuContainerStyles';
 
 // utils
@@ -294,13 +294,15 @@ export var Article = () => {
 																				<StyledParagraph onClick={() => dispatch(updateUserInput(paragraph.id))}>
 																					{paragraph.paragraphBeforeGrammarFix}
 																				</StyledParagraph>
-																				<Button
-																					onClick={async () => {
-																						resetErrorBoundary();
-																					}}
-																				>
-																					Retry
-																				</Button>
+																				<BtnContainer>
+																					<Button
+																						onClick={async () => {
+																							resetErrorBoundary();
+																						}}
+																					>
+																						Retry
+																					</Button>
+																				</BtnContainer>
 																			</ParagraphWrapper>
 																		);
 																	}}

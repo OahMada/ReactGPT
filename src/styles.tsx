@@ -180,3 +180,10 @@ export var Button = styled.button`
 		}
 	}
 `;
+
+export var BtnContainer = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	margin-top: 5px;
+	gap: var(--gap-primary);
+`;

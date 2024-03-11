@@ -25,7 +25,7 @@ import {
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
 
 import { Modal, ParagraphInput, ParagraphTranslation, useAutoFocusContext } from '.';
-import { ParagraphWrapper, StyledParagraph, ErrorBoundaryWrapper, Button } from '../styles';
+import { ParagraphWrapper, StyledParagraph, ErrorBoundaryWrapper, Button, BtnContainer } from '../styles';
 
 export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 	let { setAutoFocus } = useAutoFocusContext();
@@ -199,7 +199,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 							}
 						</StyledParagraph>
 					)}
-					<div className='btn-container'>
+					<BtnContainer>
 						<Button
 							onClick={() => {
 								dispatch(acceptAllAdjustments(paragraphId));
@@ -225,7 +225,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 						>
 							Done
 						</Button>
-					</div>
+					</BtnContainer>
 				</ExtendedParagraphWrapper>
 				<Modal ref={modalRef} modalOffsets={modalOffsetsRef.current} />
 			</>
