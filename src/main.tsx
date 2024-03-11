@@ -79,20 +79,20 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- * give pinned article an icon
  * css rules organize
  * responsive layout on mobile devices
  *
  * ## bugs
  *
  * delete paragraph, click on shift + down, and undo deletion, enabled scopes error
- * retry all translation may not shown
+ * click on grabber might not work
+ * why position change when editing paragraph
+ *
  * downloaded image ratio failure
  * tooltip persisting issue on phone
- * dismissed paragraph deletion toast reappears
- * why position change when editing paragraph
- * click on grabber might not work
+ * the ghost tooltip shows up when paragraph menu hides: give some delay to the hiding of the menu
  * the toast of deleting empty paragraph
+ * dismissed paragraph deletion toast reappears
  *
  * ## test
  *

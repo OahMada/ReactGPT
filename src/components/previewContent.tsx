@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useRef, Suspense } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
-import { useQueryErrorResetBoundary, useIsFetching } from '@tanstack/react-query';
+import { useQueryErrorResetBoundary } from '@tanstack/react-query';
 import { mergeRefs } from 'react-merge-refs';
 import styled from 'styled-components';
 
@@ -17,19 +17,16 @@ interface Props {
 type Ref = HTMLDivElement;
 
 export var PreviewContent = forwardRef<Ref, Props>(({ paragraph, includeTranslation, resetErrorBoundariesMapRef }, ref) => {
-	let fetchCount = useIsFetching({ queryKey: ['translation'] });
 	let { reset } = useQueryErrorResetBoundary();
 
-	let resetErrorBoundaryRef = useRef<FallbackProps['resetErrorBoundary'] | null>(null);
+	let errorBoundaryResetterRef = useRef<FallbackProps['resetErrorBoundary'] | null>(null);
 
 	useEffect(() => {
-		if (fetchCount === 0) {
-			// update parent useRef value
-			if (resetErrorBoundaryRef.current) {
-				resetErrorBoundariesMapRef.set(paragraph.paragraphId, resetErrorBoundaryRef.current);
-			}
+		// update parent useRef value
+		if (errorBoundaryResetterRef.current) {
+			resetErrorBoundariesMapRef.set(paragraph.paragraphId, errorBoundaryResetterRef.current);
 		}
-	}, [fetchCount, paragraph.paragraphId, resetErrorBoundariesMapRef]);
+	}, [errorBoundaryResetterRef.current]);
 
 	// For newly inserted paragraphs that do not have any saved content yet
 	if (paragraph.paragraphText === '') {
@@ -44,7 +41,7 @@ export var PreviewContent = forwardRef<Ref, Props>(({ paragraph, includeTranslat
 					onReset={reset}
 					fallbackRender={({ resetErrorBoundary }) => {
 						return (
-							<StyledDiv ref={mergeRefs([() => (resetErrorBoundaryRef.current = resetErrorBoundary), ref])}>
+							<StyledDiv ref={mergeRefs([() => (errorBoundaryResetterRef.current = resetErrorBoundary), ref])}>
 								<p>
 									<i>Error Occurred!</i>
 								</p>

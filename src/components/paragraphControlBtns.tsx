@@ -80,7 +80,8 @@ export var ParagraphControlBtns = ({ paragraphId, index, paragraphFocused }: { p
 				<Undo
 					onUndo={() => {
 						dispatch(undoParagraphDeletion(paragraphId));
-						if (paragraphFocused) {
+						// if another paragraph has already gained focus, then do nothing
+						if (paragraphFocused && focusedParagraphIndexRef.current === -1) {
 							focusedParagraphIndexRef.current = index;
 						}
 					}}

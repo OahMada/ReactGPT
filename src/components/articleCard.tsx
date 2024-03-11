@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn'; // import locale
 import cs from 'classnames';
 import styled from 'styled-components';
+import { RiStarSFill } from 'react-icons/ri';
 
 import { useAppDispatch } from '../redux/hooks';
 import { removeArticle, addArticleToDeletionQueue, removeArticleFromDeletionQueue } from '../features/articleSlice';
@@ -45,6 +46,11 @@ export var ArticleCard = ({ article, articleIsInFavorites, articlePinningSchedul
 
 	return (
 		<ArticleCardWrapper $isPinned={pinning} key={article.articleId} className={cs('card', { active: article.articleId === currentArticle })}>
+			{pinning && (
+				<div className='icon-wrapper'>
+					<RiStarSFill />
+				</div>
+			)}
 			<div onClick={() => navigateWithSearchParams(`article/${article.articleId}`)} className='card-content'>
 				<p>{article.articleText.length > 35 ? article.articleText.slice(0, 35) + '...' : article.articleText}</p>{' '}
 				<p className='date'>{dayjs(article.editDate).format('YYYY-MM-DD HH:mm:ss')}</p>
@@ -80,6 +86,14 @@ export var ArticleCard = ({ article, articleIsInFavorites, articlePinningSchedul
 
 var ArticleCardWrapper = styled.div<{ $isPinned: boolean }>`
 	background-color: ${({ $isPinned }) => $isPinned && 'var(--color-light)'};
+
+	.icon-wrapper {
+		display: grid;
+		height: calc(var(--font-small) * 1.5);
+		flex-shrink: 0;
+		align-self: flex-start;
+		place-content: center;
+	}
 
 	.btn-container {
 		position: absolute;

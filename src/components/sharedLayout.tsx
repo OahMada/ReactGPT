@@ -3,6 +3,7 @@ import { useLocalStorage } from 'react-use';
 import { useForm } from 'react-hook-form';
 import { useRef, useImperativeHandle, useState } from 'react';
 import styled from 'styled-components';
+import { IconContext } from 'react-icons';
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { selectArticle, unPinArticle, pinArticle } from '../features/articleSlice';
@@ -192,12 +193,14 @@ export var SharedLayout = () => {
 						)}
 						{articles.map((article) => {
 							return (
-								<ArticleCard
-									key={article.articleId}
-									article={article}
-									articleIsInFavorites={articleIsInFavorites(article.articleId)}
-									articlePinningScheduleRef={articlePinningScheduleRef.current}
-								/>
+								<IconContext.Provider value={{ size: '1.6rem' }}>
+									<ArticleCard
+										key={article.articleId}
+										article={article}
+										articleIsInFavorites={articleIsInFavorites(article.articleId)}
+										articlePinningScheduleRef={articlePinningScheduleRef.current}
+									/>
+								</IconContext.Provider>
 							);
 						})}
 					</div>
@@ -241,7 +244,7 @@ var StyledAside = styled.aside`
 			display: flex;
 			overflow: hidden;
 			width: 100%;
-			height: 10rem;
+			height: 9.5rem;
 			flex-shrink: 0;
 			align-items: center;
 			justify-content: flex-start;
