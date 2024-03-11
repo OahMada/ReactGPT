@@ -8,27 +8,37 @@ export var EmptyParagraphList = () => {
 
 	return (
 		<StyledDiv>
-			<h1>No Content Yet, Create New?</h1>
-			<Button
-				onClick={() => {
-					navigate('/');
-					toast.dismiss(); // dismiss any displaying toasts
-				}}
-			>
-				Create
-			</Button>
+			<div className='wrapper'>
+				<h1>No Content Yet, Create New?</h1>
+				<Button
+					onClick={() => {
+						navigate('/');
+						toast.dismiss(); // dismiss any displaying toasts
+					}}
+				>
+					Create
+				</Button>
+			</div>
 		</StyledDiv>
 	);
 };
 
 var StyledDiv = styled.div`
 	display: grid;
-	padding: 50px 0;
-	border: 1px solid var(--color-darkest);
+	height: 100%;
+	justify-content: center;
+	padding-top: 50px;
+	border: 1px solid var(--color-darker);
 	border-radius: var(--border-radius);
-	place-items: center;
+
+	.wrapper {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
 
 	button {
+		width: fit-content;
 		margin-top: 20px;
 	}
 `;

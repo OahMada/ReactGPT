@@ -21,23 +21,24 @@ export function ErrorPage() {
 	return (
 		<StyledDiv>
 			<div>
-				<h1>Oops!</h1>
-				<p>Sorry, an unexpected error has occurred.</p>
-				<p>
-					<i>{(isRouteErrorResponse(error) && error.statusText) || (error instanceof Error && error.message)}</i>
-				</p>
+				<div>
+					<h1>Oops!</h1>
+					<p>Sorry, an unexpected error has occurred.</p>
+					<p>
+						<i>{(isRouteErrorResponse(error) && error.statusText) || (error instanceof Error && error.message)}</i>
+					</p>
+				</div>
+				<Button onClick={handleClick} data-tooltip-id='hotkey' data-tooltip-content={errorPageHotkeys.back.label}>
+					Back to home page
+				</Button>
 			</div>
-			<Button onClick={handleClick} data-tooltip-id='hotkey' data-tooltip-content={errorPageHotkeys.back.label}>
-				Back to home page
-			</Button>
 		</StyledDiv>
 	);
 }
 
 var StyledDiv = styled.div`
 	display: grid;
-	width: 100%;
-	gap: var(--gap-huge);
+	height: 100dvh;
 	place-content: center;
 
 	p:last-child {
@@ -47,5 +48,6 @@ var StyledDiv = styled.div`
 
 	button {
 		width: fit-content;
+		margin-top: var(--gap-huge);
 	}
 `;

@@ -142,69 +142,69 @@ export var SharedLayout = () => {
 	return (
 		<>
 			{(query || articles.length > 0) && ( // same as !(!query && articles.length < 1), means no articles have been created
-				<StyledAside>
-					<form role='search' onSubmit={handleSubmit(onSubmit)}>
-						<input
-							aria-label='Search articles'
-							type='search'
-							placeholder='Search'
-							ref={searchInputRef}
-							{...rest}
-							data-tooltip-id='hotkey'
-							data-tooltip-content={articlePageHotkeys.enableSearch.label}
-							onFocus={() => setSearchFocus(true)}
-							onBlur={() => setSearchFocus(false)}
-							data-tooltip-hidden={searchFocus}
-						/>
-					</form>
-					<div
-						className='card-wrapper'
-						onMouseLeave={() => {
-							debounceTimeoutRef.current = setTimeout(() => {
-								resolveArticlePinningSchedules();
-							}, 500);
-						}}
-						onMouseEnter={() => {
-							window.clearTimeout(debounceTimeoutRef.current);
-						}}
-					>
-						<div className='card'>
-							<div
-								className='link-wrapper'
-								onClick={() => {
-									if (!newArticleLinkRef.current) throw Error('newArticleLinkRef is not assigned');
-									newArticleLinkRef.current.click();
-								}}
-							>
-								<NavLink
-									to={`/${query ? `?search=${query}` : ''}`}
-									data-tooltip-id='hotkey'
-									data-tooltip-content={articlePageHotkeys.createNewArticle.label}
-									ref={newArticleLinkRef}
-								>
-									New Article
-								</NavLink>
-							</div>
-						</div>
-						{articles.length < 1 && (
+				<IconContext.Provider value={{ size: '1.6rem' }}>
+					<StyledAside>
+						<form role='search' onSubmit={handleSubmit(onSubmit)}>
+							<input
+								aria-label='Search articles'
+								type='search'
+								placeholder='Search'
+								ref={searchInputRef}
+								{...rest}
+								data-tooltip-id='hotkey'
+								data-tooltip-content={articlePageHotkeys.enableSearch.label}
+								onFocus={() => setSearchFocus(true)}
+								onBlur={() => setSearchFocus(false)}
+								data-tooltip-hidden={searchFocus}
+							/>
+						</form>
+						<div
+							className='card-wrapper'
+							onMouseLeave={() => {
+								debounceTimeoutRef.current = setTimeout(() => {
+									resolveArticlePinningSchedules();
+								}, 500);
+							}}
+							onMouseEnter={() => {
+								window.clearTimeout(debounceTimeoutRef.current);
+							}}
+						>
 							<div className='card'>
-								<p>No articles match the search query.</p>
+								<div
+									className='link-wrapper'
+									onClick={() => {
+										if (!newArticleLinkRef.current) throw Error('newArticleLinkRef is not assigned');
+										newArticleLinkRef.current.click();
+									}}
+								>
+									<NavLink
+										to={`/${query ? `?search=${query}` : ''}`}
+										data-tooltip-id='hotkey'
+										data-tooltip-content={articlePageHotkeys.createNewArticle.label}
+										ref={newArticleLinkRef}
+									>
+										New Article
+									</NavLink>
+								</div>
 							</div>
-						)}
-						{articles.map((article) => {
-							return (
-								<IconContext.Provider value={{ size: '1.6rem' }}>
+							{articles.length < 1 && (
+								<div className='card'>
+									<p>No articles match the search query.</p>
+								</div>
+							)}
+							{articles.map((article) => {
+								return (
 									<ArticleCard
 										key={article.articleId}
 										article={article}
 										articleIsInFavorites={articleIsInFavorites(article.articleId)}
 										articlePinningScheduleRef={articlePinningScheduleRef.current}
 									/>
-								</IconContext.Provider>
-							);
-						})}
-					</div>
-				</StyledAside>
+								);
+							})}
+						</div>
+					</StyledAside>
+				</IconContext.Provider>
 			)}
 			<Outlet />
 		</>

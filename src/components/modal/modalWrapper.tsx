@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export var ModalWrapper = styled.div<{ $displayModal: boolean; $leftOffset: number }>`
 	position: fixed;
+	z-index: 1;
 	top: calc((var(--position-top) + var(--position-top-offset)) * 1px);
 	left: calc(var(--position-left) * 1px + ${({ $leftOffset }) => ($leftOffset ? `${$leftOffset} * 1px - 1rem` : '-0.5rem')});
 

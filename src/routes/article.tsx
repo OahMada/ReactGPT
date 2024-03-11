@@ -215,6 +215,7 @@ export var Article = () => {
 
 	return (
 		<StyledSection>
+			{filteredParagraphs.length === 0 && combinedArticleQueue.indexOf(articleId) !== -1 && <EmptyParagraphList />}
 			<div className='article-controls'>
 				{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
 				{showRetryAllButton && (
@@ -223,7 +224,6 @@ export var Article = () => {
 					</Button>
 				)}
 			</div>
-			{filteredParagraphs.length === 0 && combinedArticleQueue.indexOf(articleId) !== -1 && <EmptyParagraphList />}
 			<DragDropContext onDragEnd={handleOnDragEnd} onDragStart={handleOnDargStart}>
 				<Droppable droppableId='paragraphs'>
 					{(provided) => (
@@ -396,6 +396,7 @@ var StyledArticle = styled.article`
 `;
 
 var StyledSection = styled.section`
+	flex-grow: 1;
 	padding-top: 10px;
 	margin-top: var(--header-offset);
 
