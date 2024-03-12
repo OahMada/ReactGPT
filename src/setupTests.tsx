@@ -18,6 +18,7 @@ import { setupStore, RootState, AppStore } from './redux/store';
 import routesConfig from './routesConfig';
 import { saveArticleInput } from './features/articleSlice';
 import { defaultArticleInput } from './utils';
+import { FocusedParagraphIndexContextWrapper } from './components';
 
 // mocks
 vi.mock('react-secure-storage', () => ({
@@ -79,7 +80,7 @@ var renderWithContexts = (
 			<QueryClientProvider client={queryClient}>
 				<Provider store={store}>
 					<HotkeysProvider>
-						{children}
+						<FocusedParagraphIndexContextWrapper>{children}</FocusedParagraphIndexContextWrapper>
 						<ToastContainer />
 						<Tooltip id='hotkey' />
 					</HotkeysProvider>

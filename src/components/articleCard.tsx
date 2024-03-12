@@ -11,6 +11,7 @@ import { RiStarSFill } from 'react-icons/ri';
 import { useAppDispatch } from '../redux/hooks';
 import { removeArticle, addArticleToDeletionQueue, removeArticleFromDeletionQueue } from '../features/articleSlice';
 import { Button } from '../styles';
+import { useFocusedParagraphIndexContext } from '../components';
 
 interface ArticleCardProp {
 	article: {
@@ -44,6 +45,8 @@ export var ArticleCard = ({ article, articleIsInFavorites, articlePinningSchedul
 	let dispatch = useAppDispatch();
 	const { articleId: currentArticle } = useParams();
 
+	let focusedParagraphIndexRef = useFocusedParagraphIndexContext();
+
 	return (
 		<ArticleCardWrapper $isPinned={pinning} key={article.articleId} className={cs('card', { active: article.articleId === currentArticle })}>
 			{pinning && (
@@ -51,7 +54,14 @@ export var ArticleCard = ({ article, articleIsInFavorites, articlePinningSchedul
 					<RiStarSFill />
 				</div>
 			)}
-			<div onClick={() => navigateWithSearchParams(`article/${article.articleId}`)} className='card-content'>
+			<div
+				onClick={() => {
+					navigateWithSearchParams(`article/${article.articleId}`);
+					// reset focus on navigating away
+					focusedParagraphIndexRef.current = -1;
+				}}
+				className='card-content'
+			>
 				<p>{article.articleText.length > 35 ? article.articleText.slice(0, 35) + '...' : article.articleText}</p>{' '}
 				<p className='date'>{dayjs(article.editDate).format('YYYY-MM-DD HH:mm:ss')}</p>
 			</div>

@@ -11,6 +11,7 @@ import { Tooltip } from 'react-tooltip';
 
 import routesConfig from './routesConfig';
 import GlobalStyles from './styles';
+import { FocusedParagraphIndexContextWrapper } from './components';
 
 export var router = createBrowserRouter(routesConfig);
 
@@ -18,7 +19,10 @@ export var App = () => {
 	return (
 		<>
 			<GlobalStyles />
-			<RouterProvider router={router} />
+			<FocusedParagraphIndexContextWrapper>
+				<RouterProvider router={router} />
+			</FocusedParagraphIndexContextWrapper>
+
 			{/* duplicate toasts might show when applying the limit option, a library bug */}
 			<ToastContainer limit={3} />
 			{createPortal(

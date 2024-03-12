@@ -1,7 +1,7 @@
 // components
 import { Root, Article, ArticleInput, Config, ErrorPage, Preview, HotkeyMap } from './routes';
 // import { ReactPortal } from './components';
-import { FocusedParagraphIndexContextWrapper, SharedLayout } from './components';
+import { SharedLayout } from './components';
 
 var routesConfig = [
 	{
@@ -17,11 +17,7 @@ var routesConfig = [
 							{ index: true, element: <ArticleInput /> },
 							{
 								path: 'article/:articleId',
-								element: (
-									<FocusedParagraphIndexContextWrapper>
-										<Article />
-									</FocusedParagraphIndexContextWrapper>
-								),
+								element: <Article />,
 								children: [
 									{
 										path: 'preview',
