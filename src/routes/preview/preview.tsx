@@ -254,7 +254,18 @@ export var Preview = () => {
 							</Button>
 							<Button className='export-btn'>Export To File</Button>
 						</div>
-						<StyledDiv>
+						<StyledDiv
+							onMouseLeave={(e) => {
+								// https://stackoverflow.com/a/67790489/5800789
+								let eventTarget = e.currentTarget;
+								setTimeout(() => {
+									eventTarget.classList.remove('hover');
+								}, 300);
+							}}
+							onMouseEnter={(e) => {
+								e.currentTarget.classList.add('hover');
+							}}
+						>
 							<Button
 								disabled={translationFetchingCount !== 0}
 								onClick={debouncedDownloadPDF}

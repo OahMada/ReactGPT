@@ -10,6 +10,7 @@ import { mergeRefs } from 'react-merge-refs';
 import { useHotkeysContext } from 'react-hotkeys-hook';
 import cs from 'classnames';
 import { RxHamburgerMenu, RxDragHandleDots1 } from 'react-icons/rx';
+import { IconContext } from 'react-icons';
 
 // redux
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
@@ -225,132 +226,139 @@ export var Article = () => {
 	}
 
 	return (
-		<StyledSection>
-			{filteredParagraphs.length === 0 && combinedArticleQueue.indexOf(articleId) !== -1 && <EmptyParagraphList />}
-			<div className='article-controls'>
-				{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
-				{showRetryAllButton && (
-					<Button onClick={handleRetryAll} disabled={grammarFixFetchingCount > 0} data-tooltip-id='hotkey' data-tooltip-content={retryAllErred.label}>
-						Retry All
-					</Button>
-				)}
-			</div>
-			<DragDropContext onDragEnd={handleOnDragEnd} onDragStart={handleOnDargStart}>
-				<Droppable droppableId='paragraphs'>
-					{(provided) => (
-						<div ref={provided.innerRef} {...provided.droppableProps}>
-							<AutoFocusWrapper>
-								{filteredParagraphs.map((paragraph: ParagraphType, index) => {
-									return (
-										<Draggable key={paragraph.id} draggableId={paragraph.id} index={index}>
-											{(provided) => (
-												<StyledArticle
-													ref={mergeRefs([
-														provided.innerRef,
-														(node) => {
-															if (node) {
-																articleElementRefs.current.set(paragraph.id, node);
-															} else {
-																// To keep the ref reflects the current paragraph structure.
-																articleElementRefs.current.delete(paragraph.id);
+		<IconContext.Provider value={{ size: '2.5rem' }}>
+			<StyledSection>
+				{filteredParagraphs.length === 0 && combinedArticleQueue.indexOf(articleId) !== -1 && <EmptyParagraphList />}
+				<div className='article-controls'>
+					{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
+					{showRetryAllButton && (
+						<Button
+							onClick={handleRetryAll}
+							disabled={grammarFixFetchingCount > 0}
+							data-tooltip-id='hotkey'
+							data-tooltip-content={retryAllErred.label}
+						>
+							Retry All
+						</Button>
+					)}
+				</div>
+				<DragDropContext onDragEnd={handleOnDragEnd} onDragStart={handleOnDargStart}>
+					<Droppable droppableId='paragraphs'>
+						{(provided) => (
+							<div ref={provided.innerRef} {...provided.droppableProps}>
+								<AutoFocusWrapper>
+									{filteredParagraphs.map((paragraph: ParagraphType, index) => {
+										return (
+											<Draggable key={paragraph.id} draggableId={paragraph.id} index={index}>
+												{(provided) => (
+													<StyledArticle
+														ref={mergeRefs([
+															provided.innerRef,
+															(node) => {
+																if (node) {
+																	articleElementRefs.current.set(paragraph.id, node);
+																} else {
+																	// To keep the ref reflects the current paragraph structure.
+																	articleElementRefs.current.delete(paragraph.id);
+																}
+															},
+														])}
+														{...provided.draggableProps}
+														tabIndex={-1} // make the element focusable
+														onClick={(e) => {
+															if (e.target === e.currentTarget) {
+																// prevent other interactions to change the focused element
+																focusedParagraphIndexRef.current = index;
+																performEnableScope(paragraph.id);
 															}
-														},
-													])}
-													{...provided.draggableProps}
-													tabIndex={-1} // make the element focusable
-													onClick={(e) => {
-														if (e.target === e.currentTarget) {
-															// prevent other interactions to change the focused element
+														}}
+														// Make the newly inserted empty paragraph the hotkey-enabled one. Thus, pressing d, =, or - won't trigger actions in other paragraphs.
+														onFocus={() => {
 															focusedParagraphIndexRef.current = index;
 															performEnableScope(paragraph.id);
-														}
-													}}
-													// Make the newly inserted empty paragraph the hotkey-enabled one. Thus, pressing d, =, or - won't trigger actions in other paragraphs.
-													onFocus={() => {
-														focusedParagraphIndexRef.current = index;
-														performEnableScope(paragraph.id);
-													}}
-													className={cs({ active: focusedParagraphIndexRef.current === index })}
-												>
-													<div
-														className='grabber'
-														{...provided.dragHandleProps}
-														onClick={
-															(e) => e.currentTarget.focus() // to make initiating drag and drop from keyboard a bit easer
-														}
+														}}
+														className={cs({ active: focusedParagraphIndexRef.current === index })}
 													>
-														<RxDragHandleDots1 />
-													</div>
-													<div className='content'>
-														<QueryErrorResetBoundary>
-															{({ reset }) => (
-																<ErrorBoundary
-																	fallbackRender={({ resetErrorBoundary }) => {
-																		if (paragraph.paragraphStatus === 'editing') {
-																			return <ParagraphInput paragraphId={paragraph.id} resetErrorBoundary={resetErrorBoundary} />;
-																		}
-																		return (
-																			<ParagraphWrapper
-																				// reference https://react.dev/learn/manipulating-the-dom-with-refs#how-to-manage-a-list-of-refs-using-a-ref-callback
-																				ref={(node) => {
-																					if (node) {
-																						resetErrorBoundariesRef.current.set(paragraph.id, resetErrorBoundary);
-																						errorBoundaryFallbackElementCount.current += 1;
-																					} else {
-																						resetErrorBoundariesRef.current.delete(paragraph.id);
-																						errorBoundaryFallbackElementCount.current -= 1;
-																					}
-																				}}
-																			>
-																				<StyledParagraph onClick={() => dispatch(updateUserInput(paragraph.id))}>
-																					{paragraph.paragraphBeforeGrammarFix}
-																				</StyledParagraph>
-																				<BtnContainer>
-																					<Button
-																						onClick={async () => {
-																							resetErrorBoundary();
-																						}}
-																					>
-																						Retry
-																					</Button>
-																				</BtnContainer>
-																			</ParagraphWrapper>
-																		);
-																	}}
-																	onError={(error) => {
-																		createToast({ type: 'error', content: error.message, toastId: error.message });
-																	}}
-																	onReset={reset}
-																>
-																	<Paragraph paragraphId={paragraph.id} />
-																</ErrorBoundary>
-															)}
-														</QueryErrorResetBoundary>
-														<div className='paragraph-menu-container'>
-															<div className='paragraph-menu'>
-																<RxHamburgerMenu />
-															</div>
-															<ParagraphControlBtns
-																paragraphId={paragraph.id}
-																index={index}
-																paragraphFocused={focusedParagraphIndexRef.current === index}
-															/>
+														<div
+															className='grabber'
+															{...provided.dragHandleProps}
+															onClick={
+																(e) => e.currentTarget.focus() // to make initiating drag and drop from keyboard a bit easer
+															}
+														>
+															<RxDragHandleDots1 />
 														</div>
-													</div>
-												</StyledArticle>
-											)}
-										</Draggable>
-									);
-								})}
-								{provided.placeholder}
-								{/* For the `ParagraphControlBtns` element, if the toastContainer were within the element itself, then every element would render a separate toast. */}
-							</AutoFocusWrapper>
-						</div>
-					)}
-				</Droppable>
-			</DragDropContext>
-			<Outlet context={filteredParagraphs} />
-		</StyledSection>
+														<div className='content'>
+															<QueryErrorResetBoundary>
+																{({ reset }) => (
+																	<ErrorBoundary
+																		fallbackRender={({ resetErrorBoundary }) => {
+																			if (paragraph.paragraphStatus === 'editing') {
+																				return <ParagraphInput paragraphId={paragraph.id} resetErrorBoundary={resetErrorBoundary} />;
+																			}
+																			return (
+																				<ParagraphWrapper
+																					// reference https://react.dev/learn/manipulating-the-dom-with-refs#how-to-manage-a-list-of-refs-using-a-ref-callback
+																					ref={(node) => {
+																						if (node) {
+																							resetErrorBoundariesRef.current.set(paragraph.id, resetErrorBoundary);
+																							errorBoundaryFallbackElementCount.current += 1;
+																						} else {
+																							resetErrorBoundariesRef.current.delete(paragraph.id);
+																							errorBoundaryFallbackElementCount.current -= 1;
+																						}
+																					}}
+																				>
+																					<StyledParagraph onClick={() => dispatch(updateUserInput(paragraph.id))}>
+																						{paragraph.paragraphBeforeGrammarFix}
+																					</StyledParagraph>
+																					<BtnContainer>
+																						<Button
+																							onClick={async () => {
+																								resetErrorBoundary();
+																							}}
+																						>
+																							Retry
+																						</Button>
+																					</BtnContainer>
+																				</ParagraphWrapper>
+																			);
+																		}}
+																		onError={(error) => {
+																			createToast({ type: 'error', content: error.message, toastId: error.message });
+																		}}
+																		onReset={reset}
+																	>
+																		<Paragraph paragraphId={paragraph.id} />
+																	</ErrorBoundary>
+																)}
+															</QueryErrorResetBoundary>
+															<div className='paragraph-menu-container'>
+																<div className='paragraph-menu'>
+																	<RxHamburgerMenu />
+																</div>
+																<ParagraphControlBtns
+																	paragraphId={paragraph.id}
+																	index={index}
+																	paragraphFocused={focusedParagraphIndexRef.current === index}
+																/>
+															</div>
+														</div>
+													</StyledArticle>
+												)}
+											</Draggable>
+										);
+									})}
+									{provided.placeholder}
+									{/* For the `ParagraphControlBtns` element, if the toastContainer were within the element itself, then every element would render a separate toast. */}
+								</AutoFocusWrapper>
+							</div>
+						)}
+					</Droppable>
+				</DragDropContext>
+				<Outlet context={filteredParagraphs} />
+			</StyledSection>
+		</IconContext.Provider>
 	);
 };
 
@@ -380,6 +388,13 @@ var StyledArticle = styled.article`
 		margin-right: 3px;
 		cursor: grab;
 		place-content: center;
+
+		/* since the default outline may not show up */
+		&:focus {
+			border: 1px solid var(--color-darker);
+			border-radius: var(--border-radius-small);
+			outline: none;
+		}
 	}
 
 	.content {

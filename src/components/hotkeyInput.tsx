@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { generateHotkeyLabel } from '../utils';
 import { LocalStorageHotkeys, RecordingStopper } from '../types';
 import { Button } from '../styles';
+import { RiPencilLine } from 'react-icons/ri';
 
 interface Hotkey {
 	label: string;
@@ -46,7 +47,10 @@ export var HotkeyInput = ({ keyBinding, userDefinedHotkeys, setUserDefinedHotkey
 	}
 	return (
 		<StyledTd>
-			<Button
+			<div
+				className='wrapper'
+				data-tooltip-id='tip'
+				data-tooltip-content='Click to change'
 				onClick={() => {
 					// run other hotkey's stop utility first
 					let stopper = hotkeyRecordingStopperRef.get('stopper');
@@ -55,16 +59,26 @@ export var HotkeyInput = ({ keyBinding, userDefinedHotkeys, setUserDefinedHotkey
 					}
 					start();
 				}}
-				data-tooltip-id='tip'
-				data-tooltip-content='Click to change'
 			>
-				{keyBinding.label}
-			</Button>
+				<RiPencilLine />
+				<Button>{keyBinding.label}</Button>
+			</div>
 		</StyledTd>
 	);
 };
 
 var StyledTd = styled.td<{ $newHotkey?: string }>`
+	.wrapper {
+		display: flex;
+		width: fit-content;
+		align-items: center;
+		padding: 0 5px;
+		border: 1px solid black;
+		border-radius: var(--border-radius);
+		background-color: white;
+		gap: 5px;
+	}
+
 	span {
 		display: inline-block;
 		width: 70%;
@@ -74,5 +88,15 @@ var StyledTd = styled.td<{ $newHotkey?: string }>`
 		border: 1px solid var(--color-dark);
 		margin-right: 5px;
 		color: ${({ $newHotkey }) => ($newHotkey ? 'black' : 'var(--color-dark)')};
+	}
+
+	svg {
+		display: inline-block;
+	}
+
+	button {
+		padding: 0;
+		border: none;
+		background-color: transparent;
 	}
 `;

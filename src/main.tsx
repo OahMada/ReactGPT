@@ -64,7 +64,7 @@ enableMocking().then(() => {
 				<Provider store={store}>
 					<PersistGate loading={null} persistor={persistor}>
 						<HotkeysProvider>
-							<IconContext.Provider value={{ size: '2.5rem' }}>
+							<IconContext.Provider value={{ size: '1.6rem' }}>
 								<App />
 							</IconContext.Provider>
 						</HotkeysProvider>
@@ -84,11 +84,8 @@ enableMocking().then(() => {
  *
  * ## bugs
  *
- * click on grabber might not work
  * why position change when editing paragraph
  *
- * the ghost tooltip shows up when paragraph menu hides: give some delay to the hiding of the menu
- * the toast of deleting empty paragraph
  * downloaded image ratio failure
  * dismissed paragraph deletion toast reappears
  * tooltip persisting issue on phone

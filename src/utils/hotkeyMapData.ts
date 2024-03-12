@@ -130,7 +130,7 @@ export var HotkeyMapData = () => {
 			insertParagraphBelow: {
 				id: 'article/insertBelow',
 				hotkey: getUserDefinedHotkey({ id: 'article/insertBelow', hotkey: 'minus' }),
-				label: generateHotkeyLabel(getUserDefinedHotkey({ id: 'article/insertBelow', hotkey: '-' })),
+				label: generateHotkeyLabel(getUserDefinedHotkey({ id: 'article/insertBelow', hotkey: '- (Minus)' })),
 				purpose: 'Click the Insert Below button. Insert new paragraph below current one.',
 			},
 		},

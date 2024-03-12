@@ -45,7 +45,13 @@ var Undo = ({ closeToast, onUndo, paragraph, paragraphId }: UndoProps) => {
 
 	return (
 		<UndoDeletionWrapper>
-			<h4>Deleting Paragraph {`"${paragraph.slice(0, 10)}..." `}</h4>
+			<h4>
+				{paragraph.length > 10
+					? `Deleting Paragraph "${paragraph.slice(0, 10)}..."`
+					: paragraph.length > 0
+						? `Deleting Paragraph "${paragraph}"`
+						: 'Deleting Paragraph'}
+			</h4>
 			<Button
 				onClick={handleClick}
 				data-tooltip-id='hotkey'
@@ -143,7 +149,18 @@ export var ParagraphControlBtns = ({ paragraphId, index, paragraphFocused }: { p
 	});
 
 	return (
-		<ControlOptionsMenu>
+		<ControlOptionsMenu
+			onMouseLeave={(e) => {
+				// https://stackoverflow.com/a/67790489/5800789
+				let eventTarget = e.currentTarget;
+				setTimeout(() => {
+					eventTarget.classList.remove('hover');
+				}, 300);
+			}}
+			onMouseEnter={(e) => {
+				e.currentTarget.classList.add('hover');
+			}}
+		>
 			<NoFocusPropagationButton
 				onClick={handleParagraphDeletion}
 				data-tooltip-id='hotkey'

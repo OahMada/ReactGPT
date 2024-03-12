@@ -12,6 +12,9 @@ var GlobalStyles = createGlobalStyle`
 html {
 	font-size: 62.5%;
 
+	/* https://dev.to/rashidshamloo/preventing-the-layout-shift-caused-by-scrollbars-2flp */
+	scrollbar-gutter: stable;
+
 	--font-small-extra: 1.2rem;
 	--font-small: 1.4rem;
 	--font-big: 2rem;
@@ -60,8 +63,9 @@ export var ControlOptionsMenu = styled.div`
 	background-color: white;
 	box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 30%);
 	gap: var(--gap-small);
+	translate: 0 -3px;
 
-	&:hover {
+	&.hover {
 		display: flex;
 	}
 `;
