@@ -72,7 +72,9 @@ export var ParagraphControlBtns = ({ paragraphId, index, paragraphFocused }: { p
 
 	let handleParagraphDeletion = () => {
 		dispatch(addParagraphToDeletionQueue(paragraphId));
-		focusedParagraphIndexRef.current = -1;
+		if (paragraphFocused) focusedParagraphIndexRef.current = -1;
+		// to adapt to the number of paragraph changes
+		if (!paragraphFocused && focusedParagraphIndexRef.current > index) focusedParagraphIndexRef.current -= 1;
 
 		toastId.current = createToast({
 			type: 'error',
@@ -80,9 +82,9 @@ export var ParagraphControlBtns = ({ paragraphId, index, paragraphFocused }: { p
 				<Undo
 					onUndo={() => {
 						dispatch(undoParagraphDeletion(paragraphId));
-						// if another paragraph has already gained focus, then do nothing
-						if (paragraphFocused && focusedParagraphIndexRef.current === -1) {
-							focusedParagraphIndexRef.current = index;
+						// to adapt to the number of paragraph changes
+						if (focusedParagraphIndexRef.current !== -1 && focusedParagraphIndexRef.current >= index) {
+							focusedParagraphIndexRef.current += 1;
 						}
 					}}
 					/* v8 ignore next 3 */

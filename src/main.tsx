@@ -84,15 +84,14 @@ enableMocking().then(() => {
  *
  * ## bugs
  *
- * delete paragraph, click on shift + down, and undo deletion, enabled scopes error
  * click on grabber might not work
  * why position change when editing paragraph
  *
- * downloaded image ratio failure
- * tooltip persisting issue on phone
  * the ghost tooltip shows up when paragraph menu hides: give some delay to the hiding of the menu
  * the toast of deleting empty paragraph
+ * downloaded image ratio failure
  * dismissed paragraph deletion toast reappears
+ * tooltip persisting issue on phone
  *
  * ## test
  *

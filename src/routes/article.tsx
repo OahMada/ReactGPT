@@ -95,6 +95,17 @@ export var Article = () => {
 		enableScope(scope);
 	};
 
+	// disable any enabled hotkey scope when a paragraph is deleted, which is easier to handle
+	useEffect(() => {
+		articleElements = Array.from(articleElementRefs.current, (item) => ({
+			paragraphId: item[0],
+			element: item[1],
+		}));
+		if (articleElements.findIndex((article) => article.paragraphId === enabledScopes[0]) !== focusedParagraphIndexRef.current) {
+			disableScope(enabledScopes[0]);
+		}
+	});
+
 	useKeys({ keyBinding: retryAllErred.hotkey, callback: handleRetryAll, enabled: !/preview$/.test(location.pathname) }); // enabled only when on the article page
 
 	// traverse downwards through the paragraph list

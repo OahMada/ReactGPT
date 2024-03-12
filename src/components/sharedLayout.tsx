@@ -233,11 +233,13 @@ var StyledAside = styled.aside`
 
 	.card-wrapper {
 		display: flex;
+		overflow: auto;
 		max-height: calc(100dvh - 2 * min(70rem, 100px) - 50px);
 		flex-direction: column;
-		padding-right: 15px;
+		padding-right: 5px;
 		gap: var(--gap-primary);
-		overflow-y: scroll;
+		scrollbar-gutter: stable;
+		scrollbar-width: thin;
 
 		.card {
 			position: relative;
