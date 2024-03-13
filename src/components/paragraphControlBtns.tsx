@@ -67,6 +67,7 @@ var Undo = ({ closeToast, onUndo, paragraph, paragraphId }: UndoProps) => {
 export var ParagraphControlBtns = ({ paragraphId, index, paragraphFocused }: { paragraphId: string; index: number; paragraphFocused: boolean }) => {
 	let { setAutoFocus } = useAutoFocusContext();
 	let focusedParagraphIndexRef = useFocusedParagraphIndexContext();
+	let { disableScope, enabledScopes } = useHotkeysContext();
 
 	let dispatch = useAppDispatch();
 	let toastId = useRef<Id>();
@@ -78,7 +79,12 @@ export var ParagraphControlBtns = ({ paragraphId, index, paragraphFocused }: { p
 
 	let handleParagraphDeletion = () => {
 		dispatch(addParagraphToDeletionQueue(paragraphId));
-		if (paragraphFocused) focusedParagraphIndexRef.current = -1;
+		if (paragraphFocused) {
+			focusedParagraphIndexRef.current = -1;
+			enabledScopes.forEach((scope) => {
+				disableScope(scope);
+			});
+		}
 		// to adapt to the number of paragraph changes
 		if (!paragraphFocused && focusedParagraphIndexRef.current > index) focusedParagraphIndexRef.current -= 1;
 
@@ -125,7 +131,6 @@ export var ParagraphControlBtns = ({ paragraphId, index, paragraphFocused }: { p
 		dispatch(insertBelowParagraph({ paragraphId, articleId }));
 	};
 
-	let { enabledScopes } = useHotkeysContext();
 	let toolTipHidden = !enabledScopes.includes(paragraphId) || currentParagraph.paragraphStatus === 'editing'; // the hotkeys are not gonna enabled when in editing mode
 	let { 'Article Page': articlePageHotkeys } = HotkeyMapData();
 

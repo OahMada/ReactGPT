@@ -259,7 +259,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 						<ParagraphTranslation paragraph={{ paragraphText: paragraphAfterGrammarFix, paragraphId }} />
 					</ErrorBoundary>
 				)}
-				<div className='btn-container'>
+				<BtnContainer>
 					<Button onClick={() => dispatch(checkEditHistory(paragraphId))} disabled={paragraphAfterGrammarFix === initialParagraph}>
 						Show Edit History
 					</Button>
@@ -294,7 +294,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 					>
 						{!showTranslation ? 'Show Translation' : 'Hide Translation'}
 					</Button>
-				</div>
+				</BtnContainer>
 			</ExtendedParagraphWrapper>
 		);
 	}
@@ -306,20 +306,10 @@ var StyledSpan = styled.span<{ $isSpace: boolean }>`
 
 var ExtendedParagraphWrapper = styled(ParagraphWrapper)`
 	h4 {
-		height: var(--util-icon-container-dimension);
-		align-self: flex-start;
-		margin-right: calc(var(--util-icon-container-dimension) + 5px);
 		color: var(--color-darkest);
 		font-size: var(--font-small);
 		font-weight: 500;
 		line-height: var(--util-icon-container-dimension);
-	}
-
-	.btn-container {
-		display: flex;
-		flex-wrap: wrap;
-		margin-top: 5px;
-		gap: var(--gap-primary);
 	}
 
 	fieldset {

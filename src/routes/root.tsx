@@ -29,4 +29,7 @@ var StyledMain = styled.main`
 	padding-top: 0;
 	padding-bottom: 0%;
 	margin: 0 auto;
+
+	/* https://www.reddit.com/r/chrome/comments/i98sta/has_scroll_anchoring_behavior_changed_for_focused/ */
+	overflow-anchor: none;
 `;

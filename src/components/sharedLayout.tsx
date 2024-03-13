@@ -233,7 +233,7 @@ var StyledAside = styled.aside`
 		overflow: auto;
 		max-height: calc(100dvh - 2 * min(70rem, 100px) - 50px);
 		flex-direction: column;
-		padding-right: 15px;
+		padding-right: 10px;
 		gap: var(--gap-primary);
 		scrollbar-gutter: stable;
 		scrollbar-width: thin;

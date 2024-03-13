@@ -109,6 +109,7 @@ export var ParagraphInput = ({
 	return (
 		<StyledForm onSubmit={handleSubmit(onsubmit)}>
 			<TextareaAutosize
+				minRows={3}
 				autoFocus={autoFocus}
 				{...rest}
 				ref={textareaRef}
@@ -167,15 +168,19 @@ export var ParagraphInput = ({
 };
 
 var StyledForm = styled.form`
-	margin-top: calc(var(--util-icon-container-dimension) + 5px);
+	display: flex;
+	flex-direction: column;
+	margin-top: var(--paragraph-margin-top);
+	gap: var(--gap-big);
 
 	textarea {
 		width: 100%;
 		height: 100%;
-		padding: 20px;
+		padding: 10px;
 		border: 1px solid #ccc;
 		border-radius: var(--border-radius);
 		font-family: Arial, Helvetica, sans-serif;
+		letter-spacing: 2px;
 		resize: none;
 		white-space: pre-wrap;
 	}

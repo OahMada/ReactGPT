@@ -12,9 +12,6 @@ var GlobalStyles = createGlobalStyle`
 html {
 	font-size: 62.5%;
 
-	/* https://dev.to/rashidshamloo/preventing-the-layout-shift-caused-by-scrollbars-2flp */
-	scrollbar-gutter: stable;
-
 	--font-small-extra: 1.2rem;
 	--font-small: 1.4rem;
 	--font-big: 2rem;
@@ -28,15 +25,16 @@ html {
 	--border-radius: 5px;
 	--border-radius-big: 10px;
 	--border-radius-small: 3px;
-	--util-icon-container-dimension: 3.2rem;
 	--gap-primary: 5px;
 	--gap-small: 3px;
 	--gap-big: 8px;
 	--gap-huge: 20px;
+	--util-icon-container-dimension: 3.2rem;
 	--header-height: min(7rem, 100px);
+	--header-offset: min(10rem, 120px);
 	--main-content-height: calc(100dvh - var(--header-height));
 	--paragraph-width: 70rem;
-	--header-offset: min(10rem, 120px);
+	--paragraph-margin-top: calc(var(--util-icon-container-dimension) + var(--gap-big));
 }
 
 body {
@@ -46,6 +44,8 @@ body {
 }
 
 #root {
+	/* https://dev.to/rashidshamloo/preventing-the-layout-shift-caused-by-scrollbars-2flp#:~:text=Positioning%20inside%20a%20100vw%20width%20parent */
+	width: 100vw;
 	min-height: 100dvh;
 }
 `;
@@ -74,10 +74,10 @@ export var ParagraphWrapper = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: var(--gap-primary);
+	gap: var(--gap-big);
 
 	& > p:first-child {
-		margin-top: calc(var(--util-icon-container-dimension) + 5px);
+		margin-top: var(--paragraph-margin-top);
 	}
 `;
 
@@ -188,6 +188,5 @@ export var Button = styled.button`
 export var BtnContainer = styled.div`
 	display: flex;
 	flex-wrap: wrap;
-	margin-top: 5px;
 	gap: var(--gap-primary);
 `;

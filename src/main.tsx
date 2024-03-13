@@ -84,8 +84,6 @@ enableMocking().then(() => {
  *
  * ## bugs
  *
- * why position change when editing paragraph
- *
  * downloaded image ratio failure
  * dismissed paragraph deletion toast reappears
  * tooltip persisting issue on phone
