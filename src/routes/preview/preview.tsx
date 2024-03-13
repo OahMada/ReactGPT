@@ -6,7 +6,6 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn'; // import locale
 import { Packer } from 'docx';
 import { saveAs } from 'file-saver';
-import { toBlob } from 'html-to-image';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { proxy } from 'comlink';
@@ -117,17 +116,19 @@ export var Preview = () => {
 
 	/* Image Generation */
 	let downloadImg = async () => {
-		// a bug from the library: Error inlining remote css file DOMException: Failed to read the 'cssRules' property from 'CSSStyleSheet': Cannot access rules
+		// https://stackoverflow.com/a/18312898/5800789
 		/* v8 ignore next 13 */
 		await workerInstance.exportFile(
 			proxy(() => {
-				toBlob(articleWrapperRef.current!, { backgroundColor: 'white' }).then(function (blob) {
-					let b = blob as Blob;
-					if (window.saveAs) {
-						window.saveAs(b, `${fileName}.png`);
-					} else {
-						saveAs(b, `${fileName}.png`);
-					}
+				html2canvas(articleWrapperRef.current!).then((canvas) => {
+					canvas.toBlob((blob) => {
+						let b = blob as Blob;
+						if (window.saveAs) {
+							window.saveAs(b, `${fileName}.png`);
+						} else {
+							saveAs(b, `${fileName}.png`);
+						}
+					});
 				});
 			})
 		);
