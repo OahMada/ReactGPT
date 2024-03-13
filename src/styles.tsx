@@ -1,4 +1,4 @@
-import styled, { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle, css } from 'styled-components';
 
 import { ModalWrapper } from './components/modal/modalWrapper';
 import { PreviewWrapper } from './routes/preview/previewWrapper';
@@ -189,4 +189,11 @@ export var BtnContainer = styled.div`
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--gap-primary);
+`;
+
+export var ControlOptionsMenuContainerStyles = css`
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
 `;

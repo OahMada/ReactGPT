@@ -84,13 +84,9 @@ enableMocking().then(() => {
  *
  * ## bugs
  *
- * make menu icon not too easy to miss
- *
  * tooltip persisting issue on phone
  *
- * dismissed paragraph deletion toast reappears
- * if article deleted, dismiss related paragraph deletion toast
- * empty paragraph creates when deleting all paragraphs and then delete the article
+ * empty paragraph creates when deleting all paragraphs and then delete the article: another article gets deleted too
  *
  * ## test
  *

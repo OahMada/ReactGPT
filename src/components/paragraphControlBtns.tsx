@@ -2,6 +2,8 @@ import { useRef, forwardRef } from 'react';
 import { toast, Id } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import { useHotkeysContext } from 'react-hotkeys-hook';
+import { RxHamburgerMenu } from 'react-icons/rx';
+import styled from 'styled-components';
 
 import {
 	finishParagraphDeletion,
@@ -17,6 +19,7 @@ import { createToast, throwIfUndefined, useKeys, HotkeyMapData } from '../utils'
 import { Paragraph } from '../types';
 import { useAutoFocusContext, useFocusedParagraphIndexContext } from './';
 import { ControlOptionsMenu, Button, UndoDeletionWrapper } from '../styles';
+import { ControlOptionsMenuContainerStyles } from '../styles';
 
 // https://github.com/fkhadra/react-toastify/issues/568#issuecomment-779847274
 interface UndoProps {
@@ -65,6 +68,7 @@ var Undo = ({ closeToast, onUndo, paragraph, paragraphId }: UndoProps) => {
 };
 
 export var ParagraphControlBtns = ({ paragraphId, index, paragraphFocused }: { paragraphId: string; index: number; paragraphFocused: boolean }) => {
+	let paragraphHoverStatusRef = useRef(false);
 	let { setAutoFocus } = useAutoFocusContext();
 	let focusedParagraphIndexRef = useFocusedParagraphIndexContext();
 	let { disableScope, enabledScopes } = useHotkeysContext();
@@ -109,6 +113,7 @@ export var ParagraphControlBtns = ({ paragraphId, index, paragraphFocused }: { p
 					paragraphId={paragraphId}
 				/>
 			),
+			toastId: paragraphId,
 			options: { hideProgressBar: false, closeOnClick: false, closeButton: false },
 		});
 
@@ -154,45 +159,83 @@ export var ParagraphControlBtns = ({ paragraphId, index, paragraphFocused }: { p
 	});
 
 	return (
-		<ControlOptionsMenu
-			onMouseLeave={(e) => {
-				// https://stackoverflow.com/a/67790489/5800789
-				let eventTarget = e.currentTarget;
-				setTimeout(() => {
-					eventTarget.classList.remove('hover');
-				}, 300);
-			}}
-			onMouseEnter={(e) => {
-				e.currentTarget.classList.add('hover');
-			}}
-		>
-			<NoFocusPropagationButton
-				onClick={handleParagraphDeletion}
-				data-tooltip-id='hotkey'
-				data-tooltip-content={articlePageHotkeys.deleteParagraph.label}
-				data-tooltip-hidden={toolTipHidden}
+		<StyledDiv>
+			<div
+				className='paragraph-menu'
+				onMouseOver={(e) => {
+					e.currentTarget.classList.add('hover');
+					paragraphHoverStatusRef.current = true;
+				}}
+				onMouseLeave={(e) => {
+					// https://stackoverflow.com/a/67790489/5800789
+					let eventTarget = e.currentTarget;
+					paragraphHoverStatusRef.current = false;
+					setTimeout(() => {
+						if (paragraphHoverStatusRef.current === false) eventTarget.classList.remove('hover');
+					}, 300);
+				}}
 			>
-				Delete Paragraph
-			</NoFocusPropagationButton>
-			<NoFocusPropagationButton
-				onClick={handleInsertParagraphAbove}
-				data-tooltip-id='hotkey'
-				data-tooltip-content={articlePageHotkeys.insertParagraphAbove.label}
-				data-tooltip-hidden={toolTipHidden}
+				<RxHamburgerMenu />
+			</div>
+			<ControlOptionsMenu
+				onMouseLeave={(e) => {
+					// https://stackoverflow.com/a/67790489/5800789
+					let eventTarget = e.currentTarget;
+					setTimeout(() => {
+						eventTarget.classList.remove('hover');
+					}, 300);
+				}}
+				onMouseEnter={(e) => {
+					e.currentTarget.classList.add('hover');
+				}}
 			>
-				Insert Above
-			</NoFocusPropagationButton>
-			<NoFocusPropagationButton
-				onClick={handleInsertParagraphBelow}
-				data-tooltip-id='hotkey'
-				data-tooltip-content={articlePageHotkeys.insertParagraphBelow.label}
-				data-tooltip-hidden={toolTipHidden}
-			>
-				Insert Below
-			</NoFocusPropagationButton>
-		</ControlOptionsMenu>
+				<NoFocusPropagationButton
+					onClick={handleParagraphDeletion}
+					data-tooltip-id='hotkey'
+					data-tooltip-content={articlePageHotkeys.deleteParagraph.label}
+					data-tooltip-hidden={toolTipHidden}
+				>
+					Delete Paragraph
+				</NoFocusPropagationButton>
+				<NoFocusPropagationButton
+					onClick={handleInsertParagraphAbove}
+					data-tooltip-id='hotkey'
+					data-tooltip-content={articlePageHotkeys.insertParagraphAbove.label}
+					data-tooltip-hidden={toolTipHidden}
+				>
+					Insert Above
+				</NoFocusPropagationButton>
+				<NoFocusPropagationButton
+					onClick={handleInsertParagraphBelow}
+					data-tooltip-id='hotkey'
+					data-tooltip-content={articlePageHotkeys.insertParagraphBelow.label}
+					data-tooltip-hidden={toolTipHidden}
+				>
+					Insert Below
+				</NoFocusPropagationButton>
+			</ControlOptionsMenu>
+		</StyledDiv>
 	);
 };
+
+var StyledDiv = styled.div`
+	top: 10px;
+	right: 10px;
+	${ControlOptionsMenuContainerStyles}
+
+	.paragraph-menu {
+		display: grid;
+
+		/* https://www.joshwcomeau.com/css/css-variables-for-react-devs/#:~:text=industry%20guidelines%20are%20that%20interactive%20elements%20should%20be%20between%2044px%20and%2048px%20tall. */
+		width: var(--util-icon-container-dimension);
+		height: var(--util-icon-container-dimension);
+		place-content: center;
+	}
+
+	.paragraph-menu.hover + div {
+		display: flex;
+	}
+`;
 
 type Ref = HTMLButtonElement;
 

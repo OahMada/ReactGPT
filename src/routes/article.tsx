@@ -9,7 +9,7 @@ import { DragDropContext, Draggable, Droppable, DropResult, DragStart } from '@h
 import { mergeRefs } from 'react-merge-refs';
 import { useHotkeysContext } from 'react-hotkeys-hook';
 import cs from 'classnames';
-import { RxHamburgerMenu, RxDragHandleDots1 } from 'react-icons/rx';
+import { RxDragHandleDots1 } from 'react-icons/rx';
 import { IconContext } from 'react-icons';
 
 // redux
@@ -27,7 +27,6 @@ import {
 	AutoFocusWrapper,
 } from '../components';
 import { ParagraphWrapper, StyledParagraph, Button, BtnContainer } from '../styles';
-import { ControlOptionsMenuContainerStyles } from './ControlOptionsMenuContainerStyles';
 
 // utils
 import { createToast, throwIfUndefined, useKeys, HotkeyMapData } from '../utils';
@@ -322,16 +321,12 @@ export var Article = () => {
 																	</ErrorBoundary>
 																)}
 															</QueryErrorResetBoundary>
-															<div className='paragraph-menu-container'>
-																<div className='paragraph-menu'>
-																	<RxHamburgerMenu />
-																</div>
-																<ParagraphControlBtns
-																	paragraphId={paragraph.id}
-																	index={index}
-																	paragraphFocused={focusedParagraphIndexRef.current === index}
-																/>
-															</div>
+
+															<ParagraphControlBtns
+																paragraphId={paragraph.id}
+																index={index}
+																paragraphFocused={focusedParagraphIndexRef.current === index}
+															/>
 														</div>
 													</StyledArticle>
 												)}
@@ -388,25 +383,6 @@ var StyledArticle = styled.article`
 
 	.content {
 		flex-basis: 95%;
-	}
-
-	.paragraph-menu-container {
-		top: 10px;
-		right: 10px;
-		${ControlOptionsMenuContainerStyles}
-
-		.paragraph-menu {
-			display: grid;
-
-			/* https://www.joshwcomeau.com/css/css-variables-for-react-devs/#:~:text=industry%20guidelines%20are%20that%20interactive%20elements%20should%20be%20between%2044px%20and%2048px%20tall. */
-			width: var(--util-icon-container-dimension);
-			height: var(--util-icon-container-dimension);
-			place-content: center;
-		}
-
-		.paragraph-menu:hover + div {
-			display: flex;
-		}
 	}
 `;
 

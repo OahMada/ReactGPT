@@ -8,8 +8,8 @@ import cs from 'classnames';
 import styled from 'styled-components';
 import { RiStarSFill } from 'react-icons/ri';
 
-import { useAppDispatch } from '../redux/hooks';
-import { removeArticle, addArticleToDeletionQueue, removeArticleFromDeletionQueue } from '../features/articleSlice';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { removeArticle, addArticleToDeletionQueue, removeArticleFromDeletionQueue, selectArticle } from '../features/articleSlice';
 import { Button } from '../styles';
 import { useFocusedParagraphIndexContext } from '../components';
 
@@ -24,6 +24,14 @@ interface ArticleCardProp {
 }
 
 export var ArticleCard = ({ article, articleIsInFavorites, articlePinningScheduleRef }: ArticleCardProp) => {
+	let { paragraphs } = useAppSelector(selectArticle);
+
+	let paragraphsInArticle = paragraphs.map((paragraph) => {
+		if (paragraph.articleId === article.articleId) {
+			return paragraph.id;
+		}
+	});
+
 	dayjs.locale('zh-cn');
 	let [pinning, setPinning] = useState(articleIsInFavorites);
 
@@ -75,7 +83,12 @@ export var ArticleCard = ({ article, articleIsInFavorites, articlePinningSchedul
 							navigate('/');
 						}
 						dispatch(removeArticleFromDeletionQueue(article.articleId));
-						toast.dismiss(`articleDeletion${article.articleId}`);
+						// clear any probable ongoing paragraph deletion toast
+
+						paragraphsInArticle.forEach((item) => {
+							toast.dismiss(item);
+						});
+						toast.dismiss(article.articleId);
 					}}
 				>
 					Delete

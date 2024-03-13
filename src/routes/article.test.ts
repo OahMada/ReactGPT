@@ -10,6 +10,7 @@ import {
 	renderAnExistingArticleAndWaitForGrammarQueriesToFinish,
 	fetchElementsByTagName,
 	renderRouter,
+	hoverParagraphMenu,
 } from '../setupTests';
 import { defaultArticleInput } from '../utils';
 import { setupStore } from '../redux/store';
@@ -62,13 +63,16 @@ describe('Article route tests', () => {
 	});
 	it('Delete paragraph and undo deletion', async () => {
 		renderAnExistingArticle();
+		await hoverParagraphMenu();
 		await clickElement(/delete paragraph/i);
 		expect(fetchButton(/create/i)).toBeInTheDocument();
 		await clickElement(/undo/i);
+		await hoverParagraphMenu();
 		expect(fetchButton(/delete paragraph/i)).toBeInTheDocument();
 	});
 	it('Delete paragraph and navigate to article creation', async () => {
 		renderAnExistingArticle(1);
+		await hoverParagraphMenu();
 		await clickElement(/delete paragraph/i);
 		expect(fetchButton(/create/i)).toBeInTheDocument();
 		await clickElement(/create/i);
@@ -82,6 +86,7 @@ describe('Article route tests', () => {
 		await clickElement(/done/i);
 		let paragraphsOnThePage = await fetchElementsByTagName('p');
 		let initialParagraphCount = paragraphsOnThePage.length;
+		await hoverParagraphMenu();
 		await clickElement(/insert below/i);
 		let paragraphInputBox = screen.getByPlaceholderText(/please enter your paragraph/i);
 		expect(paragraphInputBox).toBeInTheDocument();
@@ -100,6 +105,7 @@ describe('Article route tests', () => {
 		await renderAnExistingArticleAndWaitForGrammarQueriesToFinish(true);
 		let paragraphsOnThePage = await fetchElementsByTagName('p');
 		let initialParagraphCount = paragraphsOnThePage.length;
+		await hoverParagraphMenu();
 		await clickElement(/insert above/i);
 		await clickElement(/done/i);
 		paragraphsOnThePage = await fetchElementsByTagName('p');
@@ -268,10 +274,12 @@ describe('Hotkeys and drag-and-drop', () => {
 	it('Switching paragraph focus state using a hotkey: Scenario 1 - traversing down', async () => {
 		renderAnExistingArticle(2);
 		let articlesOnThePage = screen.getAllByRole('article');
-		let deleteParagraphBtns = screen.getAllByRole('button', { name: /delete paragraph/i });
 		await userEvent.keyboard('{Shift>}{ArrowDown}{/Shift}');
 		expect(articlesOnThePage[0]).toHaveFocus();
-		await userEvent.hover(deleteParagraphBtns[0]);
+		let paragraphMenus = screen.getAllByText((content, element) => /paragraph-menu/.test(element!.className));
+		await userEvent.hover(paragraphMenus[0]);
+		let deleteParagraphBtn = fetchButton(/delete paragraph/i);
+		await userEvent.hover(deleteParagraphBtn);
 		await waitFor(() => {
 			expect(screen.getByRole('tooltip')).toHaveTextContent('D');
 		});
@@ -280,6 +288,9 @@ describe('Hotkeys and drag-and-drop', () => {
 		await waitFor(() => {
 			expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
 		});
+		await userEvent.hover(paragraphMenus[1]);
+		// the first paragraph menu popup keeps showing up
+		let deleteParagraphBtns = screen.getAllByRole('button', { name: /delete paragraph/i });
 		await userEvent.hover(deleteParagraphBtns[1]);
 		await waitFor(() => {
 			expect(screen.getByRole('tooltip')).toHaveTextContent('D');

@@ -200,3 +200,8 @@ export async function fetchElementsByTagName(arg: string | fetchElementsByTagNam
 		return await screen[`${method}ByText`]((content, element) => element?.tagName.toLowerCase() === tagName);
 	}
 }
+
+export async function hoverParagraphMenu() {
+	let paragraphMenu = screen.getByText((content, element) => /paragraph-menu/.test(element!.className));
+	await userEvent.hover(paragraphMenu);
+}

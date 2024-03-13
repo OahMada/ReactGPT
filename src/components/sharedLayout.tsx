@@ -234,7 +234,7 @@ var StyledAside = styled.aside`
 		max-height: calc(100dvh - 2 * min(70rem, 100px) - 50px);
 		flex-direction: column;
 		padding-right: 10px;
-		gap: var(--gap-primary);
+		gap: var(--gap-big);
 		scrollbar-gutter: stable;
 		scrollbar-width: thin;
 
@@ -284,7 +284,7 @@ var StyledAside = styled.aside`
 		}
 
 		.card.active:not(:first-child) {
-			box-shadow: 0 1rem 1rem rgb(0 0 0 / 10%);
+			box-shadow: 0 0.5rem 0.5rem rgb(0 0 0 / 10%);
 			transform: translateY(-1px);
 		}
 	}

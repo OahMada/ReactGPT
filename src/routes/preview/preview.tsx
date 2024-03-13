@@ -117,7 +117,7 @@ export var Preview = () => {
 	/* Image Generation */
 	let downloadImg = async () => {
 		// https://stackoverflow.com/a/18312898/5800789
-		/* v8 ignore next 13 */
+		/* v8 ignore next 15 */
 		await workerInstance.exportFile(
 			proxy(() => {
 				html2canvas(articleWrapperRef.current!).then((canvas) => {
