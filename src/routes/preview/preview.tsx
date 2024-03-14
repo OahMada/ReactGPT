@@ -191,7 +191,7 @@ export var Preview = () => {
 		let clipboardText = currentArticleParagraphsWithTranslation.reduce<string>((acc, paragraph) => {
 			acc += paragraph.paragraphText;
 			acc += '\n\n';
-			if (paragraph.translationText) {
+			if (paragraph.translationText && includeTranslation) {
 				acc += paragraph.translationText;
 				acc += '\n\n';
 			}

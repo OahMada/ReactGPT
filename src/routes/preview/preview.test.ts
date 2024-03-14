@@ -10,7 +10,10 @@ describe('Preview route tests', () => {
 		expect(fetchButton(/accept all/i)).toBeDisabled();
 		await clickElement(screen.getByRole('link', { name: /preview article/i }));
 		expect(router.state.location.pathname).toMatch(/preview$/);
-		vi.advanceTimersByTime(1000);
+		// ??
+		act(() => {
+			vi.advanceTimersByTime(1000);
+		});
 		await clickElement(fetchButton(/close/i));
 		let acceptAllBtn = fetchButton(/accept all/i);
 		expect(acceptAllBtn).toBeDisabled();

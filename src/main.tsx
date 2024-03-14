@@ -84,8 +84,6 @@ enableMocking().then(() => {
  *
  * ## bugs
  *
- * empty paragraph creates when deleting all paragraphs and then delete the article: another article gets deleted too
- *
  * ## test
  *
  * ## others

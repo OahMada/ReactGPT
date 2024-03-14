@@ -119,7 +119,7 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 				Delete Article
 			</Button>
 			<Button
-				data-tooltip-id='preview-key'
+				data-tooltip-id='preview-btn'
 				data-tooltip-content={articlePageHotkeys.previewArticle.label}
 				// https://react-tooltip.com/docs/examples/state
 				onClick={() => setIsTooltipOpen(false)}
@@ -132,7 +132,7 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 					Preview Article
 				</Link>
 			</Button>
-			<Tooltip id='preview-key' delayShow={1000} delayHide={150} style={{ zIndex: 5 }} isOpen={isTooltipOpen} />
+			<Tooltip id='preview-btn' delayShow={1000} delayHide={150} style={{ zIndex: 5 }} isOpen={isTooltipOpen} />
 		</>
 	);
 };
