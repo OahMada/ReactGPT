@@ -84,9 +84,9 @@ enableMocking().then(() => {
  *
  * ## bugs
  *
- * tooltip persisting issue on phone
- *
+ * preview export menu UI failure
  * empty paragraph creates when deleting all paragraphs and then delete the article: another article gets deleted too
+ * tooltip persisting issue on phone
  *
  * ## test
  *
