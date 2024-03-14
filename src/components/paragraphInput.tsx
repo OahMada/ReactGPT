@@ -13,7 +13,8 @@ import { selectArticle, saveParagraphInput, disableCancelQueryState, deleteParag
 import { createToast, sanitizeUserInput, throwIfUndefined } from '../utils';
 import { Paragraph } from '../types';
 import { useFocusedParagraphIndexContext, useAutoFocusContext } from '.';
-import { Button, ParagraphWrapper, BtnContainer } from '../styles';
+import { ParagraphWrapper, BtnContainer } from '../styled';
+import { Button } from '../styled/button';
 
 interface ParagraphInputType {
 	paragraph: string;

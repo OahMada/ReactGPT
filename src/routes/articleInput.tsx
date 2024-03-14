@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { saveArticleInput, selectArticle } from '../features/articleSlice';
 import { createToast, defaultArticleInput, useKeys, HotkeyMapData, useNavigateWithSearchParams } from '../utils';
-import { Button } from '../styles';
+import { Button } from '../styled/button';
 
 interface ArticleInputType {
 	article: string;

@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button } from '../styles';
+import { Button } from '../styled/button';
 
 export var EmptyParagraphList = () => {
 	let navigate = useNavigate();

@@ -25,7 +25,8 @@ import {
 import { updateModalContent, showModal, hideModal, selectModal } from '../features/modalSlice';
 
 import { Modal, ParagraphInput, ParagraphTranslation, useAutoFocusContext } from '.';
-import { ParagraphWrapper, StyledParagraph, ErrorBoundaryWrapper, Button, BtnContainer } from '../styles';
+import { ParagraphWrapper, StyledParagraph, ErrorBoundaryWrapper, BtnContainer } from '../styled';
+import { Button } from '../styled/button';
 
 export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 	let { setAutoFocus } = useAutoFocusContext();

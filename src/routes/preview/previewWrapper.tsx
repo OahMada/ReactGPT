@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ControlOptionsMenuContainerStyles } from '../../styles';
+import { ControlOptionsMenuContainerStyles } from '../../styled';
 
 export var PreviewWrapper = styled.section`
 	position: fixed;

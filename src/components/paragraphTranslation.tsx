@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { StyledParagraph } from '../styles';
+import { StyledParagraph } from '../styled';
 import { useTranslationQuery } from '../query/translationQuery';
 import { PartialParagraph } from '../types';
 

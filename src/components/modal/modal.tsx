@@ -4,7 +4,7 @@ import { forwardRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { showModal, hideModal, selectModal } from '../../features/modalSlice';
 import { acceptSingleAdjustment, ignoreSingleAdjustment, updateParagraphEditDate } from '../../features/articleSlice';
-import { Button } from '../../styles';
+import { Button } from '../../styled/button';
 import { ModalWrapper } from './modalWrapper';
 
 type CustomCSS = React.CSSProperties & Record<`--${string}`, string | number>;

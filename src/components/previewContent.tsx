@@ -6,7 +6,8 @@ import styled from 'styled-components';
 
 import { PartialParagraph } from '../types';
 import { Loading, PreviewTranslation } from '.';
-import { ErrorBoundaryWrapper, Button } from '../styles';
+import { ErrorBoundaryWrapper } from '../styled';
+import { Button } from '../styled/button';
 
 interface Props {
 	paragraph: PartialParagraph;

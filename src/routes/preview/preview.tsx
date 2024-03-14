@@ -17,7 +17,9 @@ import { PartialParagraph, Paragraph } from '../../types';
 import { translationQueryKeys } from '../../query/translationQuery';
 import { createToast, useKeys, HotkeyMapData, debounce } from '../../utils';
 import { workerInstance } from '../../worker/workerInstance';
-import { ControlOptionsMenu, Button } from '../../styles';
+import { ControlOptionsMenu } from '../../styled';
+import { Button } from '../../styled/button';
+
 import { PreviewWrapper } from './previewWrapper';
 
 export var Preview = () => {

@@ -9,7 +9,7 @@ import { testQuery, testQueryKeys } from '../query/testQuery';
 import { selectConfig, toggleAPIKeyInEdit } from '../features/configSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { createToast, useKeys, HotkeyMapData } from '../utils';
-import { Button } from '../styles';
+import { Button } from '../styled/button';
 
 interface APIKey {
 	key: string;

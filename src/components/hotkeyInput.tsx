@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { generateHotkeyLabel } from '../utils';
 import { LocalStorageHotkeys, RecordingStopper } from '../types';
-import { Button } from '../styles';
+import { Button } from '../styled/button';
 import { RiPencilLine } from 'react-icons/ri';
 
 interface Hotkey {

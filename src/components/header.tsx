@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-import { Button } from '../styles';
+import { Button } from '../styled/button';
 import { useKeys, HotkeyMapData } from '../utils';
 
 export var Header = () => {

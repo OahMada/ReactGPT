@@ -26,7 +26,8 @@ import {
 	ParagraphControlBtns,
 	AutoFocusWrapper,
 } from '../components';
-import { ParagraphWrapper, StyledParagraph, Button, BtnContainer } from '../styles';
+import { ParagraphWrapper, StyledParagraph, BtnContainer } from '../styled';
+import { Button } from '../styled/button';
 
 // utils
 import { createToast, throwIfUndefined, useKeys, HotkeyMapData } from '../utils';

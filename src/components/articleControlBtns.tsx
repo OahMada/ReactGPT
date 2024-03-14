@@ -12,7 +12,8 @@ import {
 	unPinArticle,
 } from '../features/articleSlice';
 import { createToast, useKeys, HotkeyMapData } from '../utils';
-import { Button, UndoDeletionWrapper } from '../styles';
+import { UndoDeletionWrapper } from '../styled';
+import { Button } from '../styled/button';
 
 interface UndoProps {
 	onUndo: () => void;

@@ -10,7 +10,7 @@ import { RiStarSFill } from 'react-icons/ri';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { removeArticle, addArticleToDeletionQueue, removeArticleFromDeletionQueue, selectArticle } from '../features/articleSlice';
-import { Button } from '../styles';
+import { Button } from '../styled/button';
 import { useFocusedParagraphIndexContext } from '../components';
 
 interface ArticleCardProp {

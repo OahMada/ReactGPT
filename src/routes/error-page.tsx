@@ -1,7 +1,7 @@
 import { useRouteError, isRouteErrorResponse, useNavigate } from 'react-router-dom';
 import { useKeys, HotkeyMapData } from '../utils';
 import styled from 'styled-components';
-import { Button } from '../styles';
+import { Button } from '../styled/button';
 
 export function ErrorPage() {
 	let error = useRouteError();

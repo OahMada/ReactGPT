@@ -18,8 +18,8 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { createToast, throwIfUndefined, useKeys, HotkeyMapData } from '../utils';
 import { Paragraph } from '../types';
 import { useAutoFocusContext, useFocusedParagraphIndexContext } from './';
-import { ControlOptionsMenu, Button, UndoDeletionWrapper } from '../styles';
-import { ControlOptionsMenuContainerStyles } from '../styles';
+import { ControlOptionsMenu, UndoDeletionWrapper, ControlOptionsMenuContainerStyles } from '../styled';
+import { Button } from '../styled/button';
 
 // https://github.com/fkhadra/react-toastify/issues/568#issuecomment-779847274
 interface UndoProps {
