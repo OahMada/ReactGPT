@@ -281,7 +281,9 @@ let articleSlice = createSlice({
 		finishParagraphDeletion: (state, { payload: { articleId, paragraphId } }: PayloadAction<{ articleId: string; paragraphId: string }>) => {
 			if (state.paragraphRemoveQueue.includes(paragraphId)) {
 				let currentParagraphIndex = state.paragraphs.findIndex((item) => item.id === paragraphId);
-				state.paragraphs.splice(currentParagraphIndex, 1);
+				if (currentParagraphIndex !== -1) {
+					state.paragraphs.splice(currentParagraphIndex, 1);
+				}
 				state.paragraphRemoveQueue = state.paragraphRemoveQueue.filter((id) => id !== paragraphId);
 			}
 
@@ -291,6 +293,9 @@ let articleSlice = createSlice({
 			if (index === -1) {
 				articleIsInFavorites = true;
 				index = state.articleQueue.favorites.indexOf(articleId);
+			}
+			if (index === -1) {
+				return;
 			}
 
 			let articleParagraphCount = state.paragraphs.filter((paragraph) => paragraph.articleId === articleId).length;

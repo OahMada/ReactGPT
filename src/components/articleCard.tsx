@@ -84,7 +84,6 @@ export var ArticleCard = ({ article, articleIsInFavorites, articlePinningSchedul
 						}
 						dispatch(removeArticleFromDeletionQueue(article.articleId));
 						// clear any probable ongoing paragraph deletion toast
-
 						paragraphsInArticle.forEach((item) => {
 							toast.dismiss(item);
 						});
