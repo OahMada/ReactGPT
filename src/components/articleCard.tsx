@@ -7,6 +7,8 @@ import 'dayjs/locale/zh-cn'; // import locale
 import cs from 'classnames';
 import styled from 'styled-components';
 import { RiStarSFill } from 'react-icons/ri';
+import { RxArrowRight } from 'react-icons/rx';
+import { useWindowSize } from 'react-use';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { removeArticle, addArticleToDeletionQueue, removeArticleFromDeletionQueue, selectArticle } from '../features/articleSlice';
@@ -21,9 +23,11 @@ interface ArticleCardProp {
 	};
 	articleIsInFavorites: boolean;
 	articlePinningScheduleRef: Map<string, 'pin' | 'unpin'>;
+	setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export var ArticleCard = ({ article, articleIsInFavorites, articlePinningScheduleRef }: ArticleCardProp) => {
+export var ArticleCard = ({ article, articleIsInFavorites, articlePinningScheduleRef, setShowMenu }: ArticleCardProp) => {
+	let { width: windowWidth } = useWindowSize();
 	let { paragraphs } = useAppSelector(selectArticle);
 
 	let paragraphsInArticle = paragraphs.map((paragraph) => {
@@ -55,6 +59,12 @@ export var ArticleCard = ({ article, articleIsInFavorites, articlePinningSchedul
 
 	let focusedParagraphIndexRef = useFocusedParagraphIndexContext();
 
+	let navigateToAnotherArticle = () => {
+		navigateWithSearchParams(`article/${article.articleId}`);
+		// reset focus on navigating away
+		focusedParagraphIndexRef.current = -1;
+	};
+
 	return (
 		<ArticleCardWrapper $isPinned={pinning} key={article.articleId} className={cs('card', { active: article.articleId === currentArticle })}>
 			{pinning && (
@@ -64,13 +74,32 @@ export var ArticleCard = ({ article, articleIsInFavorites, articlePinningSchedul
 			)}
 			<div
 				onClick={() => {
-					navigateWithSearchParams(`article/${article.articleId}`);
-					// reset focus on navigating away
-					focusedParagraphIndexRef.current = -1;
+					if (windowWidth > 750) {
+						navigateToAnotherArticle();
+					}
 				}}
 				className='card-content'
 			>
-				<p>{article.articleText.length > 35 ? article.articleText.slice(0, 35) + '...' : article.articleText}</p>{' '}
+				{windowWidth <= 750 ? (
+					<>
+						<div className='small-screen-text'>
+							<p>{article.articleText}</p>
+							<span>...</span>
+						</div>
+						<button
+							className='go-to-article-btn'
+							onClick={() => {
+								navigateToAnotherArticle();
+								setShowMenu(false);
+							}}
+						>
+							<span>Go to Article</span>&nbsp;
+							<RxArrowRight />
+						</button>
+					</>
+				) : (
+					<p>{article.articleText.length > 35 ? article.articleText.slice(0, 35) + '...' : article.articleText}</p>
+				)}
 				<p className='date'>{dayjs(article.editDate).format('YYYY-MM-DD HH:mm:ss')}</p>
 			</div>
 			<div className='btn-container'>
@@ -81,6 +110,7 @@ export var ArticleCard = ({ article, articleIsInFavorites, articlePinningSchedul
 						// only navigate when the displaying article is deleted
 						if (article.articleId === currentArticle) {
 							navigate('/');
+							setShowMenu(false);
 						}
 						dispatch(removeArticleFromDeletionQueue(article.articleId));
 						// clear any probable ongoing paragraph deletion toast
@@ -142,10 +172,32 @@ var ArticleCardWrapper = styled.div<{ $isPinned: boolean }>`
 
 	.card-content {
 		display: flex;
+		width: 70%;
 		height: 100%;
-		flex: 1 1 auto;
 		flex-direction: column;
-		justify-content: space-between;
+		flex-grow: 1;
+		justify-content: space-around;
+
+		.small-screen-text {
+			display: flex;
+
+			p {
+				overflow: hidden;
+				white-space: nowrap;
+			}
+		}
+
+		.go-to-article-btn {
+			display: flex;
+			height: var(--util-icon-container-dimension);
+			align-items: center;
+			align-self: flex-start;
+			padding: 0;
+			border: none;
+			background-color: transparent;
+			color: darkgray;
+			font-style: italic;
+		}
 	}
 
 	.date {

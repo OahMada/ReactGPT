@@ -74,7 +74,7 @@ var StyledHeader = styled.header`
 		height: 100%;
 		align-items: center;
 		justify-content: flex-end;
-		padding: 0 50px;
+		padding: 0 var(--root-padding);
 		margin: 0 auto;
 		gap: var(--gap-big);
 	}

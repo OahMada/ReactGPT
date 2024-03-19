@@ -79,10 +79,12 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- * css rules organize
  * responsive layout on mobile devices
  *
  * ## bugs
+ *
+ * preview article tooltip
+ * preview add translation reset
  *
  * ## test
  *

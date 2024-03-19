@@ -32,6 +32,11 @@ html {
 	--main-content-height: calc(100dvh - var(--header-height));
 	--paragraph-width: 70rem;
 	--paragraph-margin-top: calc(var(--util-icon-container-dimension) + var(--gap-big));
+	--root-padding: 50px;
+
+	@media (width <= 46.875rem) {
+		--root-padding: 30px;
+	}
 }
 
 body {

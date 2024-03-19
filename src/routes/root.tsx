@@ -25,7 +25,7 @@ var StyledMain = styled.main`
 	width: min(110rem, 100%);
 	min-height: var(--main-content-height);
 	justify-content: center;
-	padding: 50px;
+	padding: var(--root-padding);
 	padding-top: 0;
 	padding-bottom: 0%;
 	margin: 0 auto;

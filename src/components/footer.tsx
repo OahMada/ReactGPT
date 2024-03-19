@@ -18,5 +18,9 @@ var StyledFooter = styled.footer`
 
 	p {
 		font-size: var(--font-small);
+
+		@media (width <= 28.125rem) {
+			font-size: var(--font-small-extra);
+		}
 	}
 `;

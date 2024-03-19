@@ -369,7 +369,7 @@ var StyledArticle = styled.article`
 		/* https://www.joshwcomeau.com/css/css-variables-for-react-devs/#:~:text=industry%20guidelines%20are%20that%20interactive%20elements%20should%20be%20between%2044px%20and%2048px%20tall. */
 		width: var(--util-icon-container-dimension);
 		height: var(--util-icon-container-dimension);
-		flex-basis: 5%;
+		flex-shrink: 0;
 		margin-right: 3px;
 		cursor: grab;
 		place-content: center;

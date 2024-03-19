@@ -138,21 +138,23 @@ export var Config = () => {
 					<>
 						<form onSubmit={handleSubmit(onSubmit)}>
 							<label htmlFor='api-key'>OpenAI API Key: </label>
-							<input
-								autoFocus
-								type='password'
-								id='api-key'
-								{...rest}
-								ref={APIInput}
-								data-tooltip-id='hotkey'
-								data-tooltip-content={configPageHotkeys.focusInput.label}
-								data-tooltip-hidden={inputFocus}
-								onFocus={() => setInputFocus(true)}
-								onBlur={() => setInputFocus(false)}
-							/>
-							<Button type='submit' disabled={errors?.key?.message ? true : false || isFetching}>
-								Done
-							</Button>
+							<div>
+								<input
+									autoFocus
+									type='password'
+									id='api-key'
+									{...rest}
+									ref={APIInput}
+									data-tooltip-id='hotkey'
+									data-tooltip-content={configPageHotkeys.focusInput.label}
+									data-tooltip-hidden={inputFocus}
+									onFocus={() => setInputFocus(true)}
+									onBlur={() => setInputFocus(false)}
+								/>
+								<Button type='submit' disabled={errors?.key?.message ? true : false || isFetching}>
+									Done
+								</Button>
+							</div>
 						</form>
 					</>
 				)}
@@ -183,9 +185,20 @@ var StyledSection = styled.section`
 		border: 0.5px solid black;
 		border-radius: var(--border-radius-big);
 
+		@media (width <= 46.875rem) {
+			border: none;
+		}
+
 		form {
 			display: flex;
+			flex-wrap: wrap;
 			align-items: center;
+			gap: var(--gap-primary);
+
+			div {
+				display: flex;
+				flex-grow: 1;
+			}
 
 			input {
 				display: inline-block;

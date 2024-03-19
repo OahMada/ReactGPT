@@ -317,7 +317,13 @@ var ExtendedParagraphWrapper = styled(ParagraphWrapper)`
 		display: flex;
 		border: 1px solid var(--color-darker);
 		border-radius: var(--border-radius);
+		margin-right: var(--util-icon-container-dimension);
 		gap: var(--gap-huge);
+
+		@media (width <= 62.5rem) {
+			flex-direction: column;
+			gap: var(--gap-primary);
+		}
 
 		input {
 			display: inline-block;

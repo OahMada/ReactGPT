@@ -13,6 +13,14 @@ export var Button = styled.button`
 	border-radius: var(--border-radius);
 	background-color: white;
 
+	@media (width <= 46.875rem) {
+		padding: 0 5px;
+	}
+
+	@media (width <= 28.125rem) {
+		font-size: var(--font-small);
+	}
+
 	.card & {
 		border: none;
 		border-radius: var(--border-radius-big);

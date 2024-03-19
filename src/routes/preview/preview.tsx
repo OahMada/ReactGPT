@@ -64,6 +64,7 @@ export var Preview = () => {
 		// no mater how the previous results are if have clicked the show translation button on the article page, refetch translation when click on the button, this is for fixing a issue where the retry all button may not show
 		currentArticleParagraphs.forEach((paragraph) => {
 			queryClient.resetQueries({ queryKey: translationQueryKeys(paragraph.paragraphId, paragraph.paragraphText) });
+			// TODO only reset on error
 		});
 		setIncludeTranslation(!includeTranslation);
 		if (includeTranslation) {

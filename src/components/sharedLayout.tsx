@@ -1,19 +1,23 @@
 import { NavLink, useSearchParams, useSubmit, useLocation, Outlet } from 'react-router-dom';
-import { useLocalStorage } from 'react-use';
+import { useLocalStorage, useWindowSize } from 'react-use';
 import { useForm } from 'react-hook-form';
 import { useRef, useImperativeHandle, useState } from 'react';
 import styled from 'styled-components';
+import { RiArrowDropRightLine, RiArrowDropDownLine } from 'react-icons/ri';
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { selectArticle, unPinArticle, pinArticle } from '../features/articleSlice';
 import { performFuseSearch, useKeys, HotkeyMapData, useNavigateWithSearchParams } from '../utils';
 import { ArticleCard } from '.';
+import { Button } from '../styled/button';
 
 interface SearchForm {
 	search: string;
 }
 
 export var SharedLayout = () => {
+	let { width: windowWidth } = useWindowSize();
+	let [showMenu, setShowMenu] = useState(false);
 	let [searchFocus, setSearchFocus] = useState(false);
 	let articlePinningScheduleRef = useRef<Map<string, 'pin' | 'unpin'>>(new Map());
 	let debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>();
@@ -141,74 +145,95 @@ export var SharedLayout = () => {
 	return (
 		<>
 			{(query || articles.length > 0) && ( // same as !(!query && articles.length < 1), means no articles have been created
-				<StyledAside>
-					<form role='search' onSubmit={handleSubmit(onSubmit)}>
-						<input
-							aria-label='Search articles'
-							type='search'
-							placeholder='Search'
-							ref={searchInputRef}
-							{...rest}
-							data-tooltip-id='hotkey'
-							data-tooltip-content={articlePageHotkeys.enableSearch.label}
-							onFocus={() => setSearchFocus(true)}
-							onBlur={() => setSearchFocus(false)}
-							data-tooltip-hidden={searchFocus}
-						/>
-					</form>
-					<div
-						className='card-wrapper'
-						onMouseLeave={() => {
-							debounceTimeoutRef.current = setTimeout(() => {
-								resolveArticlePinningSchedules();
-							}, 500);
-						}}
-						onMouseEnter={() => {
-							window.clearTimeout(debounceTimeoutRef.current);
-						}}
-					>
-						<div className='card'>
-							<div
-								className='link-wrapper'
-								onClick={() => {
-									if (!newArticleLinkRef.current) throw Error('newArticleLinkRef is not assigned');
-									newArticleLinkRef.current.click();
-								}}
-							>
-								<NavLink
-									to={`/${query ? `?search=${query}` : ''}`}
-									data-tooltip-id='hotkey'
-									data-tooltip-content={articlePageHotkeys.createNewArticle.label}
-									ref={newArticleLinkRef}
-								>
-									New Article
-								</NavLink>
-							</div>
-						</div>
-						{articles.length < 1 && (
+				<>
+					{windowWidth <= 750 && (
+						<MenuBtn className='menu-btn' onClick={() => setShowMenu(!showMenu)} $showMenu={showMenu}>
+							<span>Articles</span>
+							{showMenu ? <RiArrowDropDownLine /> : <RiArrowDropRightLine />}
+						</MenuBtn>
+					)}
+					<StyledAside $showMenu={showMenu}>
+						<form role='search' onSubmit={handleSubmit(onSubmit)}>
+							<input
+								aria-label='Search articles'
+								type='search'
+								placeholder='Search'
+								ref={searchInputRef}
+								{...rest}
+								data-tooltip-id='hotkey'
+								data-tooltip-content={articlePageHotkeys.enableSearch.label}
+								onFocus={() => setSearchFocus(true)}
+								onBlur={() => setSearchFocus(false)}
+								data-tooltip-hidden={searchFocus}
+							/>
+						</form>
+						<div
+							className='card-wrapper'
+							onMouseLeave={() => {
+								debounceTimeoutRef.current = setTimeout(() => {
+									resolveArticlePinningSchedules();
+								}, 500);
+							}}
+							onMouseEnter={() => {
+								window.clearTimeout(debounceTimeoutRef.current);
+							}}
+						>
 							<div className='card'>
-								<p>No articles match the search query.</p>
+								<div
+									className='link-wrapper'
+									onClick={() => {
+										if (!newArticleLinkRef.current) throw Error('newArticleLinkRef is not assigned');
+										newArticleLinkRef.current.click();
+										setShowMenu(false);
+									}}
+								>
+									<NavLink
+										to={`/${query ? `?search=${query}` : ''}`}
+										data-tooltip-id='hotkey'
+										data-tooltip-content={articlePageHotkeys.createNewArticle.label}
+										ref={newArticleLinkRef}
+									>
+										New Article
+									</NavLink>
+								</div>
 							</div>
-						)}
-						{articles.map((article) => {
-							return (
-								<ArticleCard
-									key={article.articleId}
-									article={article}
-									articleIsInFavorites={articleIsInFavorites(article.articleId)}
-									articlePinningScheduleRef={articlePinningScheduleRef.current}
-								/>
-							);
-						})}
-					</div>
-				</StyledAside>
+							{articles.length < 1 && (
+								<div className='card'>
+									<p>No articles match the search query.</p>
+								</div>
+							)}
+							{articles.map((article) => {
+								return (
+									<ArticleCard
+										key={article.articleId}
+										article={article}
+										articleIsInFavorites={articleIsInFavorites(article.articleId)}
+										articlePinningScheduleRef={articlePinningScheduleRef.current}
+										setShowMenu={setShowMenu}
+									/>
+								);
+							})}
+						</div>
+					</StyledAside>
+				</>
 			)}
 			<Outlet />
 		</>
 	);
 };
 
-var StyledAside = styled.aside`
+var MenuBtn = styled(Button)<{ $showMenu: boolean }>`
+	position: fixed;
+	z-index: 1;
+	top: calc((var(--header-height) - var(--util-icon-container-dimension)) / 2);
+	left: var(--root-padding);
+	display: inline-block;
+	display: flex;
+	align-items: center;
+	color: ${({ $showMenu }) => ($showMenu ? 'var(--color-darkest)' : 'inherit')};
+`;
+
+var StyledAside = styled.aside<{ $showMenu: boolean }>`
 	position: sticky;
 	top: 100px;
 	width: 250px;
@@ -217,6 +242,19 @@ var StyledAside = styled.aside`
 	margin-top: var(--header-offset);
 	margin-right: var(--gap-big);
 	font-size: var(--font-small);
+
+	@media (width <= 46.875rem) {
+		position: fixed;
+		z-index: 1;
+		top: 0;
+		display: ${({ $showMenu }) => ($showMenu ? 'block' : 'none')};
+		width: 100dvw;
+		height: calc(100dvh - var(--header-height));
+		padding: 0 var(--root-padding);
+		margin-top: var(--header-height);
+		margin-right: 0;
+		background-color: white;
+	}
 
 	form {
 		padding: 10px 0;
@@ -231,18 +269,25 @@ var StyledAside = styled.aside`
 	.card-wrapper {
 		display: flex;
 		overflow: auto;
-		max-height: calc(100dvh - 2 * min(70rem, 100px) - 50px);
+		max-height: calc(100dvh - var(--header-offset) - var(--header-height) - 7rem);
 		flex-direction: column;
-		padding-right: 10px;
+		padding-right: 15px;
 		gap: var(--gap-big);
 		scrollbar-gutter: stable;
 		scrollbar-width: thin;
+
+		@media (width <= 46.875rem) {
+			display: grid;
+			max-height: calc(100dvh - var(--header-height) - 8rem);
+			padding-top: 5px;
+			padding-right: 0;
+			grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+		}
 
 		.card {
 			position: relative;
 			display: flex;
 			overflow: hidden;
-			width: 100%;
 			height: 9.5rem;
 			flex-shrink: 0;
 			align-items: center;

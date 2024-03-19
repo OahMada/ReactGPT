@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useLocalStorage } from 'react-use';
+import { useLocalStorage, useWindowSize } from 'react-use';
 import { compress, decompress } from 'lz-string';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -15,6 +15,7 @@ interface ArticleInputType {
 
 // log the last character inputted from previous render
 export var ArticleInput = () => {
+	let { width: windowWidth } = useWindowSize();
 	let dispatch = useAppDispatch();
 	let { articleQueue } = useAppSelector(selectArticle);
 	let articles = [...articleQueue.normal, ...articleQueue.favorites];
@@ -78,7 +79,7 @@ export var ArticleInput = () => {
 			{/* {
 				errors.article && <p>{errors.article.message}</p> // replace with toast
 			} */}
-			{articles.length === 0 && (
+			{(articles.length === 0 || windowWidth <= 750) && (
 				<div className='intro'>
 					<h1>Input or paste your article into the textarea.</h1>
 					<p>Paragraphs are separated by double line breaks.</p>

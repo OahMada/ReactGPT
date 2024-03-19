@@ -71,6 +71,10 @@ var Section = styled.section`
 
 	.table-container {
 		width: var(--paragraph-width);
+
+		@media (width <= 46.875rem) {
+			width: 100%;
+		}
 	}
 
 	caption {
