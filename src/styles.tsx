@@ -36,6 +36,7 @@ html {
 
 	@media (width <= 46.875rem) {
 		--root-padding: 30px;
+		--header-offset: min(8rem, 100px);
 	}
 }
 

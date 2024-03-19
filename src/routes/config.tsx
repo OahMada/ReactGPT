@@ -217,12 +217,12 @@ var StyledSection = styled.section`
 		}
 
 		p {
-			margin-bottom: 1.5rem;
+			margin-bottom: 15px;
 		}
 
 		.btns {
 			display: flex;
-			margin-top: 1.5rem;
+			margin-top: 10px;
 			gap: var(--gap-big);
 		}
 	}

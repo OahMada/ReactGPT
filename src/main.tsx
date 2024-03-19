@@ -79,7 +79,7 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- * responsive layout on mobile devices
+ * article list prevent background scroll and focus trap
  *
  * ## bugs
  *

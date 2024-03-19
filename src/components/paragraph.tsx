@@ -325,6 +325,10 @@ var ExtendedParagraphWrapper = styled(ParagraphWrapper)`
 			gap: var(--gap-primary);
 		}
 
+		@media (width <= 28.125rem) {
+			font-size: var(--font-small);
+		}
+
 		input {
 			display: inline-block;
 			margin-right: 5px;

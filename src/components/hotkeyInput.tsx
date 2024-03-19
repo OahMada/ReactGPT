@@ -76,7 +76,7 @@ var StyledTd = styled.td<{ $newHotkey?: string }>`
 		border: 1px solid black;
 		border-radius: var(--border-radius);
 		background-color: white;
-		gap: 5px;
+		gap: var(--gap-primary);
 	}
 
 	span {
@@ -88,6 +88,10 @@ var StyledTd = styled.td<{ $newHotkey?: string }>`
 		border: 1px solid var(--color-dark);
 		margin-right: 5px;
 		color: ${({ $newHotkey }) => ($newHotkey ? 'black' : 'var(--color-dark)')};
+
+		@media (width <= 28.125rem) {
+			font-size: var(--font-small);
+		}
 	}
 
 	svg {

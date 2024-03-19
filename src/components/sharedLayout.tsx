@@ -251,6 +251,7 @@ var StyledAside = styled.aside<{ $showMenu: boolean }>`
 		width: 100dvw;
 		height: calc(100dvh - var(--header-height));
 		padding: 0 var(--root-padding);
+		padding-top: 10px;
 		margin-top: var(--header-height);
 		margin-right: 0;
 		background-color: white;
@@ -262,6 +263,7 @@ var StyledAside = styled.aside<{ $showMenu: boolean }>`
 
 		input {
 			display: inline-block;
+			height: var(--util-icon-container-dimension);
 			padding: 5px;
 		}
 	}

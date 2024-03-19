@@ -71,6 +71,7 @@ var Section = styled.section`
 
 	.table-container {
 		width: var(--paragraph-width);
+		padding-top: 10px;
 
 		@media (width <= 46.875rem) {
 			width: 100%;
@@ -106,10 +107,18 @@ var Section = styled.section`
 			th {
 				&:nth-child(1) {
 					width: 40%;
+
+					@media (width <= 28.125rem) {
+						width: 50%;
+					}
 				}
 
 				&:nth-child(2) {
 					width: 60%;
+
+					@media (width <= 28.125rem) {
+						width: 50%;
+					}
 				}
 			}
 		}
@@ -120,6 +129,10 @@ var Section = styled.section`
 
 		tbody td {
 			text-align: left;
+
+			@media (width <= 28.125rem) {
+				font-size: var(--font-small);
+			}
 		}
 	}
 `;

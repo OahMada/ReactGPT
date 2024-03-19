@@ -12,6 +12,7 @@ export var Button = styled.button`
 	border: 1px solid black;
 	border-radius: var(--border-radius);
 	background-color: white;
+	color: black;
 
 	@media (width <= 46.875rem) {
 		padding: 0 5px;

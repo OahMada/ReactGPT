@@ -127,11 +127,19 @@ var StyledForm = styled.form`
 		margin-bottom: 1rem;
 
 		h1 {
-			line-height: 1em + 0.5rem;
+			line-height: calc(1em + 0.5rem);
+
+			@media (width <= 28.125rem) {
+				font-size: var(--font-big);
+			}
 		}
 
 		p {
 			font-size: var(--font-larger);
+
+			@media (width <= 28.125rem) {
+				font-size: var(--font-small);
+			}
 		}
 	}
 
