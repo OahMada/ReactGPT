@@ -38,9 +38,9 @@ export var PreviewWrapper = styled.section`
 			border-radius: var(--border-radius-small);
 			background-color: white;
 
-			@media (width <= 28.125rem) {
+			/* @media (width <= 28.125rem) {
 				padding-bottom: calc(10px + var(--util-icon-container-dimension));
-			}
+			} */
 		}
 
 		.btn-container {
@@ -52,12 +52,11 @@ export var PreviewWrapper = styled.section`
 
 		.export-options-container {
 			right: 30px;
-			${ControlOptionsMenuContainerStyles}
 
-			@media (width <= 28.125rem) {
+			${ControlOptionsMenuContainerStyles}/* @media (width <= 28.125rem) {
 				top: calc(var(--util-icon-container-dimension) * 2 + 2px);
 				left: 30px;
-			}
+			} */
 		}
 
 		.preview-content {
@@ -68,9 +67,9 @@ export var PreviewWrapper = styled.section`
 			margin: 30px;
 			margin-top: calc(40px + var(--util-icon-container-dimension));
 
-			@media (width <= 28.125rem) {
+			/* @media (width <= 28.125rem) {
 				margin-top: calc(40px + var(--util-icon-container-dimension) * 2);
-			}
+			} */
 
 			p {
 				font-size: var(--font-primary);

@@ -15,11 +15,10 @@ import { createFocusTrap } from 'focus-trap';
 import { PreviewContent, articleDocx } from '../../components';
 import { PartialParagraph, Paragraph } from '../../types';
 import { translationQueryKeys } from '../../query/translationQuery';
-import { createToast, useKeys, HotkeyMapData, debounce } from '../../utils';
+import { createToast, useKeys, HotkeyMapData, debounce, isTouchDevice } from '../../utils';
 import { workerInstance } from '../../worker/workerInstance';
 import { ControlOptionsMenu } from '../../styled';
 import { Button } from '../../styled/button';
-
 import { PreviewWrapper } from './previewWrapper';
 
 export var Preview = () => {
@@ -257,7 +256,7 @@ export var Preview = () => {
 								Copy To Clipboard
 							</Button>
 							{/* hide export to file options on mobile devices */}
-							{!('ontouchstart' in document.documentElement) && <Button className='export-btn'>Export To File</Button>}
+							{!isTouchDevice() && <Button className='export-btn'>Export To File</Button>}
 						</div>
 						<StyledDiv
 							onMouseLeave={(e) => {

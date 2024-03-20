@@ -107,18 +107,10 @@ var Section = styled.section`
 			th {
 				&:nth-child(1) {
 					width: 40%;
-
-					@media (width <= 28.125rem) {
-						width: 50%;
-					}
 				}
 
 				&:nth-child(2) {
 					width: 60%;
-
-					@media (width <= 28.125rem) {
-						width: 50%;
-					}
 				}
 			}
 		}

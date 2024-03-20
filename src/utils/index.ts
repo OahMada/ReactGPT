@@ -9,3 +9,4 @@ export * from './sanitizeUserInput';
 export * from './throwIfUndefined';
 export * from './useKeys';
 export * from './useNavigateWithSearchParams';
+export * from './isTouchDevice';

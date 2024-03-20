@@ -49,6 +49,12 @@ var ResizeObserverMock = vi.fn(() => ({
 }));
 vi.stubGlobal('ResizeObserver', ResizeObserverMock);
 
+// for detecting mobile devices
+vi.stubGlobal(
+	'matchMedia',
+	vi.fn(() => false)
+);
+
 // This type interface extends the default options for render from RTL, as well
 // as allows the user to specify other things such as initialState, store.
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'wrapper'> {

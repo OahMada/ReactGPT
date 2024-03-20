@@ -80,11 +80,12 @@ enableMocking().then(() => {
  * ## features
  *
  * article list prevent background scroll and focus trap
+ * preview add translation reset
  *
  * ## bugs
  *
- * preview add translation reset
  * preview scroll failed: why I now need to use double finger
+ * disabled button color
  *
  * ## test
  *

@@ -1,11 +1,12 @@
 import { useRecordHotkeys } from 'react-hotkeys-hook';
 import { useEffect } from 'react';
 import styled from 'styled-components';
+import { RiPencilLine } from 'react-icons/ri';
 
 import { generateHotkeyLabel } from '../utils';
 import { LocalStorageHotkeys, RecordingStopper } from '../types';
 import { Button } from '../styled/button';
-import { RiPencilLine } from 'react-icons/ri';
+import { isTouchDevice } from '../utils';
 
 interface Hotkey {
 	label: string;
@@ -52,6 +53,8 @@ export var HotkeyInput = ({ keyBinding, userDefinedHotkeys, setUserDefinedHotkey
 				data-tooltip-id='tip'
 				data-tooltip-content='Click to change'
 				onClick={() => {
+					// this feature requires a physical keyboard
+					if (isTouchDevice()) return;
 					// run other hotkey's stop utility first
 					let stopper = hotkeyRecordingStopperRef.get('stopper');
 					if (stopper) {
@@ -60,7 +63,7 @@ export var HotkeyInput = ({ keyBinding, userDefinedHotkeys, setUserDefinedHotkey
 					start();
 				}}
 			>
-				<RiPencilLine />
+				{!isTouchDevice() && <RiPencilLine />}
 				<Button>{keyBinding.label}</Button>
 			</div>
 		</StyledTd>

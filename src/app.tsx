@@ -12,6 +12,7 @@ import { Tooltip } from 'react-tooltip';
 import routesConfig from './routesConfig';
 import GlobalStyles from './styles';
 import { FocusedParagraphIndexContextWrapper } from './components';
+import { isTouchDevice } from './utils';
 
 export var router = createBrowserRouter(routesConfig);
 
@@ -26,7 +27,7 @@ export var App = () => {
 			{/* duplicate toasts might show when applying the limit option, a library bug */}
 			<ToastContainer limit={3} />
 			{/* hide tooltip altogether on mobile devices */}
-			{!('ontouchstart' in document.documentElement) &&
+			{!isTouchDevice() &&
 				createPortal(
 					<>
 						<Tooltip id='hotkey' delayShow={1000} delayHide={150} style={{ zIndex: 5 }} />
