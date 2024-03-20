@@ -25,7 +25,8 @@ import { PreviewWrapper } from './previewWrapper';
 export var Preview = () => {
 	let [includeTranslation, setIncludeTranslation] = useState(false);
 	let [showRetryAllButton, setShowRetryAllButton] = useState(false);
-	let articleWrapperRef = useRef(null);
+	let modalRef = useRef(null);
+	let previewContentRef = useRef(null);
 
 	// react router
 	let filteredParagraphs = useOutletContext<Paragraph[]>();
@@ -95,7 +96,7 @@ export var Preview = () => {
 
 	/* for disabling scrolling beneath the modal */
 	// https://blog.logrocket.com/building-react-modal-module-with-react-router/#preventing-scroll-underneath-modal
-	let modalRef = useRef(null);
+
 	useEffect(() => {
 		// let observerRefValue = modalRef.current;
 		// if (observerRefValue) {
@@ -107,9 +108,9 @@ export var Preview = () => {
 		// 	}
 		// };
 
-		lock(modalRef.current);
+		lock(previewContentRef.current);
 		return () => {
-			unlock(modalRef.current);
+			unlock(previewContentRef.current);
 		};
 	}, []);
 
@@ -128,7 +129,7 @@ export var Preview = () => {
 		/* v8 ignore next 15 */
 		await workerInstance.exportFile(
 			proxy(() => {
-				html2canvas(articleWrapperRef.current!).then((canvas) => {
+				html2canvas(previewContentRef.current!).then((canvas) => {
 					canvas.toBlob((blob) => {
 						let b = blob as Blob;
 						if (window.saveAs) {
@@ -158,7 +159,7 @@ export var Preview = () => {
 					hotfixes: ['px_scaling'],
 				});
 				// credit https://stackoverflow.com/a/55497749/5800789
-				html2canvas(articleWrapperRef.current!).then((canvas) => {
+				html2canvas(previewContentRef.current!).then((canvas) => {
 					let img = canvas.toDataURL('image/png');
 					let imgProps = pdf.getImageProperties(img);
 					let imgWidth = pdf.internal.pageSize.getWidth() * 0.9;
@@ -303,7 +304,7 @@ export var Preview = () => {
 						</StyledDiv>
 					</div>
 				</div>
-				<div ref={articleWrapperRef} className='preview-content'>
+				<div ref={previewContentRef} className='preview-content'>
 					{currentArticleParagraphs.map((paragraph) => {
 						return (
 							<PreviewContent
