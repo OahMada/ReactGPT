@@ -22,6 +22,10 @@ export var Button = styled.button`
 		font-size: var(--font-small);
 	}
 
+	&:disabled {
+		opacity: 0.4;
+	}
+
 	.card & {
 		border: none;
 		border-radius: var(--border-radius-big);
