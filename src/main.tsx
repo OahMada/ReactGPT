@@ -79,15 +79,11 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- * article list prevent background scroll and focus trap
  * preview add translation reset
- * use https://github.com/tuax/tua-body-scroll-lock instead
  * no grammar fixes found, click done button hide the toast
+ * how it behaves on android phones?
  *
  * ## bugs
- *
- * preview scroll failed: why I now need to use double finger
- * click action penetrates, add a bit delay?
  *
  * ## test
  *

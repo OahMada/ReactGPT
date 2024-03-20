@@ -1,9 +1,10 @@
 import { NavLink, useSearchParams, useSubmit, useLocation, Outlet } from 'react-router-dom';
 import { useLocalStorage, useWindowSize } from 'react-use';
 import { useForm } from 'react-hook-form';
-import { useRef, useImperativeHandle, useState } from 'react';
+import { useRef, useImperativeHandle, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { RiArrowDropRightLine, RiArrowDropDownLine } from 'react-icons/ri';
+import { lock, unlock } from 'tua-body-scroll-lock';
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { selectArticle, unPinArticle, pinArticle } from '../features/articleSlice';
@@ -22,6 +23,7 @@ export var SharedLayout = () => {
 	let articlePinningScheduleRef = useRef<Map<string, 'pin' | 'unpin'>>(new Map());
 	let debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>();
 	let newArticleLinkRef = useRef<HTMLAnchorElement>(null);
+	let articleCardWrapperRef = useRef(null);
 
 	let dispatch = useAppDispatch();
 	let { articleQueue, paragraphs } = useAppSelector(selectArticle);
@@ -142,6 +144,14 @@ export var SharedLayout = () => {
 		},
 	});
 
+	// disable body scroll underneath
+	useEffect(() => {
+		if (showMenu) {
+			lock(articleCardWrapperRef.current);
+		}
+		return () => unlock(articleCardWrapperRef.current);
+	}, [showMenu]);
+
 	return (
 		<>
 			{(query || articles.length > 0) && ( // same as !(!query && articles.length < 1), means no articles have been created
@@ -177,6 +187,7 @@ export var SharedLayout = () => {
 							onMouseEnter={() => {
 								window.clearTimeout(debounceTimeoutRef.current);
 							}}
+							ref={articleCardWrapperRef}
 						>
 							<div className='card'>
 								<div

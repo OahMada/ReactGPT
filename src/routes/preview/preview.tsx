@@ -1,7 +1,6 @@
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { useQueryClient, useIsFetching, useQueryErrorResetBoundary } from '@tanstack/react-query';
-import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn'; // import locale
 import { Packer } from 'docx';
@@ -95,19 +94,7 @@ export var Preview = () => {
 	}, [translationFetchingCount]);
 
 	/* for disabling scrolling beneath the modal */
-	// https://blog.logrocket.com/building-react-modal-module-with-react-router/#preventing-scroll-underneath-modal
-
 	useEffect(() => {
-		// let observerRefValue = modalRef.current;
-		// if (observerRefValue) {
-		// 	disableBodyScroll(observerRefValue);
-		// }
-		// return () => {
-		// 	if (observerRefValue) {
-		// 		enableBodyScroll(observerRefValue);
-		// 	}
-		// };
-
 		lock(previewContentRef.current);
 		return () => {
 			unlock(previewContentRef.current);

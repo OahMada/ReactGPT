@@ -89,8 +89,10 @@ export var ArticleCard = ({ article, articleIsInFavorites, articlePinningSchedul
 						<button
 							className='go-to-article-btn'
 							onTouchStart={() => {
-								navigateToAnotherArticle();
-								setShowMenu(false);
+								setTimeout(() => {
+									navigateToAnotherArticle();
+									setShowMenu(false);
+								}, 300);
 							}}
 						>
 							<span>Go to Article</span>&nbsp;
