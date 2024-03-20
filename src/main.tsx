@@ -83,8 +83,8 @@ enableMocking().then(() => {
  *
  * ## bugs
  *
- * preview article tooltip
  * preview add translation reset
+ * preview scroll failed: why I now need to use double finger
  *
  * ## test
  *

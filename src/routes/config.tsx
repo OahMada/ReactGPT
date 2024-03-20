@@ -130,7 +130,7 @@ export var Config = () => {
 						}`}
 					</h1>
 				) : (
-					<h1>Please set your API key first</h1>
+					<h1>Please set up your API key:</h1>
 				)}
 				<p>The key will be securely stored locally and sent to OpenAI for authentication.</p>
 
@@ -189,6 +189,10 @@ var StyledSection = styled.section`
 			border: none;
 		}
 
+		@media (width <= 28.125rem) {
+			font-size: var(--font-small);
+		}
+
 		form {
 			display: flex;
 			flex-wrap: wrap;
@@ -214,6 +218,10 @@ var StyledSection = styled.section`
 		h1 {
 			font-size: var(--font-big);
 			font-weight: 700;
+
+			@media (width <= 28.125rem) {
+				font-size: var(--font-primary);
+			}
 		}
 
 		p {

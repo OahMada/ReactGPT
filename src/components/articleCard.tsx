@@ -88,7 +88,7 @@ export var ArticleCard = ({ article, articleIsInFavorites, articlePinningSchedul
 						</div>
 						<button
 							className='go-to-article-btn'
-							onClick={() => {
+							onTouchStart={() => {
 								navigateToAnotherArticle();
 								setShowMenu(false);
 							}}

@@ -23,7 +23,6 @@ export var PreviewWrapper = styled.section`
 		border-radius: var(--border-radius-small);
 		background-color: white;
 		box-shadow: 0 2rem 4rem rgb(0 0 0 / 20%);
-		overflow-y: scroll;
 
 		@media (width <= 46.875rem) {
 			width: 100%;
@@ -39,7 +38,7 @@ export var PreviewWrapper = styled.section`
 			border-radius: var(--border-radius-small);
 			background-color: white;
 
-			@media (width <= 46.875rem) {
+			@media (width <= 28.125rem) {
 				padding-bottom: calc(10px + var(--util-icon-container-dimension));
 			}
 		}
@@ -55,20 +54,21 @@ export var PreviewWrapper = styled.section`
 			right: 30px;
 			${ControlOptionsMenuContainerStyles}
 
-			@media (width <= 46.875rem) {
+			@media (width <= 28.125rem) {
 				top: calc(var(--util-icon-container-dimension) * 2 + 2px);
 				left: 30px;
 			}
 		}
 
 		.preview-content {
+			overflow: auto;
 			padding: 20px;
 			border: 1px solid var(--color-dark);
 			border-radius: var(--border-radius);
 			margin: 30px;
 			margin-top: calc(40px + var(--util-icon-container-dimension));
 
-			@media (width <= 46.875rem) {
+			@media (width <= 28.125rem) {
 				margin-top: calc(40px + var(--util-icon-container-dimension) * 2);
 			}
 

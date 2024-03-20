@@ -256,7 +256,8 @@ export var Preview = () => {
 							>
 								Copy To Clipboard
 							</Button>
-							<Button className='export-btn'>Export To File</Button>
+							{/* hide export to file options on mobile devices */}
+							{!('ontouchstart' in document.documentElement) && <Button className='export-btn'>Export To File</Button>}
 						</div>
 						<StyledDiv
 							onMouseLeave={(e) => {

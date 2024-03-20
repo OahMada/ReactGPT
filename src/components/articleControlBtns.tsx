@@ -1,7 +1,6 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { toast, Id } from 'react-toastify';
 import { useNavigate, Link } from 'react-router-dom';
-import { Tooltip } from 'react-tooltip';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
@@ -42,8 +41,6 @@ var Undo = ({ closeToast, onUndo }: UndoProps) => {
 };
 
 export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
-	const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-
 	let { articleQueue } = useAppSelector(selectArticle);
 	let toastId = useRef<Id>();
 	let dispatch = useAppDispatch();
@@ -118,13 +115,7 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 			<Button onClick={handleArticleDeletion} data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.deleteArticle.label}>
 				Delete Article
 			</Button>
-			<Button
-				data-tooltip-id='preview-btn'
-				data-tooltip-content={articlePageHotkeys.previewArticle.label}
-				// https://react-tooltip.com/docs/examples/state
-				onClick={() => setIsTooltipOpen(false)}
-				onMouseEnter={() => setIsTooltipOpen(true)}
-			>
+			<Button data-tooltip-id='hotkey' data-tooltip-content={articlePageHotkeys.previewArticle.label}>
 				<Link
 					to={`/article/${articleId}/preview`}
 					tabIndex={-1} // remove underlying a tag from tabbing sequence
@@ -132,7 +123,6 @@ export var ArticleControlBtns = ({ articleId }: { articleId: string }) => {
 					Preview Article
 				</Link>
 			</Button>
-			<Tooltip id='preview-btn' delayShow={1000} delayHide={150} style={{ zIndex: 5 }} isOpen={isTooltipOpen} />
 		</>
 	);
 };
