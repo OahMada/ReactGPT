@@ -54,6 +54,7 @@
 		"react-use": "^17.5.0",
 		"redux-persist": "^6.0.0",
 		"styled-components": "^6.1.8",
+		"tua-body-scroll-lock": "^1.4.1",
 		"uuid": "^9.0.1"
 	},
 	"devDependencies": {

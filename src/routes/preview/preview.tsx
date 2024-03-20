@@ -11,6 +11,7 @@ import html2canvas from 'html2canvas';
 import { proxy } from 'comlink';
 import styled from 'styled-components';
 import { createFocusTrap } from 'focus-trap';
+import { lock, unlock } from 'tua-body-scroll-lock';
 
 import { PreviewContent, articleDocx } from '../../components';
 import { PartialParagraph, Paragraph } from '../../types';
@@ -96,14 +97,19 @@ export var Preview = () => {
 	// https://blog.logrocket.com/building-react-modal-module-with-react-router/#preventing-scroll-underneath-modal
 	let modalRef = useRef(null);
 	useEffect(() => {
-		let observerRefValue = modalRef.current;
-		if (observerRefValue) {
-			disableBodyScroll(observerRefValue);
-		}
+		// let observerRefValue = modalRef.current;
+		// if (observerRefValue) {
+		// 	disableBodyScroll(observerRefValue);
+		// }
+		// return () => {
+		// 	if (observerRefValue) {
+		// 		enableBodyScroll(observerRefValue);
+		// 	}
+		// };
+
+		lock();
 		return () => {
-			if (observerRefValue) {
-				enableBodyScroll(observerRefValue);
-			}
+			unlock();
 		};
 	}, []);
 
