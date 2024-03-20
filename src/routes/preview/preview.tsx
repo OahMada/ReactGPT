@@ -107,9 +107,9 @@ export var Preview = () => {
 		// 	}
 		// };
 
-		lock();
+		lock(modalRef.current);
 		return () => {
-			unlock();
+			unlock(modalRef.current);
 		};
 	}, []);
 
