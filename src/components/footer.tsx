@@ -10,7 +10,7 @@ export var Footer = () => {
 
 var StyledFooter = styled.footer`
 	display: flex;
-	width: 100vw;
+	width: 100%;
 	height: var(--header-height);
 	align-items: center;
 	justify-content: center;

@@ -1,9 +1,9 @@
 export * from './articleCard';
 export * from './articleControlBtns';
 export * from './articleDocx';
-export * from './autoFocus';
+export * from './autoFocusContext';
 export * from './emptyParagraphList';
-export * from './focusedParagraphIndex';
+export * from './focusedParagraphIndexContext';
 export * from './footer';
 export * from './header';
 export * from './hotkeyInput';
@@ -17,3 +17,4 @@ export * from './previewContent';
 export * from './previewTranslation';
 export * from './reactPortal';
 export * from './sharedLayout';
+export * from './intersectionContext';

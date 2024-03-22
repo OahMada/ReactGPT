@@ -55,6 +55,15 @@ vi.stubGlobal(
 	vi.fn(() => false)
 );
 
+// for useIntersectionObserver hook
+var IntersectionObserverMock = vi.fn(() => ({
+	observe: vi.fn(),
+	disconnect: vi.fn(),
+	unobserve: vi.fn(),
+	takeRecords: vi.fn(),
+}));
+vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);
+
 // This type interface extends the default options for render from RTL, as well
 // as allows the user to specify other things such as initialState, store.
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'wrapper'> {

@@ -25,6 +25,7 @@ import {
 	useFocusedParagraphIndexContext,
 	ParagraphControlBtns,
 	AutoFocusWrapper,
+	useIntersectionContext,
 } from '../components';
 import { ParagraphWrapper, StyledParagraph, BtnContainer } from '../styled';
 import { Button } from '../styled/button';
@@ -40,6 +41,7 @@ import { grammarQueryKeys } from '../query/grammarQuery';
 import { translationQueryKeys } from '../query/translationQuery';
 
 export var Article = () => {
+	let { ref: paragraphsContainerRef } = useIntersectionContext();
 	// react router
 	const { articleId } = useParams();
 	throwIfUndefined(articleId);
@@ -216,7 +218,7 @@ export var Article = () => {
 
 	return (
 		<IconContext.Provider value={{ size: '2.5rem' }}>
-			<StyledSection>
+			<StyledSection ref={paragraphsContainerRef}>
 				{filteredParagraphs.length === 0 && combinedArticleQueue.indexOf(articleId) !== -1 && <EmptyParagraphList />}
 				<div className='article-controls'>
 					{filteredParagraphs.length !== 0 && <ArticleControlBtns articleId={articleId} />}
@@ -359,6 +361,10 @@ var StyledArticle = styled.article`
 	outline: none; /* there will be shadow added to the focused element, thus the default blue line is not needed */
 	white-space: pre-wrap; /* preserve user input line feeds */
 
+	&:last-child {
+		margin-bottom: 0;
+	}
+
 	&.active {
 		box-shadow: 0 1rem 1rem rgb(0 0 0 / 30%);
 	}
@@ -394,7 +400,7 @@ var StyledSection = styled.section`
 
 	.article-controls {
 		display: flex;
-		margin-bottom: 16px;
+		margin-bottom: 10px;
 		gap: var(--gap-small);
 
 		a {

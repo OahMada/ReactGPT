@@ -2,7 +2,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import secureLocalStorage from 'react-secure-storage';
 
-import { Footer, Header } from '../components';
+import { Footer, Header, IntersectionContextWrapper } from '../components';
 
 export function Root() {
 	let secureLocalStorageAPIKey = secureLocalStorage.getItem('string');
@@ -11,7 +11,9 @@ export function Root() {
 		<>
 			<Header />
 			<StyledMain>
-				<Outlet />
+				<IntersectionContextWrapper>
+					<Outlet />
+				</IntersectionContextWrapper>
 			</StyledMain>
 			<Footer />
 		</>
@@ -27,7 +29,7 @@ var StyledMain = styled.main`
 	justify-content: center;
 	padding: var(--root-padding);
 	padding-top: 0;
-	padding-bottom: 0%;
+	padding-bottom: 0;
 	margin: 0 auto;
 
 	/* https://www.reddit.com/r/chrome/comments/i98sta/has_scroll_anchoring_behavior_changed_for_focused/ */

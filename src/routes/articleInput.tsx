@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { saveArticleInput, selectArticle } from '../features/articleSlice';
 import { createToast, defaultArticleInput, useKeys, HotkeyMapData, useNavigateWithSearchParams } from '../utils';
 import { Button } from '../styled/button';
+import { useIntersectionContext } from '../components';
 
 interface ArticleInputType {
 	article: string;
@@ -15,6 +16,9 @@ interface ArticleInputType {
 
 // log the last character inputted from previous render
 export var ArticleInput = () => {
+	let { shouldConstrainHeightRef } = useIntersectionContext();
+	shouldConstrainHeightRef.current = true;
+
 	let { width: windowWidth } = useWindowSize();
 	let dispatch = useAppDispatch();
 	let { articleQueue } = useAppSelector(selectArticle);

@@ -70,7 +70,7 @@ enableMocking().then(() => {
 						</HotkeysProvider>
 					</PersistGate>
 				</Provider>
-				<ReactQueryDevtools initialIsOpen={true} position='right' />
+				<ReactQueryDevtools initialIsOpen={false} position='right' />
 			</PersistQueryClientProvider>
 		</React.StrictMode>
 	);
@@ -81,9 +81,11 @@ enableMocking().then(() => {
  *
  * preview add translation reset
  * no grammar fixes found, click done button hide the toast
- * how it behaves on android phones?
  *
  * ## bugs
+ *
+ * show buttons when input article on phone: shrink the input area
+ * disable room when inputting API key: ios
  *
  * ## test
  *

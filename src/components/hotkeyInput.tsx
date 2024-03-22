@@ -52,9 +52,12 @@ export var HotkeyInput = ({ keyBinding, userDefinedHotkeys, setUserDefinedHotkey
 				className='wrapper'
 				data-tooltip-id='tip'
 				data-tooltip-content='Click to change'
-				onClick={() => {
+				onClick={(e) => {
 					// this feature requires a physical keyboard
-					if (isTouchDevice()) return;
+					if (isTouchDevice()) {
+						e.preventDefault();
+						return;
+					}
 					// run other hotkey's stop utility first
 					let stopper = hotkeyRecordingStopperRef.get('stopper');
 					if (stopper) {

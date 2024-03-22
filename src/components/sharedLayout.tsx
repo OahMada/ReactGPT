@@ -9,7 +9,7 @@ import { lock, unlock } from 'tua-body-scroll-lock';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { selectArticle, unPinArticle, pinArticle } from '../features/articleSlice';
 import { performFuseSearch, useKeys, HotkeyMapData, useNavigateWithSearchParams } from '../utils';
-import { ArticleCard } from '.';
+import { ArticleCard, useIntersectionContext } from '.';
 import { Button } from '../styled/button';
 
 interface SearchForm {
@@ -17,6 +17,7 @@ interface SearchForm {
 }
 
 export var SharedLayout = () => {
+	let { shouldConstrainHeightRef } = useIntersectionContext();
 	let { width: windowWidth } = useWindowSize();
 	let [showMenu, setShowMenu] = useState(false);
 	let [searchFocus, setSearchFocus] = useState(false);
@@ -162,7 +163,7 @@ export var SharedLayout = () => {
 							{showMenu ? <RiArrowDropDownLine /> : <RiArrowDropRightLine />}
 						</MenuBtn>
 					)}
-					<StyledAside $showMenu={showMenu}>
+					<StyledAside $showMenu={showMenu} $shouldConstrainHeight={shouldConstrainHeightRef.current}>
 						<form role='search' onSubmit={handleSubmit(onSubmit)}>
 							<input
 								aria-label='Search articles'
@@ -244,11 +245,12 @@ var MenuBtn = styled(Button)<{ $showMenu: boolean }>`
 	color: ${({ $showMenu }) => ($showMenu ? 'var(--color-darkest)' : 'inherit')};
 `;
 
-var StyledAside = styled.aside<{ $showMenu: boolean }>`
+var StyledAside = styled.aside<{ $showMenu: boolean; $shouldConstrainHeight: boolean }>`
 	position: sticky;
 	top: 100px;
 	width: 250px;
-	max-height: calc(100dvh - var(--header-height));
+	height: ${({ $shouldConstrainHeight }) =>
+		$shouldConstrainHeight ? 'calc(100dvh - var(--header-offset) - var(--header-height))' : 'calc(100dvh - var(--header-offset) - 15px)'};
 	flex-shrink: 0;
 	margin-top: var(--header-offset);
 	margin-right: var(--gap-big);
@@ -259,7 +261,7 @@ var StyledAside = styled.aside<{ $showMenu: boolean }>`
 		z-index: 1;
 		top: 0;
 		display: ${({ $showMenu }) => ($showMenu ? 'block' : 'none')};
-		width: 100dvw;
+		width: 100%;
 		height: calc(100dvh - var(--header-height));
 		padding: 0 var(--root-padding);
 		padding-top: 10px;
@@ -282,7 +284,7 @@ var StyledAside = styled.aside<{ $showMenu: boolean }>`
 	.card-wrapper {
 		display: flex;
 		overflow: auto;
-		max-height: calc(100dvh - var(--header-offset) - var(--header-height) - 7rem);
+		max-height: calc(100% - var(--util-icon-container-dimension) - 20px);
 		flex-direction: column;
 		padding-right: 15px;
 		gap: var(--gap-big);
@@ -310,9 +312,13 @@ var StyledAside = styled.aside<{ $showMenu: boolean }>`
 			border-radius: var(--border-radius);
 			gap: var(--gap-primary);
 
+			@media (width <= 46.875rem) {
+				padding-right: 10px;
+			}
+
 			/* without this, the box shadow on the last card won't show up */
 			&:last-child {
-				margin-bottom: 20px;
+				margin-bottom: 10px;
 			}
 
 			& .link-wrapper {
@@ -337,7 +343,6 @@ var StyledAside = styled.aside<{ $showMenu: boolean }>`
 				padding: 10px;
 				color: black;
 				font-size: var(--font-big);
-				font-weight: lighter;
 			}
 		}
 

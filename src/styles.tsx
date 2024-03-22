@@ -47,7 +47,6 @@ body {
 }
 
 #root {
-	/* https://dev.to/rashidshamloo/preventing-the-layout-shift-caused-by-scrollbars-2flp#:~:text=Positioning%20inside%20a%20100vw%20width%20parent */
 	width: 100vw;
 	min-height: 100dvh;
 }

@@ -21,7 +21,9 @@
 		"tanstack",
 		"textbox",
 		"toastify",
+		"uidotdev",
 		"unhover",
+		"usehooks",
 		"uuidv"
 	]
 }
