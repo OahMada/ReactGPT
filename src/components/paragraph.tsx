@@ -220,6 +220,7 @@ export var Paragraph = ({ paragraphId }: { paragraphId: string }) => {
 									refetchType: 'none',
 								});
 								dispatch(doneWithCurrentParagraphState(paragraphId));
+								toast.isActive(paragraphId + 'NoGrammarMistakes') && toast.dismiss(paragraphId + 'NoGrammarMistakes');
 							}}
 							disabled={isGrammarFixesPending || isGrammarFixesFetching}
 							ref={doneButtonRef}

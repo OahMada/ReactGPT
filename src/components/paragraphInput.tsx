@@ -129,7 +129,6 @@ export var ParagraphInput = ({
 						createToast({
 							type: 'info',
 							content: 'Consider adding a new paragraph instead of using double line breaks.',
-							toastId: 'create new paragraph notice',
 						});
 					}
 				}}

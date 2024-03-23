@@ -79,16 +79,11 @@ enableMocking().then(() => {
 /**
  * ## features
  *
- * preview add translation reset
- * no grammar fixes found, click done button hide the toast
- *
  * ## bugs
  *
  * ## test
  *
  * ## others
- *
- * update user flow
  *
  * Why do I need to input the API key every once in a while?
  * verify the persisted data
