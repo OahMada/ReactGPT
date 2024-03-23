@@ -208,6 +208,10 @@ var StyledSection = styled.section`
 				display: inline-block;
 				flex-grow: 1;
 				margin-right: 3px;
+
+				@media (width <= 28.125rem) {
+					font-size: var(--font-primary);
+				}
 			}
 
 			label {

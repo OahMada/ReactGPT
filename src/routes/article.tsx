@@ -217,7 +217,8 @@ export var Article = () => {
 	}
 
 	return (
-		<IconContext.Provider value={{ size: '2.5rem' }}>
+		// do not use `value={ size: '2.5rem' }` to avoid 'Invalid value for <svg> attribute' error in safari
+		<IconContext.Provider value={{ style: { width: '2.5rem', height: '2.5rem' } }}>
 			<StyledSection ref={paragraphsContainerRef}>
 				{filteredParagraphs.length === 0 && combinedArticleQueue.indexOf(articleId) !== -1 && <EmptyParagraphList />}
 				<div className='article-controls'>

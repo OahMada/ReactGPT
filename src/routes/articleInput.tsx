@@ -148,7 +148,7 @@ var StyledForm = styled.form`
 	}
 
 	textarea {
-		height: 100%;
+		flex-grow: 1;
 		padding: 20px;
 		border: 1px solid var(--color-darker);
 		border-radius: var(--border-radius);

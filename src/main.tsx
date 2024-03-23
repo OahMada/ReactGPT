@@ -64,7 +64,7 @@ enableMocking().then(() => {
 				<Provider store={store}>
 					<PersistGate loading={null} persistor={persistor}>
 						<HotkeysProvider>
-							<IconContext.Provider value={{ size: '1.6rem' }}>
+							<IconContext.Provider value={{ style: { width: '1.6rem', height: '1.6rem' } }}>
 								<App />
 							</IconContext.Provider>
 						</HotkeysProvider>
@@ -83,9 +83,6 @@ enableMocking().then(() => {
  * no grammar fixes found, click done button hide the toast
  *
  * ## bugs
- *
- * show buttons when input article on phone: shrink the input area
- * disable room when inputting API key: ios
  *
  * ## test
  *
