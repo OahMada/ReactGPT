@@ -50,7 +50,7 @@ export var Config = () => {
 	let { ref, ...rest } = register('key', {
 		required: 'Please enter your API key.',
 		pattern: {
-			value: new RegExp(`^sk-[a-zA-Z0-9]{32,}$|${import.meta.env.VITE_OPENAI_API_KEY_ALIAS}`),
+			value: new RegExp(`^sk-(proj-)?[a-zA-Z0-9]{32,}$|${import.meta.env.VITE_OPENAI_API_KEY_ALIAS}`),
 			message: 'Invalid API Key Format',
 		},
 		onChange: () => {

@@ -10,7 +10,7 @@ export default async (req: Request) => {
 	let config = {
 		method: 'post',
 		url,
-		data: { model: 'gpt-3.5-turbo', messages: [{ role: 'user', content: 'This is a test' }] },
+		data: { model: 'gpt-4o', messages: [{ role: 'user', content: 'This is a test' }] },
 		headers: { 'content-type': 'application/json', Authorization: `Bearer ${reqBody.key}` },
 	};
 
