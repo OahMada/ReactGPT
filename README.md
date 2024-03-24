@@ -17,9 +17,9 @@ Main functionality:
 - Customize the OpenAI API key
 - Global hotkey support, view available hotkeys in hotkey map page
 - Responsive layout on mobile devices
-- Pre-commit hook with husky & lint-staged
-- Serverless function implementation and development on Netlify
-- Integration test with react testing library
+- Pre-commit hook with Husky & lint-staged
+- Serverless function implementation and deployment on Netlify
+- Integration test with React Testing Library
 - V8 test coverage report
 - Offload file exports to web worker
 
@@ -31,8 +31,8 @@ Main libraries used:
 - React Hook Form
 - React Hotkeys Hook for hotkey navigation
 - Styled Components for styling
-- Mock service worker for API mocking
-- React beautiful DND for drag and drop interaction
+- Mock Service Worker for API mocking
+- React Beautiful DND for drag and drop interaction
 - etc.
 
 ## Inspiration
